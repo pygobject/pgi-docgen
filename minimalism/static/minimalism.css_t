@@ -185,6 +185,7 @@ margin-left: -25px;
 
 dd {
     margin: 0px;
+    padding-left: 15px;
 }
 
 table
@@ -194,5 +195,5 @@ table
 
 pre {
     padding: 5px;
-    background-color: #e0e0e0;
+    background-color: #f0f0f0;
 }

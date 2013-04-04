@@ -3,7 +3,7 @@
 import os
 import sys
 
-sys.path.insert(0, os.path.abspath('./_generated'))
+sys.path.insert(0, os.path.abspath('.'))
 import gi
 
 extensions = ['sphinx.ext.autodoc']
@@ -15,5 +15,5 @@ version = "0.1"
 release = "0.1"
 exclude_patterns = ['_build', 'README.rst']
 
-html_theme_path = ['.']
+html_theme_path = ['../']
 html_theme = 'minimalism'
