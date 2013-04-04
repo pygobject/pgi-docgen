@@ -15,4 +15,5 @@ version = "0.1"
 release = "0.1"
 exclude_patterns = ['_build', 'README.rst']
 
-autoclass_content = 'both'
+html_theme_path = ['.']
+html_theme = 'minimalism'

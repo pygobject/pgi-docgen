@@ -1,0 +1,198 @@
+/*
+ * minimalism.css_t
+ * ~~~~~~~~~~~~~~~~
+ *
+ * Minimalism Sphinx stylesheet
+ *
+ * :copyright: 2010 by Daniel Neuhaeuser
+ * :license: BSD
+ */
+
+
+body {
+    font-family: sans-serif;
+    font-size: 12px;
+    line-height: 1.4em;
+    background-color: #FFF;
+    color: #333;
+    margin: 0;
+    padding: 0;
+}
+
+h1 {
+    line-height: 1em;
+}
+
+a {
+    color: #333;
+    font-style: italic;
+}
+
+a:hover {
+    color: #000;
+}
+
+a.headerlink {
+    color: #FFF;
+}
+
+a.headerlink:hover {
+    color: #333;
+}
+
+.viewcode-link, .viewcode-back {
+    float: right;
+    color: #666;
+}
+
+.viewcode-link {
+    font-size: 0.8em;
+}
+
+.document {
+    width: 100%;
+    margin-left: 30px;
+}
+
+.documentwrapper {
+    float: left;
+    width: 67%;
+}
+
+.sphinxsidebar {
+    float: right;
+    width: 30%;
+    margin-top: 20px;
+    color: #666;
+}
+
+.sphinxsidebar a {
+    color: #666;
+}
+
+.sphinxsidebar h3 a {
+    font-style: normal;
+    text-decoration: none;
+}
+
+input {
+    border: 1px solid #ccc;
+    font-family: Georgia, serif;
+    font-size: 1em;
+}
+
+input[type="submit"] {
+    background-color: #ccc;
+}
+
+em.property {
+    font-size: 0.8em;
+}
+
+tt.literal {
+    font-style: italic;
+    font-size: 1em;
+    background-color: #eee;
+}
+
+a tt.literal {
+    text-decoration: underline;
+}
+
+tt.descclassname, tt.descname {
+    font-size: 1.1em;
+}
+
+tt.descname {
+    font-weight: bold;
+}
+
+.clearer {
+    clear: both;
+}
+
+.footer {
+    color: #999;
+    text-align: left;
+    font-size: 0.8em;
+    width: 100%;
+    margin: 0 5px 5px;
+}
+
+.footer a {
+    color: #999
+}
+
+table.docutils {
+    border: none;
+}
+
+table.docutils tr {
+    text-align: left;
+    border-collapse: collapse;
+}
+
+table.docutils th {
+    border-bottom: 2px solid #999;
+}
+
+table.docutils td {
+    border-bottom: 1px solid #999;
+}
+
+table.field-list th, table.field-list td {
+    border: none;
+}
+
+.highlight {
+    font-size: 0.8em;
+}
+
+ul.search li {
+    padding: 5px 5px 0 20px;
+}
+
+.admonition {
+    background-color: #eee;
+    padding: 10px 0 5px 10px;
+}
+
+p.admonition-title {
+    font-size: 1.2em;
+    font-weight: bold;
+    padding: 0;
+    margin: 0;
+}
+
+dt {
+    background-color: #e0e0e0;
+    padding: 3px;
+    margin-bottom: 6px;
+}
+
+.field-list {
+    background-color: #FFECCE;
+    width: 100%;
+}
+
+.field-name, .field-body {
+padding: 3px;
+}
+
+.field-body > ul {
+margin-left: -25px;
+}
+
+dd {
+    margin: 0px;
+}
+
+table
+{
+    border-collapse:collapse;
+}
+
+pre {
+    padding: 5px;
+    background-color: #e0e0e0;
+}
