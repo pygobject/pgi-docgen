@@ -204,7 +204,7 @@ class Repository(object):
 class %s(object):
     '''
 %s
-    '''\n""" % (name, docs)
+    '''\n""" % (name, docs.encode("utf-8").encode('string-escape'))
 
     def parse_function(self, name, obj):
         """Returns python code for the object"""
@@ -258,7 +258,7 @@ def %s(%s):
     '''
 %s
     '''
-""" % (name, arg_names, docs)
+""" % (name, arg_names, docs.encode("utf-8").encode('string-escape'))
 
         return final
 
@@ -281,11 +281,13 @@ class MainGenerator(object):
 
     def finalize(self):
         with open(os.path.join(self.DEST, "index.rst"), "wb") as h:
-            h.write("""
-Python Gobject Introspection Documentation
+            h.write("""\
+Python GObject Introspection Documentation
 ==========================================
 
 .. toctree::
+    :maxdepth: 1
+
 """)
 
             for sub in self._subs:
