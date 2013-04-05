@@ -202,9 +202,9 @@ class Repository(object):
 
         return """
 class %s(object):
-    '''
+    r'''
 %s
-    '''\n""" % (name, docs.encode("utf-8").encode('string-escape'))
+    '''\n""" % (name, docs.encode("utf-8"))
 
     def parse_function(self, name, obj):
         """Returns python code for the object"""
@@ -255,10 +255,10 @@ class %s(object):
 
         final = """
 def %s(%s):
-    '''
+    r'''
 %s
     '''
-""" % (name, arg_names, docs.encode("utf-8").encode('string-escape'))
+""" % (name, arg_names, docs.encode("utf-8"))
 
         return final
 
@@ -377,6 +377,10 @@ Classes
         self.func_handle.close()
         self.class_handle.close()
         self.module.close()
+
+        # make sure the generated code is valid python
+        with open(self.module.name, "rb") as h:
+            exec h.read() in {}
 
 
 def create_docs(main_gen, namespace, version):
