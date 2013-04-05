@@ -77,7 +77,6 @@ a.headerlink:hover {
 
 input {
     border: 1px solid #ccc;
-    font-family: Georgia, serif;
     font-size: 1em;
 }
 
@@ -175,12 +174,17 @@ dt {
     width: 100%;
 }
 
-.field-name, .field-body {
-padding: 3px;
+.field-body {
+    width: 100%;
+    padding: 3px;
+}
+
+.field-name {
+    padding-right: 10px;
 }
 
 .field-body > ul {
-margin-left: -25px;
+    margin-left: -25px;
 }
 
 dd {
