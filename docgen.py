@@ -62,9 +62,11 @@ class Repository(object):
         self._parameters = {}
 
         # Gtk.foo_bar -> "some doc"
+        # Gtk.Foo.foo_bar -> "some doc"
         self._functions = {}
 
         # Gtk.foo_bar -> "some doc"
+        # Gtk.Foo.foo_bar -> "some doc"
         self._returns = {}
 
         # Gtk.FooBar -> "some doc"
@@ -119,19 +121,52 @@ class Repository(object):
 
             if parent_name == "parameter":
                 up = parent.parentNode.parentNode
-                if up.tagName == "function" and \
-                        up.parentNode.tagName == "namespace":
-                    namespace = up.parentNode.getAttribute("name")
-                    func_name = up.getAttribute("name")
-                    param_name = parent.getAttribute("name")
-                    name = namespace + "." + func_name + "." + param_name
+                if up.tagName == "function":
+                    if up.parentNode.tagName == "namespace":
+                        namespace = up.parentNode.getAttribute("name")
+                        func_name = up.getAttribute("name")
+                        param_name = parent.getAttribute("name")
+                        name = namespace + "." + func_name + "." + param_name
+                        self._parameters[name] = docs
+                    else:
+                        namespace = up.parentNode.parentNode
+                        assert namespace.tagName == "namespace"
+                        class_ = up.parentNode
+                        ns = namespace.getAttribute("name")
+                        cls = class_.getAttribute("name")
+                        func = up.getAttribute("name")
+                        param_name = parent.getAttribute("name")
+                        name = ns + "." + cls + "." + func + "." + param_name
+                        self._parameters[name] = docs
+                elif up.tagName == "method":
+                    namespace = up.parentNode.parentNode
+                    assert namespace.tagName == "namespace"
+                    namespace = namespace.getAttribute("name")
+                    owner = up.parentNode.getAttribute("name")
+                    method = up.getAttribute("name")
+                    param = parent.getAttribute("name")
+                    name = namespace + "." + owner + "." + method + "." + param
                     self._parameters[name] = docs
+            elif parent_name == "method":
+                up = parent.parentNode
+                m_owner = up.getAttribute("name")
+                namespace = up.parentNode.getAttribute("name")
+                method = parent.getAttribute("name")
+                name = namespace + "." + m_owner + "." + method
+                self._functions[name] = docs
             elif parent_name == "function":
                 up = parent.parentNode
                 if up.tagName == "namespace":
                     namespace = up.getAttribute("name")
                     func_name = parent.getAttribute("name")
                     name = namespace + "." + func_name
+                    self._functions[name] = docs
+                elif up.tagName == "class":
+                    assert up.parentNode.tagName == "namespace"
+                    namespace = up.parentNode.getAttribute("name")
+                    class_name = up.getAttribute("name")
+                    func_name = parent.getAttribute("name")
+                    name = namespace + "." + class_name + "." + func_name
                     self._functions[name] = docs
             elif parent_name == "return-value":
                 up = parent.parentNode
@@ -206,18 +241,17 @@ class %s(object):
 %s
     '''\n""" % (name, docs.encode("utf-8"))
 
-    def parse_function(self, name, obj):
+    def parse_function(self, name, obj, method=False):
         """Returns python code for the object"""
-
-        namespace = self.namespace
 
         doc = str(obj.__doc__)
         first_line = doc and doc.splitlines()[0] or ""
         match = re.match("(.*?)\((.*?)\)( -> )?(.*)", first_line)
         if not match:
             return
+
         groups = match.groups()
-        name, args, dummy, ret = groups
+        func_name, args, dummy, ret = groups
 
         args = args and args.split(",") or []
         args = [a.strip() for a in args]
@@ -226,19 +260,21 @@ class %s(object):
 
         arg_map = [(a.split(":")[0].strip(), a.split(":")[-1].strip()) for a in args]
 
-        arg_names = ", ".join([a[0] for a in arg_map])
-        func_name = namespace + "." + name
+        arg_names = [a[0] for a in arg_map]
+        if method:
+            arg_names.insert(0, "self")
+        arg_names = ", ".join(arg_names)
 
         docs = []
         for key, value in arg_map:
-            param_key = namespace + "." + name + "." + key
+            param_key = name + "." + key
             text = self._fix(self._parameters.get(param_key, ""))
             docs.append(":param %s: %s" % (key, text))
             docs.append(":type %s: :class:`%s`" % (key, value))
 
-        if func_name in self._returns:
+        if name in self._returns:
             # don't allow newlines here
-            text = self._fix(self._returns[func_name])
+            text = self._fix(self._returns[name])
             doc_string = " ".join(text.splitlines())
             docs.append(":returns:")
             docs.append("    %s" % doc_string)
@@ -247,9 +283,10 @@ class %s(object):
         elif ret:
             docs.append(":returns:")
             docs.append("    %s" % ", ".join(ret))
+        docs.append("")
 
-        if func_name in self._functions:
-            docs.append(self._functions[func_name])
+        if name in self._functions:
+            docs.append(self._functions[name])
 
         docs = "\n".join(docs)
 
@@ -258,7 +295,7 @@ def %s(%s):
     r'''
 %s
     '''
-""" % (name, arg_names, docs.encode("utf-8"))
+""" % (func_name, arg_names, docs.encode("utf-8"))
 
         return final
 
@@ -347,15 +384,26 @@ Classes
         h = self.func_handle
         h.write(".. autofunction:: %s\n\n" % name)
 
-    def add_class(self, name, code):
+    def add_class(self, name, code, members=None):
         """Add a class"""
 
         if not isinstance(code, str):
             code = code.encode("utf-8")
 
         self.module.write(code)
+        if members:
+            for m in members:
+                m = "\n".join(["    %s" % l for l in m.splitlines()])
+                self.module.write(m)
+
         h = self.class_handle
-        h.write(".. autoclass:: %s\n\n" % name)
+        h.write("""
+.. autoclass:: %s
+    :members:
+""" % name)
+
+    def add_struct(self, name, code):
+        self.add_class(name, code)
 
     def finalize(self):
         func_name = os.path.basename(self.func_handle.name)
@@ -388,6 +436,10 @@ def create_docs(main_gen, namespace, version):
     mod = import_namespace(namespace, version)
     repo = Repository(namespace, version)
 
+    from gi.repository import GObject
+    class_base = GObject.Object
+    struct_base = GObject.Value.__mro__[-2]
+
     for key in dir(mod):
         if key.startswith("_"):
             continue
@@ -396,13 +448,35 @@ def create_docs(main_gen, namespace, version):
         name = "%s.%s" % (namespace, key)
 
         if isinstance(obj, types.FunctionType):
-            code = repo.parse_function(key, obj)
+            code = repo.parse_function(name, obj)
             if code:
                 gen.add_function(name, code)
         elif inspect.isclass(obj):
-            code = repo.parse_class(key, obj)
-            if code:
-                gen.add_class(name, code)
+            if issubclass(obj, class_base):
+                funcs = []
+
+                for attr in dir(obj):
+                    if attr.startswith("_"):
+                        continue
+
+                    func_key = name + "." + attr
+                    try:
+                        attr_obj = getattr(obj, attr)
+                    except NotImplementedError:
+                        # FIXME.. pgi exposes methods it can't compile
+                        continue
+                    if isinstance(attr_obj, types.MethodType):
+                        code = repo.parse_function(func_key, attr_obj, method=True)
+                        if code:
+                            funcs.append(code)
+
+                code = repo.parse_class(key, obj)
+                if code:
+                    gen.add_class(name, code, members=funcs)
+            else:
+                code = repo.parse_class(key, obj)
+                if code:
+                    gen.add_class(name, code)
         else:
             continue
 
