@@ -45,7 +45,13 @@ class Namespace(object):
         return self._dom
 
     def get_dependencies(self):
-        return []
+        dom = self.get_dom()
+        deps = []
+        for include in dom.getElementsByTagName("include"):
+            name = include.getAttribute("name")
+            version = include.getAttribute("version")
+            deps.append((name, version))
+        return deps
 
 
 class Repository(object):
@@ -73,17 +79,30 @@ class Repository(object):
         self._classes = {}
 
         ns = Namespace(namespace, version)
-        dom = ns.get_dom()
 
-        self._parse_types(dom)
+        loaded = {}
+        to_load = ns.get_dependencies()
+        while to_load:
+            key = to_load.pop()
+            if key in loaded:
+                continue
+            print "Load dependencies: %s %s" % key
+            sub_ns = Namespace(*key)
+            loaded[key] = sub_ns
+            to_load.extend(sub_ns.get_dependencies())
+
+        for sub_ns in loaded.values():
+            sub_dom = sub_ns.get_dom()
+            self._parse_types(sub_ns.name, sub_dom)
+
+        dom = ns.get_dom()
+        self._parse_types(namespace, dom)
         self._parse_docs(dom)
 
-    def _parse_types(self, dom):
+    def _parse_types(self, namespace, dom):
         """Create a mapping of various C names to python names, taking the
         current namespace into account.
         """
-
-        namespace = self.namespace
 
         # classes and aliases: GtkFooBar -> Gtk.FooBar
         for t in dom.getElementsByTagName("type"):
@@ -108,6 +127,11 @@ class Repository(object):
                 field_name = t.getAttribute("name").upper()
                 local_name = namespace + "." + class_name + "." + field_name
                 self._types[c_name] = local_name
+
+        for t in dom.getElementsByTagName("record"):
+            c_name = t.getAttribute("c:type")
+            type_name = t.getAttribute("name")
+            self._types[c_name] = local_name
 
     def _parse_docs(self, dom):
         """Parse docs"""
@@ -206,7 +230,7 @@ class Repository(object):
                 return ":class:`%s` " % local
             return x
 
-        d = re.sub('#([A-Za-z]*)', fixup_class_refs, d)
+        d = re.sub('#([A-Za-z_]*)', fixup_class_refs, d)
         d = re.sub('%([A-Za-z0-9_]*)', fixup_class_refs, d)
 
         def fixup_param_refs(match):
@@ -330,6 +354,7 @@ Python GObject Introspection Documentation
             for sub in self._subs:
                 h.write("    %s\n" % sub)
 
+        del self._subs
 
         dest_conf = os.path.join(self.DEST, "conf.py")
         build_dir = os.path.join(self.DEST, "_build")
@@ -477,8 +502,6 @@ def create_docs(main_gen, namespace, version):
                 code = repo.parse_class(key, obj)
                 if code:
                     gen.add_class(name, code)
-        else:
-            continue
 
     gen.finalize()
 
@@ -494,6 +517,9 @@ if __name__ == "__main__":
     for arg in sys.argv[1:]:
         namespace, version = arg.split("-")
         print "Create docs: Namespace=%s, Version=%s" % (namespace, version)
+        if namespace == "cairo":
+            print "cairo gets referenced to external docs, skipping"
+            continue
         create_docs(gen, namespace, version)
 
     gen.finalize()

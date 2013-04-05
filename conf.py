@@ -16,7 +16,10 @@ version = "0.1"
 release = "0.1"
 exclude_patterns = ['_build', 'README.rst']
 
-intersphinx_mapping = {'python': ('http://docs.python.org/2.7', None)}
+intersphinx_mapping = {
+    'python': ('http://docs.python.org/2.7', None),
+    'cairo': ('http://cairographics.org/documentation/pycairo/2/', None),
+}
 
 html_theme_path = ['.']
 html_theme = 'minimalism'
