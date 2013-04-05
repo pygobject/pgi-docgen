@@ -26,6 +26,7 @@ VERSION = ""
 
 
 TYPES = {}
+
 PARAMETERS = {}
 RETURNS = {}
 FUNCTIONS = {}
@@ -61,6 +62,13 @@ def fixup_docs(namespace, d):
         return "`%s`" % match.group(1)
     d = re.sub('@([A-Za-z0-9_]*)', fixup_param_refs, d)
 
+    def fixup_function_refs(match):
+        x = match.group(1)
+        if x in TYPES:
+            return ":func:`%s`" % TYPES[x]
+        return x
+    d = re.sub('([a-z0-9_]+)\(\)', fixup_function_refs, d)
+
     d = d.replace("NULL", ":obj:`None`")
     d = d.replace("%NULL", ":obj:`None`")
     d = d.replace("%TRUE", ":obj:`True`")
@@ -84,6 +92,14 @@ def init():
         local_name = t.getAttribute("name")
         c_name = t.getAttribute("c:type").rstrip("*")
         TYPES[c_name] = local_name
+
+    # gtk_main -> Gtk.main
+    for t in dom.getElementsByTagName("function"):
+        local_name = t.getAttribute("name")
+        namespace = t.parentNode.getAttribute("name")
+        c_name = t.getAttribute("c:identifier")
+        name = namespace + "." + local_name
+        TYPES[c_name] = name
 
     for t in dom.getElementsByTagName("member"):
         parent = t.parentNode
