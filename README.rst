@@ -10,4 +10,4 @@ How do I get started?
 
     python docgen.py Gtk-3.0 Gst-1.0
 
-Open the docs: `./_Gtk_3.0/_build/index.html`
+Open the docs: `./_docs/_build/index.html`

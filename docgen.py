@@ -263,20 +263,57 @@ def %s(%s):
         return final
 
 
+class MainGenerator(object):
+
+    DEST = "_docs"
+
+    def __init__(self):
+        if os.path.exists(self.DEST):
+            shutil.rmtree(self.DEST)
+
+        os.mkdir(self.DEST)
+        self._subs = []
+
+    def get_generator(self, namespace, name):
+        gen = Generator(self.DEST, namespace, name)
+        self._subs.append(gen.get_index_name())
+        return gen
+
+    def finalize(self):
+        with open(os.path.join(self.DEST, "index.rst"), "wb") as h:
+            h.write("""
+Python Gobject Introspection Documentation
+==========================================
+
+.. toctree::
+""")
+
+            for sub in self._subs:
+                h.write("    %s\n" % sub)
+
+
+        dest_conf = os.path.join(self.DEST, "conf.py")
+        build_dir = os.path.join(self.DEST, "_build")
+        shutil.copy("conf.py", dest_conf)
+        theme_dest = os.path.join(self.DEST, "minimalism")
+        shutil.copytree("minimalism", theme_dest)
+        subprocess.call(["sphinx-build", self.DEST, build_dir])
+
+
 class Generator(object):
 
-    def __init__(self, namespace, version):
+    def __init__(self, dir_, namespace, version):
         # create the basic package structure
         self.namespace = namespace
         self.version = version
-        self.prefix = "_%s_%s" % (namespace, version)
-        if os.path.exists(self.prefix):
-            shutil.rmtree(self.prefix)
+        nick = "%s_%s" % (namespace, version)
+        self.index_name = os.path.join(nick, "index")
+        self.prefix = os.path.join(dir_, nick)
         os.mkdir(self.prefix)
         module_path = os.path.join(self.prefix, namespace + ".py")
         self.module = open(module_path, "wb")
 
-        func_name = "_functions.rst"
+        func_name = "functions.rst"
         func_path = os.path.join(self.prefix, func_name)
         self.func_handle = open(func_path, "wb")
         self.func_handle.write("""
@@ -284,7 +321,7 @@ Functions
 =========
 """)
 
-        class_name = "_classes.rst"
+        class_name = "classes.rst"
         class_path = os.path.join(self.prefix, class_name)
         self.class_handle = open(class_path, "wb")
         self.class_handle.write("""
@@ -294,6 +331,9 @@ Classes
 
         # utf-8 encoded .py
         self.module.write("# -*- coding: utf-8 -*-\n")
+
+    def get_index_name(self):
+        return self.index_name
 
     def add_function(self, name, code):
         """Add a function"""
@@ -320,8 +360,7 @@ Classes
         class_name = os.path.basename(self.class_handle.name)
 
         with open(os.path.join(self.prefix, "index.rst"),  "wb") as h:
-            title = "Python - %s %s - API Documentation" % (
-                self.namespace, self.version)
+            title = "%s %s" % (self.namespace, self.version)
             h.write(title + "\n")
             h.write(len(title) * "=" + "\n")
 
@@ -337,16 +376,9 @@ Classes
         self.class_handle.close()
         self.module.close()
 
-        dest_conf = os.path.join(self.prefix, "conf.py")
-        build_dir = os.path.join(self.prefix, "_build")
-        shutil.copy("conf.py", dest_conf)
-        theme_dest = os.path.join(self.prefix, "minimalism")
-        shutil.copytree("minimalism", theme_dest)
-        subprocess.call(["sphinx-build", self.prefix, build_dir])
 
-
-def create_docs(namespace, version):
-    gen = Generator(namespace, version)
+def create_docs(main_gen, namespace, version):
+    gen = main_gen.get_generator(namespace, version)
     mod = import_namespace(namespace, version)
     repo = Repository(namespace, version)
 
@@ -377,7 +409,11 @@ if __name__ == "__main__":
         print "%s <namespace-version>..." % sys.argv[0]
         raise SystemExit(1)
 
+    gen = MainGenerator()
+
     for arg in sys.argv[1:]:
         namespace, version = arg.split("-")
         print "Create docs: Namespace=%s, Version=%s" % (namespace, version)
-        create_docs(namespace, version)
+        create_docs(gen, namespace, version)
+
+    gen.finalize()

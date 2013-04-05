@@ -3,7 +3,9 @@
 import os
 import sys
 
-sys.path.insert(0, os.path.abspath('.'))
+for entry in os.listdir("."):
+    if os.path.isdir(entry) and "_" in entry:
+        sys.path.insert(0, os.path.abspath(entry))
 
 extensions = ['sphinx.ext.autodoc', 'sphinx.ext.intersphinx']
 source_suffix = '.rst'
