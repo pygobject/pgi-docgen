@@ -19,6 +19,11 @@ import re
 import inspect
 import subprocess
 import shutil
+import keyword
+
+
+def escape_keyword(text, reg=re.compile("^(%s)$" % "|".join(keyword.kwlist))):
+    return reg.sub(r"\1_", text)
 
 
 def import_namespace(namespace, version):
@@ -31,15 +36,15 @@ def import_namespace(namespace, version):
 
 
 class Namespace(object):
-    def __init__(self, name, version):
-        self.name = name
+    def __init__(self, namespace, version):
+        self.namespace = namespace
         self.version = version
 
         with open(self.get_path(), "rb") as h:
             self._dom = parseString(h.read())
 
     def get_path(self):
-        return "/usr/share/gir-1.0/%s-%s.gir" % (self.name, self.version)
+        return "/usr/share/gir-1.0/%s-%s.gir" % (self.namespace, self.version)
 
     def get_dom(self):
         return self._dom
@@ -92,17 +97,18 @@ class Repository(object):
             to_load.extend(sub_ns.get_dependencies())
 
         for sub_ns in loaded.values():
-            sub_dom = sub_ns.get_dom()
-            self._parse_types(sub_ns.name, sub_dom)
+            self._parse_types(sub_ns)
 
-        dom = ns.get_dom()
-        self._parse_types(namespace, dom)
-        self._parse_docs(dom)
+        self._parse_types(ns)
+        self._parse_docs(ns)
 
-    def _parse_types(self, namespace, dom):
+    def _parse_types(self, ns):
         """Create a mapping of various C names to python names, taking the
         current namespace into account.
         """
+
+        dom = ns.get_dom()
+        namespace = ns.namespace
 
         # classes and aliases: GtkFooBar -> Gtk.FooBar
         for t in dom.getElementsByTagName("type"):
@@ -113,9 +119,22 @@ class Repository(object):
         # gtk_main -> Gtk.main
         for t in dom.getElementsByTagName("function"):
             local_name = t.getAttribute("name")
+            # Copy escaping from gi: Foo.break -> Foo.break_
+            locale_name = escape_keyword(local_name)
             namespace = t.parentNode.getAttribute("name")
             c_name = t.getAttribute("c:identifier")
             name = namespace + "." + local_name
+            self._types[c_name] = name
+
+        # gtk_dialog_get_response_for_widget ->
+        #     Gtk.Dialog.get_response_for_widget
+        for t in dom.getElementsByTagName("method"):
+            local_name = t.getAttribute("name")
+            # Copy escaping from gi: Foo.break -> Foo.break_
+            locale_name = escape_keyword(local_name)
+            owner = t.parentNode.getAttribute("name")
+            c_name = t.getAttribute("c:identifier")
+            name = namespace + "." + owner + "." + local_name
             self._types[c_name] = name
 
         # enums etc. GTK_SOME_FLAG_FOO -> Gtk.SomeFlag.FOO
@@ -128,15 +147,17 @@ class Repository(object):
                 local_name = namespace + "." + class_name + "." + field_name
                 self._types[c_name] = local_name
 
+        # cairo_t -> cairo.Context
         for t in dom.getElementsByTagName("record"):
             c_name = t.getAttribute("c:type")
             type_name = t.getAttribute("name")
             self._types[c_name] = local_name
 
-    def _parse_docs(self, dom):
+    def _parse_docs(self, ns):
         """Parse docs"""
 
-        namespace = self.namespace
+        dom = ns.get_dom()
+        namespace = ns.namespace
 
         for doc in dom.getElementsByTagName("doc"):
             parent = doc.parentNode
@@ -230,21 +251,25 @@ class Repository(object):
                 return ":class:`%s` " % local
             return x
 
-        d = re.sub('#([A-Za-z_]*)', fixup_class_refs, d)
-        d = re.sub('%([A-Za-z0-9_]*)', fixup_class_refs, d)
+        d = re.sub('#([A-Za-z0-9_]+)', fixup_class_refs, d)
+        d = re.sub('%([A-Za-z0-9_]+)', fixup_class_refs, d)
 
         def fixup_param_refs(match):
             return "`%s`" % match.group(1)
 
-        d = re.sub('@([A-Za-z0-9_]*)', fixup_param_refs, d)
+        d = re.sub('@([A-Za-z0-9_]+)', fixup_param_refs, d)
 
         def fixup_function_refs(match):
             x = match.group(1)
-            if x in self._types:
-                return ":func:`%s`" % self._types[x]
+            # functions are always prefixed
+            if not "_" in x:
+                return x
+            new = x.rstrip(")").rstrip("(")
+            if new in self._types:
+                return ":func:`%s`" % self._types[new]
             return x
 
-        d = re.sub('([a-z0-9_]+)\(\)', fixup_function_refs, d)
+        d = re.sub('([a-z0-9_]+(\(\)|))', fixup_function_refs, d)
 
         d = d.replace("NULL", ":obj:`None`")
         d = d.replace("%NULL", ":obj:`None`")
