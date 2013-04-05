@@ -11,7 +11,6 @@
 import sys
 sys.path.insert(0, "../")
 
-
 from xml.dom.minidom import parseString
 import xml.sax.saxutils as saxutils
 import types
@@ -20,124 +19,6 @@ import re
 import inspect
 import subprocess
 import shutil
-
-NAMESPACE = ""
-VERSION = ""
-
-
-TYPES = {}
-
-PARAMETERS = {}
-RETURNS = {}
-FUNCTIONS = {}
-CLASSES = {}
-
-
-def fixup_docs(namespace, d):
-
-    d = saxutils.unescape(d)
-
-    def fixup_code(match):
-        code = match.group(1)
-        lines = code.splitlines()
-        return "\n::\n\n%s" % ("\n".join(["    %s" % l for l in lines]))
-    d = re.sub('\|\[(.*?)\]\|', fixup_code, d, flags=re.MULTILINE | re.DOTALL)
-    d = re.sub('<programlisting>(.*?)</programlisting>', fixup_code, d, flags=re.MULTILINE | re.DOTALL)
-
-    d = re.sub('<literal>(.*?)</literal>', '`\\1`', d)
-    d = re.sub('<[^<]+?>', '', d)
-
-    def fixup_class_refs(match):
-        x = match.group(1)
-        if x in TYPES:
-            local = TYPES[x]
-            if "." not in local:
-                local = namespace + "." + local
-            return ":class:`%s` " % local
-        return x
-    d = re.sub('#([A-Za-z]*)', fixup_class_refs, d)
-    d = re.sub('%([A-Za-z0-9_]*)', fixup_class_refs, d)
-
-    def fixup_param_refs(match):
-        return "`%s`" % match.group(1)
-    d = re.sub('@([A-Za-z0-9_]*)', fixup_param_refs, d)
-
-    def fixup_function_refs(match):
-        x = match.group(1)
-        if x in TYPES:
-            return ":func:`%s`" % TYPES[x]
-        return x
-    d = re.sub('([a-z0-9_]+)\(\)', fixup_function_refs, d)
-
-    d = d.replace("NULL", ":obj:`None`")
-    d = d.replace("%NULL", ":obj:`None`")
-    d = d.replace("%TRUE", ":obj:`True`")
-    d = d.replace("TRUE", ":obj:`True`")
-    d = d.replace("%FALSE", ":obj:`False`")
-    d = d.replace("FALSE", ":obj:`False`")
-    return d
-
-
-def init():
-    gir_path = "/usr/share/gir-1.0/%s-%s.gir" % (NAMESPACE, VERSION)
-
-    handle = open(gir_path, "rb")
-    data = handle.read()
-    handle.close()
-
-    dom = parseString(data)
-
-    # get a mapping of inline references and real classes
-    for t in dom.getElementsByTagName("type"):
-        local_name = t.getAttribute("name")
-        c_name = t.getAttribute("c:type").rstrip("*")
-        TYPES[c_name] = local_name
-
-    # gtk_main -> Gtk.main
-    for t in dom.getElementsByTagName("function"):
-        local_name = t.getAttribute("name")
-        namespace = t.parentNode.getAttribute("name")
-        c_name = t.getAttribute("c:identifier")
-        name = namespace + "." + local_name
-        TYPES[c_name] = name
-
-    for t in dom.getElementsByTagName("member"):
-        parent = t.parentNode
-        if parent.tagName == "bitfield" or parent.tagName == "enumeration":
-            c_name = t.getAttribute("c:identifier")
-            local_name = NAMESPACE + "." + parent.getAttribute("name") + "." + t.getAttribute("name").upper()
-            TYPES[c_name] = local_name
-
-    for doc in dom.getElementsByTagName("doc"):
-        parent = doc.parentNode
-        docs = fixup_docs(NAMESPACE, doc.firstChild.nodeValue)
-
-        parent_name = parent.tagName
-        if parent_name == "parameter":
-            up = parent.parentNode.parentNode
-            if up.tagName == "function":
-                namespace = up.parentNode.getAttribute("name")
-                func_name = up.getAttribute("name")
-                param_name = parent.getAttribute("name")
-                name = namespace + "." + func_name + "." + param_name
-                PARAMETERS[name] = docs
-        elif parent_name == "function":
-            up = parent.parentNode
-            if up.tagName == "namespace":
-                namespace = up.getAttribute("name")
-                func_name = parent.getAttribute("name")
-                name = namespace + "." + func_name
-                FUNCTIONS[name] = docs
-        elif parent_name == "return-value":
-            up = parent.parentNode
-            if up.tagName == "function":
-                namespace = up.parentNode.getAttribute("name")
-                func_name = up.getAttribute("name")
-                name = namespace + "." + func_name
-                RETURNS[name] = docs
-        elif parent_name == "class":
-            local_name = parent.getAttribute("name")
-            CLASSES[local_name] = docs
 
 
 def import_namespace(namespace, version):
@@ -149,85 +30,251 @@ def import_namespace(namespace, version):
     return getattr(module, namespace)
 
 
-def parse_class(namespace, name, obj):
-    bases = ", ".join(map(lambda x: x.__name__, obj.__bases__))
+class Namespace(object):
+    def __init__(self, name, version):
+        self.name = name
+        self.version = version
 
-    docs = CLASSES.get(name, "")
+        with open(self.get_path(), "rb") as h:
+            self._dom = parseString(h.read())
 
-    return """
+    def get_path(self):
+        return "/usr/share/gir-1.0/%s-%s.gir" % (self.name, self.version)
+
+    def get_dom(self):
+        return self._dom
+
+    def get_dependencies(self):
+        return []
+
+
+class Repository(object):
+
+    def __init__(self, namespace, version):
+        self.namespace = namespace
+        self.version = version
+
+        # c def name -> python name
+        # gtk_foo_bar -> Gtk.foo_bar
+        self._types = {}
+
+        # Gtk.foo_bar.arg1 -> "some doc"
+        self._parameters = {}
+
+        # Gtk.foo_bar -> "some doc"
+        self._functions = {}
+
+        # Gtk.foo_bar -> "some doc"
+        self._returns = {}
+
+        # Gtk.FooBar -> "some doc"
+        self._classes = {}
+
+        ns = Namespace(namespace, version)
+        dom = ns.get_dom()
+
+        self._parse_types(dom)
+        self._parse_docs(dom)
+
+    def _parse_types(self, dom):
+        """Create a mapping of various C names to python names, taking the
+        current namespace into account.
+        """
+
+        namespace = self.namespace
+
+        # classes and aliases: GtkFooBar -> Gtk.FooBar
+        for t in dom.getElementsByTagName("type"):
+            local_name = t.getAttribute("name")
+            c_name = t.getAttribute("c:type").rstrip("*")
+            self._types[c_name] = local_name
+
+        # gtk_main -> Gtk.main
+        for t in dom.getElementsByTagName("function"):
+            local_name = t.getAttribute("name")
+            namespace = t.parentNode.getAttribute("name")
+            c_name = t.getAttribute("c:identifier")
+            name = namespace + "." + local_name
+            self._types[c_name] = name
+
+        # enums etc. GTK_SOME_FLAG_FOO -> Gtk.SomeFlag.FOO
+        for t in dom.getElementsByTagName("member"):
+            parent = t.parentNode
+            if parent.tagName == "bitfield" or parent.tagName == "enumeration":
+                c_name = t.getAttribute("c:identifier")
+                class_name = parent.getAttribute("name")
+                field_name = t.getAttribute("name").upper()
+                local_name = namespace + "." + class_name + "." + field_name
+                self._types[c_name] = local_name
+
+    def _parse_docs(self, dom):
+        """Parse docs"""
+
+        namespace = self.namespace
+
+        for doc in dom.getElementsByTagName("doc"):
+            parent = doc.parentNode
+            docs = self._fix(doc.firstChild.nodeValue)
+            parent_name = parent.tagName
+
+            if parent_name == "parameter":
+                up = parent.parentNode.parentNode
+                if up.tagName == "function" and \
+                        up.parentNode.tagName == "namespace":
+                    namespace = up.parentNode.getAttribute("name")
+                    func_name = up.getAttribute("name")
+                    param_name = parent.getAttribute("name")
+                    name = namespace + "." + func_name + "." + param_name
+                    self._parameters[name] = docs
+            elif parent_name == "function":
+                up = parent.parentNode
+                if up.tagName == "namespace":
+                    namespace = up.getAttribute("name")
+                    func_name = parent.getAttribute("name")
+                    name = namespace + "." + func_name
+                    self._functions[name] = docs
+            elif parent_name == "return-value":
+                up = parent.parentNode
+                if up.tagName == "function" and \
+                        up.parentNode.tagName == "namespace":
+                    namespace = up.parentNode.getAttribute("name")
+                    func_name = up.getAttribute("name")
+                    name = namespace + "." + func_name
+                    self._returns[name] = docs
+            elif parent_name == "class":
+                local_name = parent.getAttribute("name")
+                self._classes[local_name] = docs
+
+    def _fix(self, d):
+
+        d = saxutils.unescape(d)
+
+        def fixup_code(match):
+            code = match.group(1)
+            lines = code.splitlines()
+            return "\n::\n\n%s" % ("\n".join(["    %s" % l for l in lines]))
+
+        d = re.sub('\|\[(.*?)\]\|', fixup_code, d,
+                   flags=re.MULTILINE | re.DOTALL)
+        d = re.sub('<programlisting>(.*?)</programlisting>', fixup_code, d,
+                   flags=re.MULTILINE | re.DOTALL)
+
+        d = re.sub('<literal>(.*?)</literal>', '`\\1`', d)
+        d = re.sub('<[^<]+?>', '', d)
+
+        def fixup_class_refs(match):
+            x = match.group(1)
+            if x in self._types:
+                local = self._types[x]
+                if "." not in local:
+                    local = self.namespace + "." + local
+                return ":class:`%s` " % local
+            return x
+
+        d = re.sub('#([A-Za-z]*)', fixup_class_refs, d)
+        d = re.sub('%([A-Za-z0-9_]*)', fixup_class_refs, d)
+
+        def fixup_param_refs(match):
+            return "`%s`" % match.group(1)
+
+        d = re.sub('@([A-Za-z0-9_]*)', fixup_param_refs, d)
+
+        def fixup_function_refs(match):
+            x = match.group(1)
+            if x in self._types:
+                return ":func:`%s`" % self._types[x]
+            return x
+
+        d = re.sub('([a-z0-9_]+)\(\)', fixup_function_refs, d)
+
+        d = d.replace("NULL", ":obj:`None`")
+        d = d.replace("%NULL", ":obj:`None`")
+        d = d.replace("%TRUE", ":obj:`True`")
+        d = d.replace("TRUE", ":obj:`True`")
+        d = d.replace("%FALSE", ":obj:`False`")
+        d = d.replace("FALSE", ":obj:`False`")
+
+        return d
+
+    def parse_class(self, name, obj):
+        # bases = ", ".join(map(lambda x: x.__name__, obj.__bases__))
+        docs = self._classes.get(name, "")
+
+        return """
 class %s(object):
     '''
 %s
     '''\n""" % (name, docs)
 
+    def parse_function(self, name, obj):
+        """Returns python code for the object"""
 
-def parse_method(namespace, name, obj):
-    doc = str(obj.__doc__)
-    first_line = doc and doc.splitlines()[0] or ""
-    match = re.match("(.*?)\((.*?)\)( -> )?(.*)", first_line)
-    if not match:
-        return
-    groups = match.groups()
-    name, args, dummy, ret = groups
+        namespace = self.namespace
 
-    args = args and args.split(",") or []
-    args = [a.strip() for a in args]
+        doc = str(obj.__doc__)
+        first_line = doc and doc.splitlines()[0] or ""
+        match = re.match("(.*?)\((.*?)\)( -> )?(.*)", first_line)
+        if not match:
+            return
+        groups = match.groups()
+        name, args, dummy, ret = groups
 
-    ret = ret and ret.split(",") or []
+        args = args and args.split(",") or []
+        args = [a.strip() for a in args]
 
-    arg_map = [(a.split(":")[0].strip(), a.split(":")[-1].strip()) for a in args]
+        ret = ret and ret.split(",") or []
 
-    arg_names = ", ".join([a[0] for a in arg_map])
-    func_name = namespace + "." + name
+        arg_map = [(a.split(":")[0].strip(), a.split(":")[-1].strip()) for a in args]
 
-    docs = []
-    for key, value in arg_map:
-        param_key = namespace + "." + name + "." + key
-        docs.append(":param %s: %s" % (key, fixup_docs(namespace, PARAMETERS.get(param_key, ""))))
-        docs.append(":type %s: :class:`%s`" % (key, value))
+        arg_names = ", ".join([a[0] for a in arg_map])
+        func_name = namespace + "." + name
 
-    if func_name in RETURNS:
-        # don't allow newlines here
-        doc_string = " ".join(fixup_docs(namespace, RETURNS[func_name]).splitlines())
-        docs.append(":returns:")
-        docs.append("    %s" % doc_string)
-        if ret:
-            docs.append("    , %s" % ", ".join(ret))
-    elif ret:
-        docs.append(":returns:")
-        docs.append("    %s" % ", ".join(ret))
+        docs = []
+        for key, value in arg_map:
+            param_key = namespace + "." + name + "." + key
+            text = self._fix(self._parameters.get(param_key, ""))
+            docs.append(":param %s: %s" % (key, text))
+            docs.append(":type %s: :class:`%s`" % (key, value))
 
-    if func_name in FUNCTIONS:
-        docs.append(FUNCTIONS[func_name])
+        if func_name in self._returns:
+            # don't allow newlines here
+            text = self._fix(self._returns[func_name])
+            doc_string = " ".join(text.splitlines())
+            docs.append(":returns:")
+            docs.append("    %s" % doc_string)
+            if ret:
+                docs.append("    , %s" % ", ".join(ret))
+        elif ret:
+            docs.append(":returns:")
+            docs.append("    %s" % ", ".join(ret))
 
-    docs = "\n".join(docs)
+        if func_name in self._functions:
+            docs.append(self._functions[func_name])
 
-    final = """
+        docs = "\n".join(docs)
+
+        final = """
 def %s(%s):
     '''
 %s
     '''
 """ % (name, arg_names, docs)
 
-    return final
-
-
-def mkdir(*args):
-    try:
-        os.mkdir(*args)
-    except OSError:
-        pass
+        return final
 
 
 class Generator(object):
 
     def __init__(self, namespace, version):
         # create the basic package structure
+        self.namespace = namespace
+        self.version = version
         self.prefix = "_%s_%s" % (namespace, version)
-        mkdir(self.prefix)
+        if os.path.exists(self.prefix):
+            shutil.rmtree(self.prefix)
+        os.mkdir(self.prefix)
         module_path = os.path.join(self.prefix, namespace + ".py")
         self.module = open(module_path, "wb")
-
 
         func_name = "_functions.rst"
         func_path = os.path.join(self.prefix, func_name)
@@ -273,7 +320,8 @@ Classes
         class_name = os.path.basename(self.class_handle.name)
 
         with open(os.path.join(self.prefix, "index.rst"),  "wb") as h:
-            title = "Python - %s %s - API Documentation" % (NAMESPACE, VERSION)
+            title = "Python - %s %s - API Documentation" % (
+                self.namespace, self.version)
             h.write(title + "\n")
             h.write(len(title) * "=" + "\n")
 
@@ -300,6 +348,7 @@ Classes
 def create_docs(namespace, version):
     gen = Generator(namespace, version)
     mod = import_namespace(namespace, version)
+    repo = Repository(namespace, version)
 
     for key in dir(mod):
         if key.startswith("_"):
@@ -309,11 +358,11 @@ def create_docs(namespace, version):
         name = "%s.%s" % (namespace, key)
 
         if isinstance(obj, types.FunctionType):
-            code = parse_method(namespace, key, obj)
+            code = repo.parse_function(key, obj)
             if code:
                 gen.add_function(name, code)
         elif inspect.isclass(obj):
-            code = parse_class(namespace, key, obj)
+            code = repo.parse_class(key, obj)
             if code:
                 gen.add_class(name, code)
         else:
@@ -324,11 +373,11 @@ def create_docs(namespace, version):
 
 if __name__ == "__main__":
 
-    if len(sys.argv) != 3:
-        print "%s <NAMESPACE> <VERSION>" % sys.argv[0]
+    if len(sys.argv) <= 1:
+        print "%s <namespace-version>..." % sys.argv[0]
         raise SystemExit(1)
 
-    NAMESPACE, VERSION = sys.argv[1:]
-
-    init()
-    create_docs(NAMESPACE, VERSION)
+    for arg in sys.argv[1:]:
+        namespace, version = arg.split("-")
+        print "Create docs: Namespace=%s, Version=%s" % (namespace, version)
+        create_docs(namespace, version)

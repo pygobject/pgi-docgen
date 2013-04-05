@@ -8,6 +8,6 @@ How do I get started?
 
 ::
 
-    python docgen.py Gtk 3.0
+    python docgen.py Gtk-3.0 Gst-1.0
 
 Open the docs: `./_Gtk_3.0/_build/index.html`
