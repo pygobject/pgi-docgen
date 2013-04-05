@@ -292,6 +292,8 @@ Classes
         dest_conf = os.path.join(self.prefix, "conf.py")
         build_dir = os.path.join(self.prefix, "_build")
         shutil.copy("conf.py", dest_conf)
+        theme_dest = os.path.join(self.prefix, "minimalism")
+        shutil.copytree("minimalism", theme_dest)
         subprocess.call(["sphinx-build", self.prefix, build_dir])
 
 

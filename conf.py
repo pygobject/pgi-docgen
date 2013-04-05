@@ -17,5 +17,5 @@ exclude_patterns = ['_build', 'README.rst']
 
 intersphinx_mapping = {'python': ('http://docs.python.org/2.7', None)}
 
-html_theme_path = ['../']
+html_theme_path = ['.']
 html_theme = 'minimalism'
