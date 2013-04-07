@@ -7,7 +7,21 @@ for entry in os.listdir("."):
     if os.path.isdir(entry) and "_" in entry:
         sys.path.insert(0, os.path.abspath(entry))
 
-extensions = ['sphinx.ext.autodoc', 'sphinx.ext.intersphinx']
+sys.path.insert(0, "../../")
+import pgi
+pgi.install_as_gi()
+
+from gi.repository import GObject
+GObject.GInterface.__name__ = "_GInterface"
+GObject.Object.__name__ = "_Object"
+GObject.InitiallyUnowned.__name__ = "_InitiallyUnowned"
+
+extensions = [
+    'sphinx.ext.autodoc',
+    'sphinx.ext.intersphinx',
+    'sphinx.ext.autosummary',
+    'sphinx.ext.inheritance_diagram',
+]
 source_suffix = '.rst'
 master_doc = 'index'
 project = 'pgidoc'
@@ -23,3 +37,8 @@ intersphinx_mapping = {
 
 html_theme_path = ['.']
 html_theme = 'minimalism'
+
+
+inheritance_node_attrs = dict(shape='box', fontsize=7,
+                              color='gray70', style='rounded')
+inheritance_graph_attrs = dict(rankdir="TB", size='""')

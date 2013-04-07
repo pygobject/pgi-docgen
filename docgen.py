@@ -22,13 +22,15 @@ import shutil
 import keyword
 
 
+import pgi
+pgi.install_as_gi()
+
+
 def escape_keyword(text, reg=re.compile("^(%s)$" % "|".join(keyword.kwlist))):
     return reg.sub(r"\1_", text)
 
 
 def import_namespace(namespace, version):
-    import pgi
-    pgi.install_as_gi()
     import gi
     gi.require_version(namespace, version)
     module = __import__("gi.repository", fromlist=[namespace])
@@ -83,7 +85,7 @@ class Repository(object):
         # Gtk.FooBar -> "some doc"
         self._classes = {}
 
-        ns = Namespace(namespace, version)
+        self._ns = ns = Namespace(namespace, version)
 
         loaded = {}
         to_load = ns.get_dependencies()
@@ -101,6 +103,9 @@ class Repository(object):
 
         self._parse_types(ns)
         self._parse_docs(ns)
+
+    def get_dependencies(self):
+        return self._ns.get_dependencies()
 
     def _parse_types(self, ns):
         """Create a mapping of various C names to python names, taking the
@@ -120,7 +125,7 @@ class Repository(object):
         for t in dom.getElementsByTagName("function"):
             local_name = t.getAttribute("name")
             # Copy escaping from gi: Foo.break -> Foo.break_
-            locale_name = escape_keyword(local_name)
+            local_name = escape_keyword(local_name)
             namespace = t.parentNode.getAttribute("name")
             c_name = t.getAttribute("c:identifier")
             name = namespace + "." + local_name
@@ -131,7 +136,7 @@ class Repository(object):
         for t in dom.getElementsByTagName("method"):
             local_name = t.getAttribute("name")
             # Copy escaping from gi: Foo.break -> Foo.break_
-            locale_name = escape_keyword(local_name)
+            local_name = escape_keyword(local_name)
             owner = t.parentNode.getAttribute("name")
             c_name = t.getAttribute("c:identifier")
             name = namespace + "." + owner + "." + local_name
@@ -151,7 +156,7 @@ class Repository(object):
         for t in dom.getElementsByTagName("record"):
             c_name = t.getAttribute("c:type")
             type_name = t.getAttribute("name")
-            self._types[c_name] = local_name
+            self._types[c_name] = type_name
 
     def _parse_docs(self, ns):
         """Parse docs"""
@@ -280,15 +285,47 @@ class Repository(object):
 
         return d
 
-    def parse_class(self, name, obj):
-        # bases = ", ".join(map(lambda x: x.__name__, obj.__bases__))
+    def parse_class(self, name, obj, add_bases=False):
+        names = []
+        if add_bases:
+            # hide overrides by merging the bases in
+            possible_bases = []
+            for base in obj.__bases__:
+                base_name = base.__name__
+                if base_name == name:
+                    for upper_base in base.__bases__:
+                        possible_bases.append(upper_base)
+                else:
+                    possible_bases.append(base)
+
+            # preserve the mro
+            mro_bases = []
+            for base in obj.__mro__:
+                if base in possible_bases:
+                    mro_bases.append(base)
+
+            # prefix with the module if it's an external class
+            for base in mro_bases:
+                base_name = base.__name__
+                if base.__module__ == self.namespace:
+                    names.append(base_name)
+                elif base_name == "object":
+                    names.append(base_name)
+                else:
+                    base_name = base.__module__ + "." + base_name
+
+        if not names:
+            names = ["object"]
+
+        bases = ", ".join(names)
+
         docs = self._classes.get(name, "")
 
         return """
-class %s(object):
+class %s(%s):
     r'''
 %s
-    '''\n""" % (name, docs.encode("utf-8"))
+    '''\n""" % (name, bases, docs.encode("utf-8"))
 
     def parse_function(self, name, obj, method=False):
         """Returns python code for the object"""
@@ -361,7 +398,7 @@ class MainGenerator(object):
         self._subs = []
 
     def get_generator(self, namespace, name):
-        gen = Generator(self.DEST, namespace, name)
+        gen = ModuleGenerator(self.DEST, namespace, name)
         self._subs.append(gen.get_index_name())
         return gen
 
@@ -382,14 +419,79 @@ Python GObject Introspection Documentation
         del self._subs
 
         dest_conf = os.path.join(self.DEST, "conf.py")
-        build_dir = os.path.join(self.DEST, "_build")
         shutil.copy("conf.py", dest_conf)
         theme_dest = os.path.join(self.DEST, "minimalism")
         shutil.copytree("minimalism", theme_dest)
-        subprocess.call(["sphinx-build", self.DEST, build_dir])
 
 
-class Generator(object):
+class ClassGenerator(object):
+
+    def __init__(self, dir_, module_fileobj):
+        class_name = "classes.rst"
+        class_path = os.path.join(dir_, class_name)
+        self._classes = {}  # cls -> code
+        self._methods = {}  # cls -> code
+
+        self.class_handle = open(class_path, "wb")
+        self.class_handle.write("""
+Classes
+=======
+""")
+
+        self._module = module_fileobj
+
+    def add_class(self, obj, code):
+        assert isinstance(code, str)
+        self._classes[obj] = code
+
+    def add_method(self, cls_obj, code):
+        assert isinstance(code, str)
+        if cls_obj in self._methods:
+            self._methods[cls_obj].append(code)
+        else:
+            self._methods[cls_obj] = [code]
+
+    def get_name(self):
+        return self.class_handle.name
+
+    def finalize(self):
+        classes = self._classes.keys()
+
+        # sort classes by how the should be defined in the code
+        # so all bases are defined when needed
+        counts = {}
+        for x in classes:
+            for y in classes:
+                if x in y.__mro__:
+                    if x not in counts:
+                        counts[x] = 1
+                    else:
+                        counts[x] += 1
+        counts = list(sorted(counts.items(), key=lambda x: x[1], reverse=True))
+        order = [c[0] for c in counts]
+
+        def indent(c):
+            return "\n".join(["    %s" % l for l in c.splitlines()])
+
+        # add the classes to the module
+        for cls in order:
+            self._module.write(self._classes[cls])
+            for method in self._methods.get(cls, []):
+                self._module.write(indent(method))
+            name = cls.__module__ + "." + cls.__name__
+
+            self.class_handle.write("""
+.. inheritance-diagram:: %s
+
+.. autoclass:: %s
+    :show-inheritance:
+    :members:
+""" % (name, name))
+
+        self.class_handle.close()
+
+
+class ModuleGenerator(object):
 
     def __init__(self, dir_, namespace, version):
         # create the basic package structure
@@ -410,13 +512,7 @@ Functions
 =========
 """)
 
-        class_name = "classes.rst"
-        class_path = os.path.join(self.prefix, class_name)
-        self.class_handle = open(class_path, "wb")
-        self.class_handle.write("""
-Classes
-=======
-""")
+        self._class_gen = ClassGenerator(self.prefix, self.module)
 
         # utf-8 encoded .py
         self.module.write("# -*- coding: utf-8 -*-\n")
@@ -424,8 +520,14 @@ Classes
     def get_index_name(self):
         return self.index_name
 
+    def add_dependency(self, name, version):
+        """Import the module in the generated code"""
+        self.module.write("import gi\n")
+        self.module.write("gi.require_version('%s', '%s')\n" % (name, version))
+        self.module.write("from gi.repository import %s\n" % name)
+
     def add_function(self, name, code):
-        """Add a function"""
+        """Add a toplevel function"""
 
         if not isinstance(code, str):
             code = code.encode("utf-8")
@@ -434,30 +536,28 @@ Classes
         h = self.func_handle
         h.write(".. autofunction:: %s\n\n" % name)
 
-    def add_class(self, name, code, members=None):
+    def add_class(self, cls_obj, code):
         """Add a class"""
 
         if not isinstance(code, str):
             code = code.encode("utf-8")
 
-        self.module.write(code)
-        if members:
-            for m in members:
-                m = "\n".join(["    %s" % l for l in m.splitlines()])
-                self.module.write(m)
+        self._class_gen.add_class(cls_obj, code)
 
-        h = self.class_handle
-        h.write("""
-.. autoclass:: %s
-    :members:
-""" % name)
+    def add_method(self, cls_obj, code):
+        """Add a method"""
+
+        if not isinstance(code, str):
+            code = code.encode("utf-8")
+
+        self._class_gen.add_method(cls_obj, code)
 
     def add_struct(self, name, code):
         self.add_class(name, code)
 
     def finalize(self):
         func_name = os.path.basename(self.func_handle.name)
-        class_name = os.path.basename(self.class_handle.name)
+        class_name = os.path.basename(self._class_gen.get_name())
 
         with open(os.path.join(self.prefix, "index.rst"),  "wb") as h:
             title = "%s %s" % (self.namespace, self.version)
@@ -472,8 +572,9 @@ Classes
 
 """ % {"functions": func_name, "classes": class_name})
 
+        self._class_gen.finalize()
+
         self.func_handle.close()
-        self.class_handle.close()
         self.module.close()
 
         # make sure the generated code is valid python
@@ -486,9 +587,13 @@ def create_docs(main_gen, namespace, version):
     mod = import_namespace(namespace, version)
     repo = Repository(namespace, version)
 
+    # import the needed modules
+    for dep in repo.get_dependencies():
+        gen.add_dependency(*dep)
+
     from gi.repository import GObject
     class_base = GObject.Object
-    struct_base = GObject.Value.__mro__[-2]
+    #struct_base = GObject.Value.__mro__[-2]
 
     for key in dir(mod):
         if key.startswith("_"):
@@ -503,7 +608,6 @@ def create_docs(main_gen, namespace, version):
                 gen.add_function(name, code)
         elif inspect.isclass(obj):
             if issubclass(obj, class_base):
-                funcs = []
 
                 for attr in dir(obj):
                     if attr.startswith("_"):
@@ -516,17 +620,18 @@ def create_docs(main_gen, namespace, version):
                         # FIXME.. pgi exposes methods it can't compile
                         continue
                     if isinstance(attr_obj, types.MethodType):
-                        code = repo.parse_function(func_key, attr_obj, method=True)
+                        code = repo.parse_function(func_key, attr_obj, True)
                         if code:
-                            funcs.append(code)
+                            gen.add_method(obj, code)
 
-                code = repo.parse_class(key, obj)
+                code = repo.parse_class(key, obj, add_bases=True)
                 if code:
-                    gen.add_class(name, code, members=funcs)
+                    gen.add_class(obj, code)
             else:
+                # structs, enums, etc.
                 code = repo.parse_class(key, obj)
                 if code:
-                    gen.add_class(name, code)
+                    gen.add_class(obj, code)
 
     gen.finalize()
 
