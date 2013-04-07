@@ -37,6 +37,25 @@ def import_namespace(namespace, version):
     return getattr(module, namespace)
 
 
+def merge_in_overrides(obj):
+    # hide overrides by merging the bases in
+    possible_bases = []
+    for base in obj.__bases__:
+        base_name = base.__name__
+        if base_name == obj.__name__:
+            for upper_base in base.__bases__:
+                possible_bases.append(upper_base)
+        else:
+            possible_bases.append(base)
+
+    # preserve the mro
+    mro_bases = []
+    for base in obj.__mro__:
+        if base in possible_bases:
+            mro_bases.append(base)
+    return mro_bases
+
+
 class Namespace(object):
     def __init__(self, namespace, version):
         self.namespace = namespace
@@ -288,21 +307,7 @@ class Repository(object):
     def parse_class(self, name, obj, add_bases=False):
         names = []
         if add_bases:
-            # hide overrides by merging the bases in
-            possible_bases = []
-            for base in obj.__bases__:
-                base_name = base.__name__
-                if base_name == name:
-                    for upper_base in base.__bases__:
-                        possible_bases.append(upper_base)
-                else:
-                    possible_bases.append(base)
-
-            # preserve the mro
-            mro_bases = []
-            for base in obj.__mro__:
-                if base in possible_bases:
-                    mro_bases.append(base)
+            mro_bases = merge_in_overrides(obj)
 
             # prefix with the module if it's an external class
             for base in mro_bases:
@@ -457,27 +462,37 @@ Classes
     def finalize(self):
         classes = self._classes.keys()
 
-        # sort classes by how the should be defined in the code
-        # so all bases are defined when needed
-        counts = {}
-        for x in classes:
-            for y in classes:
-                if x in y.__mro__:
-                    if x not in counts:
-                        counts[x] = 1
-                    else:
-                        counts[x] += 1
-        counts = list(sorted(counts.items(), key=lambda x: x[1], reverse=True))
-        order = [c[0] for c in counts]
+        def check_order(cls):
+            for c in cls:
+                for b in merge_in_overrides(c):
+                    if b in cls and cls.index(b) > cls.index(c):
+                        return False
+            return True
+
+        def get_key(cls, c):
+            i = 0
+            for b in merge_in_overrides(c):
+                if b not in cls:
+                    continue
+                if cls.index(b) > cls.index(c):
+                    i += 1
+            return i
+
+        ranks = {}
+        while not check_order(classes):
+            for cls in classes:
+                ranks[cls] = ranks.get(cls, 0) + get_key(classes, cls)
+            classes.sort(key=lambda x: ranks[x])
 
         def indent(c):
             return "\n".join(["    %s" % l for l in c.splitlines()])
 
         # add the classes to the module
-        for cls in order:
+        for cls in classes:
             self._module.write(self._classes[cls])
             for method in self._methods.get(cls, []):
                 self._module.write(indent(method))
+
             name = cls.__module__ + "." + cls.__name__
 
             self.class_handle.write("""
@@ -593,7 +608,14 @@ def create_docs(main_gen, namespace, version):
 
     from gi.repository import GObject
     class_base = GObject.Object
+    iface_base = GObject.GInterface
     #struct_base = GObject.Value.__mro__[-2]
+
+    def is_method_owner(cls, method_name):
+        for base in cls.__bases__:
+            if hasattr(base, method_name):
+                return False
+        return True
 
     for key in dir(mod):
         if key.startswith("_"):
@@ -607,10 +629,13 @@ def create_docs(main_gen, namespace, version):
             if code:
                 gen.add_function(name, code)
         elif inspect.isclass(obj):
-            if issubclass(obj, class_base):
+            if issubclass(obj, (iface_base, class_base)):
 
                 for attr in dir(obj):
                     if attr.startswith("_"):
+                        continue
+
+                    if not is_method_owner(obj, attr):
                         continue
 
                     func_key = name + "." + attr
@@ -625,8 +650,7 @@ def create_docs(main_gen, namespace, version):
                             gen.add_method(obj, code)
 
                 code = repo.parse_class(key, obj, add_bases=True)
-                if code:
-                    gen.add_class(obj, code)
+                gen.add_class(obj, code)
             else:
                 # structs, enums, etc.
                 code = repo.parse_class(key, obj)
