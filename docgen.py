@@ -39,6 +39,10 @@ def escape_keyword(text, reg=re.compile("^(%s)$" % "|".join(keyword.kwlist))):
     return reg.sub(r"\1_", text)
 
 
+def make_rest_title(text, char="="):
+    return text + "\n" + len(text) * char
+
+
 def import_namespace(namespace, version):
     import gi
     gi.require_version(namespace, version)
@@ -162,14 +166,12 @@ class Repository(object):
 
         # Gtk.foo_bar -> "some doc"
         # Gtk.Foo.foo_bar -> "some doc"
-        self._functions = {}
+        self._returns = {}
 
         # Gtk.foo_bar -> "some doc"
         # Gtk.Foo.foo_bar -> "some doc"
-        self._returns = {}
-
         # Gtk.FooBar -> "some doc"
-        self._classes = {}
+        self._all = {}
 
         self._ns = ns = Namespace(namespace, version)
 
@@ -248,73 +250,28 @@ class Repository(object):
         """Parse docs"""
 
         dom = ns.get_dom()
-        namespace = ns.namespace
 
         for doc in dom.getElementsByTagName("doc"):
-            parent = doc.parentNode
             docs = self._fix(doc.firstChild.nodeValue)
-            parent_name = parent.tagName
 
-            if parent_name == "parameter":
-                up = parent.parentNode.parentNode
-                if up.tagName == "function":
-                    if up.parentNode.tagName == "namespace":
-                        namespace = up.parentNode.getAttribute("name")
-                        func_name = up.getAttribute("name")
-                        param_name = parent.getAttribute("name")
-                        name = namespace + "." + func_name + "." + param_name
-                        self._parameters[name] = docs
-                    else:
-                        namespace = up.parentNode.parentNode
-                        assert namespace.tagName == "namespace"
-                        class_ = up.parentNode
-                        ns = namespace.getAttribute("name")
-                        cls = class_.getAttribute("name")
-                        func = up.getAttribute("name")
-                        param_name = parent.getAttribute("name")
-                        name = ns + "." + cls + "." + func + "." + param_name
-                        self._parameters[name] = docs
-                elif up.tagName == "method":
-                    namespace = up.parentNode.parentNode
-                    assert namespace.tagName == "namespace"
-                    namespace = namespace.getAttribute("name")
-                    owner = up.parentNode.getAttribute("name")
-                    method = up.getAttribute("name")
-                    param = parent.getAttribute("name")
-                    name = namespace + "." + owner + "." + method + "." + param
-                    self._parameters[name] = docs
-            elif parent_name == "method":
-                up = parent.parentNode
-                m_owner = up.getAttribute("name")
-                namespace = up.parentNode.getAttribute("name")
-                method = parent.getAttribute("name")
-                name = namespace + "." + m_owner + "." + method
-                self._functions[name] = docs
-            elif parent_name == "function":
-                up = parent.parentNode
-                if up.tagName == "namespace":
-                    namespace = up.getAttribute("name")
-                    func_name = parent.getAttribute("name")
-                    name = namespace + "." + func_name
-                    self._functions[name] = docs
-                elif up.tagName == "class":
-                    assert up.parentNode.tagName == "namespace"
-                    namespace = up.parentNode.getAttribute("name")
-                    class_name = up.getAttribute("name")
-                    func_name = parent.getAttribute("name")
-                    name = namespace + "." + class_name + "." + func_name
-                    self._functions[name] = docs
-            elif parent_name == "return-value":
-                up = parent.parentNode
-                if up.tagName == "function" and \
-                        up.parentNode.tagName == "namespace":
-                    namespace = up.parentNode.getAttribute("name")
-                    func_name = up.getAttribute("name")
-                    name = namespace + "." + func_name
-                    self._returns[name] = docs
-            elif parent_name == "class":
-                local_name = parent.getAttribute("name")
-                self._classes[local_name] = docs
+            l = []
+            current = doc
+            kind = ""
+            while current.tagName != "namespace":
+                current = current.parentNode
+                name = current.getAttribute("name")
+                if not name:
+                    kind = current.tagName
+                    continue
+                l.insert(0, name)
+
+            key = ".".join(l)
+            if not kind:
+                self._all[key] = docs
+            elif kind == "parameters":
+                self._parameters[key] = docs
+            elif kind == "return-value":
+                self._returns[key] = docs
 
     def _fix(self, d):
 
@@ -388,13 +345,13 @@ class Repository(object):
 
         bases = ", ".join(names)
 
-        docs = self._classes.get(name, "")
+        docs = self._all.get(name, "")
 
         return """
 class %s(%s):
     r'''
 %s
-    '''\n""" % (name, bases, docs.encode("utf-8"))
+    '''\n""" % (name.split(".")[-1], bases, docs.encode("utf-8"))
 
     def parse_properties(self, obj):
         if not hasattr(obj, "props"):
@@ -421,6 +378,31 @@ class %s(%s):
 
 %s
 ''' % names
+
+    def parse_flags(self, name, obj):
+        code = """
+class %s(GObject.GFlags):
+    r'''
+%s
+    '''
+""" % (obj.__name__, self._all.get(name, ""))
+
+        values = []
+        for attr_name in dir(obj):
+            attr = getattr(obj, attr_name)
+            if not isinstance(attr, obj):
+                continue
+            values.append((int(attr), attr_name))
+
+        values.sort()
+
+        for val, n in values:
+            code += "    %s = %r\n" % (n, val)
+            doc_key = name + "." + n.lower()
+            docs = self._all.get(doc_key, "")
+            code += "    r'''%s'''\n" % docs
+
+        return code
 
     def parse_function(self, name, owner, obj, method=False):
         """Returns python code for the object"""
@@ -463,7 +445,7 @@ class %s(%s):
         docs = []
         for key, value in sig.args:
             param_key = name + "." + key
-            text = self._fix(self._parameters.get(param_key, ""))
+            text = self._parameters.get(param_key, "")
             docs.append(":param %s: %s" % (key, text))
             docs.append(":type %s: :class:`%s`" % (key, value))
 
@@ -472,7 +454,7 @@ class %s(%s):
 
         if name in self._returns:
             # don't allow newlines here
-            text = self._fix(self._returns[name])
+            text = self._returns[name]
             doc_string = " ".join(text.splitlines())
             docs.append(":returns: %s" % doc_string)
 
@@ -488,8 +470,8 @@ class %s(%s):
 
         docs.append("")
 
-        if name in self._functions:
-            docs.append(self._functions[name])
+        if name in self._all:
+            docs.append(self._all[name])
 
         docs = "\n".join(docs)
 
@@ -527,7 +509,7 @@ class MainGenerator(object):
         os.mkdir(self.DEST)
         self._subs = []
 
-    def get_generator(self, namespace, name):
+    def new_generator(self, namespace, name):
         gen = ModuleGenerator(self.DEST, namespace, name)
         self._subs.append(gen.get_index_name())
         return gen
@@ -552,6 +534,51 @@ Python GObject Introspection Documentation
         shutil.copy("conf.py", dest_conf)
         theme_dest = os.path.join(self.DEST, "minimalism")
         shutil.copytree("minimalism", theme_dest)
+
+
+class FlagsGenerator(object):
+
+    def __init__(self, dir_, module_fileobj):
+        flags_path = os.path.join(dir_, "flags.rst")
+        self.handle = open(flags_path, "wb")
+        self.handle.write("""\
+Flags
+=====
+
+""")
+
+        self._flags = {}
+
+        self._module = module_fileobj
+
+    def add_flags(self, obj, code):
+        assert isinstance(code, str)
+        self._flags[obj] = code
+
+    def get_name(self):
+        return os.path.basename(self.handle.name)
+
+    def finalize(self):
+        classes = self._flags.keys()
+        classes.sort(key=lambda x: x.__name__)
+
+        for cls in classes:
+            title = make_rest_title(cls.__name__, "-")
+            self.handle.write("""
+%s
+
+.. autoclass:: %s
+    :show-inheritance:
+    :members:
+    :undoc-members:
+
+""" % (title, cls.__module__ + "." + cls.__name__))
+
+        for cls in classes:
+            code = self._flags[cls]
+            self._module.write(code + "\n")
+
+        self.handle.close()
 
 
 class ClassGenerator(object):
@@ -638,8 +665,7 @@ Classes
             h = open(os.path.join(self._sub_dir, cls.__name__)  + ".rst", "wb")
             name = cls.__module__ + "." + cls.__name__
             title = name
-            h.write(title + "\n")
-            h.write("=" * len(title) + "\n")
+            h.write(make_rest_title(title, "=") + "\n")
 
             h.write("""
 Inheritance Diagram
@@ -694,11 +720,15 @@ Functions
 """)
 
         self._class_gen = ClassGenerator(self.prefix, self.module)
+        self._flags_gen = FlagsGenerator(self.prefix, self.module)
 
         # utf-8 encoded .py
         self.module.write("# -*- coding: utf-8 -*-\n")
 
         self.add_dependency(namespace, version)
+
+        # for flags
+        self.add_dependency("GObject", "2.0")
 
     def get_index_name(self):
         return self.index_name
@@ -739,6 +769,11 @@ Functions
     def add_struct(self, name, code):
         self.add_class(name, code)
 
+    def add_flags(self, obj, code):
+        if not isinstance(code, str):
+            code = code.encode("utf-8")
+        self._flags_gen.add_flags(obj, code)
+
     def add_properties(self, cls_obj, code):
         if not isinstance(code, str):
             code = code.encode("utf-8")
@@ -748,6 +783,7 @@ Functions
     def finalize(self):
         func_name = os.path.basename(self.func_handle.name)
         class_name = self._class_gen.get_name()
+        flags_name = self._flags_gen.get_name()
 
         with open(os.path.join(self.prefix, "index.rst"),  "wb") as h:
             title = "%s %s" % (self.namespace, self.version)
@@ -761,10 +797,12 @@ Functions
 
     %(functions)s
     %(classes)s
+    %(flags)s
 
-""" % {"functions": func_name, "classes": class_name})
+""" % {"functions": func_name, "classes": class_name, "flags": flags_name})
 
         self._class_gen.finalize()
+        self._flags_gen.finalize()
 
         self.func_handle.close()
         self.module.close()
@@ -781,7 +819,7 @@ def create_docs(main_gen, namespace, version):
         print "Couldn't import %r, skipping" % namespace
         return
 
-    gen = main_gen.get_generator(namespace, version)
+    gen = main_gen.new_generator(namespace, version)
     repo = Repository(namespace, version)
 
     # import the needed modules
@@ -791,6 +829,7 @@ def create_docs(main_gen, namespace, version):
     from gi.repository import GObject
     class_base = GObject.Object
     iface_base = GObject.GInterface
+    flags_base = GObject.GFlags
 
     def is_method_owner(cls, method_name):
         for base in merge_in_overrides(cls):
@@ -812,7 +851,7 @@ def create_docs(main_gen, namespace, version):
         elif inspect.isclass(obj):
             if issubclass(obj, (iface_base, class_base)):
 
-                code = repo.parse_class(key, obj, add_bases=True)
+                code = repo.parse_class(name, obj, add_bases=True)
                 gen.add_class(obj, code)
 
                 code = repo.parse_properties(obj)
@@ -835,6 +874,9 @@ def create_docs(main_gen, namespace, version):
                         code = repo.parse_function(func_key, obj, attr_obj, True)
                         if code:
                             gen.add_method(obj, code)
+            elif issubclass(obj, flags_base):
+                code = repo.parse_flags(name, obj)
+                gen.add_flags(obj, code)
             else:
                 # structs, enums, etc.
                 code = repo.parse_class(key, obj)

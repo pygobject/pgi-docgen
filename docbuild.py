@@ -24,7 +24,7 @@ def png_optimize_dir(dir_):
     paths = [os.path.join(dir_, f) for f in pngs]
 
     pool = multiprocessing.Pool(6)
-    for i, path in enumerate(pool.imap_unordered(_do_optimize, paths)):
+    for i, path in enumerate(pool.imap_unordered(_do_optimize, paths), 1):
         name = os.path.basename(path)
         print "optipng(%d/%d): %r" % (i, len(paths), name)
 
