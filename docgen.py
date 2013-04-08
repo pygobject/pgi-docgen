@@ -63,6 +63,52 @@ def merge_in_overrides(obj):
     return mro_bases
 
 
+class FuncSignature(object):
+
+    def __init__(self, res, args, raises, name):
+        self.res = res
+        self.args = args
+        self.name = name
+        self.raises = raises
+
+    @property
+    def arg_names(self):
+        return [p[0] for p in self.args]
+
+    def get_arg_type(self, name):
+        for a, t in self.args:
+            if a == name:
+                return t
+
+    @classmethod
+    def from_string(cls, line):
+        match = re.match("(.*?)\((.*?)\)\s*(raises|)\s*(-> )?(.*)", line)
+        if not match:
+            return
+
+        groups = match.groups()
+        name, args, raises, dummy, ret = groups
+
+        args = args and args.split(",") or []
+
+        arg_map = []
+        for arg in args:
+            parts = arg.split(":", 1)
+            parts = [p.strip() for p in parts]
+            arg_map.append(parts)
+
+        ret = ret or ""
+        ret = ret.strip("()").split(",")
+        res = []
+        for r in ret:
+            parts = [p.strip() for p in r.split(":")]
+            res.append(parts)
+
+        raises = bool(raises)
+
+        return cls(res, arg_map, raises, name)
+
+
 class Namespace(object):
 
     _doms = {}
@@ -377,31 +423,24 @@ class %s(%s):
 
         doc = str(obj.__doc__)
         first_line = doc and doc.splitlines()[0] or ""
-        match = re.match("(.*?)\((.*?)\)\s*(raises|)\s*(-> )?(.*)", first_line)
-        if not match:
+
+        sig = FuncSignature.from_string(first_line)
+        if not sig:
             return
 
-        groups = match.groups()
-        func_name, args, raises, dummy, ret = groups
-
-        args = args and args.split(",") or []
-        args = [a.strip() for a in args]
-
-        arg_map = [(a.split(":")[0].strip(), a.split(":")[-1].strip()) for a in args]
-
-        arg_names = [a[0] for a in arg_map]
+        arg_names = sig.arg_names
         if method:
             arg_names.insert(0, "self")
         arg_names = ", ".join(arg_names)
 
         docs = []
-        for key, value in arg_map:
+        for key, value in sig.args:
             param_key = name + "." + key
             text = self._fix(self._parameters.get(param_key, ""))
             docs.append(":param %s: %s" % (key, text))
             docs.append(":type %s: :class:`%s`" % (key, value))
 
-        if raises:
+        if sig.raises:
             docs.append(":raises: :class:`GObject.GError`")
 
         if name in self._returns:
@@ -410,17 +449,16 @@ class %s(%s):
             doc_string = " ".join(text.splitlines())
             docs.append(":returns: %s" % doc_string)
 
-        if ret:
-            ret = ret.strip("()").split(",")
-            done = []
-            for r in ret:
-                parts = [p.strip() for p in r.split(":")]
-                if len(parts) > 1:
-                    done.append("%s: :class:`%s`" % tuple(parts))
-                else:
-                    done.append(":class:`%s`" % parts[0])
+        res = []
+        for r in sig.res:
+            if len(r) > 1:
+                res.append("%s: :class:`%s`" % tuple(r))
+            else:
+                res.append(":class:`%s`" % r[0])
 
-            docs.append(":rtype: %s" % ", ".join(done))
+        if res:
+            docs.append(":rtype: %s" % ", ".join(res))
+
         docs.append("")
 
         if name in self._functions:
@@ -433,7 +471,7 @@ def %s(%s):
     r'''
 %s
     '''
-""" % (func_name, arg_names, docs.encode("utf-8"))
+""" % (name.split(".")[-1], arg_names, docs.encode("utf-8"))
 
         return final
 
@@ -785,7 +823,8 @@ if __name__ == "__main__":
 
     for arg in modules:
         namespace, version = arg.split("-")
-        if namespace in ["freetype2", "libxml2", "GIRepository"]:
+        if namespace in ["freetype2", "libxml2", "GIRepository", "xlib",
+                         "GL", "fontconfig", "xft"]:
             print "%s blacklisted" % namespace
             continue
         print "Create docs: Namespace=%s, Version=%s" % (namespace, version)
