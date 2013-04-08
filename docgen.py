@@ -430,7 +430,17 @@ class %s(%s):
 
         sig = FuncSignature.from_string(first_line)
         if not sig:
-            return
+            # an override, copy as is
+            spec = list(inspect.getargspec(obj))
+            spec[3] = None # disable defaults, we need to convert them, FIXME
+            spec_format = inspect.formatargspec(*spec)
+
+            return """
+def %s%s:
+    r'''
+%s
+    '''
+""" % (name.split(".")[-1], spec_format, obj.__doc__ or "")
 
         arg_names = sig.arg_names
         if method:
@@ -627,6 +637,7 @@ Class
 .. autoclass:: %s
     :show-inheritance:
     :members:
+    :undoc-members:
 """ % name)
 
 
