@@ -386,8 +386,6 @@ class %s(%s):
         args = args and args.split(",") or []
         args = [a.strip() for a in args]
 
-        ret = ret and ret.split(",") or []
-
         arg_map = [(a.split(":")[0].strip(), a.split(":")[-1].strip()) for a in args]
 
         arg_names = [a[0] for a in arg_map]
@@ -403,7 +401,7 @@ class %s(%s):
             docs.append(":type %s: :class:`%s`" % (key, value))
 
         if raises:
-            docs.append(":raises GObject.GError:")
+            docs.append(":raises: :class:`GObject.GError`")
 
         if name in self._returns:
             # don't allow newlines here
@@ -412,7 +410,16 @@ class %s(%s):
             docs.append(":returns: %s" % doc_string)
 
         if ret:
-            docs.append(":rtype: %s" % ", ".join(ret))
+            ret = ret.strip("()").split(",")
+            done = []
+            for r in ret:
+                parts = [p.strip() for p in r.split(":")]
+                if len(parts) > 1:
+                    done.append("%s: :class:`%s`" % tuple(parts))
+                else:
+                    done.append(":class:`%s`" % parts[0])
+
+            docs.append(":rtype: %s" % ", ".join(done))
         docs.append("")
 
         if name in self._functions:

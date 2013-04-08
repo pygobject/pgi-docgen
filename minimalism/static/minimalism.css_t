@@ -175,7 +175,7 @@ dt {
 }
 
 .field-body {
-    width: 100%;
+    width: 85%;
     padding: 3px;
 }
 
