@@ -23,6 +23,7 @@ import keyword
 
 import pgi
 pgi.install_as_gi()
+pgi.set_backend("ctypes,cffi,null")
 
 
 def get_gir_dirs():
@@ -97,8 +98,11 @@ class FuncSignature(object):
             parts = [p.strip() for p in parts]
             arg_map.append(parts)
 
-        ret = ret or ""
-        ret = ret.strip("()").split(",")
+        ret = ret and ret.strip() or ""
+        if ret == "None":
+            ret = ""
+        ret = ret.strip("()")
+        ret = ret and ret.split(",") or []
         res = []
         for r in ret:
             parts = [p.strip() for p in r.split(":")]
@@ -823,10 +827,6 @@ if __name__ == "__main__":
 
     for arg in modules:
         namespace, version = arg.split("-")
-        if namespace in ["freetype2", "libxml2", "GIRepository", "xlib",
-                         "GL", "fontconfig", "xft"]:
-            print "%s blacklisted" % namespace
-            continue
         print "Create docs: Namespace=%s, Version=%s" % (namespace, version)
         if namespace == "cairo":
             print "cairo gets referenced to external docs, skipping"
