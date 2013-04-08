@@ -354,6 +354,23 @@ class %s(%s):
 %s
     '''\n""" % (name, bases, docs.encode("utf-8"))
 
+    def parse_properties(self, obj):
+        names = []
+        for attr in dir(obj.props):
+            if attr.startswith("_"):
+                continue
+            spec = getattr(obj.props, attr)
+            names.append((spec.name, spec.blurb))
+
+        names = "\n".join([self._fix('    "%s", "%s"' % n) for n in names])
+
+        return '''
+.. csv-table:: Properties
+    :header: "Name", "Description"
+
+%s
+''' % names
+
     def parse_function(self, name, obj, method=False):
         """Returns python code for the object"""
 
@@ -458,6 +475,7 @@ class ClassGenerator(object):
         class_path = os.path.join(dir_, class_name)
         self._classes = {}  # cls -> code
         self._methods = {}  # cls -> code
+        self._props = {}  # cls -> code
 
         self.class_handle = open(class_path, "wb")
         self.class_handle.write("""
@@ -477,6 +495,10 @@ Classes
             self._methods[cls_obj].append(code)
         else:
             self._methods[cls_obj] = [code]
+
+    def add_properties(self, cls, code):
+        assert isinstance(code, str)
+        self._props[cls] = code
 
     def get_name(self):
         return self.class_handle.name
@@ -521,7 +543,6 @@ Classes
             show_diag = False
             for base in merge_in_overrides(cls):
                 if base not in TO_HIDE:
-                    print cls.__bases__
                     show_diag = True
 
             if show_diag:
@@ -534,6 +555,8 @@ Classes
     :show-inheritance:
     :members:
 """ % name)
+
+            self.class_handle.write(self._props.get(cls, ""))
 
         self.class_handle.close()
 
@@ -602,6 +625,12 @@ Functions
     def add_struct(self, name, code):
         self.add_class(name, code)
 
+    def add_properties(self, cls_obj, code):
+        if not isinstance(code, str):
+            code = code.encode("utf-8")
+
+        self._class_gen.add_properties(cls_obj, code)
+
     def finalize(self):
         func_name = os.path.basename(self.func_handle.name)
         class_name = os.path.basename(self._class_gen.get_name())
@@ -668,6 +697,9 @@ def create_docs(main_gen, namespace, version):
         elif inspect.isclass(obj):
             if issubclass(obj, (iface_base, class_base)):
 
+                code = repo.parse_properties(obj)
+                gen.add_properties(obj, code)
+
                 for attr in dir(obj):
                     if attr.startswith("_"):
                         continue
@@ -730,3 +762,5 @@ if __name__ == "__main__":
         create_docs(gen, namespace, version)
 
     gen.finalize()
+
+    print "done"
