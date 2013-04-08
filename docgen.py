@@ -376,12 +376,12 @@ class %s(%s):
 
         doc = str(obj.__doc__)
         first_line = doc and doc.splitlines()[0] or ""
-        match = re.match("(.*?)\((.*?)\)( -> )?(.*)", first_line)
+        match = re.match("(.*?)\((.*?)\)\s*(raises|)\s*(-> )?(.*)", first_line)
         if not match:
             return
 
         groups = match.groups()
-        func_name, args, dummy, ret = groups
+        func_name, args, raises, dummy, ret = groups
 
         args = args and args.split(",") or []
         args = [a.strip() for a in args]
@@ -402,17 +402,17 @@ class %s(%s):
             docs.append(":param %s: %s" % (key, text))
             docs.append(":type %s: :class:`%s`" % (key, value))
 
+        if raises:
+            docs.append(":raises GObject.GError:")
+
         if name in self._returns:
             # don't allow newlines here
             text = self._fix(self._returns[name])
             doc_string = " ".join(text.splitlines())
-            docs.append(":returns:")
-            docs.append("    %s" % doc_string)
-            if ret:
-                docs.append("    , %s" % ", ".join(ret))
-        elif ret:
-            docs.append(":returns:")
-            docs.append("    %s" % ", ".join(ret))
+            docs.append(":returns: %s" % doc_string)
+
+        if ret:
+            docs.append(":rtype: %s" % ", ".join(ret))
         docs.append("")
 
         if name in self._functions:
