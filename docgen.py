@@ -422,25 +422,38 @@ class %s(%s):
 %s
 ''' % names
 
-    def parse_function(self, name, obj, method=False):
+    def parse_function(self, name, owner, obj, method=False):
         """Returns python code for the object"""
 
-        doc = str(obj.__doc__)
-        first_line = doc and doc.splitlines()[0] or ""
+        def get_sig(obj):
+            doc = str(obj.__doc__)
+            first_line = doc and doc.splitlines()[0] or ""
+            return FuncSignature.from_string(first_line)
 
-        sig = FuncSignature.from_string(first_line)
+        func_name = name.split(".")[-1]
+
+        sig = get_sig(obj)
+
+        # no valid sig, but still a docstring, probably new function
+        # or an override with a new docstring
+        if not sig and obj.__doc__:
+            return "%s = %s\n" % (func_name, name)
+
+        # if true, let sphinx figure out the call spec, it might have changed
+        ignore_spec = False
+
+        # no docstring, try to get the signature from base classes
+        if not sig and owner:
+            for base in owner.__mro__[1:]:
+                base_obj = getattr(base, func_name, None)
+                sig = get_sig(base_obj)
+                if sig:
+                    ignore_spec = True
+                    break
+
+        # still nothing, let sphinx handle it
         if not sig:
-            # an override, copy as is
-            spec = list(inspect.getargspec(obj))
-            spec[3] = None # disable defaults, we need to convert them, FIXME
-            spec_format = inspect.formatargspec(*spec)
-
-            return """
-def %s%s:
-    r'''
-%s
-    '''
-""" % (name.split(".")[-1], spec_format, obj.__doc__ or "")
+            return "%s = %s\n" % (func_name, name)
 
         arg_names = sig.arg_names
         if method:
@@ -480,12 +493,25 @@ def %s%s:
 
         docs = "\n".join(docs)
 
-        final = """
+        # in case the function is overriden, let sphinx get the funcspec
+        # but still keep around the old docstring (sphinx seems to understand
+        # the string under attribute thing.. good, since we can't change
+        # a docstring in py2)
+        if ignore_spec:
+            final = """
+%s = %s
+r'''
+%s
+'''
+""" % (func_name, name, docs.encode("utf-8"))
+
+        else:
+            final = """
 def %s(%s):
     r'''
 %s
     '''
-""" % (name.split(".")[-1], arg_names, docs.encode("utf-8"))
+""" % (func_name, arg_names, docs.encode("utf-8"))
 
         return final
 
@@ -605,7 +631,7 @@ Classes
         for cls in classes:
             self._module.write(self._classes[cls])
             for method in self._methods.get(cls, []):
-                self._module.write(indent(method))
+                self._module.write(indent(method) + "\n")
 
         # create a new file for each class
         for cls in classes:
@@ -672,12 +698,15 @@ Functions
         # utf-8 encoded .py
         self.module.write("# -*- coding: utf-8 -*-\n")
 
+        self.add_dependency(namespace, version)
+
     def get_index_name(self):
         return self.index_name
 
     def add_dependency(self, name, version):
         """Import the module in the generated code"""
         self.module.write("import pgi\n")
+        self.module.write("pgi.set_backend('ctypes,null')\n")
         self.module.write("pgi.require_version('%s', '%s')\n" % (name, version))
         self.module.write("from pgi.repository import %s\n" % name)
 
@@ -777,7 +806,7 @@ def create_docs(main_gen, namespace, version):
         name = "%s.%s" % (namespace, key)
 
         if isinstance(obj, types.FunctionType):
-            code = repo.parse_function(name, obj)
+            code = repo.parse_function(name, None, obj)
             if code:
                 gen.add_function(name, code)
         elif inspect.isclass(obj):
@@ -803,7 +832,7 @@ def create_docs(main_gen, namespace, version):
                         # FIXME.. pgi exposes methods it can't compile
                         continue
                     if isinstance(attr_obj, types.MethodType):
-                        code = repo.parse_function(func_key, attr_obj, True)
+                        code = repo.parse_function(func_key, obj, attr_obj, True)
                         if code:
                             gen.add_method(obj, code)
             else:
