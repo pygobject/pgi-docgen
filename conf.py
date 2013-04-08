@@ -7,14 +7,7 @@ for entry in os.listdir("."):
     if os.path.isdir(entry) and "_" in entry:
         sys.path.insert(0, os.path.abspath(entry))
 
-sys.path.insert(0, "../../")
-import pgi
-pgi.install_as_gi()
-
-from gi.repository import GObject
-GObject.GInterface.__name__ = "_GInterface"
-GObject.Object.__name__ = "_Object"
-GObject.InitiallyUnowned.__name__ = "_InitiallyUnowned"
+sys.path.insert(0, os.path.abspath("../../"))
 
 extensions = [
     'sphinx.ext.autodoc',

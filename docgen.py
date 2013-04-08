@@ -17,26 +17,12 @@ import types
 import os
 import re
 import inspect
-import subprocess
 import shutil
 import keyword
 
 
 import pgi
 pgi.install_as_gi()
-
-from gi.repository import GObject, GLib, Gdk
-
-TO_HIDE = [
-    object,
-    GObject.GInterface,
-    GObject.Object,
-    GObject.GFlags,
-    GObject.GEnum,
-    GObject.InitiallyUnowned,
-    GLib.TimeZone.__mro__[-2],
-    Gdk.Event.__mro__[-2],
-]
 
 
 def get_gir_dirs():
@@ -63,8 +49,7 @@ def merge_in_overrides(obj):
     # hide overrides by merging the bases in
     possible_bases = []
     for base in obj.__bases__:
-        base_name = base.__name__
-        if base_name == obj.__name__:
+        if base.__name__ == obj.__name__ and base.__module__ == obj.__module__:
             for upper_base in base.__bases__:
                 possible_bases.append(upper_base)
         else:
@@ -79,12 +64,22 @@ def merge_in_overrides(obj):
 
 
 class Namespace(object):
+
+    _doms = {}
+
     def __init__(self, namespace, version):
         self.namespace = namespace
         self.version = version
 
+        key = namespace + version
+        if key in self._doms:
+            self._dom = self._doms[key]
+            return
+
         with open(self.get_path(), "rb") as h:
             self._dom = parseString(h.read())
+
+        self._doms[key] = self._dom
 
     def get_path(self):
         return "/usr/share/gir-1.0/%s-%s.gir" % (self.namespace, self.version)
@@ -334,12 +329,9 @@ class Repository(object):
             # prefix with the module if it's an external class
             for base in mro_bases:
                 base_name = base.__name__
-                if base.__module__ == self.namespace:
-                    names.append(base_name)
-                elif base_name == "object":
-                    names.append(base_name)
-                else:
+                if base.__module__ != self.namespace and base_name != "object":
                     base_name = base.__module__ + "." + base_name
+                names.append(base_name)
 
         if not names:
             names = ["object"]
@@ -355,14 +347,23 @@ class %s(%s):
     '''\n""" % (name, bases, docs.encode("utf-8"))
 
     def parse_properties(self, obj):
+        if not hasattr(obj, "props"):
+            return ""
+
         names = []
         for attr in dir(obj.props):
             if attr.startswith("_"):
                 continue
-            spec = getattr(obj.props, attr)
-            names.append((spec.name, spec.blurb))
+            spec = getattr(obj.props, attr, None)
+            if not spec:
+                continue
+            if spec.owner_type.pytype is obj:
+                names.append((spec.name, spec.blurb))
 
         names = "\n".join([self._fix('    "%s", "%s"' % n) for n in names])
+
+        if not names:
+            return ""
 
         return '''
 .. csv-table:: Properties
@@ -478,16 +479,19 @@ Python GObject Introspection Documentation
 class ClassGenerator(object):
 
     def __init__(self, dir_, module_fileobj):
-        class_name = "classes.rst"
-        class_path = os.path.join(dir_, class_name)
+        self._sub_dir = sub_dir = os.path.join(dir_, "classes")
+        os.mkdir(sub_dir)
+        index_path = os.path.join(sub_dir, "index.rst")
+
         self._classes = {}  # cls -> code
         self._methods = {}  # cls -> code
         self._props = {}  # cls -> code
 
-        self.class_handle = open(class_path, "wb")
-        self.class_handle.write("""
+        self.index_handle = open(index_path, "wb")
+        self.index_handle.write("""
 Classes
 =======
+
 """)
 
         self._module = module_fileobj
@@ -508,7 +512,7 @@ Classes
         self._props[cls] = code
 
     def get_name(self):
-        return self.class_handle.name
+        return os.path.join("classes", "index.rst")
 
     def finalize(self):
         classes = self._classes.keys()
@@ -538,34 +542,55 @@ Classes
         def indent(c):
             return "\n".join(["    %s" % l for l in c.splitlines()])
 
-        # add the classes to the module
+        # add classes to the index toctree
+        self.index_handle.write(".. toctree::\n    :maxdepth: 1\n\n")
+        for cls in sorted(classes, key=lambda x: x.__name__):
+            self.index_handle.write("""\
+    %s
+""" % cls.__name__)
+
+        # write the code
         for cls in classes:
             self._module.write(self._classes[cls])
             for method in self._methods.get(cls, []):
                 self._module.write(indent(method))
 
+        # create a new file for each class
+        for cls in classes:
+            h = open(os.path.join(self._sub_dir, cls.__name__)  + ".rst", "wb")
             name = cls.__module__ + "." + cls.__name__
+            title = name
+            h.write(title + "\n")
+            h.write("=" * len(title) + "\n")
 
-            # only show the diagram if it contains at least one edge
-            show_diag = False
-            for base in merge_in_overrides(cls):
-                if base not in TO_HIDE:
-                    show_diag = True
+            h.write("""
+Inheritance Diagram
+-------------------
 
-            if show_diag:
-                self.class_handle.write("""
 .. inheritance-diagram:: %s
 """ % name)
 
-            self.class_handle.write("""
+            h.write("""
+Properties
+----------
+""")
+            h.write(self._props.get(cls, ""))
+
+            h.write("""
+Class
+-----
+""")
+
+            h.write("""
 .. autoclass:: %s
     :show-inheritance:
     :members:
 """ % name)
 
-            self.class_handle.write(self._props.get(cls, ""))
 
-        self.class_handle.close()
+            h.close()
+
+        self.index_handle.close()
 
 
 class ModuleGenerator(object):
@@ -599,9 +624,9 @@ Functions
 
     def add_dependency(self, name, version):
         """Import the module in the generated code"""
-        self.module.write("import gi\n")
-        self.module.write("gi.require_version('%s', '%s')\n" % (name, version))
-        self.module.write("from gi.repository import %s\n" % name)
+        self.module.write("import pgi\n")
+        self.module.write("pgi.require_version('%s', '%s')\n" % (name, version))
+        self.module.write("from pgi.repository import %s\n" % name)
 
     def add_function(self, name, code):
         """Add a toplevel function"""
@@ -640,7 +665,7 @@ Functions
 
     def finalize(self):
         func_name = os.path.basename(self.func_handle.name)
-        class_name = os.path.basename(self._class_gen.get_name())
+        class_name = self._class_gen.get_name()
 
         with open(os.path.join(self.prefix, "index.rst"),  "wb") as h:
             title = "%s %s" % (self.namespace, self.version)
@@ -650,6 +675,8 @@ Functions
             h.write("""
 
 .. toctree::
+    :maxdepth: 1
+
     %(functions)s
     %(classes)s
 
@@ -682,10 +709,9 @@ def create_docs(main_gen, namespace, version):
     from gi.repository import GObject
     class_base = GObject.Object
     iface_base = GObject.GInterface
-    #struct_base = GObject.Value.__mro__[-2]
 
     def is_method_owner(cls, method_name):
-        for base in cls.__bases__:
+        for base in merge_in_overrides(cls):
             if hasattr(base, method_name):
                 return False
         return True
@@ -703,6 +729,9 @@ def create_docs(main_gen, namespace, version):
                 gen.add_function(name, code)
         elif inspect.isclass(obj):
             if issubclass(obj, (iface_base, class_base)):
+
+                code = repo.parse_class(key, obj, add_bases=True)
+                gen.add_class(obj, code)
 
                 code = repo.parse_properties(obj)
                 gen.add_properties(obj, code)
@@ -724,9 +753,6 @@ def create_docs(main_gen, namespace, version):
                         code = repo.parse_function(func_key, attr_obj, True)
                         if code:
                             gen.add_method(obj, code)
-
-                code = repo.parse_class(key, obj, add_bases=True)
-                gen.add_class(obj, code)
             else:
                 # structs, enums, etc.
                 code = repo.parse_class(key, obj)

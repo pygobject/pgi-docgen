@@ -8,18 +8,25 @@
 
 import os
 import subprocess
+import multiprocessing
+
+
+def _do_optimize(path):
+    subprocess.check_output(["optipng", path])
+    return path
 
 
 def png_optimize_dir(dir_):
     if not os.path.exists(dir_):
         return
+
     pngs = [e for e in os.listdir(dir_) if e.endswith(".png")]
-    for i, file_ in enumerate(pngs):
-        if not file_.endswith(".png"):
-            continue
-        path = os.path.join(dir_, file_)
-        print "optipng(%d/%d): %r" % (i, len(pngs), file_)
-        subprocess.check_output(["optipng", path])
+    paths = [os.path.join(dir_, f) for f in pngs]
+
+    pool = multiprocessing.Pool(6)
+    for i, path in enumerate(pool.imap_unordered(_do_optimize, paths)):
+        name = os.path.basename(path)
+        print "optipng(%d/%d): %r" % (i, len(paths), name)
 
 
 if __name__ == "__main__":
