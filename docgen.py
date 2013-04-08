@@ -25,6 +25,28 @@ import keyword
 import pgi
 pgi.install_as_gi()
 
+from gi.repository import GObject, GLib, Gdk
+
+TO_HIDE = [
+    object,
+    GObject.GInterface,
+    GObject.Object,
+    GObject.GFlags,
+    GObject.GEnum,
+    GObject.InitiallyUnowned,
+    GLib.TimeZone.__mro__[-2],
+    Gdk.Event.__mro__[-2],
+]
+
+
+def get_gir_dirs():
+    if "XDG_DATA_DIRS" in os.environ:
+        dirs = os.environ["XDG_DATA_DIRS"].split(os.pathsep)
+    else:
+        dirs = ["/usr/local/share/", "/usr/share/"]
+
+    return [os.path.join(d, "gir-1.0") for d in dirs]
+
 
 def escape_keyword(text, reg=re.compile("^(%s)$" % "|".join(keyword.kwlist))):
     return reg.sub(r"\1_", text)
@@ -495,13 +517,23 @@ Classes
 
             name = cls.__module__ + "." + cls.__name__
 
-            self.class_handle.write("""
-.. inheritance-diagram:: %s
+            # only show the diagram if it contains at least one edge
+            show_diag = False
+            for base in merge_in_overrides(cls):
+                if base not in TO_HIDE:
+                    print cls.__bases__
+                    show_diag = True
 
+            if show_diag:
+                self.class_handle.write("""
+.. inheritance-diagram:: %s
+""" % name)
+
+            self.class_handle.write("""
 .. autoclass:: %s
     :show-inheritance:
     :members:
-""" % (name, name))
+""" % name)
 
         self.class_handle.close()
 
@@ -598,8 +630,13 @@ Functions
 
 
 def create_docs(main_gen, namespace, version):
+    try:
+        mod = import_namespace(namespace, version)
+    except ImportError:
+        print "Couldn't import %r, skipping" % namespace
+        return
+
     gen = main_gen.get_generator(namespace, version)
-    mod = import_namespace(namespace, version)
     repo = Repository(namespace, version)
 
     # import the needed modules
@@ -664,12 +701,28 @@ if __name__ == "__main__":
 
     if len(sys.argv) <= 1:
         print "%s <namespace-version>..." % sys.argv[0]
+        print "%s -a" % sys.argv[0]
         raise SystemExit(1)
 
     gen = MainGenerator()
 
-    for arg in sys.argv[1:]:
+    modules = []
+    if "-a" in sys.argv[1:]:
+        for d in get_gir_dirs():
+            if not os.path.exists(d):
+                continue
+            for entry in os.listdir(d):
+                root, ext = os.path.splitext(entry)
+                if ext == ".gir":
+                    modules.append(root)
+    else:
+        modules.extend(sys.argv[1:])
+
+    for arg in modules:
         namespace, version = arg.split("-")
+        if namespace in ["freetype2", "libxml2", "GIRepository"]:
+            print "%s blacklisted" % namespace
+            continue
         print "Create docs: Namespace=%s, Version=%s" % (namespace, version)
         if namespace == "cairo":
             print "cairo gets referenced to external docs, skipping"

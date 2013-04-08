@@ -11,12 +11,14 @@ import subprocess
 
 
 def png_optimize_dir(dir_):
+    if not os.path.exists(dir_):
+        return
     pngs = [e for e in os.listdir(dir_) if e.endswith(".png")]
     for i, file_ in enumerate(pngs):
         if not file_.endswith(".png"):
             continue
         path = os.path.join(dir_, file_)
-        print "optimize(%d/%d): %r" % (i, len(pngs), file_)
+        print "optipng(%d/%d): %r" % (i, len(pngs), file_)
         subprocess.check_output(["optipng", path])
 
 
@@ -24,5 +26,12 @@ if __name__ == "__main__":
     DEST = "_docs"
     build_dir = os.path.join(DEST, "_build")
     subprocess.call(["sphinx-build", DEST, build_dir])
-    png_optimize_dir(os.path.join(build_dir, "_static"))
-    png_optimize_dir(os.path.join(build_dir, "_images"))
+
+    png_dirs = [
+        os.path.join(build_dir, "_static"),
+        os.path.join(build_dir, "_images")
+    ]
+
+    for dir_ in png_dirs:
+        if os.path.exists(dir_):
+            png_optimize_dir(dir_)
