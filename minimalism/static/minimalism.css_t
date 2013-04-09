@@ -217,3 +217,16 @@ pre {
     font-size: 1.3em;
     line-height: 1.5em;
 }
+
+table.docutils {
+    border-collapse:collapse;
+}
+
+table.docutils td, th {
+    padding: 0.3em;
+    border: 0px;
+}
+
+table.docutils tr:nth-child(even) {
+    background-color: #eee;
+}
