@@ -444,9 +444,33 @@ class %s(GObject.GFlags):
                     ignore_spec = True
                     break
 
-        # still nothing, let sphinx handle it
+        # still nothing, try making the best out of it
         if not sig:
-            return "%s = %s\n" % (func_name, name)
+            if name not in self._all:
+                # no gir docs, let sphinx handle it
+                return "%s = %s\n" % (func_name, name)
+            elif is_method:
+                # INFO: this probably only happens if there is an override
+                # for something pgi doesn't support. The base class
+                # is missing the real one, but the gir docs are still there
+
+                # for methods, add the docstring after
+                return """
+%s = %s
+r'''
+%s
+'''
+""" % (func_name, name, self._all[name])
+            else:
+                # for toplevel functions, replace the introspected one
+                # since sphinx ignores docstrings on the module level
+                # and replacing __doc__ for normal functions is possible
+                return """
+%s = %s
+%s.__doc__ = r'''
+%s
+'''
+""" % (func_name, name, func_name, self._all[name])
 
         arg_names = sig.arg_names
         if is_method and not is_static:
