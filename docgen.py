@@ -345,6 +345,7 @@ class Repository(object):
 
     def parse_class(self, name, obj, add_bases=False):
         names = []
+
         if add_bases:
             mro_bases = merge_in_overrides(obj)
 
@@ -1030,7 +1031,7 @@ def create_docs(main_gen, namespace, version):
                 gen.add_enum(obj, code)
             else:
                 # structs, enums, etc.
-                code = repo.parse_class(key, obj)
+                code = repo.parse_class(name, obj)
                 if code:
                     gen.add_class(obj, code)
 
