@@ -255,6 +255,13 @@ class Repository(object):
             type_name = t.getAttribute("name")
             self._types[c_name] = type_name
 
+        # G_TIME_SPAN_MINUTE -> GLib.TIME_SPAN_MINUTE
+        for t in dom.getElementsByTagName("constant"):
+            c_name = t.getAttribute("c:type")
+            if t.parentNode.tagName == "namespace":
+                name = namespace + "." + t.getAttribute("name")
+                self._types[c_name] = name
+
     def _parse_docs(self, ns):
         """Parse docs"""
 
