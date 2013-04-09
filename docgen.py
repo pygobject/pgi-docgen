@@ -299,8 +299,7 @@ class Repository(object):
                 return ":class:`%s` " % local
             return x
 
-        d = re.sub('#([A-Za-z0-9_]+)', fixup_class_refs, d)
-        d = re.sub('%([A-Za-z0-9_]+)', fixup_class_refs, d)
+        d = re.sub('[#%]?([A-Za-z0-9_]+)', fixup_class_refs, d)
 
         def fixup_param_refs(match):
             return "`%s`" % match.group(1)
@@ -389,6 +388,8 @@ class %s(GObject.GFlags):
 
         values = []
         for attr_name in dir(obj):
+            if attr_name.upper() != attr_name:
+                continue
             attr = getattr(obj, attr_name)
             if not isinstance(attr, obj):
                 continue
@@ -534,6 +535,51 @@ Python GObject Introspection Documentation
         shutil.copy("conf.py", dest_conf)
         theme_dest = os.path.join(self.DEST, "minimalism")
         shutil.copytree("minimalism", theme_dest)
+
+
+class EnumGenerator(object):
+
+    def __init__(self, dir_, module_fileobj):
+        enums_path = os.path.join(dir_, "enums.rst")
+        self.handle = open(enums_path, "wb")
+        self.handle.write("""\
+Enums
+=====
+
+""")
+
+        self._enums = {}
+
+        self._module = module_fileobj
+
+    def add_enum(self, obj, code):
+        assert isinstance(code, str)
+        self._enums[obj] = code
+
+    def get_name(self):
+        return os.path.basename(self.handle.name)
+
+    def finalize(self):
+        classes = self._enums.keys()
+        classes.sort(key=lambda x: x.__name__)
+
+        for cls in classes:
+            title = make_rest_title(cls.__name__, "-")
+            self.handle.write("""
+%s
+
+.. autoclass:: %s
+    :show-inheritance:
+    :members:
+    :undoc-members:
+
+""" % (title, cls.__module__ + "." + cls.__name__))
+
+        for cls in classes:
+            code = self._enums[cls]
+            self._module.write(code + "\n")
+
+        self.handle.close()
 
 
 class FlagsGenerator(object):
@@ -721,6 +767,7 @@ Functions
 
         self._class_gen = ClassGenerator(self.prefix, self.module)
         self._flags_gen = FlagsGenerator(self.prefix, self.module)
+        self._enums_gen = EnumGenerator(self.prefix, self.module)
 
         # utf-8 encoded .py
         self.module.write("# -*- coding: utf-8 -*-\n")
@@ -774,6 +821,11 @@ Functions
             code = code.encode("utf-8")
         self._flags_gen.add_flags(obj, code)
 
+    def add_enum(self, obj, code):
+        if not isinstance(code, str):
+            code = code.encode("utf-8")
+        self._enums_gen.add_enum(obj, code)
+
     def add_properties(self, cls_obj, code):
         if not isinstance(code, str):
             code = code.encode("utf-8")
@@ -784,6 +836,7 @@ Functions
         func_name = os.path.basename(self.func_handle.name)
         class_name = self._class_gen.get_name()
         flags_name = self._flags_gen.get_name()
+        enums_name = self._enums_gen.get_name()
 
         with open(os.path.join(self.prefix, "index.rst"),  "wb") as h:
             title = "%s %s" % (self.namespace, self.version)
@@ -798,11 +851,17 @@ Functions
     %(functions)s
     %(classes)s
     %(flags)s
+    %(enums)s
 
-""" % {"functions": func_name, "classes": class_name, "flags": flags_name})
+""" % {"functions": func_name,
+       "classes": class_name,
+       "flags": flags_name,
+       "enums": enums_name,
+       })
 
         self._class_gen.finalize()
         self._flags_gen.finalize()
+        self._enums_gen.finalize()
 
         self.func_handle.close()
         self.module.close()
@@ -830,6 +889,7 @@ def create_docs(main_gen, namespace, version):
     class_base = GObject.Object
     iface_base = GObject.GInterface
     flags_base = GObject.GFlags
+    enum_base = GObject.GEnum
 
     def is_method_owner(cls, method_name):
         for base in merge_in_overrides(cls):
@@ -877,6 +937,9 @@ def create_docs(main_gen, namespace, version):
             elif issubclass(obj, flags_base):
                 code = repo.parse_flags(name, obj)
                 gen.add_flags(obj, code)
+            elif issubclass(obj, enum_base):
+                code = repo.parse_flags(name, obj)
+                gen.add_enum(obj, code)
             else:
                 # structs, enums, etc.
                 code = repo.parse_class(key, obj)
