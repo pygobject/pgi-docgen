@@ -68,6 +68,13 @@ def merge_in_overrides(obj):
     return mro_bases
 
 
+def method_is_static(obj):
+    try:
+        return obj.im_self is not None
+    except AttributeError:
+        return True
+
+
 class FuncSignature(object):
 
     def __init__(self, res, args, raises, name):
@@ -405,8 +412,11 @@ class %s(GObject.GFlags):
 
         return code
 
-    def parse_function(self, name, owner, obj, method=False):
+    def parse_function(self, name, owner, obj):
         """Returns python code for the object"""
+
+        is_method = owner is not None
+        is_static = method_is_static(obj)
 
         def get_sig(obj):
             doc = str(obj.__doc__)
@@ -439,7 +449,7 @@ class %s(GObject.GFlags):
             return "%s = %s\n" % (func_name, name)
 
         arg_names = sig.arg_names
-        if method:
+        if is_method and not is_static:
             arg_names.insert(0, "self")
         arg_names = ", ".join(arg_names)
 
@@ -489,7 +499,10 @@ r'''
 """ % (func_name, name, docs.encode("utf-8"))
 
         else:
-            final = """
+            final = ""
+            if is_method and is_static:
+                final += "@staticmethod\n"
+            final += """\
 def %s(%s):
     r'''
 %s
@@ -651,12 +664,12 @@ Classes
         assert isinstance(code, str)
         self._classes[obj] = code
 
-    def add_method(self, cls_obj, code):
+    def add_method(self, cls_obj, obj, code):
         assert isinstance(code, str)
         if cls_obj in self._methods:
-            self._methods[cls_obj].append(code)
+            self._methods[cls_obj].append((obj, code))
         else:
-            self._methods[cls_obj] = [code]
+            self._methods[cls_obj] = [(obj, code)]
 
     def add_properties(self, cls, code):
         assert isinstance(code, str)
@@ -668,6 +681,8 @@ Classes
     def finalize(self):
         classes = self._classes.keys()
 
+        # try to get the right order, so all bases are defined
+        # this probably isn't right...
         def check_order(cls):
             for c in cls:
                 for b in merge_in_overrides(c):
@@ -703,8 +718,11 @@ Classes
         # write the code
         for cls in classes:
             self._module.write(self._classes[cls])
-            for method in self._methods.get(cls, []):
-                self._module.write(indent(method) + "\n")
+            methods = self._methods.get(cls, [])
+            # sort static methods first, then by name
+            methods.sort(key=lambda e: (not method_is_static(e[0]), e[0].__name__))
+            for obj, code in methods:
+                self._module.write(indent(code) + "\n")
 
         # create a new file for each class
         for cls in classes:
@@ -805,13 +823,13 @@ Functions
 
         self._class_gen.add_class(cls_obj, code)
 
-    def add_method(self, cls_obj, code):
+    def add_method(self, cls_obj, obj, code):
         """Add a method"""
 
         if not isinstance(code, str):
             code = code.encode("utf-8")
 
-        self._class_gen.add_method(cls_obj, code)
+        self._class_gen.add_method(cls_obj, obj, code)
 
     def add_struct(self, name, code):
         self.add_class(name, code)
@@ -930,10 +948,10 @@ def create_docs(main_gen, namespace, version):
                     except NotImplementedError:
                         # FIXME.. pgi exposes methods it can't compile
                         continue
-                    if isinstance(attr_obj, types.MethodType):
-                        code = repo.parse_function(func_key, obj, attr_obj, True)
+                    if callable(attr_obj):
+                        code = repo.parse_function(func_key, obj, attr_obj)
                         if code:
-                            gen.add_method(obj, code)
+                            gen.add_method(obj, attr_obj, code)
             elif issubclass(obj, flags_base):
                 code = repo.parse_flags(name, obj)
                 gen.add_flags(obj, code)

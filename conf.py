@@ -36,3 +36,5 @@ html_show_sourcelink = False
 inheritance_node_attrs = dict(shape='box', fontsize=7,
                               color='gray70', style='rounded')
 inheritance_graph_attrs = dict(rankdir="TB", size='""')
+
+autodoc_member_order = "bysource"
