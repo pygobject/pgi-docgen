@@ -391,7 +391,7 @@ class %s(%s):
             return ""
 
         return '''
-.. csv-table:: Properties
+.. csv-table::
     :header: "Name", "Type", "Description"
     :widths: 10, 10, 30
 
