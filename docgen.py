@@ -228,7 +228,9 @@ class Repository(object):
 
         # gtk_dialog_get_response_for_widget ->
         #     Gtk.Dialog.get_response_for_widget
-        for t in dom.getElementsByTagName("method"):
+        elements = dom.getElementsByTagName("constructor")
+        elements += dom.getElementsByTagName("method")
+        for t in elements:
             local_name = t.getAttribute("name")
             # Copy escaping from gi: Foo.break -> Foo.break_
             local_name = escape_keyword(local_name)
