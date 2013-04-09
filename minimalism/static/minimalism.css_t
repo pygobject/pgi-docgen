@@ -227,6 +227,6 @@ table.docutils td, th {
     border: 0px;
 }
 
-#properties table.docutils tr:nth-child(even) {
+#properties table.docutils tr.row-even {
     background-color: #eee;
 }

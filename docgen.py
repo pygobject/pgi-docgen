@@ -372,6 +372,18 @@ class %s(%s):
         if not hasattr(obj, "props"):
             return ""
 
+        def get_flag_str(spec):
+            flags = spec.flags
+            s = []
+            from pgi.repository import GObject
+            if flags & GObject.ParamFlags.READABLE:
+                s.append("r")
+            if flags & GObject.ParamFlags.WRITABLE:
+                s.append("w")
+            if flags & GObject.ParamFlags.CONSTRUCT_ONLY:
+                s.append("c")
+            return "/".join(s)
+
         props = []
         for attr in dir(obj.props):
             if attr.startswith("_"):
@@ -385,12 +397,13 @@ class %s(%s):
                 module = pytype.__module__
                 if module != "__builtin__":
                     type_name = module + "." + type_name
-                props.append((spec.name, type_name, spec.blurb))
+                flags = get_flag_str(spec)
+                props.append((spec.name, type_name, flags, spec.blurb))
 
         lines = []
-        for n, t, b in props:
+        for n, t, f, b in props:
             b = self._fix(b)
-            prop = '"%s", ":class:`%s`", "%s"' % (n, t, b)
+            prop = '"%s", ":class:`%s`", "%s", "%s"' % (n, t, f, b)
             lines.append("    %s" % prop)
         lines = "\n".join(lines)
 
@@ -399,8 +412,8 @@ class %s(%s):
 
         return '''
 .. csv-table::
-    :header: "Name", "Type", "Description"
-    :widths: 10, 10, 30
+    :header: "Name", "Type", "Flags", "Description"
+    :widths: 20, 1, 1, 100
 
 %s
 ''' % lines
