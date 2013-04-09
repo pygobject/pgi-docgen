@@ -42,3 +42,9 @@ if __name__ == "__main__":
     for dir_ in png_dirs:
         if os.path.exists(dir_):
             png_optimize_dir(dir_)
+
+    # make a nice tarball without the sphinx cruft
+    os.chdir("_docs/_build")
+    paths = [p for p in os.listdir(".") if p[:1] != "."]
+    subprocess.call(["tar", "-zcvf", "../../build.tar.gz"] + paths)
+    os.chdir("../..")
