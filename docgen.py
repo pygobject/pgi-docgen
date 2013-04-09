@@ -393,11 +393,18 @@ class %s(GObject.GFlags):
     '''
 """ % (obj.__name__, self._all.get(name, ""))
 
+        escaped = []
+
         values = []
         for attr_name in dir(obj):
             if attr_name.upper() != attr_name:
                 continue
             attr = getattr(obj, attr_name)
+            # hacky.. if there is an escaped one, ignore this one
+            # and add it later with setattr
+            if hasattr(obj, "_" + attr_name):
+                escaped.append(attr_name)
+                continue
             if not isinstance(attr, obj):
                 continue
             values.append((int(attr), attr_name))
@@ -409,6 +416,10 @@ class %s(GObject.GFlags):
             doc_key = name + "." + n.lower()
             docs = self._all.get(doc_key, "")
             code += "    r'''%s'''\n" % docs
+
+        name = obj.__name__
+        for v in escaped:
+            code += "setattr(%s, '%s', %s)\n" % (name, v, "%s._%s" % (name, v))
 
         return code
 
@@ -609,6 +620,7 @@ Enums
     :show-inheritance:
     :members:
     :undoc-members:
+    :private-members:
 
 """ % (title, cls.__module__ + "." + cls.__name__))
 
@@ -654,6 +666,7 @@ Flags
     :show-inheritance:
     :members:
     :undoc-members:
+    :private-members:
 
 """ % (title, cls.__module__ + "." + cls.__name__))
 
