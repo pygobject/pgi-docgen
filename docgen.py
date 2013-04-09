@@ -365,7 +365,7 @@ class %s(%s):
         if not hasattr(obj, "props"):
             return ""
 
-        names = []
+        props = []
         for attr in dir(obj.props):
             if attr.startswith("_"):
                 continue
@@ -373,19 +373,30 @@ class %s(%s):
             if not spec:
                 continue
             if spec.owner_type.pytype is obj:
-                names.append((spec.name, spec.blurb))
+                pytype = spec.value_type.pytype
+                type_name = pytype.__name__
+                module = pytype.__module__
+                if module != "__builtin__":
+                    type_name = module + "." + type_name
+                props.append((spec.name, type_name, spec.blurb))
 
-        names = "\n".join([self._fix('    "%s", "%s"' % n) for n in names])
+        lines = []
+        for n, t, b in props:
+            b = self._fix(b)
+            prop = '"%s", ":class:`%s`", "%s"' % (n, t, b)
+            lines.append("    %s" % prop)
+        lines = "\n".join(lines)
 
-        if not names:
+        if not lines:
             return ""
 
         return '''
 .. csv-table:: Properties
-    :header: "Name", "Description"
+    :header: "Name", "Type", "Description"
+    :widths: 10, 10, 30
 
 %s
-''' % names
+''' % lines
 
     def parse_flags(self, name, obj):
         code = """
