@@ -809,9 +809,8 @@ class ClassGenerator(Generator):
     HEADLINE = ""
 
     def __init__(self, dir_, module_fileobj):
-        self._sub_dir = sub_dir = os.path.join(dir_, self.DIR_NAME)
-        os.mkdir(sub_dir)
-        self.path = os.path.join(sub_dir, "index.rst")
+        self._sub_dir = os.path.join(dir_, self.DIR_NAME)
+        self.path = os.path.join(self._sub_dir, "index.rst")
 
         self._classes = {}  # cls -> code
         self._methods = {}  # cls -> code
@@ -875,6 +874,8 @@ class ClassGenerator(Generator):
 
         def indent(c):
             return "\n".join(["    %s" % l for l in c.splitlines()])
+
+        os.mkdir(self._sub_dir)
 
         index_handle = open(self.path, "wb")
         index_handle.write(make_rest_title(self.HEADLINE) + "\n\n")
@@ -943,6 +944,62 @@ class InterfaceGenerator(ClassGenerator):
     HEADLINE = "Interfaces"
 
 
+class StructGenerator(Generator):
+    def __init__(self, dir_, module_fileobj):
+        self._sub_dir = os.path.join(dir_, "structs")
+        self.path = os.path.join(self._sub_dir, "index.rst")
+
+        self._structs = {}
+        self._module = module_fileobj
+
+    def get_name(self):
+        return os.path.join("structs", "index.rst")
+
+    def is_empty(self):
+        return not bool(self._structs)
+
+    def add_struct(self, obj, code):
+        if isinstance(code, unicode):
+            code = code.encode("utf-8")
+        self._structs[obj] = code
+
+    def write(self):
+        os.mkdir(self._sub_dir)
+
+        structs = self._structs.keys()
+
+        # write the code
+        for cls in structs:
+            self._module.write(self._structs[cls])
+
+        index_handle = open(self.path, "wb")
+        index_handle.write(make_rest_title("Structures") + "\n\n")
+
+        # add classes to the index toctree
+        index_handle.write(".. toctree::\n    :maxdepth: 1\n\n")
+        for cls in sorted(structs, key=lambda x: x.__name__):
+            index_handle.write("""\
+    %s
+""" % cls.__name__)
+
+        for cls in structs:
+            h = open(os.path.join(self._sub_dir, cls.__name__)  + ".rst", "wb")
+            name = cls.__module__ + "." + cls.__name__
+            title = name
+            h.write(make_rest_title(title, "=") + "\n")
+
+            h.write("""
+.. autoclass:: %s
+    :show-inheritance:
+    :members:
+    :undoc-members:
+""" % name)
+
+            h.close()
+
+        index_handle.close()
+
+
 class ModuleGenerator(Generator):
 
     def __init__(self, dir_, namespace, version):
@@ -990,17 +1047,19 @@ class ModuleGenerator(Generator):
         for dep in repo.get_dependencies():
             self._add_dependency(module, *dep)
 
-        from gi.repository import GObject
+        from gi.repository import GObject, Gtk
         class_base = GObject.Object
         iface_base = GObject.GInterface
         flags_base = GObject.GFlags
         enum_base = GObject.GEnum
+        struct_base = Gtk.AccelKey.__mro__[-2]  # FIXME
 
         obj_gen = GObjectGenerator(self._module_path, module)
         iface_gen = InterfaceGenerator(self._module_path, module)
         flags_gen = FlagsGenerator(self._module_path, module)
         enums_gen = EnumGenerator(self._module_path, module)
         func_gen = FunctionGenerator(self._module_path, module)
+        struct_gen = StructGenerator(self._module_path, module)
 
         def is_method_owner(cls, method_name):
             for base in merge_in_overrides(cls):
@@ -1056,8 +1115,11 @@ class ModuleGenerator(Generator):
                 elif issubclass(obj, enum_base):
                     code = repo.parse_flags(name, obj)
                     enums_gen.add_enum(obj, code)
+                elif issubclass(obj, struct_base):
+                    code = repo.parse_class(name, obj, add_bases=True)
+                    struct_gen.add_struct(obj, code)
                 else:
-                    # structs, enums, etc.
+                    # unions..
                     code = repo.parse_class(name, obj)
                     if code:
                         obj_gen.add_class(obj, code)
@@ -1074,7 +1136,8 @@ class ModuleGenerator(Generator):
 
 """)
 
-        for gen in [func_gen, iface_gen, obj_gen, flags_gen, enums_gen]:
+        gens = [func_gen, iface_gen, obj_gen, struct_gen, flags_gen, enums_gen]
+        for gen in gens:
             if gen.is_empty():
                 continue
             handle.write("    %s\n" % gen.get_name())
