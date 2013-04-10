@@ -1177,6 +1177,9 @@ class ModuleGenerator(Generator):
                     code = repo.parse_flags(name, obj)
                     enums_gen.add_enum(obj, code)
                 elif issubclass(obj, struct_base):
+                    # Hide FooPrivate if Foo exists
+                    if key.endswith("Private") and hasattr(mod, key[:-7]):
+                        continue
                     code = repo.parse_class(name, obj, add_bases=True)
                     struct_gen.add_struct(obj, code)
                 else:
