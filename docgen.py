@@ -23,7 +23,7 @@ import keyword
 
 import pgi
 pgi.install_as_gi()
-pgi.set_backend("ctypes,cffi,null")
+pgi.set_backend("ctypes,null")
 
 
 def get_gir_dirs():
@@ -127,20 +127,86 @@ class FuncSignature(object):
 class Namespace(object):
 
     _doms = {}
+    _types = {}
 
     def __init__(self, namespace, version):
         self.namespace = namespace
         self.version = version
 
         key = namespace + version
-        if key in self._doms:
-            self._dom = self._doms[key]
-            return
 
+        if key not in self._doms:
+            self._doms[key] = self._parse_dom()
+        self._dom = self._doms[key]
+
+        if not key in self._types:
+            self._types[key] = self._parse_types()
+        self.types = self._types[key]
+
+    def _parse_dom(self):
         with open(self.get_path(), "rb") as h:
-            self._dom = parseString(h.read())
+            return parseString(h.read())
 
-        self._doms[key] = self._dom
+    def _parse_types(self):
+        """Create a mapping of various C names to python names"""
+
+        dom = self.get_dom()
+        namespace = self.namespace
+        types = {}
+
+        # classes and aliases: GtkFooBar -> Gtk.FooBar
+        for t in dom.getElementsByTagName("type"):
+            local_name = t.getAttribute("name")
+            c_name = t.getAttribute("c:type").rstrip("*")
+            types[c_name] = local_name
+
+        # gtk_main -> Gtk.main
+        for t in dom.getElementsByTagName("function"):
+            local_name = t.getAttribute("name")
+            # Copy escaping from gi: Foo.break -> Foo.break_
+            local_name = escape_keyword(local_name)
+            namespace = t.parentNode.getAttribute("name")
+            c_name = t.getAttribute("c:identifier")
+            name = namespace + "." + local_name
+            types[c_name] = name
+
+        # gtk_dialog_get_response_for_widget ->
+        #     Gtk.Dialog.get_response_for_widget
+        elements = dom.getElementsByTagName("constructor")
+        elements += dom.getElementsByTagName("method")
+        for t in elements:
+            local_name = t.getAttribute("name")
+            # Copy escaping from gi: Foo.break -> Foo.break_
+            local_name = escape_keyword(local_name)
+            owner = t.parentNode.getAttribute("name")
+            c_name = t.getAttribute("c:identifier")
+            name = namespace + "." + owner + "." + local_name
+            types[c_name] = name
+
+        # enums etc. GTK_SOME_FLAG_FOO -> Gtk.SomeFlag.FOO
+        for t in dom.getElementsByTagName("member"):
+            parent = t.parentNode
+            if parent.tagName == "bitfield" or parent.tagName == "enumeration":
+                c_name = t.getAttribute("c:identifier")
+                class_name = parent.getAttribute("name")
+                field_name = t.getAttribute("name").upper()
+                local_name = namespace + "." + class_name + "." + field_name
+                types[c_name] = local_name
+
+        # cairo_t -> cairo.Context
+        for t in dom.getElementsByTagName("record"):
+            c_name = t.getAttribute("c:type")
+            type_name = t.getAttribute("name")
+            types[c_name] = type_name
+
+        # G_TIME_SPAN_MINUTE -> GLib.TIME_SPAN_MINUTE
+        for t in dom.getElementsByTagName("constant"):
+            c_name = t.getAttribute("c:type")
+            if t.parentNode.tagName == "namespace":
+                name = namespace + "." + t.getAttribute("name")
+                types[c_name] = name
+
+        return types
 
     def get_path(self):
         return "/usr/share/gir-1.0/%s-%s.gir" % (self.namespace, self.version)
@@ -203,64 +269,7 @@ class Repository(object):
         return self._ns.get_dependencies()
 
     def _parse_types(self, ns):
-        """Create a mapping of various C names to python names, taking the
-        current namespace into account.
-        """
-
-        dom = ns.get_dom()
-        namespace = ns.namespace
-
-        # classes and aliases: GtkFooBar -> Gtk.FooBar
-        for t in dom.getElementsByTagName("type"):
-            local_name = t.getAttribute("name")
-            c_name = t.getAttribute("c:type").rstrip("*")
-            self._types[c_name] = local_name
-
-        # gtk_main -> Gtk.main
-        for t in dom.getElementsByTagName("function"):
-            local_name = t.getAttribute("name")
-            # Copy escaping from gi: Foo.break -> Foo.break_
-            local_name = escape_keyword(local_name)
-            namespace = t.parentNode.getAttribute("name")
-            c_name = t.getAttribute("c:identifier")
-            name = namespace + "." + local_name
-            self._types[c_name] = name
-
-        # gtk_dialog_get_response_for_widget ->
-        #     Gtk.Dialog.get_response_for_widget
-        elements = dom.getElementsByTagName("constructor")
-        elements += dom.getElementsByTagName("method")
-        for t in elements:
-            local_name = t.getAttribute("name")
-            # Copy escaping from gi: Foo.break -> Foo.break_
-            local_name = escape_keyword(local_name)
-            owner = t.parentNode.getAttribute("name")
-            c_name = t.getAttribute("c:identifier")
-            name = namespace + "." + owner + "." + local_name
-            self._types[c_name] = name
-
-        # enums etc. GTK_SOME_FLAG_FOO -> Gtk.SomeFlag.FOO
-        for t in dom.getElementsByTagName("member"):
-            parent = t.parentNode
-            if parent.tagName == "bitfield" or parent.tagName == "enumeration":
-                c_name = t.getAttribute("c:identifier")
-                class_name = parent.getAttribute("name")
-                field_name = t.getAttribute("name").upper()
-                local_name = namespace + "." + class_name + "." + field_name
-                self._types[c_name] = local_name
-
-        # cairo_t -> cairo.Context
-        for t in dom.getElementsByTagName("record"):
-            c_name = t.getAttribute("c:type")
-            type_name = t.getAttribute("name")
-            self._types[c_name] = type_name
-
-        # G_TIME_SPAN_MINUTE -> GLib.TIME_SPAN_MINUTE
-        for t in dom.getElementsByTagName("constant"):
-            c_name = t.getAttribute("c:type")
-            if t.parentNode.tagName == "namespace":
-                name = namespace + "." + t.getAttribute("name")
-                self._types[c_name] = name
+        self._types.update(ns.types)
 
     def _parse_docs(self, ns):
         """Parse docs"""
@@ -636,19 +645,46 @@ Python GObject Introspection Documentation
         shutil.copytree("minimalism", theme_dest)
 
 
+class FunctionGenerator(object):
+
+    def __init__(self, dir_, module_fileobj):
+        self.path = os.path.join(dir_, "functions.rst")
+
+        self._funcs = {}
+        self._module = module_fileobj
+
+    def get_name(self):
+        return os.path.basename(self.path)
+
+    def is_empty(self):
+        return not bool(self._funcs)
+
+    def add_function(self, name, code):
+        assert isinstance(code, str)
+
+        self._funcs[name] = code
+
+    def finalize(self):
+
+        handle = open(self.path, "wb")
+        handle.write("""
+Functions
+=========
+""")
+
+        for name, code in sorted(self._funcs.items()):
+            self._module.write(code)
+            handle.write(".. autofunction:: %s\n\n" % name)
+
+        handle.close()
+
+
 class EnumGenerator(object):
 
     def __init__(self, dir_, module_fileobj):
-        enums_path = os.path.join(dir_, "enums.rst")
-        self.handle = open(enums_path, "wb")
-        self.handle.write("""\
-Enums
-=====
-
-""")
+        self.path = os.path.join(dir_, "enums.rst")
 
         self._enums = {}
-
         self._module = module_fileobj
 
     def add_enum(self, obj, code):
@@ -656,15 +692,25 @@ Enums
         self._enums[obj] = code
 
     def get_name(self):
-        return os.path.basename(self.handle.name)
+        return os.path.basename(self.path)
+
+    def is_empty(self):
+        return not bool(self._enums)
 
     def finalize(self):
         classes = self._enums.keys()
         classes.sort(key=lambda x: x.__name__)
 
+        handle = open(self.path, "wb")
+        handle.write("""\
+Enums
+=====
+
+""")
+
         for cls in classes:
             title = make_rest_title(cls.__name__, "-")
-            self.handle.write("""
+            handle.write("""
 %s
 
 .. autoclass:: %s
@@ -679,22 +725,15 @@ Enums
             code = self._enums[cls]
             self._module.write(code + "\n")
 
-        self.handle.close()
+        handle.close()
 
 
 class FlagsGenerator(object):
 
     def __init__(self, dir_, module_fileobj):
-        flags_path = os.path.join(dir_, "flags.rst")
-        self.handle = open(flags_path, "wb")
-        self.handle.write("""\
-Flags
-=====
-
-""")
+        self.path = os.path.join(dir_, "flags.rst")
 
         self._flags = {}
-
         self._module = module_fileobj
 
     def add_flags(self, obj, code):
@@ -702,15 +741,26 @@ Flags
         self._flags[obj] = code
 
     def get_name(self):
-        return os.path.basename(self.handle.name)
+        return os.path.basename(self.path)
+
+    def is_empty(self):
+        return not bool(self._flags)
 
     def finalize(self):
         classes = self._flags.keys()
         classes.sort(key=lambda x: x.__name__)
 
+        handle = open(self.path, "wb")
+        handle.write("""\
+Flags
+=====
+
+""")
+
+
         for cls in classes:
             title = make_rest_title(cls.__name__, "-")
-            self.handle.write("""
+            handle.write("""
 %s
 
 .. autoclass:: %s
@@ -725,7 +775,7 @@ Flags
             code = self._flags[cls]
             self._module.write(code + "\n")
 
-        self.handle.close()
+        handle.close()
 
 
 class ClassGenerator(object):
@@ -733,18 +783,11 @@ class ClassGenerator(object):
     def __init__(self, dir_, module_fileobj):
         self._sub_dir = sub_dir = os.path.join(dir_, "classes")
         os.mkdir(sub_dir)
-        index_path = os.path.join(sub_dir, "index.rst")
+        self.path = os.path.join(sub_dir, "index.rst")
 
         self._classes = {}  # cls -> code
         self._methods = {}  # cls -> code
         self._props = {}  # cls -> code
-
-        self.index_handle = open(index_path, "wb")
-        self.index_handle.write("""
-Classes
-=======
-
-""")
 
         self._module = module_fileobj
 
@@ -765,6 +808,9 @@ Classes
 
     def get_name(self):
         return os.path.join("classes", "index.rst")
+
+    def is_empty(self):
+        return not bool(self._classes)
 
     def finalize(self):
         classes = self._classes.keys()
@@ -796,10 +842,17 @@ Classes
         def indent(c):
             return "\n".join(["    %s" % l for l in c.splitlines()])
 
+        index_handle = open(self.path, "wb")
+        index_handle.write("""
+Classes
+=======
+
+""")
+
         # add classes to the index toctree
-        self.index_handle.write(".. toctree::\n    :maxdepth: 1\n\n")
+        index_handle.write(".. toctree::\n    :maxdepth: 1\n\n")
         for cls in sorted(classes, key=lambda x: x.__name__):
-            self.index_handle.write("""\
+            index_handle.write("""\
     %s
 """ % cls.__name__)
 
@@ -847,7 +900,7 @@ Class
 
             h.close()
 
-        self.index_handle.close()
+        index_handle.close()
 
 
 class ModuleGenerator(object):
@@ -863,17 +916,11 @@ class ModuleGenerator(object):
         module_path = os.path.join(self.prefix, namespace + ".py")
         self.module = open(module_path, "wb")
 
-        func_name = "functions.rst"
-        func_path = os.path.join(self.prefix, func_name)
-        self.func_handle = open(func_path, "wb")
-        self.func_handle.write("""
-Functions
-=========
-""")
 
         self._class_gen = ClassGenerator(self.prefix, self.module)
         self._flags_gen = FlagsGenerator(self.prefix, self.module)
         self._enums_gen = EnumGenerator(self.prefix, self.module)
+        self._func_gen = FunctionGenerator(self.prefix, self.module)
 
         # utf-8 encoded .py
         self.module.write("# -*- coding: utf-8 -*-\n")
@@ -899,9 +946,7 @@ Functions
         if not isinstance(code, str):
             code = code.encode("utf-8")
 
-        self.module.write(code)
-        h = self.func_handle
-        h.write(".. autofunction:: %s\n\n" % name)
+        self._func_gen.add_function(name, code)
 
     def add_class(self, cls_obj, code):
         """Add a class"""
@@ -939,10 +984,12 @@ Functions
         self._class_gen.add_properties(cls_obj, code)
 
     def finalize(self):
-        func_name = os.path.basename(self.func_handle.name)
-        class_name = self._class_gen.get_name()
-        flags_name = self._flags_gen.get_name()
-        enums_name = self._enums_gen.get_name()
+        sub_gens = [
+            self._func_gen,
+            self._class_gen,
+            self._flags_gen,
+            self._enums_gen,
+        ]
 
         with open(os.path.join(self.prefix, "index.rst"),  "wb") as h:
             title = "%s %s" % (self.namespace, self.version)
@@ -950,26 +997,17 @@ Functions
             h.write(len(title) * "=" + "\n")
 
             h.write("""
-
 .. toctree::
     :maxdepth: 1
 
-    %(functions)s
-    %(classes)s
-    %(flags)s
-    %(enums)s
+""")
 
-""" % {"functions": func_name,
-       "classes": class_name,
-       "flags": flags_name,
-       "enums": enums_name,
-       })
+            for gen in sub_gens:
+                if gen.is_empty():
+                    continue
+                h.write("    %s\n" % gen.get_name())
+                gen.finalize()
 
-        self._class_gen.finalize()
-        self._flags_gen.finalize()
-        self._enums_gen.finalize()
-
-        self.func_handle.close()
         self.module.close()
 
         # make sure the generated code is valid python
