@@ -362,6 +362,22 @@ class Repository(object):
 
         return d
 
+    def parse_constant(self, name):
+        # FIXME: broken escaping in pgi
+        if name.split(".")[-1][:1].isdigit():
+            return
+        docs = self._all.get(name, "")
+        # sphinx gets confused by empty docstrings
+        return """
+%s = %s
+r'''
+.. fake comment to help sphinx
+
+%s
+'''
+
+""" % (name.split(".")[-1], name, docs)
+
     def parse_class(self, name, obj, add_bases=False):
         names = []
 
@@ -750,6 +766,50 @@ Enums
         handle.close()
 
 
+class ConstantsGenerator(Generator):
+
+    def __init__(self, dir_, module_fileobj):
+        self.path = os.path.join(dir_, "constants.rst")
+
+        self._consts = {}
+        self._module = module_fileobj
+
+    def add_constant(self, name, code):
+        if isinstance(code, unicode):
+            code = code.encode("utf-8")
+
+        self._consts[name] = code
+
+    def get_name(self):
+        return os.path.basename(self.path)
+
+    def is_empty(self):
+        return not bool(self._consts)
+
+    def write(self):
+        names = self._consts.keys()
+        names.sort()
+
+        handle = open(self.path, "wb")
+        handle.write("""\
+Constants
+=========
+
+""")
+
+        for name in names:
+            handle.write("""
+.. autodata:: %s
+
+""" % name)
+
+        for name in names:
+            code = self._consts[name]
+            self._module.write(code + "\n")
+
+        handle.close()
+
+
 class FlagsGenerator(Generator):
 
     def __init__(self, dir_, module_fileobj):
@@ -1060,6 +1120,7 @@ class ModuleGenerator(Generator):
         enums_gen = EnumGenerator(self._module_path, module)
         func_gen = FunctionGenerator(self._module_path, module)
         struct_gen = StructGenerator(self._module_path, module)
+        const_gen = ConstantsGenerator(self._module_path, module)
 
         def is_method_owner(cls, method_name):
             for base in merge_in_overrides(cls):
@@ -1123,6 +1184,10 @@ class ModuleGenerator(Generator):
                     code = repo.parse_class(name, obj)
                     if code:
                         obj_gen.add_class(obj, code)
+            else:
+                code = repo.parse_constant(name)
+                if code:
+                    const_gen.add_constant(name, code)
 
         handle = open(os.path.join(self._module_path, "index.rst"),  "wb")
 
@@ -1136,7 +1201,8 @@ class ModuleGenerator(Generator):
 
 """)
 
-        gens = [func_gen, iface_gen, obj_gen, struct_gen, flags_gen, enums_gen]
+        gens = [func_gen, iface_gen, obj_gen, struct_gen,
+                flags_gen, enums_gen, const_gen]
         for gen in gens:
             if gen.is_empty():
                 continue
