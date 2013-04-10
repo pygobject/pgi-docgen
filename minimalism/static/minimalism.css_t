@@ -233,8 +233,13 @@ table.docutils td, th {
     border: 0px;
 }
 
-#properties table.docutils tr.row-even {
+table.docutils tr.row-even {
     background-color: #eee;
+}
+
+table .head {
+    white-space: nowrap;
+    padding-right: 1em;
 }
 
 .versionadded {

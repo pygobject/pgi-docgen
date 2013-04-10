@@ -19,6 +19,8 @@ import re
 import inspect
 import shutil
 import keyword
+import csv
+import cStringIO
 
 
 import pgi
@@ -43,11 +45,38 @@ def make_rest_title(text, char="="):
     return text + "\n" + len(text) * char
 
 
+def gtype_to_rest(gtype):
+    p = gtype.pytype
+    if p is None:
+        return ""
+    name = p.__name__
+    if p.__module__ != "__builtin__":
+        name = p.__module__ + "." + name
+    return ":class:`%s`" % name
+
+
 def import_namespace(namespace, version):
     import gi
     gi.require_version(namespace, version)
     module = __import__("gi.repository", fromlist=[namespace])
     return getattr(module, namespace)
+
+
+class CSVDialect(csv.Dialect):
+    delimiter = ','
+    quotechar = '"'
+    doublequote = True
+    skipinitialspace = False
+    lineterminator = '\n'
+    quoting = csv.QUOTE_ALL
+
+
+def get_csv_line(values):
+    values = [v.replace("\n", " ") for v in values]
+    h = cStringIO.StringIO()
+    w = csv.writer(h, CSVDialect)
+    w.writerow(values)
+    return h.getvalue().rstrip()
 
 
 def merge_in_overrides(obj):
@@ -265,6 +294,21 @@ class Repository(object):
         self._parse_types(ns)
         self._parse_docs(ns)
 
+    def _get_docs(self, name):
+        if name in self._all:
+            return self._fix_docs(self._all[name])
+        return ""
+
+    def _get_return_docs(self, name):
+        if name in self._returns:
+            return self._fix_docs(self._returns[name])
+        return ""
+
+    def _get_parameter_docs(self, name):
+        if name in self._parameters:
+            return self._fix_docs(self._parameters[name])
+        return ""
+
     def get_dependencies(self):
         return self._ns.get_dependencies()
 
@@ -277,7 +321,7 @@ class Repository(object):
         dom = ns.get_dom()
 
         for doc in dom.getElementsByTagName("doc"):
-            docs = self._fix(doc.firstChild.nodeValue)
+            docs = doc.firstChild.nodeValue
 
             l = []
             current = doc
@@ -298,7 +342,7 @@ class Repository(object):
             elif kind == "return-value":
                 self._returns[key] = docs
 
-    def _fix(self, d):
+    def _fix_docs(self, d):
 
         d = saxutils.unescape(d)
 
@@ -366,7 +410,7 @@ class Repository(object):
         # FIXME: broken escaping in pgi
         if name.split(".")[-1][:1].isdigit():
             return
-        docs = self._all.get(name, "")
+        docs = self._get_docs(name)
         # sphinx gets confused by empty docstrings
         return """
 %s = %s
@@ -396,7 +440,7 @@ r'''
 
         bases = ", ".join(names)
 
-        docs = self._all.get(name, "")
+        docs = self._get_docs(name)
 
         return """
 class %s(%s):
@@ -404,7 +448,47 @@ class %s(%s):
 %s
     '''\n""" % (name.split(".")[-1], bases, docs.encode("utf-8"))
 
+    def parse_signals(self, obj):
+
+        if not hasattr(obj, "signals"):
+            return ""
+
+        sigs = []
+        for attr in dir(obj.signals):
+            if attr.startswith("_"):
+                continue
+
+            sig = getattr(obj.signals, attr)
+            sigs.append(sig)
+
+        lines = []
+        for sig in sigs:
+            name = sig.name
+
+            doc_name = obj.__module__ + "." + obj.__name__ + "." + name
+            docs = self._get_docs(doc_name)
+
+            params = ", ".join([gtype_to_rest(t) for t in sig.param_types])
+            ret = gtype_to_rest(sig.return_type)
+
+            line = get_csv_line([name, params, ret, docs])
+            lines.append('    %s' % line)
+
+        lines = "\n".join(lines)
+        if not lines:
+            return ""
+
+        return '''
+.. csv-table::
+    :header: "Name", "Parameters", "Return", "Description"
+    :widths: 25, 10, 10, 100
+
+%s
+''' % lines
+
+
     def parse_properties(self, obj):
+
         if not hasattr(obj, "props"):
             return ""
 
@@ -428,18 +512,14 @@ class %s(%s):
             if not spec:
                 continue
             if spec.owner_type.pytype is obj:
-                pytype = spec.value_type.pytype
-                type_name = pytype.__name__
-                module = pytype.__module__
-                if module != "__builtin__":
-                    type_name = module + "." + type_name
+                type_name = gtype_to_rest(spec.value_type)
                 flags = get_flag_str(spec)
                 props.append((spec.name, type_name, flags, spec.blurb))
 
         lines = []
         for n, t, f, b in props:
-            b = self._fix(b)
-            prop = '"%s", ":class:`%s`", "%s", "%s"' % (n, t, f, b)
+            b = self._fix_docs(b)
+            prop = get_csv_line([n, t, f, b])
             lines.append("    %s" % prop)
         lines = "\n".join(lines)
 
@@ -469,7 +549,7 @@ class %s(%s):
     r'''
 %s
     '''
-""" % (obj.__name__, base_name, self._all.get(name, ""))
+""" % (obj.__name__, base_name, self._get_docs(name))
 
         escaped = []
 
@@ -492,7 +572,7 @@ class %s(%s):
         for val, n in values:
             code += "    %s = %r\n" % (n, val)
             doc_key = name + "." + n.lower()
-            docs = self._all.get(doc_key, "")
+            docs = self._get_docs(doc_key)
             code += "    r'''%s'''\n" % docs
 
         name = obj.__name__
@@ -549,7 +629,7 @@ class %s(%s):
 r'''
 %s
 '''
-""" % (func_name, name, self._all[name])
+""" % (func_name, name, self._get_docs(name))
             else:
                 # for toplevel functions, replace the introspected one
                 # since sphinx ignores docstrings on the module level
@@ -559,7 +639,7 @@ r'''
 %s.__doc__ = r'''
 %s
 '''
-""" % (func_name, name, func_name, self._all[name])
+""" % (func_name, name, func_name, self._get_docs(name))
 
         arg_names = sig.arg_names
         if is_method and not is_static:
@@ -569,7 +649,7 @@ r'''
         docs = []
         for key, value in sig.args:
             param_key = name + "." + key
-            text = self._parameters.get(param_key, "")
+            text = self._get_parameter_docs(param_key)
             docs.append(":param %s: %s" % (key, text))
             docs.append(":type %s: :class:`%s`" % (key, value))
 
@@ -578,7 +658,7 @@ r'''
 
         if name in self._returns:
             # don't allow newlines here
-            text = self._returns[name]
+            text = self._get_return_docs(name)
             doc_string = " ".join(text.splitlines())
             docs.append(":returns: %s" % doc_string)
 
@@ -595,7 +675,7 @@ r'''
         docs.append("")
 
         if name in self._all:
-            docs.append(self._all[name])
+            docs.append(self._get_docs(name))
 
         docs = "\n".join(docs)
 
@@ -875,6 +955,7 @@ class ClassGenerator(Generator):
         self._classes = {}  # cls -> code
         self._methods = {}  # cls -> code
         self._props = {}  # cls -> code
+        self._sigs = {} # cls -> code
 
         self._module = module_fileobj
 
@@ -898,6 +979,12 @@ class ClassGenerator(Generator):
             code = code.encode("utf-8")
 
         self._props[cls] = code
+
+    def add_signals(self, cls, code):
+        if isinstance(code, unicode):
+            code = code.encode("utf-8")
+
+        self._sigs[cls] = code
 
     def get_name(self):
         return os.path.join(self.DIR_NAME, "index.rst")
@@ -975,6 +1062,12 @@ Properties
 ----------
 """)
             h.write(self._props.get(cls, ""))
+
+            h.write("""
+Signals
+-------
+""")
+            h.write(self._sigs.get(cls, ""))
 
             h.write("""
 Class
@@ -1152,6 +1245,9 @@ class ModuleGenerator(Generator):
 
                     code = repo.parse_properties(obj)
                     class_gen.add_properties(obj, code)
+
+                    code = repo.parse_signals(obj)
+                    class_gen.add_signals(obj, code)
 
                     for attr in dir(obj):
                         if attr.startswith("_"):
