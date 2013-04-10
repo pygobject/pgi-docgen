@@ -11,7 +11,7 @@
 import sys
 sys.path.insert(0, "../")
 
-from xml.dom.minidom import parseString
+from xml.dom import minidom
 import xml.sax.saxutils as saxutils
 import types
 import os
@@ -144,8 +144,8 @@ class Namespace(object):
         self.types = self._types[key]
 
     def _parse_dom(self):
-        with open(self.get_path(), "rb") as h:
-            return parseString(h.read())
+        print "Parsing GIR: %s-%s" % (self.namespace, self.version)
+        return minidom.parse(self.get_path())
 
     def _parse_types(self):
         """Create a mapping of various C names to python names"""
@@ -225,6 +225,7 @@ class Namespace(object):
 
 
 class Repository(object):
+    """Takes gi objects and gives documented code"""
 
     def __init__(self, namespace, version):
         self.namespace = namespace
@@ -254,7 +255,6 @@ class Repository(object):
             key = to_load.pop()
             if key in loaded:
                 continue
-            print "Load dependencies: %s %s" % key
             sub_ns = Namespace(*key)
             loaded[key] = sub_ns
             to_load.extend(sub_ns.get_dependencies())
@@ -609,24 +609,43 @@ def %s(%s):
         return final
 
 
-class MainGenerator(object):
+class Generator(object):
+    """Abstract base class"""
 
-    DEST = "_docs"
+    def is_empty(self):
+        """If there is any content to create"""
+        raise NotImplementedError
 
-    def __init__(self):
-        if os.path.exists(self.DEST):
-            shutil.rmtree(self.DEST)
+    def write(self):
+        """Create and write everything"""
+        raise NotImplementedError
 
-        os.mkdir(self.DEST)
-        self._subs = []
+    def get_name(self):
+        """A name that can be references in an rst file (toctree e.g.)"""
+        raise NotImplementedError
 
-    def new_generator(self, namespace, name):
-        gen = ModuleGenerator(self.DEST, namespace, name)
-        self._subs.append(gen.get_index_name())
-        return gen
 
-    def finalize(self):
-        with open(os.path.join(self.DEST, "index.rst"), "wb") as h:
+class MainGenerator(Generator):
+    """Creates the sphinx environment and the index page"""
+
+    def __init__(self, dest):
+        self._dest = dest
+        self._modules = []
+
+    def add_module(self, namespace, version):
+        """Add a module: add_module('Gtk', '3.0')"""
+        self._modules.append((namespace, version))
+
+    def write(self):
+        os.mkdir(self._dest)
+
+        module_names = []
+        for namespace, version in self._modules:
+            gen = ModuleGenerator(self._dest, namespace, version)
+            gen.write()
+            module_names.append(gen.get_name())
+
+        with open(os.path.join(self._dest, "index.rst"), "wb") as h:
             h.write("""\
 Python GObject Introspection Documentation
 ==========================================
@@ -636,18 +655,16 @@ Python GObject Introspection Documentation
 
 """)
 
-            for sub in self._subs:
+            for sub in module_names:
                 h.write("    %s\n" % sub)
 
-        del self._subs
-
-        dest_conf = os.path.join(self.DEST, "conf.py")
+        dest_conf = os.path.join(self._dest, "conf.py")
         shutil.copy("conf.py", dest_conf)
-        theme_dest = os.path.join(self.DEST, "minimalism")
+        theme_dest = os.path.join(self._dest, "minimalism")
         shutil.copytree("minimalism", theme_dest)
 
 
-class FunctionGenerator(object):
+class FunctionGenerator(Generator):
 
     def __init__(self, dir_, module_fileobj):
         self.path = os.path.join(dir_, "functions.rst")
@@ -662,11 +679,12 @@ class FunctionGenerator(object):
         return not bool(self._funcs)
 
     def add_function(self, name, code):
-        assert isinstance(code, str)
+        if isinstance(code, unicode):
+            code = code.encode("utf-8")
 
         self._funcs[name] = code
 
-    def finalize(self):
+    def write(self):
 
         handle = open(self.path, "wb")
         handle.write("""
@@ -681,7 +699,7 @@ Functions
         handle.close()
 
 
-class EnumGenerator(object):
+class EnumGenerator(Generator):
 
     def __init__(self, dir_, module_fileobj):
         self.path = os.path.join(dir_, "enums.rst")
@@ -690,7 +708,9 @@ class EnumGenerator(object):
         self._module = module_fileobj
 
     def add_enum(self, obj, code):
-        assert isinstance(code, str)
+        if isinstance(code, unicode):
+            code = code.encode("utf-8")
+
         self._enums[obj] = code
 
     def get_name(self):
@@ -699,7 +719,7 @@ class EnumGenerator(object):
     def is_empty(self):
         return not bool(self._enums)
 
-    def finalize(self):
+    def write(self):
         classes = self._enums.keys()
         classes.sort(key=lambda x: x.__name__)
 
@@ -730,7 +750,7 @@ Enums
         handle.close()
 
 
-class FlagsGenerator(object):
+class FlagsGenerator(Generator):
 
     def __init__(self, dir_, module_fileobj):
         self.path = os.path.join(dir_, "flags.rst")
@@ -739,7 +759,9 @@ class FlagsGenerator(object):
         self._module = module_fileobj
 
     def add_flags(self, obj, code):
-        assert isinstance(code, str)
+        if isinstance(code, unicode):
+            code = code.encode("utf-8")
+
         self._flags[obj] = code
 
     def get_name(self):
@@ -748,7 +770,7 @@ class FlagsGenerator(object):
     def is_empty(self):
         return not bool(self._flags)
 
-    def finalize(self):
+    def write(self):
         classes = self._flags.keys()
         classes.sort(key=lambda x: x.__name__)
 
@@ -780,7 +802,7 @@ Flags
         handle.close()
 
 
-class ClassGenerator(object):
+class ClassGenerator(Generator):
     """Base class for GObjects an GInterfaces"""
 
     DIR_NAME = ""
@@ -798,18 +820,24 @@ class ClassGenerator(object):
         self._module = module_fileobj
 
     def add_class(self, obj, code):
-        assert isinstance(code, str)
+        if isinstance(code, unicode):
+            code = code.encode("utf-8")
+
         self._classes[obj] = code
 
     def add_method(self, cls_obj, obj, code):
-        assert isinstance(code, str)
+        if isinstance(code, unicode):
+            code = code.encode("utf-8")
+
         if cls_obj in self._methods:
             self._methods[cls_obj].append((obj, code))
         else:
             self._methods[cls_obj] = [(obj, code)]
 
     def add_properties(self, cls, code):
-        assert isinstance(code, str)
+        if isinstance(code, unicode):
+            code = code.encode("utf-8")
+
         self._props[cls] = code
 
     def get_name(self):
@@ -818,7 +846,7 @@ class ClassGenerator(object):
     def is_empty(self):
         return not bool(self._classes)
 
-    def finalize(self):
+    def write(self):
         classes = self._classes.keys()
 
         # try to get the right order, so all bases are defined
@@ -915,217 +943,148 @@ class InterfaceGenerator(ClassGenerator):
     HEADLINE = "Interfaces"
 
 
-class ModuleGenerator(object):
+class ModuleGenerator(Generator):
 
     def __init__(self, dir_, namespace, version):
         # create the basic package structure
         self.namespace = namespace
         self.version = version
+
         nick = "%s_%s" % (namespace, version)
-        self.index_name = os.path.join(nick, "index")
-        self.prefix = os.path.join(dir_, nick)
-        os.mkdir(self.prefix)
-        module_path = os.path.join(self.prefix, namespace + ".py")
-        self.module = open(module_path, "wb")
+        self._index_name = os.path.join(nick, "index")
+        self._module_path = os.path.join(dir_, nick)
 
+    def get_name(self):
+        return self._index_name
 
-        self._gobject_gen = GObjectGenerator(self.prefix, self.module)
-        self._iface_gen = InterfaceGenerator(self.prefix, self.module)
-        self._flags_gen = FlagsGenerator(self.prefix, self.module)
-        self._enums_gen = EnumGenerator(self.prefix, self.module)
-        self._func_gen = FunctionGenerator(self.prefix, self.module)
+    def _add_dependency(self, module, name, version):
+        """Import the module in the generated code"""
+        module.write("import pgi\n")
+        module.write("pgi.set_backend('ctypes,null')\n")
+        module.write("pgi.require_version('%s', '%s')\n" % (name, version))
+        module.write("from pgi.repository import %s\n" % name)
+
+    def write(self):
+
+        namespace, version = self.namespace, self.version
+
+        os.mkdir(self._module_path)
+        module_path = os.path.join(self._module_path, namespace + ".py")
+        module = open(module_path, "wb")
 
         # utf-8 encoded .py
-        self.module.write("# -*- coding: utf-8 -*-\n")
-
-        self.add_dependency(namespace, version)
-
+        module.write("# -*- coding: utf-8 -*-\n")
+        # for references to the real module
+        self._add_dependency(module, namespace, version)
         # for flags
-        self.add_dependency("GObject", "2.0")
+        self._add_dependency(module, "GObject", "2.0")
 
-    def get_index_name(self):
-        return self.index_name
+        try:
+            mod = import_namespace(namespace, version)
+        except ImportError:
+            print "Couldn't import %r, skipping" % namespace
+            return
 
-    def add_dependency(self, name, version):
-        """Import the module in the generated code"""
-        self.module.write("import pgi\n")
-        self.module.write("pgi.set_backend('ctypes,null')\n")
-        self.module.write("pgi.require_version('%s', '%s')\n" % (name, version))
-        self.module.write("from pgi.repository import %s\n" % name)
+        repo = Repository(namespace, version)
 
-    def add_function(self, name, code):
-        """Add a toplevel function"""
+        for dep in repo.get_dependencies():
+            self._add_dependency(module, *dep)
 
-        if not isinstance(code, str):
-            code = code.encode("utf-8")
-
-        self._func_gen.add_function(name, code)
-
-    def add_gobject(self, cls_obj, code):
-        """Add a gobejct"""
-
-        if not isinstance(code, str):
-            code = code.encode("utf-8")
-
-        self._gobject_gen.add_class(cls_obj, code)
-
-    def add_interface(self, cls_obj, code):
-        """Add a ginterface"""
-
-        if not isinstance(code, str):
-            code = code.encode("utf-8")
-
-        self._iface_gen.add_class(cls_obj, code)
-
-    def add_method(self, cls_obj, obj, code):
-        """Add a method"""
-
-        if not isinstance(code, str):
-            code = code.encode("utf-8")
-
-        # FIXME
         from gi.repository import GObject
-        if issubclass(cls_obj, GObject.Object):
-            self._gobject_gen.add_method(cls_obj, obj, code)
-        else:
-            self._iface_gen.add_method(cls_obj, obj, code)
+        class_base = GObject.Object
+        iface_base = GObject.GInterface
+        flags_base = GObject.GFlags
+        enum_base = GObject.GEnum
 
-    def add_struct(self, name, code):
-        self.add_class(name, code)
+        obj_gen = GObjectGenerator(self._module_path, module)
+        iface_gen = InterfaceGenerator(self._module_path, module)
+        flags_gen = FlagsGenerator(self._module_path, module)
+        enums_gen = EnumGenerator(self._module_path, module)
+        func_gen = FunctionGenerator(self._module_path, module)
 
-    def add_flags(self, obj, code):
-        if not isinstance(code, str):
-            code = code.encode("utf-8")
-        self._flags_gen.add_flags(obj, code)
+        def is_method_owner(cls, method_name):
+            for base in merge_in_overrides(cls):
+                if hasattr(base, method_name):
+                    return False
+            return True
 
-    def add_enum(self, obj, code):
-        if not isinstance(code, str):
-            code = code.encode("utf-8")
-        self._enums_gen.add_enum(obj, code)
+        for key in dir(mod):
+            if key.startswith("_"):
+                continue
+            obj = getattr(mod, key)
 
-    def add_properties(self, cls_obj, code):
-        if not isinstance(code, str):
-            code = code.encode("utf-8")
+            name = "%s.%s" % (namespace, key)
 
-        # fix this crap
-        from gi.repository import GObject
-        if issubclass(cls_obj, GObject.Object):
-            self._gobject_gen.add_properties(cls_obj, code)
-        else:
-            self._iface_gen.add_properties(cls_obj, code)
+            if isinstance(obj, types.FunctionType):
+                code = repo.parse_function(name, None, obj)
+                if code:
+                    func_gen.add_function(name, code)
+            elif inspect.isclass(obj):
+                if issubclass(obj, (iface_base, class_base)):
 
-    def finalize(self):
-        sub_gens = [
-            self._func_gen,
-            self._iface_gen,
-            self._gobject_gen,
-            self._flags_gen,
-            self._enums_gen,
-        ]
+                    if issubclass(obj, class_base):
+                        class_gen = obj_gen
+                    else:
+                        class_gen = iface_gen
 
-        with open(os.path.join(self.prefix, "index.rst"),  "wb") as h:
-            title = "%s %s" % (self.namespace, self.version)
-            h.write(title + "\n")
-            h.write(len(title) * "=" + "\n")
+                    code = repo.parse_class(name, obj, add_bases=True)
+                    class_gen.add_class(obj, code)
 
-            h.write("""
+                    code = repo.parse_properties(obj)
+                    class_gen.add_properties(obj, code)
+
+                    for attr in dir(obj):
+                        if attr.startswith("_"):
+                            continue
+
+                        if not is_method_owner(obj, attr):
+                            continue
+
+                        func_key = name + "." + attr
+                        try:
+                            attr_obj = getattr(obj, attr)
+                        except NotImplementedError:
+                            # FIXME.. pgi exposes methods it can't compile
+                            continue
+                        if callable(attr_obj):
+                            code = repo.parse_function(func_key, obj, attr_obj)
+                            if code:
+                                class_gen.add_method(obj, attr_obj, code)
+                elif issubclass(obj, flags_base):
+                    code = repo.parse_flags(name, obj)
+                    flags_gen.add_flags(obj, code)
+                elif issubclass(obj, enum_base):
+                    code = repo.parse_flags(name, obj)
+                    enums_gen.add_enum(obj, code)
+                else:
+                    # structs, enums, etc.
+                    code = repo.parse_class(name, obj)
+                    if code:
+                        obj_gen.add_class(obj, code)
+
+        handle = open(os.path.join(self._module_path, "index.rst"),  "wb")
+
+        title = "%s %s" % (namespace, version)
+        handle.write(title + "\n")
+        handle.write(len(title) * "=" + "\n")
+
+        handle.write("""
 .. toctree::
     :maxdepth: 1
 
 """)
 
-            for gen in sub_gens:
-                if gen.is_empty():
-                    continue
-                h.write("    %s\n" % gen.get_name())
-                gen.finalize()
+        for gen in [func_gen, iface_gen, obj_gen, flags_gen, enums_gen]:
+            if gen.is_empty():
+                continue
+            handle.write("    %s\n" % gen.get_name())
+            gen.write()
 
-        self.module.close()
+        module.close()
 
         # make sure the generated code is valid python
-        with open(self.module.name, "rb") as h:
+        with open(module.name, "rb") as h:
             exec h.read() in {}
-
-
-def create_docs(main_gen, namespace, version):
-    try:
-        mod = import_namespace(namespace, version)
-    except ImportError:
-        print "Couldn't import %r, skipping" % namespace
-        return
-
-    gen = main_gen.new_generator(namespace, version)
-    repo = Repository(namespace, version)
-
-    # import the needed modules
-    for dep in repo.get_dependencies():
-        gen.add_dependency(*dep)
-
-    from gi.repository import GObject
-    class_base = GObject.Object
-    iface_base = GObject.GInterface
-    flags_base = GObject.GFlags
-    enum_base = GObject.GEnum
-
-    def is_method_owner(cls, method_name):
-        for base in merge_in_overrides(cls):
-            if hasattr(base, method_name):
-                return False
-        return True
-
-    for key in dir(mod):
-        if key.startswith("_"):
-            continue
-        obj = getattr(mod, key)
-
-        name = "%s.%s" % (namespace, key)
-
-        if isinstance(obj, types.FunctionType):
-            code = repo.parse_function(name, None, obj)
-            if code:
-                gen.add_function(name, code)
-        elif inspect.isclass(obj):
-            if issubclass(obj, (iface_base, class_base)):
-
-                code = repo.parse_class(name, obj, add_bases=True)
-                if issubclass(obj, class_base):
-                    gen.add_gobject(obj, code)
-                else:
-                    gen.add_interface(obj, code)
-
-                code = repo.parse_properties(obj)
-                gen.add_properties(obj, code)
-
-                for attr in dir(obj):
-                    if attr.startswith("_"):
-                        continue
-
-                    if not is_method_owner(obj, attr):
-                        continue
-
-                    func_key = name + "." + attr
-                    try:
-                        attr_obj = getattr(obj, attr)
-                    except NotImplementedError:
-                        # FIXME.. pgi exposes methods it can't compile
-                        continue
-                    if callable(attr_obj):
-                        code = repo.parse_function(func_key, obj, attr_obj)
-                        if code:
-                            gen.add_method(obj, attr_obj, code)
-            elif issubclass(obj, flags_base):
-                code = repo.parse_flags(name, obj)
-                gen.add_flags(obj, code)
-            elif issubclass(obj, enum_base):
-                code = repo.parse_flags(name, obj)
-                gen.add_enum(obj, code)
-            else:
-                # structs, enums, etc.
-                code = repo.parse_class(name, obj)
-                if code:
-                    gen.add_gobject(obj, code)
-
-    gen.finalize()
 
 
 if __name__ == "__main__":
@@ -1134,8 +1093,6 @@ if __name__ == "__main__":
         print "%s <namespace-version>..." % sys.argv[0]
         print "%s -a" % sys.argv[0]
         raise SystemExit(1)
-
-    gen = MainGenerator()
 
     modules = []
     if "-a" in sys.argv[1:]:
@@ -1149,14 +1106,21 @@ if __name__ == "__main__":
     else:
         modules.extend(sys.argv[1:])
 
+    dest_dir = "_docs"
+
+    if os.path.exists(dest_dir):
+        shutil.rmtree(dest_dir)
+
+    gen = MainGenerator(dest_dir)
+
     for arg in modules:
         namespace, version = arg.split("-")
         print "Create docs: Namespace=%s, Version=%s" % (namespace, version)
         if namespace == "cairo":
             print "cairo gets referenced to external docs, skipping"
             continue
-        create_docs(gen, namespace, version)
+        gen.add_module(namespace, version)
 
-    gen.finalize()
+    gen.write()
 
     print "done"
