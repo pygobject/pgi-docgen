@@ -428,6 +428,12 @@ class %s(%s):
 ''' % lines
 
     def parse_flags(self, name, obj):
+        from gi.repository import GObject
+
+        # the base classes themselves: reference the real ones
+        if obj in (GObject.GFlags, GObject.GEnum):
+            return "%s = GObject.%s" % (obj.__name__, obj.__name__)
+
         base = obj.__bases__[0]
         base_name = base.__module__ + "." + base.__name__
 
