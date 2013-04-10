@@ -303,6 +303,8 @@ class Repository(object):
         d = saxutils.unescape(d)
 
         def fixup_code(match):
+            # FIXME: do this right.. skipped for now
+            return ""
             code = match.group(1)
             lines = code.splitlines()
             return "\n::\n\n%s" % ("\n".join(["    %s" % l for l in lines]))
