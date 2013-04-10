@@ -334,6 +334,14 @@ class Repository(object):
 
         d = re.sub('([a-z0-9_]+(\(\)|))', fixup_function_refs, d)
 
+        def fixup_added_since(match):
+            return """
+
+.. versionadded:: %s
+""" % match.group(1)
+
+        d = re.sub('Since (\d+\.\d+)\s*$', fixup_added_since, d)
+
         d = d.replace("NULL", ":obj:`None`")
         d = d.replace("%NULL", ":obj:`None`")
         d = d.replace("%TRUE", ":obj:`True`")
@@ -420,12 +428,15 @@ class %s(%s):
 ''' % lines
 
     def parse_flags(self, name, obj):
+        base = obj.__bases__[0]
+        base_name = base.__module__ + "." + base.__name__
+
         code = """
-class %s(GObject.GFlags):
+class %s(%s):
     r'''
 %s
     '''
-""" % (obj.__name__, self._all.get(name, ""))
+""" % (obj.__name__, base_name, self._all.get(name, ""))
 
         escaped = []
 

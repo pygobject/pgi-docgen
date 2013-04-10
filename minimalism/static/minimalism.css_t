@@ -187,15 +187,21 @@ dt {
 
 .field-body {
     width: 85%;
-    padding: 3px;
+    padding: 0.3em 0.6em;
 }
 
 .field-name {
-    padding: 3px;
+    padding: 0.3em 0.6em;
 }
 
-.field-body > ul {
-    margin-left: -25px;
+.field-body ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.field-body ul li {
+    line-height: 1.5em;
 }
 
 dd {
@@ -229,4 +235,11 @@ table.docutils td, th {
 
 #properties table.docutils tr.row-even {
     background-color: #eee;
+}
+
+.versionadded {
+   background-color: #D0E0F0;
+   padding: 0.3em 0.5em;
+   border-radius: 0.3em;
+   display:inline;
 }
