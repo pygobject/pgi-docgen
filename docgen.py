@@ -779,9 +779,13 @@ Flags
 
 
 class ClassGenerator(object):
+    """Base class for GObjects an GInterfaces"""
+
+    DIR_NAME = ""
+    HEADLINE = ""
 
     def __init__(self, dir_, module_fileobj):
-        self._sub_dir = sub_dir = os.path.join(dir_, "classes")
+        self._sub_dir = sub_dir = os.path.join(dir_, self.DIR_NAME)
         os.mkdir(sub_dir)
         self.path = os.path.join(sub_dir, "index.rst")
 
@@ -807,7 +811,7 @@ class ClassGenerator(object):
         self._props[cls] = code
 
     def get_name(self):
-        return os.path.join("classes", "index.rst")
+        return os.path.join(self.DIR_NAME, "index.rst")
 
     def is_empty(self):
         return not bool(self._classes)
@@ -843,11 +847,7 @@ class ClassGenerator(object):
             return "\n".join(["    %s" % l for l in c.splitlines()])
 
         index_handle = open(self.path, "wb")
-        index_handle.write("""
-Classes
-=======
-
-""")
+        index_handle.write(make_rest_title(self.HEADLINE) + "\n\n")
 
         # add classes to the index toctree
         index_handle.write(".. toctree::\n    :maxdepth: 1\n\n")
@@ -903,6 +903,16 @@ Class
         index_handle.close()
 
 
+class GObjectGenerator(ClassGenerator):
+    DIR_NAME = "classes"
+    HEADLINE = "Classes"
+
+
+class InterfaceGenerator(ClassGenerator):
+    DIR_NAME = "interfaces"
+    HEADLINE = "Interfaces"
+
+
 class ModuleGenerator(object):
 
     def __init__(self, dir_, namespace, version):
@@ -917,7 +927,8 @@ class ModuleGenerator(object):
         self.module = open(module_path, "wb")
 
 
-        self._class_gen = ClassGenerator(self.prefix, self.module)
+        self._gobject_gen = GObjectGenerator(self.prefix, self.module)
+        self._iface_gen = InterfaceGenerator(self.prefix, self.module)
         self._flags_gen = FlagsGenerator(self.prefix, self.module)
         self._enums_gen = EnumGenerator(self.prefix, self.module)
         self._func_gen = FunctionGenerator(self.prefix, self.module)
@@ -948,13 +959,21 @@ class ModuleGenerator(object):
 
         self._func_gen.add_function(name, code)
 
-    def add_class(self, cls_obj, code):
-        """Add a class"""
+    def add_gobject(self, cls_obj, code):
+        """Add a gobejct"""
 
         if not isinstance(code, str):
             code = code.encode("utf-8")
 
-        self._class_gen.add_class(cls_obj, code)
+        self._gobject_gen.add_class(cls_obj, code)
+
+    def add_interface(self, cls_obj, code):
+        """Add a ginterface"""
+
+        if not isinstance(code, str):
+            code = code.encode("utf-8")
+
+        self._iface_gen.add_class(cls_obj, code)
 
     def add_method(self, cls_obj, obj, code):
         """Add a method"""
@@ -962,7 +981,12 @@ class ModuleGenerator(object):
         if not isinstance(code, str):
             code = code.encode("utf-8")
 
-        self._class_gen.add_method(cls_obj, obj, code)
+        # FIXME
+        from gi.repository import GObject
+        if issubclass(cls_obj, GObject.Object):
+            self._gobject_gen.add_method(cls_obj, obj, code)
+        else:
+            self._iface_gen.add_method(cls_obj, obj, code)
 
     def add_struct(self, name, code):
         self.add_class(name, code)
@@ -981,12 +1005,18 @@ class ModuleGenerator(object):
         if not isinstance(code, str):
             code = code.encode("utf-8")
 
-        self._class_gen.add_properties(cls_obj, code)
+        # fix this crap
+        from gi.repository import GObject
+        if issubclass(cls_obj, GObject.Object):
+            self._gobject_gen.add_properties(cls_obj, code)
+        else:
+            self._iface_gen.add_properties(cls_obj, code)
 
     def finalize(self):
         sub_gens = [
             self._func_gen,
-            self._class_gen,
+            self._iface_gen,
+            self._gobject_gen,
             self._flags_gen,
             self._enums_gen,
         ]
@@ -1056,7 +1086,10 @@ def create_docs(main_gen, namespace, version):
             if issubclass(obj, (iface_base, class_base)):
 
                 code = repo.parse_class(name, obj, add_bases=True)
-                gen.add_class(obj, code)
+                if issubclass(obj, class_base):
+                    gen.add_gobject(obj, code)
+                else:
+                    gen.add_interface(obj, code)
 
                 code = repo.parse_properties(obj)
                 gen.add_properties(obj, code)
@@ -1088,7 +1121,7 @@ def create_docs(main_gen, namespace, version):
                 # structs, enums, etc.
                 code = repo.parse_class(name, obj)
                 if code:
-                    gen.add_class(obj, code)
+                    gen.add_gobject(obj, code)
 
     gen.finalize()
 
