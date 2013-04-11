@@ -468,11 +468,9 @@ class %s(%s):
             sig = getattr(obj.signals, attr)
             sigs.append(sig)
 
-        names = []
         lines = []
         for sig in sigs:
             name = sig.name
-            names.append(name)
 
             doc_name = obj.__module__ + "." + obj.__name__ + "." + name
             docs = self._get_docs(doc_name)
@@ -480,6 +478,7 @@ class %s(%s):
             params = ", ".join([gtype_to_rest(t) for t in sig.param_types])
             ret = gtype_to_rest(sig.return_type)
 
+            name = "_`%s`" % name  # inline target
             line = get_csv_line([name, params, ret, docs])
             lines.append('    %s' % line)
 
@@ -487,15 +486,7 @@ class %s(%s):
         if not lines:
             return ""
 
-        # add a target for all signals in the list
-        text = ""
-        for name in names:
-            text += """
-.. _%s:
-
-""" % name
-
-        return text + '''
+        return '''
 .. csv-table::
     :header: "Name", "Parameters", "Return", "Description"
     :widths: 25, 10, 10, 100
