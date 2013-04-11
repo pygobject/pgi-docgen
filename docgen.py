@@ -389,6 +389,13 @@ class Repository(object):
 
         d = re.sub('([a-z0-9_]+(\(\)|))', fixup_function_refs, d)
 
+        def fixup_signal_refs(match):
+            name = match.group(1)
+            name = name.replace("_", "-")
+            return " :ref:`\:\:%s <%s>` " % (name, name)
+
+        d = re.sub('::([a-z\-_]+)', fixup_signal_refs, d)
+
         def fixup_added_since(match):
             return """
 
@@ -461,9 +468,11 @@ class %s(%s):
             sig = getattr(obj.signals, attr)
             sigs.append(sig)
 
+        names = []
         lines = []
         for sig in sigs:
             name = sig.name
+            names.append(name)
 
             doc_name = obj.__module__ + "." + obj.__name__ + "." + name
             docs = self._get_docs(doc_name)
@@ -478,7 +487,15 @@ class %s(%s):
         if not lines:
             return ""
 
-        return '''
+        # add a target for all signals in the list
+        text = ""
+        for name in names:
+            text += """
+.. _%s:
+
+""" % name
+
+        return text + '''
 .. csv-table::
     :header: "Name", "Parameters", "Return", "Description"
     :widths: 25, 10, 10, 100
@@ -735,8 +752,11 @@ class MainGenerator(Generator):
     def write(self):
         os.mkdir(self._dest)
 
+        # sort by namespace
+        modules = sorted(self._modules, key=lambda x: x[0].lower())
+
         module_names = []
-        for namespace, version in self._modules:
+        for namespace, version in modules:
             gen = ModuleGenerator(self._dest, namespace, version)
             gen.write()
             module_names.append(gen.get_name())
