@@ -193,9 +193,15 @@ table
     border-collapse:collapse;
 }
 
-pre {
-    padding: 5px;
+pre, .admonition {
+    padding: 0 5px;
     background-color: #f0f0f0;
+    border: 1px solid #ccc;
+}
+
+.admonition-title {
+    color: #3465a4;
+    font-weight: bold;
 }
 
 .toctree-wrapper {

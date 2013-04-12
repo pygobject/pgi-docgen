@@ -3,9 +3,10 @@
 import os
 import sys
 
-for entry in os.listdir("."):
-    if os.path.isdir(entry) and "_" in entry:
-        sys.path.insert(0, os.path.abspath(entry))
+for entry in os.listdir("api"):
+    path = os.path.join("api", entry)
+    if os.path.isdir(path) and "_" in entry:
+        sys.path.insert(0, os.path.abspath(path))
 
 sys.path.insert(0, os.path.abspath("../../"))
 
@@ -29,7 +30,7 @@ intersphinx_mapping = {
 }
 
 html_theme_path = ['.']
-html_theme = 'minimalism'
+html_theme = 'theme'
 html_copy_source = False
 html_show_sourcelink = False
 

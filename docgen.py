@@ -732,6 +732,11 @@ class Generator(object):
 class MainGenerator(Generator):
     """Creates the sphinx environment and the index page"""
 
+    API_DIR = "api"
+    TUTORIAL_DIR = "tutorial"
+    THEME_DIR = "theme"
+    CONF_NAME = "conf.py"
+
     def __init__(self, dest):
         self._dest = dest
         self._modules = []
@@ -748,14 +753,17 @@ class MainGenerator(Generator):
 
         module_names = []
         for namespace, version in modules:
-            gen = ModuleGenerator(self._dest, namespace, version)
+            path = os.path.join(self._dest, self.API_DIR)
+            os.mkdir(path)
+            gen = ModuleGenerator(path, namespace, version)
             gen.write()
             module_names.append(gen.get_name())
 
-        with open(os.path.join(self._dest, "index.rst"), "wb") as h:
-            h.write("""\
-Python GObject Introspection Documentation
-==========================================
+        api_path = os.path.join(self._dest, self.API_DIR)
+        with open(os.path.join(api_path, "index.rst"), "wb") as h:
+            h.write("""
+API Reference
+=============
 
 .. toctree::
     :maxdepth: 1
@@ -765,10 +773,25 @@ Python GObject Introspection Documentation
             for sub in module_names:
                 h.write("    %s\n" % sub)
 
-        dest_conf = os.path.join(self._dest, "conf.py")
-        shutil.copy("conf.py", dest_conf)
-        theme_dest = os.path.join(self._dest, "minimalism")
-        shutil.copytree("minimalism", theme_dest)
+        with open(os.path.join(self._dest, "index.rst"), "wb") as h:
+            h.write("""
+Python GObject Introspection Documentation
+==========================================
+
+.. toctree::
+    :maxdepth: 2
+
+    %s/index
+    %s/index
+""" % (self.TUTORIAL_DIR, self.API_DIR))
+
+        # copy the theme, conf.py and all the static reST files
+        dest_conf = os.path.join(self._dest, self.CONF_NAME)
+        shutil.copy(self.CONF_NAME, dest_conf)
+        theme_dest = os.path.join(self._dest, self.THEME_DIR)
+        shutil.copytree(self.THEME_DIR, theme_dest)
+        tutorial_dest = os.path.join(self._dest, self.TUTORIAL_DIR)
+        shutil.copytree(self.TUTORIAL_DIR, tutorial_dest)
 
 
 class FunctionGenerator(Generator):
