@@ -19,7 +19,6 @@ extensions = [
 source_suffix = '.rst'
 master_doc = 'index'
 project = 'pgidoc'
-copyright = u'2013, Christoph Reiter'
 version = "0.1"
 release = "0.1"
 exclude_patterns = ['_build', 'README.rst']
