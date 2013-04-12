@@ -751,10 +751,11 @@ class MainGenerator(Generator):
         # sort by namespace
         modules = sorted(self._modules, key=lambda x: x[0].lower())
 
+        path = os.path.join(self._dest, self.API_DIR)
+        os.mkdir(path)
+
         module_names = []
         for namespace, version in modules:
-            path = os.path.join(self._dest, self.API_DIR)
-            os.mkdir(path)
             gen = ModuleGenerator(path, namespace, version)
             gen.write()
             module_names.append(gen.get_name())
