@@ -18,7 +18,7 @@ extensions = [
 ]
 source_suffix = '.rst'
 master_doc = 'index'
-project = 'pgidoc'
+project = 'pgi-docs'
 version = "0.1"
 release = "0.1"
 exclude_patterns = ['_build', 'README.rst']
@@ -32,6 +32,8 @@ html_theme_path = ['.']
 html_theme = 'theme'
 html_copy_source = False
 html_show_sourcelink = False
+html_title = "PGI Documentation"
+html_short_title = "Main"
 
 inheritance_node_attrs = dict(shape='box', fontsize=7,
                               color='gray70', style='rounded')
