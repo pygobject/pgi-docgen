@@ -1,4 +1,5 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
 # Copyright 2013 Christoph Reiter
 #
 # This library is free software; you can redistribute it and/or
@@ -35,6 +36,55 @@ def get_gir_dirs():
         dirs = ["/usr/local/share/", "/usr/share/"]
 
     return [os.path.join(d, "gir-1.0") for d in dirs]
+
+
+# Adapted from the PyGObject-Tutorial code
+# Copyright by Sebastian Pölsterl
+def parse_stock_icon(name):
+    """
+        e.g. 'Gtk.STOCK_ORIENTATION_LANDSCAPE'
+    """
+
+    img_p = re.compile("fileref=\"(.+?)\"")
+    define_p = re.compile("\\s+")
+    mapping = {}
+
+    with open("/usr/include/gtk-3.0/gtk/gtkstock.h", "rb") as fp:
+        imgs = []
+        item = None
+        for line in fp:
+            if "inlinegraphic" in line:
+                m = img_p.search(line)
+                if m != None:
+                    imgs.append(m.group(1))
+
+            if line.startswith("#define GTK_"):
+                item = define_p.split(line)[1].replace("GTK_", "Gtk.")
+                mapping[item] = imgs
+                imgs = []
+
+    base = "http://developer.gnome.org/gtk3/stable/"
+    if not name in mapping:
+        print "W: no image found for %r" % name
+        return ""
+
+    docs = ""
+    for fn in mapping[name]:
+        title = ""
+        if "-ltr" in fn:
+            title = "LTR variant:"
+        elif "-rtl" in fn:
+            title = "RTL variant:"
+        docs += """
+
+%s
+
+.. image:: %s
+    :alt: %s
+
+""" % (title, base + fn, fn)
+
+    return docs
 
 
 def escape_keyword(text, reg=re.compile("^(%s)$" % "|".join(keyword.kwlist))):
@@ -418,6 +468,11 @@ class Repository(object):
         if name.split(".")[-1][:1].isdigit():
             return
         docs = self._get_docs(name)
+
+        # Add images for stock icon constants
+        if name.startswith("Gtk.STOCK_"):
+            docs += parse_stock_icon(name)
+
         # sphinx gets confused by empty docstrings
         return """
 %s = %s

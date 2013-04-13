@@ -261,3 +261,7 @@ td p {
 .related ul li {
     display: inline;
 }
+
+img {
+    margin: 5px;
+}
