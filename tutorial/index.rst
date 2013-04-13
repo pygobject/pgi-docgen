@@ -19,7 +19,9 @@ Contents:
    :maxdepth: 1
 
    install
-   basics
+   import
+   porting
    unicode
+   threads
    objects
    gtk3/index

@@ -761,7 +761,9 @@ class MainGenerator(Generator):
             module_names.append(gen.get_name())
 
         api_path = os.path.join(self._dest, self.API_DIR)
-        with open(os.path.join(api_path, "index.rst"), "wb") as h:
+
+        if module_names:
+            h = open(os.path.join(api_path, "index.rst"), "wb")
             h.write("""
 API Reference
 =============
@@ -773,6 +775,7 @@ API Reference
 
             for sub in module_names:
                 h.write("    %s\n" % sub)
+            h.close()
 
         with open(os.path.join(self._dest, "index.rst"), "wb") as h:
             h.write("""
@@ -1352,10 +1355,10 @@ class ModuleGenerator(Generator):
 
 if __name__ == "__main__":
 
-    if len(sys.argv) <= 1:
-        print "%s <namespace-version>..." % sys.argv[0]
-        print "%s -a" % sys.argv[0]
-        raise SystemExit(1)
+    if "-h" in sys.argv or "--help" in sys.argv:
+         print "%s <namespace-version>..." % sys.argv[0]
+         print "%s -a" % sys.argv[0]
+         raise SystemExit(1)
 
     modules = []
     if "-a" in sys.argv[1:]:

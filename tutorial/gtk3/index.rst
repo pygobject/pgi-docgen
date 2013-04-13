@@ -14,6 +14,7 @@ Contents:
    :numbered:
    :maxdepth: 2
 
+   basics
    introduction
    layout
    label
