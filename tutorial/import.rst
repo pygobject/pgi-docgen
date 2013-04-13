@@ -7,13 +7,13 @@ Importing a module is as simple as
 
     from gi.repository import Gtk
 
-It is good practice to set the required version before the first import of 
-a module. If no version prior to import is set the newest library will be 
-loaded. Since the newer version might not be compatible with your code this 
-could break your application depending on what libraries the user has 
+It is good practice to set the required version before the first import of
+a module. If no version prior to import is set the newest library will be
+loaded. Since the newer version might not be compatible with your code this
+could break your application depending on which libraries the user has
 installed.
 
-The first import of an module in your application should look like this:
+The first import of a module in your application should look like this:
 
 ::
 
