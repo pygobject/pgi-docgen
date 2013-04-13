@@ -235,3 +235,29 @@ table .head {
 td p {
     display: inline;
 }
+
+
+.related {
+    padding-left: 30px;
+    padding-top: 10px;
+    font-size: 1.1em;
+    color: #888;
+}
+
+.related h3 {
+    display:none;
+}
+
+.related ul {
+    display: inline;
+    margin: 0;
+    padding: 0;
+}
+
+.related .right {
+    display:none;
+}
+
+.related ul li {
+    display: inline;
+}
