@@ -1,3 +1,29 @@
 {%- extends "basic/layout.html" %}
 {%- block relbar1 %}{% endblock %}
 {%- block relbar2 %}{% endblock %}
+
+{% block sidebarsearch %}
+{{ super() }}
+<div id="disqus_thread">
+<b>
+    <a href="#" onclick="show_comments(); return false;">Show Comments</a> (<a href="#disqus_thread" onclick="show_comments(); return false;" data-disqus-identifier="{{ pagename }}">-</a>)
+</b>
+</div>
+<script type="text/javascript">
+    var disqus_shortname = 'pgi-docs';
+    var disqus_identifier = "{{ pagename }}";
+
+    (function () {
+    var s = document.createElement('script'); s.async = true;
+    s.type = 'text/javascript';
+    s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+    (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+
+    show_comments = function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    };
+</script>
+{% endblock %}

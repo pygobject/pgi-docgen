@@ -46,5 +46,5 @@ if __name__ == "__main__":
     # make a nice tarball without the sphinx cruft
     os.chdir("_docs/_build")
     paths = [p for p in os.listdir(".") if p[:1] != "."]
-    subprocess.call(["tar", "-zcvf", "../../build.tar.gz"] + paths)
+    subprocess.call(["tar", "-zcvf", "../build.tar.gz"] + paths)
     os.chdir("../..")

@@ -63,7 +63,6 @@ a.headerlink:hover {
 }
 
 .document {
-    width: 100%;
     margin-left: 30px;
 }
 
@@ -109,7 +108,6 @@ tt.descname {
     color: #999;
     text-align: left;
     font-size: 0.8em;
-    width: 100%;
     margin: 0 5px 5px 5px;
 }
 
