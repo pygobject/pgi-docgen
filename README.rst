@@ -11,6 +11,7 @@ docbuild.py builds html docs using sphinx, optimizes png sizes and packages it.
 
 Both steps need a working (and the same) gi (no readthedocs.org etc.)
 
+
 How do I get started?
 ---------------------
 
@@ -21,3 +22,16 @@ How do I get started?
     ./docbuild.py
 
 `build.tar.gz` contains the generated docs
+
+
+License
+-------
+
+Everything in the `tutorial` sub directory:
+
+    GNU Free Documentation License 1.3 with no Invariant Sections, no
+    Front-Cover Texts, and no Back-Cover Texts
+
+Everything else:
+
+    GNU Lesser General Public License 2.1 or later
