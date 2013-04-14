@@ -3,17 +3,20 @@
 import os
 import sys
 
+has_api = False
 for entry in os.listdir("api"):
     path = os.path.join("api", entry)
     if os.path.isdir(path) and "_" in entry:
         sys.path.insert(0, os.path.abspath(path))
+        has_api = True
 
-sys.path.insert(0, os.path.abspath("../../"))
+sys.path.insert(0, os.path.abspath(".."))
 
 try:
     import pgi
 except ImportError:
-    pass
+    if has_api:
+        raise
 else:
     pgi.install_as_gi()
 

@@ -795,7 +795,6 @@ class MainGenerator(Generator):
     API_DIR = "api"
     TUTORIAL_DIR = "tutorial"
     THEME_DIR = "theme"
-    CONF_NAME = "conf.py"
 
     def __init__(self, dest):
         self._dest = dest
@@ -850,8 +849,8 @@ Python GObject Introspection Documentation
 """ % (self.TUTORIAL_DIR, self.API_DIR))
 
         # copy the theme, conf.py and all the static reST files
-        dest_conf = os.path.join(self._dest, self.CONF_NAME)
-        shutil.copy(self.CONF_NAME, dest_conf)
+        dest_conf = os.path.join(self._dest, "conf.py")
+        shutil.copy("conf.py.in", dest_conf)
         theme_dest = os.path.join(self._dest, self.THEME_DIR)
         shutil.copytree(self.THEME_DIR, theme_dest)
         tutorial_dest = os.path.join(self._dest, self.TUTORIAL_DIR)

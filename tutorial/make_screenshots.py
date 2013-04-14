@@ -14,12 +14,13 @@ def fake_gtk_main(path):
     import cairo
 
     window = Gtk.Window.list_toplevels()[0]
+    window.set_border_width(6)
 
     while Gtk.events_pending():
         Gtk.main_iteration_do(True)
 
     # increase until errors are gone... :/
-    for x in xrange(1000):
+    for x in xrange(5000):
         Gtk.main_iteration_do(False)
 
     alloc = window.get_allocation()
