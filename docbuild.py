@@ -6,6 +6,7 @@
 # License as published by the Free Software Foundation; either
 # version 2.1 of the License, or (at your option) any later version.
 
+import sys
 import os
 import subprocess
 import multiprocessing
@@ -30,9 +31,14 @@ def png_optimize_dir(dir_):
 
 
 if __name__ == "__main__":
+
+    if len(sys.argv) > 1:
+        print "Does not take any arguments."
+        raise SystemExit(1)
+
     DEST = "_docs"
     build_dir = os.path.join(DEST, "_build")
-    subprocess.call(["sphinx-build", DEST, build_dir])
+    subprocess.check_call(["sphinx-build", DEST, build_dir])
 
     png_dirs = [
         os.path.join(build_dir, "_static"),

@@ -789,12 +789,25 @@ class Generator(object):
         raise NotImplementedError
 
 
-class MainGenerator(Generator):
-    """Creates the sphinx environment and the index page"""
-
-    API_DIR = "api"
+class TutorialGenerator(Generator):
     TUTORIAL_DIR = "tutorial"
-    THEME_DIR = "theme"
+
+    def __init__(self, dest):
+        self._dest = dest
+
+    def is_empty(self):
+        return False
+
+    def get_name(self):
+        return "tutorial/index"
+
+    def write(self):
+        tutorial_dest = os.path.join(self._dest, self.TUTORIAL_DIR)
+        shutil.copytree(self.TUTORIAL_DIR, tutorial_dest)
+
+
+class APIGenerator(Generator):
+    API_DIR = "api"
 
     def __init__(self, dest):
         self._dest = dest
@@ -804,9 +817,13 @@ class MainGenerator(Generator):
         """Add a module: add_module('Gtk', '3.0')"""
         self._modules.append((namespace, version))
 
-    def write(self):
-        os.mkdir(self._dest)
+    def is_empty(self):
+        return not self._modules
 
+    def get_name(self):
+        return "api/index"
+
+    def write(self):
         # sort by namespace
         modules = sorted(self._modules, key=lambda x: x[0].lower())
 
@@ -821,9 +838,8 @@ class MainGenerator(Generator):
 
         api_path = os.path.join(self._dest, self.API_DIR)
 
-        if module_names:
-            h = open(os.path.join(api_path, "index.rst"), "wb")
-            h.write("""
+        h = open(os.path.join(api_path, "index.rst"), "wb")
+        h.write("""
 API Reference
 =============
 
@@ -832,9 +848,31 @@ API Reference
 
 """)
 
-            for sub in module_names:
-                h.write("    %s\n" % sub)
-            h.close()
+        for sub in module_names:
+            h.write("    %s\n" % sub)
+        h.close()
+
+
+class MainGenerator(Generator):
+    """Creates the sphinx environment and the index page"""
+
+    THEME_DIR = "theme"
+
+    def __init__(self, dest):
+        self._dest = dest
+        self._modules = []
+
+        self._tutorial_gen = TutorialGenerator(dest)
+        self._api_gen = APIGenerator(dest)
+
+    def add_module(self, *args):
+         self._api_gen.add_module(*args)
+
+    def is_empty(self):
+        return self._tutorial_gen.is_empty() and self._api_gen.is_empty()
+
+    def write(self):
+        os.mkdir(self._dest)
 
         with open(os.path.join(self._dest, "index.rst"), "wb") as h:
             h.write("""
@@ -844,17 +882,19 @@ Python GObject Introspection Documentation
 .. toctree::
     :maxdepth: 2
 
-    %s/index
-    %s/index
-""" % (self.TUTORIAL_DIR, self.API_DIR))
+""")
 
-        # copy the theme, conf.py and all the static reST files
+            for gen in [self._tutorial_gen, self._api_gen]:
+                if gen.is_empty():
+                    continue
+                gen.write()
+                h.write("    %s\n" % gen.get_name())
+
+        # copy the theme, conf.py
         dest_conf = os.path.join(self._dest, "conf.py")
-        shutil.copy("conf.py.in", dest_conf)
+        shutil.copy("conf.in.py", dest_conf)
         theme_dest = os.path.join(self._dest, self.THEME_DIR)
         shutil.copytree(self.THEME_DIR, theme_dest)
-        tutorial_dest = os.path.join(self._dest, self.TUTORIAL_DIR)
-        shutil.copytree(self.TUTORIAL_DIR, tutorial_dest)
 
 
 class FunctionGenerator(Generator):

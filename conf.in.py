@@ -4,11 +4,12 @@ import os
 import sys
 
 has_api = False
-for entry in os.listdir("api"):
-    path = os.path.join("api", entry)
-    if os.path.isdir(path) and "_" in entry:
-        sys.path.insert(0, os.path.abspath(path))
-        has_api = True
+if os.path.exists("api"):
+    for entry in os.listdir("api"):
+        path = os.path.join("api", entry)
+        if os.path.isdir(path) and "_" in entry:
+            sys.path.insert(0, os.path.abspath(path))
+            has_api = True
 
 sys.path.insert(0, os.path.abspath(".."))
 
