@@ -32,4 +32,3 @@ Contents:
    clipboard
    drag_and_drop
    builder
-   stock
