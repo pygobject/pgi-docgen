@@ -24,9 +24,14 @@ import csv
 import cStringIO
 
 
-import pgi
-pgi.install_as_gi()
-pgi.set_backend("ctypes,null")
+try:
+    import pgi
+except ImportError:
+    is_pgi = False
+else:
+    is_pgi = True
+    pgi.install_as_gi()
+    pgi.set_backend("ctypes,null")
 
 
 def get_gir_dirs():
@@ -1414,6 +1419,11 @@ if __name__ == "__main__":
          print "%s <namespace-version>..." % sys.argv[0]
          print "%s -a" % sys.argv[0]
          raise SystemExit(1)
+
+    if not is_pgi and len(sys.argv) > 1:
+        print "Can't build API docs without pgi"
+        print "Get here: https://github.com/lazka/pgi"
+        raise SystemExit(1)
 
     modules = []
     if "-a" in sys.argv[1:]:

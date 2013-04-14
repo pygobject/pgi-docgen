@@ -9,8 +9,13 @@ for entry in os.listdir("api"):
         sys.path.insert(0, os.path.abspath(path))
 
 sys.path.insert(0, os.path.abspath("../../"))
-import pgi
-pgi.install_as_gi()
+
+try:
+    import pgi
+except ImportError:
+    pass
+else:
+    pgi.install_as_gi()
 
 extensions = [
     'sphinx.ext.autodoc',
