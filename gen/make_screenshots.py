@@ -7,6 +7,8 @@
 # version 2.1 of the License, or (at your option) any later version.
 
 import os
+import sys
+
 
 fake_gtk_main = """
 def fake_gtk_main(path):
@@ -20,7 +22,7 @@ def fake_gtk_main(path):
         Gtk.main_iteration_do(True)
 
     # increase until errors are gone... :/
-    for x in xrange(5000):
+    for x in xrange(7500):
         Gtk.main_iteration_do(False)
 
     alloc = window.get_allocation()
@@ -36,25 +38,31 @@ def fake_gtk_main(path):
         Gtk.main_iteration_do(False)
 """
 
+
 if __name__ == "__main__":
-    for entry in os.listdir("examples"):
+
+    src = sys.argv[1]
+    dest = sys.argv[2]
+
+    for entry in os.listdir(src):
         if not entry.endswith(".py"):
             continue
-        path = os.path.join("examples", entry)
+        path = os.path.join(src, entry)
         h = open(path, "rb")
         data = h.read()
         h.close()
         assert "Gtk.main" in data
         name = os.path.splitext(entry)[0]
         data = fake_gtk_main + data
-        try:
-            os.mkdir("screenshots")
-        except:
-            pass
-        dest_path = os.path.join("..", "screenshots", name + ".png")
+        dest_path = os.path.join(dest, name + ".png")
+        dest_path = os.path.abspath(dest_path)
         data = data.replace("Gtk.main()", "fake_gtk_main('%s')" % dest_path)
-        def x():
-            os.chdir("examples")
-            exec data in {}
-            os.chdir("..")
-        x()
+
+        def go():
+            old = os.getcwd()
+            os.chdir(src)
+            try:
+                exec data in {}
+            finally:
+                os.chdir(old)
+        go()

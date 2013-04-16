@@ -15,7 +15,7 @@ from .constants import ConstantsGenerator
 from .function import FunctionGenerator
 from .enum import EnumGenerator
 from .repo import Repository
-from .struct import StructGenerator
+from .structures import StructGenerator
 from . import util
 
 

@@ -7,6 +7,7 @@
 
 import os
 import shutil
+import subprocess
 
 from . import util
 
@@ -26,3 +27,12 @@ class TutorialGenerator(util.Generator):
     def write(self):
         tutorial_dest = os.path.join(self._dest, self.TUTORIAL_DIR)
         shutil.copytree(self.TUTORIAL_DIR, tutorial_dest)
+
+        examples_path = os.path.join(tutorial_dest, "examples")
+        images_path = os.path.join(tutorial_dest, "images")
+        os.mkdir(images_path)
+
+        this_dir = os.path.dirname(os.path.realpath(__file__))
+        script = os.path.join(this_dir, "make_screenshots.py")
+
+        subprocess.check_call(["python", script, examples_path, images_path])

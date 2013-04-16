@@ -197,6 +197,10 @@ pre, .admonition {
     border: 1px solid #ccc;
 }
 
+img {
+    border: 1px solid #ccc;
+}
+
 .admonition-title {
     color: #3465a4;
     font-weight: bold;
