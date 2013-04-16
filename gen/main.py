@@ -19,9 +19,10 @@ class MainGenerator(util.Generator):
 
     THEME_DIR = "theme"
 
-    def __init__(self, dest):
+    def __init__(self, dest, tutorial=False):
         self._dest = dest
         self._modules = []
+        self._tutorial = tutorial
 
         self._tutorial_gen = TutorialGenerator(dest)
         self._api_gen = APIGenerator(dest)
@@ -30,7 +31,10 @@ class MainGenerator(util.Generator):
         self._api_gen.add_module(*args)
 
     def is_empty(self):
-        return self._tutorial_gen.is_empty() and self._api_gen.is_empty()
+        if self._tutorial:
+            return self._tutorial_gen.is_empty() and self._api_gen.is_empty()
+        else:
+            return self._api_gen.is_empty()
 
     def write(self):
         os.mkdir(self._dest)
@@ -45,7 +49,12 @@ Python GObject Introspection Documentation
 
 """)
 
-            for gen in [self._tutorial_gen, self._api_gen]:
+            gens = []
+            if self._tutorial:
+                gens.append(self._tutorial_gen)
+            gens.append(self._api_gen)
+
+            for gen in gens:
                 if gen.is_empty():
                     continue
                 gen.write()

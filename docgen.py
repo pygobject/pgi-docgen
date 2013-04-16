@@ -26,9 +26,9 @@ from gen.util import get_gir_dirs
 
 if __name__ == "__main__":
 
-    if "-h" in sys.argv or "--help" in sys.argv:
-        print "%s <namespace-version>..." % sys.argv[0]
-        print "%s -a" % sys.argv[0]
+    if "-h" in sys.argv[1:] or "--help" in sys.argv[1:] or len(sys.argv) < 2:
+        print ("%s [-t | --tutorial] [-a | --all | <namespace-version>...]"
+               % sys.argv[0])
         raise SystemExit(1)
 
     if not is_pgi and len(sys.argv) > 1:
@@ -37,7 +37,7 @@ if __name__ == "__main__":
         raise SystemExit(1)
 
     modules = []
-    if "-a" in sys.argv[1:]:
+    if "-a" in sys.argv[1:] or "--all" in sys.argv[1:]:
         for d in get_gir_dirs():
             if not os.path.exists(d):
                 continue
@@ -46,14 +46,16 @@ if __name__ == "__main__":
                 if ext == ".gir":
                     modules.append(root)
     else:
-        modules.extend(sys.argv[1:])
+        modules.extend([a for a in sys.argv[1:] if a[:1] != "-"])
 
     dest_dir = "_docs"
 
     if os.path.exists(dest_dir):
         shutil.rmtree(dest_dir)
 
-    gen = MainGenerator(dest_dir)
+    create_tutorial = "--tutorial" in sys.argv[1:] or "-t" in sys.argv[1:]
+
+    gen = MainGenerator(dest_dir, tutorial=create_tutorial)
 
     for arg in modules:
         namespace, version = arg.split("-")
