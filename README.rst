@@ -17,8 +17,8 @@ How do I get started?
 
 ::
 
-    ./docgen.py # Tutorial only
-    ./docgen.py Gtk-3.0 Gst-1.0 # Tutorial + API docs for Gtk/Gst, needs pgi
+    ./docgen.py -t # Tutorial only
+    ./docgen.py -t Gtk-3.0 Gst-1.0 # Tutorial + API docs for Gtk/Gst, needs pgi
     ./docbuild.py
 
 `build.tar.gz` contains the generated docs
