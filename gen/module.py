@@ -16,6 +16,7 @@ from .function import FunctionGenerator
 from .enum import EnumGenerator
 from .repo import Repository
 from .structures import StructGenerator
+from .union import UnionGenerator
 from . import util
 
 
@@ -73,12 +74,13 @@ class ModuleGenerator(util.Generator):
         for dep in repo.get_dependencies():
             self._add_dependency(module, *dep)
 
-        from gi.repository import GObject, Gtk
+        from gi.repository import GObject, Gtk, GLib
         class_base = GObject.Object
         iface_base = GObject.GInterface
         flags_base = GObject.GFlags
         enum_base = GObject.GEnum
         struct_base = Gtk.AccelKey.__mro__[-2]  # FIXME
+        union_base = GLib.DoubleIEEE754.__mro__[-2]  # FIXME
 
         obj_gen = GObjectGenerator(self._module_path, module)
         iface_gen = InterfaceGenerator(self._module_path, module)
@@ -86,6 +88,7 @@ class ModuleGenerator(util.Generator):
         enums_gen = EnumGenerator(self._module_path, module)
         func_gen = FunctionGenerator(self._module_path, module)
         struct_gen = StructGenerator(self._module_path, module)
+        union_gen = UnionGenerator(self._module_path, module)
         const_gen = ConstantsGenerator(self._module_path, module)
 
         def is_method_owner(cls, method_name):
@@ -145,12 +148,18 @@ class ModuleGenerator(util.Generator):
                 elif issubclass(obj, enum_base):
                     code = repo.parse_flags(name, obj)
                     enums_gen.add_enum(obj, code)
-                elif issubclass(obj, struct_base):
+                elif issubclass(obj, (struct_base, union_base)):
                     # Hide FooPrivate if Foo exists
                     if key.endswith("Private") and hasattr(mod, key[:-7]):
                         continue
                     code = repo.parse_class(name, obj, add_bases=True)
-                    struct_gen.add_struct(obj, code)
+
+                    if issubclass(obj, struct_base):
+                        gen = struct_gen
+                        struct_gen.add_struct(obj, code)
+                    else:
+                        gen = union_gen
+                        union_gen.add_union(obj, code)
 
                     for attr in dir(obj):
                         if attr.startswith("_"):
@@ -169,7 +178,7 @@ class ModuleGenerator(util.Generator):
                         if callable(attr_obj):
                             code = repo.parse_function(func_key, obj, attr_obj)
                             if code:
-                                struct_gen.add_method(obj, attr_obj, code)
+                                gen.add_method(obj, attr_obj, code)
                 else:
                     # unions..
                     code = repo.parse_class(name, obj)
@@ -192,7 +201,7 @@ class ModuleGenerator(util.Generator):
 
 """)
 
-        gens = [func_gen, iface_gen, obj_gen, struct_gen,
+        gens = [func_gen, iface_gen, obj_gen, struct_gen, union_gen,
                 flags_gen, enums_gen, const_gen]
         for gen in gens:
             if gen.is_empty():
