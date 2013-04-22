@@ -108,13 +108,15 @@ class FuncSignature(object):
                 return t
 
     @classmethod
-    def from_string(cls, line):
+    def from_string(cls, orig_name, line):
         match = re.match("(.*?)\((.*?)\)\s*(raises|)\s*(-> )?(.*)", line)
         if not match:
             return
 
         groups = match.groups()
         name, args, raises, dummy, ret = groups
+        if orig_name != name:
+            return
 
         args = args and args.split(",") or []
 
@@ -488,7 +490,11 @@ class %s(%s):
         def get_sig(obj):
             doc = str(obj.__doc__)
             first_line = doc and doc.splitlines()[0] or ""
-            return FuncSignature.from_string(first_line)
+            return FuncSignature.from_string(name.split(".")[-1], first_line)
+
+        # "GLib.IConv."
+        if name.split(".")[-1] == "":
+            name += "_"
 
         func_name = name.split(".")[-1]
 
