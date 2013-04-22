@@ -151,6 +151,25 @@ class ModuleGenerator(util.Generator):
                         continue
                     code = repo.parse_class(name, obj, add_bases=True)
                     struct_gen.add_struct(obj, code)
+
+                    for attr in dir(obj):
+                        if attr.startswith("_"):
+                            continue
+
+                        if not is_method_owner(obj, attr):
+                            continue
+
+                        func_key = name + "." + attr
+                        try:
+                            attr_obj = getattr(obj, attr)
+                        except NotImplementedError:
+                            # FIXME.. pgi exposes methods it can't compile
+                            continue
+
+                        if callable(attr_obj):
+                            code = repo.parse_function(func_key, obj, attr_obj)
+                            if code:
+                                struct_gen.add_method(obj, attr_obj, code)
                 else:
                     # unions..
                     code = repo.parse_class(name, obj)

@@ -16,6 +16,7 @@ class StructGenerator(util.Generator):
         self.path = os.path.join(self._sub_dir, "index.rst")
 
         self._structs = {}
+        self._methods = {}
         self._module = module_fileobj
 
     def get_name(self):
@@ -29,14 +30,33 @@ class StructGenerator(util.Generator):
             code = code.encode("utf-8")
         self._structs[obj] = code
 
+    def add_method(self, cls_obj, obj, code):
+        if isinstance(code, unicode):
+            code = code.encode("utf-8")
+
+        if cls_obj in self._methods:
+            self._methods[cls_obj].append((obj, code))
+        else:
+            self._methods[cls_obj] = [(obj, code)]
+
     def write(self):
         os.mkdir(self._sub_dir)
 
         structs = self._structs.keys()
 
+        def indent(c):
+            return "\n".join(["    %s" % l for l in c.splitlines()])
+
         # write the code
         for cls in structs:
             self._module.write(self._structs[cls])
+            methods = self._methods.get(cls, [])
+            def sort_func(e):
+                return not util.method_is_static(e[0]), e[0].__name__
+            methods.sort(key=sort_func)
+
+            for obj, code in methods:
+                self._module.write(indent(code) + "\n")
 
         index_handle = open(self.path, "wb")
         index_handle.write(util.make_rest_title("Structures") + "\n\n")
