@@ -1,13 +1,9 @@
 body {
     font-family: Cantarell,'Droid Sans',Ubuntu,'DejaVu Sans',Arial,sans-serif;
-    font-size: 12px;
-    line-height: 1.4em;
-    color: #333;
+    font-size: 85%;
+    color: #222;
     margin: 0;
     padding: 0;
-}
-
-html {
     background: #fff url(../_static/html-bg.png) repeat-x;
 }
 
@@ -16,13 +12,12 @@ h1, h2, h3 {
 }
 
 h1 {
-    line-height: 1em;
+    font-size: 1.6em;
     color: #729fcf;
-    margin-bottom: 1em;
 }
 
-p {
-    font-size: 1.1em;
+h2 {
+    font-size: 1.3em;
 }
 
 a {
@@ -62,20 +57,18 @@ a.headerlink:hover {
     font-size: 0.8em;
 }
 
-.document {
-    margin-left: 30px;
-}
-
 .documentwrapper {
-    float: left;
-    width: 67%;
+    margin-right: 23em;
+    padding-left: 2em;
+    padding-right: 2em;
 }
 
 .sphinxsidebar {
-    float: right;
-    width: 30%;
-    margin-top: 20px;
+    width: 22em;
     color: #666;
+    position: absolute;
+    right: 1em;
+    top: 0;
 }
 
 .sphinxsidebar a {
@@ -93,15 +86,11 @@ input[type="submit"] {
 
 tt.literal {
     font-style: italic;
-    font-size: 0.9em;
 }
 
 tt.descname {
     font-weight: bold;
-}
-
-.clearer {
-    clear: both;
+    font-size: 1.1em;
 }
 
 .footer {
@@ -134,10 +123,6 @@ table.docutils td {
 
 table.field-list th, table.field-list td {
     border: none;
-}
-
-.highlight {
-    font-size: 0.8em;
 }
 
 dl dt, dl tbody {
@@ -186,15 +171,22 @@ dd {
     padding-left: 15px;
 }
 
+
+big {
+    font-size: 1em;
+}
+
 table
 {
     border-collapse:collapse;
 }
 
 pre, .admonition {
-    padding: 0 5px;
+    padding: 0.3em;
     background-color: #f6f6f6;
     border: 1px solid #ccc;
+    font-size: 1.1em;
+    line-height: 1.5em
 }
 
 .admonition-title {
@@ -203,7 +195,6 @@ pre, .admonition {
 }
 
 .toctree-wrapper {
-    font-size: 1.3em;
     line-height: 1.5em;
 }
 
