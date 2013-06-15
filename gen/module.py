@@ -60,8 +60,10 @@ class ModuleGenerator(util.Generator):
         module.write("# -*- coding: utf-8 -*-\n")
         # for references to the real module
         self._add_dependency(module, namespace, version)
-        # for flags
+        # basic deps
         self._add_dependency(module, "GObject", "2.0")
+        self._add_dependency(module, "Gio", "2.0")
+        self._add_dependency(module, "GLib", "2.0")
 
         try:
             mod = import_namespace(namespace, version)
