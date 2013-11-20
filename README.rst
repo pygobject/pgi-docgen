@@ -29,8 +29,16 @@ License
 
 Everything in the `tutorial` sub directory:
 
+    https://github.com/sebp/PyGObject-Tutorial
+
     GNU Free Documentation License 1.3 with no Invariant Sections, no
     Front-Cover Texts, and no Back-Cover Texts
+
+Everything in the `theme` sub directory:
+
+    https://github.com/rtfd/readthedocs.org
+
+    MIT License
 
 Everything else:
 

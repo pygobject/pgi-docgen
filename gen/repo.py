@@ -511,7 +511,11 @@ class %s(%s):
         # no docstring, try to get the signature from base classes
         if not sig and owner:
             for base in owner.__mro__[1:]:
-                base_obj = getattr(base, func_name, None)
+                try:
+                    base_obj = getattr(base, func_name, None)
+                except NotImplementedError:
+                    # function not implemented in pgi
+                    continue
                 sig = get_sig(base_obj)
                 if sig:
                     ignore_spec = True

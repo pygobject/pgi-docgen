@@ -22,7 +22,10 @@ from . import util
 
 def import_namespace(namespace, version):
     import gi
-    gi.require_version(namespace, version)
+    try:
+        gi.require_version(namespace, version)
+    except ValueError as e:
+        raise ImportError(e)
     module = __import__("gi.repository", fromlist=[namespace])
     return getattr(module, namespace)
 
@@ -68,7 +71,7 @@ class ModuleGenerator(util.Generator):
         try:
             mod = import_namespace(namespace, version)
         except ImportError:
-            print "Couldn't import %r, skipping" % namespace
+            print "Couldn't import %s-%s, skipping" % (namespace, version)
             return
 
         repo = Repository(namespace, version)

@@ -36,17 +36,38 @@ if __name__ == "__main__":
         print "Get here: https://github.com/lazka/pgi"
         raise SystemExit(1)
 
+    # get all availabel gir files
+    all_modules = {}
+    for d in get_gir_dirs():
+        if not os.path.exists(d):
+            continue
+        for entry in os.listdir(d):
+            root, ext = os.path.splitext(entry)
+            if ext == ".gir":
+                all_modules[root] = os.path.join(d, entry)
+
     modules = []
     if "-a" in sys.argv[1:] or "--all" in sys.argv[1:]:
-        for d in get_gir_dirs():
-            if not os.path.exists(d):
-                continue
-            for entry in os.listdir(d):
-                root, ext = os.path.splitext(entry)
-                if ext == ".gir":
-                    modules.append(root)
+        modules = all_modules.keys()
     else:
         modules.extend([a for a in sys.argv[1:] if a[:1] != "-"])
+        for m in modules:
+            if m not in all_modules.keys():
+                print "%r not found" % m
+                raise SystemExit(1)
+
+    # print all packages that cotain the gir files on debian
+    if "--debian" in sys.argv[1:]:
+        print "Generating dpkg list.."
+        packages = []
+        for m in modules:
+            import subprocess
+            out = subprocess.check_output(["dpkg", "-S", all_modules[m]])
+            packages.append(out.split(":", 1)[0])
+        print "sudo apt-get install " + " ".join(sorted(set(packages)))
+        raise SystemExit(0)
+
+    print "Modules:", " ".join(modules)
 
     dest_dir = "_docs"
 
