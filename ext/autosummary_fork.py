@@ -247,7 +247,7 @@ class Autosummary(Directive):
                 real_name, obj, parent = import_by_name(name, prefixes=prefixes)
             except ImportError:
                 self.warn('failed to import %s' % name)
-                items.append((name, '', '', name))
+                items.append((name, '', '', name, ''))
                 continue
 
             # NB. using real_name here is important, since Documenters
@@ -255,11 +255,11 @@ class Autosummary(Directive):
             documenter = get_documenter(obj, parent)(self, real_name)
             if not documenter.parse_name():
                 self.warn('failed to parse name %s' % real_name)
-                items.append((display_name, '', '', real_name))
+                items.append((display_name, '', '', real_name, ''))
                 continue
             if not documenter.import_object():
                 self.warn('failed to import object %s' % real_name)
-                items.append((display_name, '', '', real_name))
+                items.append((display_name, '', '', real_name, ''))
                 continue
 
             # -- Grab the signature
