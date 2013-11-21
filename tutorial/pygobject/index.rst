@@ -1,5 +1,5 @@
-PyGObject and GTK+ 3 Tutorial
-=============================
+PyGObject Tutorial
+==================
 
 Prior to working through this tutorial, it is recommended that you
 have a reasonable grasp of the Python programming language.
@@ -24,4 +24,3 @@ Contents:
    unicode
    threads
    objects
-   gtk3/index

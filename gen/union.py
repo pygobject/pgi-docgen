@@ -19,8 +19,8 @@ class UnionGenerator(util.Generator):
         self._methods = {}
         self._module = module_fileobj
 
-    def get_name(self):
-        return os.path.join("unions", "index.rst")
+    def get_names(self):
+        return [os.path.join("unions", "index.rst")]
 
     def is_empty(self):
         return not bool(self._unions)

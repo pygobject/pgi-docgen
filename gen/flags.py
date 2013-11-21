@@ -24,8 +24,8 @@ class FlagsGenerator(util.Generator):
 
         self._flags[obj] = code
 
-    def get_name(self):
-        return os.path.basename(self.path)
+    def get_names(self):
+        return [os.path.basename(self.path)]
 
     def is_empty(self):
         return not bool(self._flags)

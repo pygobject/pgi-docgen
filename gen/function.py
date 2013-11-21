@@ -18,8 +18,8 @@ class FunctionGenerator(util.Generator):
         self._funcs = {}
         self._module = module_fileobj
 
-    def get_name(self):
-        return os.path.basename(self.path)
+    def get_names(self):
+        return [os.path.basename(self.path)]
 
     def is_empty(self):
         return not bool(self._funcs)

@@ -264,6 +264,11 @@ class Autosummary(Directive):
 
             # -- Grab the signature
 
+            prefix = ""
+            if documenter.objtype == "method":
+                if documenter.directivetype == "staticmethod":
+                    prefix = "static" 
+
             sig = documenter.format_signature()
             if not sig:
                 sig = ''
@@ -275,7 +280,7 @@ class Autosummary(Directive):
 
             display_name = display_name.split(".")[-1]
 
-            items.append((display_name, sig, "", real_name))
+            items.append((display_name, sig, "", real_name, prefix))
 
         return items
 
@@ -285,13 +290,14 @@ class Autosummary(Directive):
         *items* is a list produced by :meth:`get_items`.
         """
         table_spec = addnodes.tabular_col_spec()
-        table_spec['spec'] = 'l'
+        table_spec['spec'] = 'll'
 
         table = autosummary_table('')
         real_table = nodes.table('', classes=['longtable'])
         table.append(real_table)
         group = nodes.tgroup('')
         real_table.append(group)
+        group.append(nodes.colspec('', colwidth=0))
         group.append(nodes.colspec('', colwidth=100))
         body = nodes.tbody('')
         group.append(body)
@@ -311,13 +317,16 @@ class Autosummary(Directive):
                 row.append(nodes.entry('', node))
             body.append(row)
 
-        for name, sig, summary, real_name in items:
+        for name, sig, summary, real_name, prefix in items:
             qualifier = 'obj'
             if 'nosignatures' not in self.options:
                 col1 = ':%s:`%s <%s>`\ %s' % (qualifier, name, real_name, sig)
             else:
                 col1 = ':%s:`%s <%s>`' % (qualifier, name, real_name)
-            append_row(col1)
+            if prefix:
+                prefix = "*%s*" % prefix
+
+            append_row(prefix, col1)
 
         return [table_spec, table]
 

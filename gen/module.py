@@ -41,8 +41,8 @@ class ModuleGenerator(util.Generator):
         self._index_name = os.path.join(nick, "index")
         self._module_path = os.path.join(dir_, nick)
 
-    def get_name(self):
-        return self._index_name
+    def get_names(self):
+        return [self._index_name]
 
     def _add_dependency(self, module, name, version):
         """Import the module in the generated code"""
@@ -211,7 +211,8 @@ class ModuleGenerator(util.Generator):
         for gen in gens:
             if gen.is_empty():
                 continue
-            handle.write("    %s\n" % gen.get_name())
+            for name in gen.get_names():
+                handle.write("    %s\n" % name)
             gen.write()
 
         module.close()

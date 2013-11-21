@@ -25,8 +25,8 @@ class ConstantsGenerator(Generator):
 
         self._consts[name] = code
 
-    def get_name(self):
-        return os.path.basename(self.path)
+    def get_names(self):
+        return [os.path.basename(self.path)]
 
     def is_empty(self):
         return not bool(self._consts)

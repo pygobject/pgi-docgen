@@ -9,7 +9,7 @@
 import os
 import shutil
 
-from .tutorial import TutorialGenerator
+from .tutorial import TutorialGenerator, AboutGenerator
 from .api import APIGenerator
 from . import util
 
@@ -27,6 +27,7 @@ class MainGenerator(util.Generator):
 
         self._tutorial_gen = TutorialGenerator(dest)
         self._api_gen = APIGenerator(dest)
+        self._about_gen = AboutGenerator(dest)
 
     def add_module(self, *args):
         self._api_gen.add_module(*args)
@@ -51,6 +52,7 @@ Python GObject Introspection Documentation
 """)
 
             gens = []
+            gens.append(self._about_gen)
             if self._tutorial:
                 gens.append(self._tutorial_gen)
             gens.append(self._api_gen)
@@ -59,7 +61,9 @@ Python GObject Introspection Documentation
                 if gen.is_empty():
                     continue
                 gen.write()
-                h.write("    %s\n" % gen.get_name())
+
+                for n in gen.get_names():
+                    h.write("    %s\n" % n)
 
         # copy the theme, conf.py
         dest_conf = os.path.join(self._dest, "conf.py")

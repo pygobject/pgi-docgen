@@ -20,9 +20,27 @@ class TutorialGenerator(util.Generator):
     def is_empty(self):
         return False
 
-    def get_name(self):
-        return "tutorial/index"
+    def get_names(self):
+        return ["tutorial/pygobject/index", "tutorial/gtk3/index"]
 
     def write(self):
         tutorial_dest = os.path.join(self._dest, self.TUTORIAL_DIR)
         shutil.copytree(self.TUTORIAL_DIR, tutorial_dest)
+
+
+class AboutGenerator(util.Generator):
+    def __init__(self, dest):
+        self._dest = dest
+
+    def is_empty(self):
+        return False
+
+    def get_names(self):
+        return ["about"]
+
+    def write(self):
+
+        with open(os.path.join(self._dest, "about.rst"), "wb") as h:
+            h.write("""
+.. include:: ../about.rst
+""")

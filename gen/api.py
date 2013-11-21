@@ -25,8 +25,8 @@ class APIGenerator(util.Generator):
     def is_empty(self):
         return not self._modules
 
-    def get_name(self):
-        return "api/index"
+    def get_names(self):
+        return ["api/index"]
 
     def write(self):
         # sort by namespace
@@ -39,7 +39,7 @@ class APIGenerator(util.Generator):
         for namespace, version in modules:
             gen = ModuleGenerator(path, namespace, version)
             gen.write()
-            module_names.append(gen.get_name())
+            module_names.extend(gen.get_names())
 
         api_path = os.path.join(self._dest, self.API_DIR)
 

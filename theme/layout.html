@@ -25,21 +25,6 @@
   {# CSS #}
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
-    <style>
-.toctree-l2 a {
-color: #ce5c00 !important;
-}
-.toctree-l3 a {
-color: #4e9a06 !important;
-}
-.toctree-l4 a {
-color: #204a86 !important;
-}
-.current ul {
-border-bottom: 1px solid #bbb;
-}
-    </style>
-
   {# JS #}
   {% if not embedded %}
 
@@ -116,7 +101,7 @@ border-bottom: 1px solid #bbb;
       </div>
 
       <div class="wy-menu wy-menu-vertical" data-spy="affix">
-        {% set toctree = toctree(maxdepth=4, collapse=True) %}
+        {% set toctree = toctree(maxdepth=2, collapse=False, titles_only=True) %}
         {% if toctree %}
             {{ toctree }}
         {% else %}

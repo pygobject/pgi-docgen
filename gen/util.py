@@ -63,6 +63,9 @@ class Generator(object):
         """Create and write everything"""
         raise NotImplementedError
 
-    def get_name(self):
-        """A name that can be references in an rst file (toctree e.g.)"""
+    def get_names(self):
+        """A list of names that can be references in
+        an rst file (toctree e.g.)
+        """
+
         raise NotImplementedError
