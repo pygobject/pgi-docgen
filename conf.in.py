@@ -24,8 +24,9 @@ else:
 extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.intersphinx',
-    'sphinx.ext.autosummary',
+    #'sphinx.ext.autosummary',
     'sphinx.ext.inheritance_diagram',
+    'ext.autosummary_fork',
 ]
 source_suffix = '.rst'
 master_doc = 'index'

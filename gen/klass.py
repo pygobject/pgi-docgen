@@ -129,20 +129,40 @@ Inheritance Diagram
 """ % name)
 
             h.write("""
+Methods
+-------
+
+.. autosummary::
+
+""")
+
+            methods = self._methods.get(cls, [])
+            if not methods:
+                h.write("None\n\n")
+
+            # sort static methods first, then by name
+            def sort_func(e):
+                return not util.method_is_static(e[0]), e[0].__name__
+            methods.sort(key=sort_func)
+            for obj, code in methods:
+                h.write("    " + cls.__module__ + "." + cls.__name__ +
+                        "." + obj.__name__ + "\n")
+
+            h.write("""
 Properties
 ----------
 """)
-            h.write(self._props.get(cls, ""))
+            h.write(self._props.get(cls, "") or "None\n\n")
 
             h.write("""
 Signals
 -------
 """)
-            h.write(self._sigs.get(cls, ""))
+            h.write(self._sigs.get(cls, "") or "None\n\n")
 
             h.write("""
-Class
------
+Details
+-------
 """)
 
             h.write("""

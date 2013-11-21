@@ -40,6 +40,12 @@ Everything in the `theme` sub directory:
 
     MIT License
 
+Everything in the `ext` sub directory:
+
+    https://bitbucket.org/birkenfeld/sphinx/
+
+    BSD
+
 Everything else:
 
     GNU Lesser General Public License 2.1 or later

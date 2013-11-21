@@ -38,6 +38,20 @@ Functions
 =========
 """)
 
+        handle.write("""
+Synopsis
+--------
+""")
+
+        handle.write(".. autosummary::\n\n")
+        for name, code in sorted(self._funcs.items()):
+            handle.write("    %s\n" % name)
+
+        handle.write("""
+Details
+-------
+""")
+
         for name, code in sorted(self._funcs.items()):
             self._module.write(code)
             handle.write(".. autofunction:: %s\n\n" % name)
