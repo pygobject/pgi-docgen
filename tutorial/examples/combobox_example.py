@@ -24,12 +24,12 @@ class ComboBoxWindow(Gtk.Window):
 
         country_store = Gtk.ListStore(str)
         countries = ["Austria", "Brazil", "Belgium", "France", "Germany",
-            "Switzerland", "United Kingdom", "United States of America", "Uruguay"]
+            "Switzerland", "United Kingdom", "United States of America",
+            "Uruguay"]
         for country in countries:
             country_store.append([country])
 
         country_combo = Gtk.ComboBox.new_with_model(country_store)
-        country_combo.set_active(0)
         country_combo.connect("changed", self.on_country_combo_changed)
         renderer_text = Gtk.CellRendererText()
         country_combo.pack_start(renderer_text, True)
@@ -39,11 +39,10 @@ class ComboBoxWindow(Gtk.Window):
         currencies = ["Euro", "US Dollars", "British Pound", "Japanese Yen",
             "Russian Ruble", "Mexican peso", "Swiss franc"]
         currency_combo = Gtk.ComboBoxText()
-        for currency in currencies:
-            currency_combo.append_text(currency)
-        currency_combo.set_active(0)
         currency_combo.set_entry_text_column(0)
         currency_combo.connect("changed", self.on_currency_combo_changed)
+        for currency in currencies:
+            currency_combo.append_text(currency)
 
         vbox.pack_start(currency_combo, False, False, 0)
 
