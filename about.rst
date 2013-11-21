@@ -1,4 +1,4 @@
-About this Documentation
+About This Documentation
 ========================
 
 This documentation is automatically generated using `pgi-docgen 
