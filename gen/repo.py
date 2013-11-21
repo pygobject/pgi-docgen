@@ -562,7 +562,7 @@ r'''
             docs.append(":type %s: :class:`%s`" % (key, value))
 
         if sig.raises:
-            docs.append(":raises: :class:`GObject.GError`")
+            docs.append(":raises: :class:`GLib.GError`")
 
         if name in self._returns:
             # don't allow newlines here
