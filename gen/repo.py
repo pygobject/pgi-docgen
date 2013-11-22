@@ -98,6 +98,10 @@ class FuncSignature(object):
         self.name = name
         self.raises = raises
 
+    def __repr__(self):
+        return "<%s res=%r args=%r, name=%r, raises=%r>" % (
+            type(self).__name__, self.res, self.args, self.name, self.raises)
+
     @property
     def arg_names(self):
         return [p[0] for p in self.args]
@@ -139,6 +143,33 @@ class FuncSignature(object):
         raises = bool(raises)
 
         return cls(res, arg_map, raises, name)
+
+
+def arg_to_class_ref(text):
+    """Convert a docstring argument to a string with reST references"""
+
+    if not text.startswith(("[", "{")) or not text.endswith(("}", "]")):
+        parts = text.split(" or ")
+    else:
+        parts = [text]
+
+    out = []
+    for p in parts:
+        if p.startswith("["):
+            out.append("[%s]" % arg_to_class_ref(p[1:-1]))
+        elif p.startswith("{"):
+            p = p[1:-1]
+            k, v = p.split(":", 1)
+            k = arg_to_class_ref(k.strip())
+            v = arg_to_class_ref(v.strip())
+            out.append("{%s: %s}" % (k, v))
+        else:
+            if p == "None":
+                out.append(":obj:`%s`" % p)
+            else:
+                out.append(":class:`%s`" % p)
+
+    return " or ".join(out)
 
 
 class Repository(object):
@@ -559,7 +590,7 @@ r'''
             param_key = name + "." + key
             text = self._get_parameter_docs(param_key)
             docs.append(":param %s: %s" % (key, text))
-            docs.append(":type %s: :class:`%s`" % (key, value))
+            docs.append(":type %s: %s" % (key, arg_to_class_ref(value)))
 
         if sig.raises:
             docs.append(":raises: :class:`GLib.GError`")
@@ -573,9 +604,9 @@ r'''
         res = []
         for r in sig.res:
             if len(r) > 1:
-                res.append("%s: :class:`%s`" % tuple(r))
+                res.append("%s: %s" % (r[0], arg_to_class_ref(r[1])))
             else:
-                res.append(":class:`%s`" % r[0])
+                res.append(arg_to_class_ref(r[0]))
 
         if res:
             docs.append(":rtype: %s" % ", ".join(res))
