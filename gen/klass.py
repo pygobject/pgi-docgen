@@ -122,9 +122,6 @@ class ClassGenerator(util.Generator):
             h.write(util.make_rest_title(title, "=") + "\n")
 
             h.write("""
-Inheritance Diagram
--------------------
-
 .. inheritance-diagram:: %s
 """ % name)
 

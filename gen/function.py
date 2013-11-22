@@ -38,11 +38,6 @@ Functions
 =========
 """)
 
-        handle.write("""
-Synopsis
---------
-""")
-
         handle.write(".. autosummary::\n\n")
         for name, code in sorted(self._funcs.items()):
             handle.write("    %s\n" % name)
