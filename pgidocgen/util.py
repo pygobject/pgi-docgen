@@ -52,6 +52,20 @@ def get_gir_dirs():
     return [os.path.join(d, "gir-1.0") for d in dirs]
 
 
+def get_gir_files():
+    """All gir files: {'{namespace}-{version}': path}"""
+
+    all_modules = {}
+    for d in get_gir_dirs():
+        if not os.path.exists(d):
+            continue
+        for entry in os.listdir(d):
+            root, ext = os.path.splitext(entry)
+            if ext == ".gir":
+                all_modules[root] = os.path.join(d, entry)
+    return all_modules
+
+
 class Generator(object):
     """Abstract base class"""
 

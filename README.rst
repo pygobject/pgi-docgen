@@ -3,13 +3,13 @@ What is this?
 
 An experiment to create sphinx docs for gi modules using python introspection.
 
-docgen.py introspects the gi module and pulls in the gir docs.
-I creates a fake python module for each gi module that contains
-the whole API.
+pgi-docgen.py introspects the gi module and pulls in the gir docs. I 
+creates a fake python module for each gi module that contains the whole API
+and uses the real module where needed.
 
-docbuild.py builds html docs using sphinx, optimizes png sizes and packages it.
+pgi-docgen-build.py builds html docs using sphinx and optimizes pngs.
 
-Both steps need a working (and the same) gi (no readthedocs.org etc.)
+Both steps need a working (and the same) pgi.
 
 
 How do I get started?
@@ -17,11 +17,12 @@ How do I get started?
 
 ::
 
-    ./docgen.py -t # Tutorial only
-    ./docgen.py -t Gtk-3.0 Gst-1.0 # Tutorial + API docs for Gtk/Gst, needs pgi
-    ./docbuild.py
-
-`build.tar.gz` contains the generated docs
+    # Tutorial only:
+    ./pgi-docgen.py -t <some_path>
+    # Tutorial + API docs for Gtk/Gst:
+    ./pgi-docgen.py -t <some_path> Gtk-3.0
+    # Finally create the docs in <dest_path>
+    ./pgi-docgen-build.py <dest_path> <some_path>
 
 
 License
@@ -34,13 +35,13 @@ Everything in the `tutorial` sub directory:
     GNU Free Documentation License 1.3 with no Invariant Sections, no
     Front-Cover Texts, and no Back-Cover Texts
 
-Everything in the `theme` sub directory:
+Everything in the `data/theme` sub directory:
 
     https://github.com/rtfd/readthedocs.org
 
     MIT License
 
-Everything in the `ext` sub directory:
+Everything in the `data/ext` sub directory:
 
     https://bitbucket.org/birkenfeld/sphinx/
 

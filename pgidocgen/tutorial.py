@@ -29,6 +29,8 @@ class TutorialGenerator(util.Generator):
 
 
 class AboutGenerator(util.Generator):
+    ABOUT = "about.rst"
+
     def __init__(self, dest):
         self._dest = dest
 
@@ -39,8 +41,5 @@ class AboutGenerator(util.Generator):
         return ["about"]
 
     def write(self):
-
-        with open(os.path.join(self._dest, "about.rst"), "wb") as h:
-            h.write("""
-.. include:: ../about.rst
-""")
+        dest_about = os.path.join(self._dest, self.ABOUT)
+        shutil.copy(os.path.join("data", self.ABOUT), dest_about)

@@ -11,7 +11,7 @@ if os.path.exists("api"):
             sys.path.insert(0, os.path.abspath(path))
             has_api = True
 
-sys.path.insert(0, os.path.abspath(".."))
+sys.path.insert(0, os.path.abspath("."))
 
 try:
     import pgi
@@ -24,7 +24,6 @@ else:
 extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.intersphinx',
-    #'sphinx.ext.autosummary',
     'sphinx.ext.inheritance_diagram',
     'ext.autosummary_fork',
 ]

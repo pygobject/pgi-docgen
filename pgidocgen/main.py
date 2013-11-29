@@ -19,6 +19,7 @@ class MainGenerator(util.Generator):
 
     THEME_DIR = "theme"
     EXT_DIR = "ext"
+    CONF_IN = "conf.in.py"
 
     def __init__(self, dest, tutorial=False):
         self._dest = dest
@@ -67,10 +68,10 @@ Python GObject Introspection Documentation
 
         # copy the theme, conf.py
         dest_conf = os.path.join(self._dest, "conf.py")
-        shutil.copy("conf.in.py", dest_conf)
+        shutil.copy(os.path.join("data", self.CONF_IN), dest_conf)
 
         theme_dest = os.path.join(self._dest, self.THEME_DIR)
-        shutil.copytree(self.THEME_DIR, theme_dest)
+        shutil.copytree(os.path.join("data", self.THEME_DIR), theme_dest)
 
         ext_dest = os.path.join(self._dest, self.EXT_DIR)
-        shutil.copytree(self.EXT_DIR, ext_dest)
+        shutil.copytree(os.path.join("data", self.EXT_DIR), ext_dest)
