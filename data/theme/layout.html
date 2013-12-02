@@ -25,6 +25,28 @@
   {# CSS #}
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
+<style>
+.wy-side-nav-search {
+    background-color: #75507b !important;
+}
+.wy-side-nav-search input[type="text"] {
+    border-color: #75507b !important;
+}
+
+.wy-menu-vertical li .toctree-l3 {
+display: none;
+}
+
+.wy-menu-vertical li .toctree-l3 {
+display: none;
+}
+
+.wy-menu-vertical li .current {
+display: block;
+}
+
+</style>
+
   {# JS #}
   {% if not embedded %}
 
@@ -101,7 +123,7 @@
       </div>
 
       <div class="wy-menu wy-menu-vertical" data-spy="affix">
-        {% set toctree = toctree(maxdepth=2, collapse=False, titles_only=True) %}
+        {% set toctree = toctree(maxdepth=3, collapse=False, titles_only=True) %}
         {% if toctree %}
             {{ toctree }}
         {% else %}

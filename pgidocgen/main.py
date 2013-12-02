@@ -9,7 +9,6 @@
 import os
 import shutil
 
-from .tutorial import TutorialGenerator, AboutGenerator
 from .api import APIGenerator
 from . import util
 
@@ -21,43 +20,30 @@ class MainGenerator(util.Generator):
     EXT_DIR = "ext"
     CONF_IN = "conf.in.py"
 
-    def __init__(self, dest, tutorial=False):
+    def __init__(self, dest):
         self._dest = dest
-        self._modules = []
-        self._tutorial = tutorial
-
-        self._tutorial_gen = TutorialGenerator(dest)
         self._api_gen = APIGenerator(dest)
-        self._about_gen = AboutGenerator(dest)
 
     def add_module(self, *args):
         self._api_gen.add_module(*args)
 
     def is_empty(self):
-        if self._tutorial:
-            return self._tutorial_gen.is_empty() and self._api_gen.is_empty()
-        else:
-            return self._api_gen.is_empty()
+        self._api_gen.is_empty()
 
     def write(self):
         os.mkdir(self._dest)
 
         with open(os.path.join(self._dest, "index.rst"), "wb") as h:
             h.write("""
-Python GObject Introspection Documentation
+Python GObject Introspection API Reference
 ==========================================
 
 .. toctree::
-    :maxdepth: 2
+    :maxdepth: 1
 
 """)
 
-            gens = []
-            gens.append(self._about_gen)
-            if self._tutorial:
-                gens.append(self._tutorial_gen)
-            gens.append(self._api_gen)
-
+            gens = [self._api_gen]
             for gen in gens:
                 if gen.is_empty():
                     continue

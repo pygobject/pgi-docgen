@@ -3,6 +3,7 @@
 import os
 import sys
 
+_non_api = ["ext", "theme"]
 has_api = False
 if os.path.exists("api"):
     for entry in os.listdir("api"):
@@ -29,7 +30,7 @@ extensions = [
 ]
 source_suffix = '.rst'
 master_doc = 'index'
-project = 'PGI Documentation'
+project = 'Python GI API Reference'
 version = "0.1"
 release = "0.1"
 exclude_patterns = ['_build', 'README.rst']

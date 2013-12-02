@@ -26,10 +26,9 @@ class APIGenerator(util.Generator):
         return not self._modules
 
     def get_names(self):
-        return ["api/index"]
+        return ["api/%s" % n for n in self._names]
 
     def write(self):
-        # sort by namespace
         modules = sorted(self._modules, key=lambda x: x[0].lower())
 
         path = os.path.join(self._dest, self.API_DIR)
@@ -40,19 +39,4 @@ class APIGenerator(util.Generator):
             gen = ModuleGenerator(path, namespace, version)
             gen.write()
             module_names.extend(gen.get_names())
-
-        api_path = os.path.join(self._dest, self.API_DIR)
-
-        h = open(os.path.join(api_path, "index.rst"), "wb")
-        h.write("""
-API Reference
-=============
-
-.. toctree::
-    :maxdepth: 1
-
-""")
-
-        for sub in module_names:
-            h.write("    %s\n" % sub)
-        h.close()
+        self._names = module_names

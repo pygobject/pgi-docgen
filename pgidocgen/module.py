@@ -67,6 +67,7 @@ class ModuleGenerator(util.Generator):
         self._add_dependency(module, "GObject", "2.0")
         self._add_dependency(module, "Gio", "2.0")
         self._add_dependency(module, "GLib", "2.0")
+        self._add_dependency(module, "Atk", "1.0")
 
         try:
             mod = import_namespace(namespace, version)

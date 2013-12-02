@@ -31,8 +31,6 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(
         description='Create a sphinx environ')
-    parser.add_argument('-t', '--tutorial', action='store_true',
-                        help="include the tutorial")
     parser.add_argument('-f', '--force', action='store_true',
                         help="Remove the target path if it exists")
     parser.add_argument('target', help='path to where the result should be')
@@ -71,7 +69,7 @@ if __name__ == "__main__":
             print "Target already exists (pass -f to ignore): %s" % dest_dir
             raise SystemExit(1)
 
-    gen = MainGenerator(dest_dir, tutorial=args.tutorial)
+    gen = MainGenerator(dest_dir)
     for name in filtered:
         namespace, version = name.split("-")
         print "Create docs: Namespace=%s, Version=%s" % (namespace, version)

@@ -377,7 +377,11 @@ r'''
 class %s(%s):
     r'''
 %s
-    '''\n""" % (name.split(".")[-1], bases, docs.encode("utf-8"))
+    '''
+
+    __init__ = %s.__init__
+
+""" % (name.split(".")[-1], bases, docs.encode("utf-8"), name)
 
     def parse_signals(self, obj):
 
