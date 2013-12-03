@@ -267,7 +267,9 @@ class Autosummary(Directive):
             prefix = ""
             if documenter.objtype == "method":
                 if documenter.directivetype == "staticmethod":
-                    prefix = "static" 
+                    prefix = "static"
+                elif documenter.directivetype == "classmethod":
+                    prefix = "class"
 
             sig = documenter.format_signature()
             if not sig:
