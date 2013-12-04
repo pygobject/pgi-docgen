@@ -162,7 +162,19 @@ Details
 -------
 """)
 
-            h.write("""
+            is_base = False
+            if cls.__module__ == "GObject":
+                if cls.__name__ in ("Object", "GInterface"):
+                    is_base = True
+
+            if is_base:
+                h.write("""
+.. autoclass:: %s
+    :members:
+    :undoc-members:
+""" % name)
+            else:
+                h.write("""
 .. autoclass:: %s
     :show-inheritance:
     :members:
