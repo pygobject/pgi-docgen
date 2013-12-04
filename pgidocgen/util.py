@@ -14,6 +14,13 @@ def escape_keyword(text, reg=re.compile("^(%s)$" % "|".join(keyword.kwlist))):
     return reg.sub(r"\1_", text)
 
 
+def escape_rest(text):
+    text = text.replace("\\", "\\\\")
+    text = text.replace("*", "\\*")
+    text = text.replace("_", "\\_")
+    return text
+
+
 def merge_in_overrides(obj):
     # hide overrides by merging the bases in
     possible_bases = []

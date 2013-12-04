@@ -29,6 +29,19 @@ class TFuncSigs(unittest.TestCase):
         self.assertEqual(sig.res, [["argv", "[str]"]])
         self.assertEqual(sig.raises, False)
 
+    def test_from_string_args(self):
+        sig = FuncSignature.from_string(
+            "init", "init(*args)")
+        self.assertTrue(sig)
+        self.assertEqual(sig.name, "init")
+        self.assertEqual(sig.raises, False)
+        self.assertEqual(sig.args, [])
+
+    def test_from_string_notype(self):
+        sig = FuncSignature.from_string(
+            "init", "init(foo)")
+        self.assertEqual(sig.args, [["foo", ""]])
+
     def test_arg_to_class_ref(self):
         self.assertEqual(arg_to_class_ref("int"), ":class:`int`")
         self.assertEqual(arg_to_class_ref("[int]"), "[:class:`int`]")

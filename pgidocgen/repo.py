@@ -13,6 +13,7 @@ import xml.sax.saxutils as saxutils
 
 from .namespace import Namespace
 from . import util
+from .util import escape_rest
 
 
 def gtype_to_rest(gtype):
@@ -126,7 +127,13 @@ class FuncSignature(object):
 
         arg_map = []
         for arg in args:
+            arg = arg.strip()
+            # skip *args, **kwargs
+            if arg.startswith("*"):
+                continue
             parts = arg.split(":", 1)
+            if len(parts) == 1:
+                parts.append("")
             parts = [p.strip() for p in parts]
             arg_map.append(parts)
 
@@ -593,6 +600,8 @@ r'''
         for key, value in sig.args:
             param_key = name + "." + key
             text = self._get_parameter_docs(param_key)
+            text = escape_rest(text)
+            key = escape_rest(key)
             docs.append(":param %s: %s" % (key, text))
             docs.append(":type %s: %s" % (key, arg_to_class_ref(value)))
 

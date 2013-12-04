@@ -108,6 +108,16 @@ class ModuleGenerator(util.Generator):
                 continue
             obj = getattr(mod, key)
 
+            # skip classes which are renamed
+            if inspect.isclass(obj):
+                if obj.__name__ != key:
+                    print "Skipping %s: renamed clas" % key
+                    continue
+                if obj.__module__ != namespace:
+                    print  obj.__module__, namespace
+                    print "Skipping %s: originated from other namespace" % key
+                    continue
+
             name = "%s.%s" % (namespace, key)
 
             if isinstance(obj, types.FunctionType):
@@ -138,16 +148,18 @@ class ModuleGenerator(util.Generator):
                         if not is_method_owner(obj, attr):
                             continue
 
-                        func_key = name + "." + attr
                         try:
                             attr_obj = getattr(obj, attr)
                         except NotImplementedError:
                             # FIXME.. pgi exposes methods it can't compile
                             continue
+
                         if callable(attr_obj):
+                            func_key = name + "." + attr
                             code = repo.parse_function(func_key, obj, attr_obj)
                             if code:
                                 class_gen.add_method(obj, attr_obj, code)
+
                 elif issubclass(obj, flags_base):
                     code = repo.parse_flags(name, obj)
                     flags_gen.add_flags(obj, code)
@@ -174,7 +186,6 @@ class ModuleGenerator(util.Generator):
                         if not is_method_owner(obj, attr):
                             continue
 
-                        func_key = name + "." + attr
                         try:
                             attr_obj = getattr(obj, attr)
                         except NotImplementedError:
@@ -182,9 +193,13 @@ class ModuleGenerator(util.Generator):
                             continue
 
                         if callable(attr_obj):
+                            func_key = name + "." + attr
                             code = repo.parse_function(func_key, obj, attr_obj)
                             if code:
                                 gen.add_method(obj, attr_obj, code)
+                        else:
+                            # fields
+                            pass
                 else:
                     # unions..
                     code = repo.parse_class(name, obj)
