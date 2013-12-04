@@ -100,7 +100,14 @@ Details
 
 """)
 
-            h.write("""
+            if util.is_base(cls):
+                h.write("""
+.. autoclass:: %s
+    :members:
+    :undoc-members:
+""" % name)
+            else:
+                h.write("""
 .. autoclass:: %s
     :show-inheritance:
     :members:

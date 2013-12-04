@@ -8,10 +8,94 @@
 import os
 import re
 import keyword
+import inspect
 
 
 def escape_keyword(text, reg=re.compile("^(%s)$" % "|".join(keyword.kwlist))):
     return reg.sub(r"\1_", text)
+
+
+def is_iface(obj):
+    if not inspect.isclass(obj):
+        return False
+
+    from gi.repository import GObject
+    return issubclass(obj, GObject.GInterface)
+
+
+def is_object(obj):
+    if not inspect.isclass(obj):
+        return False
+
+    from gi.repository import GObject
+    return issubclass(obj, GObject.Object)
+
+
+def is_flags(obj):
+    if not inspect.isclass(obj):
+        return False
+
+    from gi.repository import GObject
+    return issubclass(obj, GObject.GFlags)
+
+
+def is_struct(obj):
+    if not inspect.isclass(obj):
+        return False
+
+    from gi.repository import Gtk
+    struct_base = Gtk.AccelKey.__mro__[-2]  # FIXME
+    return issubclass(obj, struct_base)
+
+
+def is_union(obj):
+    if not inspect.isclass(obj):
+        return False
+
+    from gi.repository import GLib
+    union_base = GLib.DoubleIEEE754.__mro__[-2]  # FIXME
+    return issubclass(obj, union_base)
+
+
+def is_enum(obj):
+    if not inspect.isclass(obj):
+        return False
+
+    from gi.repository import GObject
+    enum_base = GObject.GEnum
+    return issubclass(obj, enum_base)
+
+
+def is_base(cls):
+    """If all base classes of the passed class are internal"""
+
+    if not inspect.isclass(cls):
+        return False
+
+    if cls.__bases__[0] in (object, int, long, float, str, unicode):
+        return True
+
+    if cls.__bases__[0].__module__.split(".")[0] in ("pgi", "gi"):
+        return True
+
+    return False
+
+
+def unindent(text):
+    """Unindent a piece of text"""
+
+    lines = text.splitlines()
+    common_indent = -1
+    for line in lines:
+        if not line.strip():
+            continue
+        indent = len(line) - len(line.lstrip())
+        if common_indent == -1:
+            common_indent = indent
+        else:
+            common_indent = min(indent, common_indent)
+
+    return "\n".join([l[common_indent:] for l in lines])
 
 
 def escape_rest(text):

@@ -20,6 +20,10 @@ class TFuncSigs(unittest.TestCase):
         self.assertEqual(sig.res, [])
         self.assertEqual(sig.raises, False)
 
+    def test_from_string_res(self):
+        sig = FuncSignature.from_string("foo", "foo() -> int")
+        self.assertEqual(sig.res, [["int"]])
+
     def test_from_string_2(self):
         sig = FuncSignature.from_string(
             "init", "init(argv: [str] or None) -> argv: [str]")

@@ -80,14 +80,6 @@ class ModuleGenerator(util.Generator):
         for dep in repo.get_dependencies():
             self._add_dependency(module, *dep)
 
-        from gi.repository import GObject, Gtk, GLib
-        class_base = GObject.Object
-        iface_base = GObject.GInterface
-        flags_base = GObject.GFlags
-        enum_base = GObject.GEnum
-        struct_base = Gtk.AccelKey.__mro__[-2]  # FIXME
-        union_base = GLib.DoubleIEEE754.__mro__[-2]  # FIXME
-
         obj_gen = GObjectGenerator(self._module_path, module)
         iface_gen = InterfaceGenerator(self._module_path, module)
         flags_gen = FlagsGenerator(self._module_path, module)
@@ -111,10 +103,9 @@ class ModuleGenerator(util.Generator):
             # skip classes which are renamed
             if inspect.isclass(obj):
                 if obj.__name__ != key:
-                    print "Skipping %s: renamed clas" % key
+                    print "Skipping %s: renamed class" % key
                     continue
-                if obj.__module__ != namespace:
-                    print  obj.__module__, namespace
+                if obj.__module__.split(".")[-1] != namespace:
                     print "Skipping %s: originated from other namespace" % key
                     continue
 
@@ -125,9 +116,9 @@ class ModuleGenerator(util.Generator):
                 if code:
                     func_gen.add_function(name, code)
             elif inspect.isclass(obj):
-                if issubclass(obj, (iface_base, class_base)):
+                if util.is_iface(obj) or util.is_object(obj):
 
-                    if issubclass(obj, class_base):
+                    if util.is_object(obj):
                         class_gen = obj_gen
                     else:
                         class_gen = iface_gen
@@ -160,19 +151,19 @@ class ModuleGenerator(util.Generator):
                             if code:
                                 class_gen.add_method(obj, attr_obj, code)
 
-                elif issubclass(obj, flags_base):
+                elif util.is_flags(obj):
                     code = repo.parse_flags(name, obj)
                     flags_gen.add_flags(obj, code)
-                elif issubclass(obj, enum_base):
+                elif util.is_enum(obj):
                     code = repo.parse_flags(name, obj)
                     enums_gen.add_enum(obj, code)
-                elif issubclass(obj, (struct_base, union_base)):
+                elif util.is_struct(obj) or util.is_union(obj):
                     # Hide FooPrivate if Foo exists
                     if key.endswith("Private") and hasattr(mod, key[:-7]):
                         continue
                     code = repo.parse_class(name, obj, add_bases=True)
 
-                    if issubclass(obj, struct_base):
+                    if util.is_struct(obj):
                         gen = struct_gen
                         struct_gen.add_struct(obj, code)
                     else:

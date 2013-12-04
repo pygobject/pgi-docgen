@@ -50,3 +50,4 @@ inheritance_node_attrs = dict(shape='box', fontsize=7,
 inheritance_graph_attrs = dict(rankdir="TB", size='""', bgcolor="transparent")
 
 autodoc_member_order = "bysource"
+autodoc_docstring_signature = False

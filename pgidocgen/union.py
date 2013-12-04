@@ -74,7 +74,14 @@ class UnionGenerator(util.Generator):
             title = name
             h.write(util.make_rest_title(title, "=") + "\n")
 
-            h.write("""
+            if util.is_base(cls):
+                h.write("""
+.. autoclass:: %s
+    :members:
+    :undoc-members:
+""" % name)
+            else:
+                h.write("""
 .. autoclass:: %s
     :show-inheritance:
     :members:

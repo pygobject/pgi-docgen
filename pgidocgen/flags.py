@@ -43,16 +43,24 @@ Flags
 
         for cls in classes:
             title = util.make_rest_title(cls.__name__, "-")
-            handle.write("""
-%s
+            handle.write(title + "\n")
+            if util.is_base(cls):
+                handle.write("""
+.. autoclass:: %s
+    :members:
+    :undoc-members:
+    :private-members:
 
+""" % (cls.__module__ + "." + cls.__name__))
+            else:
+                handle.write("""
 .. autoclass:: %s
     :show-inheritance:
     :members:
     :undoc-members:
     :private-members:
 
-""" % (title, cls.__module__ + "." + cls.__name__))
+""" % (cls.__module__ + "." + cls.__name__))
 
         for cls in classes:
             code = self._flags[cls]

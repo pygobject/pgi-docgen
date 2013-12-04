@@ -13,7 +13,7 @@ import xml.sax.saxutils as saxutils
 
 from .namespace import Namespace
 from . import util
-from .util import escape_rest
+from .util import escape_rest, unindent
 
 
 def gtype_to_rest(gtype):
@@ -534,21 +534,17 @@ class %s(%s):
             first_line = doc and doc.splitlines()[0] or ""
             return FuncSignature.from_string(name.split(".")[-1], first_line)
 
-        # "GLib.IConv."
+        # FIXME: "GLib.IConv."
         if name.split(".")[-1] == "":
-            name += "_"
+            return
 
         func_name = name.split(".")[-1]
-
         sig = get_sig(obj)
 
         # no valid sig, but still a docstring, probably new function
         # or an override with a new docstring
         if not sig and obj.__doc__:
             return "%s = %s\n" % (func_name, name)
-
-        # if true, let sphinx figure out the call spec, it might have changed
-        ignore_spec = False
 
         # no docstring, try to get the signature from base classes
         if not sig and owner:
@@ -560,7 +556,6 @@ class %s(%s):
                     continue
                 sig = get_sig(base_obj)
                 if sig:
-                    ignore_spec = True
                     break
 
         # still nothing, try making the best out of it
@@ -591,11 +586,18 @@ r'''
 '''
 """ % (func_name, name, func_name, self._get_docs(name))
 
-        arg_names = sig.arg_names
-        if is_method and not is_static:
-            arg_names.insert(0, "self")
-        arg_names = ", ".join(arg_names)
+        # we got a valid signature here
+        assert sig
 
+        docstring = str(obj.__doc__)
+        # the docstring contains additional text, propably an override
+        # or internal function (GObject.Object methods for example)
+        lines = docstring.splitlines()[1:]
+        while lines and not lines[0].strip():
+            lines = lines[1:]
+        user_docstring = "\n".join(lines)
+
+        # create sphinx lists for the signature we found
         docs = []
         for key, value in sig.args:
             param_key = name + "." + key
@@ -626,7 +628,10 @@ r'''
 
         docs.append("")
 
-        if name in self._all:
+        # if we have a user docstring, use it, otherwise use the gir one
+        if user_docstring:
+            docs.append(unindent(user_docstring))
+        elif name in self._all:
             docs.append(self._get_docs(name))
 
         docs = "\n".join(docs)
@@ -635,23 +640,9 @@ r'''
         # but still keep around the old docstring (sphinx seems to understand
         # the string under attribute thing.. good, since we can't change
         # a docstring in py2)
-        if ignore_spec:
-            final = """
+        return """
 %s = %s
 r'''
 %s
 '''
 """ % (func_name, name, docs.encode("utf-8"))
-
-        else:
-            final = ""
-            if is_method and is_static:
-                final += "@staticmethod\n"
-            final += """\
-def %s(%s):
-    r'''
-%s
-    '''
-""" % (func_name, arg_names, docs.encode("utf-8"))
-
-        return final
