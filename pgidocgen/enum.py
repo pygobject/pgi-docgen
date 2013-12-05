@@ -41,6 +41,18 @@ Enums
 
 """)
 
+        if not classes:
+            handle.write("None\n\n")
+
+        for cls in classes:
+            handle.write("* :class:`" + cls.__module__ + "." + cls.__name__ + "`\n")
+
+        handle.write("""
+Details
+-------
+
+""")
+
         for cls in classes:
             title = util.make_rest_title(cls.__name__, "-")
             handle.write("""
