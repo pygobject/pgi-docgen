@@ -76,7 +76,9 @@ def is_base(cls):
     if cls.__bases__[0] in (object, int, long, float, str, unicode):
         return True
 
-    if cls.__bases__[0].__module__.split(".")[0] in ("pgi", "gi"):
+    # skip any overrides
+    base = merge_in_overrides(cls)[0]
+    if base.__module__.split(".")[0] in ("pgi", "gi"):
         return True
 
     return False
