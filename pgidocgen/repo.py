@@ -491,10 +491,12 @@ r'''
         # a docstring in py2)
 
         if is_method:
-            if util.is_staticmethod(obj):
+            # Rewrap them here so spinx knows that they static and
+            # we can use that information in the autosummary extension.
+            # If we wrap a classmethod in another one sphinx doesn't
+            # pick up the function signature.. so only use staticmethod.
+            if util.is_staticmethod(obj) or util.is_classmethod(obj):
                 name = "staticmethod(%s)" % name
-            elif util.is_classmethod(obj):
-                name = "classmethod(%s)" % name
 
         return """
 %s = %s
