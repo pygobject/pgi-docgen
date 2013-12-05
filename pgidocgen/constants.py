@@ -37,8 +37,21 @@ class ConstantsGenerator(Generator):
 
         handle = open(self.path, "wb")
         handle.write("""\
+=========
 Constants
 =========
+
+""")
+
+        if not names:
+            handle.write("None\n\n")
+
+        for name in names:
+            handle.write("* :obj:`" + name + "`\n")
+
+        handle.write("""\
+Details
+-------
 
 """)
 

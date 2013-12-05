@@ -35,14 +35,28 @@ class FlagsGenerator(util.Generator):
         classes.sort(key=lambda x: x.__name__)
 
         handle = open(self.path, "wb")
-        handle.write("""\
+
+        handle.write("""
+=====
 Flags
 =====
 
 """)
 
+        if not classes:
+            handle.write("None\n\n")
+
         for cls in classes:
-            title = util.make_rest_title(cls.__name__, "-")
+            handle.write("* :class:`" + cls.__module__ + "." + cls.__name__ + "`\n")
+
+        handle.write("""
+Details
+-------
+
+""")
+
+        for cls in classes:
+            title = util.make_rest_title(cls.__name__, "^")
             handle.write(title + "\n")
             if util.is_base(cls):
                 handle.write("""
