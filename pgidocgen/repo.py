@@ -14,6 +14,8 @@ import xml.sax.saxutils as saxutils
 from .namespace import Namespace
 from . import util
 from .util import escape_rest, unindent
+from .gtkstock import parse_stock_icon
+from .funcsig import FuncSignature
 
 
 def gtype_to_rest(gtype):
@@ -40,143 +42,6 @@ def get_csv_line(values):
     w = csv.writer(h, CSVDialect)
     w.writerow(values)
     return h.getvalue().rstrip()
-
-
-# Adapted from the PyGObject-Tutorial code
-# Copyright by Sebastian Pölsterl
-def parse_stock_icon(name):
-    """
-        e.g. 'Gtk.STOCK_ORIENTATION_LANDSCAPE'
-    """
-
-    img_p = re.compile("fileref=\"(.+?)\"")
-    define_p = re.compile("\\s+")
-    mapping = {}
-
-    with open("/usr/include/gtk-3.0/gtk/gtkstock.h", "rb") as fp:
-        imgs = []
-        item = None
-        for line in fp:
-            if "inlinegraphic" in line:
-                m = img_p.search(line)
-                if m is not None:
-                    imgs.append(m.group(1))
-
-            if line.startswith("#define GTK_"):
-                item = define_p.split(line)[1].replace("GTK_", "Gtk.")
-                mapping[item] = imgs
-                imgs = []
-
-    base = "http://developer.gnome.org/gtk3/stable/"
-    if not name in mapping:
-        print "W: no image found for %r" % name
-        return ""
-
-    docs = ""
-    for fn in mapping[name]:
-        title = ""
-        if "-ltr" in fn:
-            title = "LTR variant:"
-        elif "-rtl" in fn:
-            title = "RTL variant:"
-        docs += """
-
-%s
-
-.. image:: %s
-    :alt: %s
-
-""" % (title, base + fn, fn)
-
-    return docs
-
-
-class FuncSignature(object):
-
-    def __init__(self, res, args, raises, name):
-        self.res = res
-        self.args = args
-        self.name = name
-        self.raises = raises
-
-    def __repr__(self):
-        return "<%s res=%r args=%r, name=%r, raises=%r>" % (
-            type(self).__name__, self.res, self.args, self.name, self.raises)
-
-    @property
-    def arg_names(self):
-        return [p[0] for p in self.args]
-
-    def get_arg_type(self, name):
-        for a, t in self.args:
-            if a == name:
-                return t
-
-    @classmethod
-    def from_string(cls, orig_name, line):
-        match = re.match("(.*?)\((.*?)\)\s*(raises|)\s*(-> )?(.*)", line)
-        if not match:
-            return
-
-        groups = match.groups()
-        name, args, raises, dummy, ret = groups
-        if orig_name != name:
-            return
-
-        args = args and args.split(",") or []
-
-        arg_map = []
-        for arg in args:
-            arg = arg.strip()
-            # skip *args, **kwargs
-            if arg.startswith("*"):
-                continue
-            parts = arg.split(":", 1)
-            if len(parts) == 1:
-                parts.append("")
-            parts = [p.strip() for p in parts]
-            arg_map.append(parts)
-
-        ret = ret and ret.strip() or ""
-        if ret == "None":
-            ret = ""
-        ret = ret.strip("()")
-        ret = ret and ret.split(",") or []
-        res = []
-        for r in ret:
-            parts = [p.strip() for p in r.split(":")]
-            res.append(parts)
-
-        raises = bool(raises)
-
-        return cls(res, arg_map, raises, name)
-
-
-def arg_to_class_ref(text):
-    """Convert a docstring argument to a string with reST references"""
-
-    if not text.startswith(("[", "{")) or not text.endswith(("}", "]")):
-        parts = text.split(" or ")
-    else:
-        parts = [text]
-
-    out = []
-    for p in parts:
-        if p.startswith("["):
-            out.append("[%s]" % arg_to_class_ref(p[1:-1]))
-        elif p.startswith("{"):
-            p = p[1:-1]
-            k, v = p.split(":", 1)
-            k = arg_to_class_ref(k.strip())
-            v = arg_to_class_ref(v.strip())
-            out.append("{%s: %s}" % (k, v))
-        else:
-            if p == "None":
-                out.append(":obj:`%s`" % p)
-            else:
-                out.append(":class:`%s`" % p)
-
-    return " or ".join(out)
 
 
 class Repository(object):
@@ -225,12 +90,22 @@ class Repository(object):
             return self._fix_docs(self._all[name])
         return ""
 
-    def _get_return_docs(self, name):
+    def lookup_return_docs(self, name):
+        """Get docs for the return value by function name.
+
+        e.g. 'GObject.Value.set_char'
+        """
+
         if name in self._returns:
             return self._fix_docs(self._returns[name])
         return ""
 
-    def _get_parameter_docs(self, name):
+    def lookup_parameter_docs(self, name):
+        """Get docs for a function parameter by function name + parameter name.
+
+        e.g. 'GObject.Value.set_char.v_char'
+        """
+
         if name in self._parameters:
             return self._fix_docs(self._parameters[name])
         return ""
@@ -343,6 +218,7 @@ class Repository(object):
         # FIXME: broken escaping in pgi
         if name.split(".")[-1][:1].isdigit():
             return
+
         docs = self._get_docs(name)
 
         # Add images for stock icon constants
@@ -597,40 +473,14 @@ r'''
         user_docstring = "\n".join(lines)
 
         # create sphinx lists for the signature we found
-        docs = []
-        for key, value in sig.args:
-            param_key = name + "." + key
-            text = self._get_parameter_docs(param_key)
-            text = escape_rest(text)
-            key = escape_rest(key)
-            docs.append(":param %s: %s" % (key, text))
-            docs.append(":type %s: %s" % (key, arg_to_class_ref(value)))
-
-        if sig.raises:
-            docs.append(":raises: :class:`GLib.GError`")
-
-        if name in self._returns:
-            # don't allow newlines here
-            text = self._get_return_docs(name)
-            doc_string = " ".join(text.splitlines())
-            docs.append(":returns: %s" % doc_string)
-
-        res = []
-        for r in sig.res:
-            if len(r) > 1:
-                res.append("%s: %s" % (r[0], arg_to_class_ref(r[1])))
-            else:
-                res.append(arg_to_class_ref(r[0]))
-
-        if res:
-            docs.append(":rtype: %s" % ", ".join(res))
-
-        docs.append("")
+        docs = sig.to_rest_listing(self, name).splitlines()
 
         # if we have a user docstring, use it, otherwise use the gir one
         if user_docstring:
+            docs.append("")
             docs.append(unindent(user_docstring))
         elif name in self._all:
+            docs.append("")
             docs.append(self._get_docs(name))
 
         docs = "\n".join(docs)

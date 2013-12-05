@@ -146,15 +146,19 @@ Methods
                         "." + obj.__name__ + "\n")
 
             h.write("""
+.. _%s-props:
+
 Properties
 ----------
-""")
+""" % name)
             h.write(self._props.get(cls, "") or "None\n\n")
 
             h.write("""
+.. _%s-sigs:
+
 Signals
 -------
-""")
+""" % name)
             h.write(self._sigs.get(cls, "") or "None\n\n")
 
             h.write("""

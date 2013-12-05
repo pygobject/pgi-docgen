@@ -7,7 +7,7 @@
 
 import unittest
 
-from pgidocgen.repo import FuncSignature, arg_to_class_ref
+from pgidocgen.funcsig import FuncSignature, arg_to_class_ref
 
 
 class TFuncSigs(unittest.TestCase):
@@ -46,6 +46,13 @@ class TFuncSigs(unittest.TestCase):
             "init", "init(foo)")
         self.assertEqual(sig.args, [["foo", ""]])
 
+    def test_from_string_raises(self):
+        sig = FuncSignature.from_string("init", "init(foo)")
+        self.assertEqual(sig.raises, False)
+
+        sig = FuncSignature.from_string("init", "init(foo) raises")
+        self.assertEqual(sig.raises, True)
+
     def test_arg_to_class_ref(self):
         self.assertEqual(arg_to_class_ref("int"), ":class:`int`")
         self.assertEqual(arg_to_class_ref("[int]"), "[:class:`int`]")
@@ -57,3 +64,22 @@ class TFuncSigs(unittest.TestCase):
         self.assertEqual(
             arg_to_class_ref("[str] or None"),
             "[:class:`str`] or :obj:`None`")
+
+    def test_to_rest_listing(self):
+        sig = FuncSignature.from_string("go", "go(a_: [str]) -> b_: [str]")
+
+        class FakeRepo(object):
+
+            def lookup_parameter_docs(self, name):
+                return "PARADOC(%s)" % name
+
+            def lookup_return_docs(self, name):
+                return "RETURNDOC(%s)" % name
+
+        doc = sig.to_rest_listing(FakeRepo(), "Foo.bar.go")
+        self.assertEqual(doc, """\
+:param a\\_: PARADOC(Foo.bar.go.a\\_)
+:type a\\_: [:class:`str`]
+:returns: RETURNDOC(Foo.bar.go)
+:rtype: b\\_: [:class:`str`]\
+""")
