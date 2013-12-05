@@ -35,7 +35,8 @@ def parse_stock_icon(name):
                 mapping[item] = imgs
                 imgs = []
 
-    base = "http://developer.gnome.org/gtk3/stable/"
+    base = "../../stockicons/"
+    #base = "http://developer.gnome.org/gtk3/stable/"
     if not name in mapping:
         print "W: no image found for %r" % name
         return ""

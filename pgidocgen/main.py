@@ -17,6 +17,7 @@ class MainGenerator(util.Generator):
     """Creates the sphinx environment and the index page"""
 
     THEME_DIR = "theme"
+    STOCK_DIR = "stockicons"
     EXT_DIR = "ext"
     CONF_IN = "conf.in.py"
 
@@ -61,3 +62,6 @@ Python GObject Introspection API Reference
 
         ext_dest = os.path.join(self._dest, self.EXT_DIR)
         shutil.copytree(os.path.join("data", self.EXT_DIR), ext_dest)
+
+        stock_dest = os.path.join(self._dest, self.STOCK_DIR)
+        shutil.copytree(os.path.join("data", self.STOCK_DIR), stock_dest)

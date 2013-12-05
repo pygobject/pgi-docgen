@@ -14,8 +14,7 @@ from pgidocgen.gtkstock import parse_stock_icon
 class TGtkStock(unittest.TestCase):
 
     def test_parse_stock_icon(self):
-        url = ("http://developer.gnome.org/gtk3/stable/"
-               "gtk-orientation-landscape.png")
+        url = ("../../stockicons/")
         doc = parse_stock_icon("Gtk.STOCK_ORIENTATION_LANDSCAPE")
         self.assertTrue(".. image:: " + url in doc)
         self.assertTrue(":alt: gtk-orientation-landscape.png" in doc)
