@@ -52,7 +52,7 @@ class StructGenerator(util.Generator):
             self._module.write(self._structs[cls])
             methods = self._methods.get(cls, [])
             def sort_func(e):
-                return not util.method_is_static(e[0]), e[0].__name__
+                return util.is_normalmethod(e[0]), e[0].__name__
             methods.sort(key=sort_func)
 
             for obj, code in methods:
@@ -88,7 +88,7 @@ Methods
 
             # sort static methods first, then by name
             def sort_func(e):
-                return not util.method_is_static(e[0]), e[0].__name__
+                return util.is_normalmethod(e[0]), e[0].__name__
             methods.sort(key=sort_func)
             for obj, code in methods:
                 h.write("    " + cls.__module__ + "." + cls.__name__ +

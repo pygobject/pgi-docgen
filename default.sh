@@ -18,6 +18,5 @@
     PangoFT2-1.0 PangoXft-1.0 Soup-2.4 cairo-1.0 fontconfig-2.0 \
     freetype2-2.0 libxml2-2.0 xfixes-4.0 xft-2.0 xlib-2.0 xrandr-1.3 \
     Notify-0.7 Cally-1.0 Clutter-1.0 ClutterGdk-1.0 ClutterX11-1.0 \
-    ClutterGst-2.0
-
-./pgi-docgen-build.py _docs/_build _docs
+    ClutterGst-2.0 \
+    && ./pgi-docgen-build.py _docs/_build _docs

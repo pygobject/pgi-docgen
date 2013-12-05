@@ -527,7 +527,6 @@ class %s(%s):
         """Returns python code for the object"""
 
         is_method = owner is not None
-        is_static = util.method_is_static(obj)
 
         def get_sig(obj):
             doc = str(obj.__doc__)
@@ -640,6 +639,13 @@ r'''
         # but still keep around the old docstring (sphinx seems to understand
         # the string under attribute thing.. good, since we can't change
         # a docstring in py2)
+
+        if is_method:
+            if util.is_staticmethod(obj):
+                name = "staticmethod(%s)" % name
+            elif util.is_classmethod(obj):
+                name = "classmethod(%s)" % name
+
         return """
 %s = %s
 r'''

@@ -123,11 +123,19 @@ def merge_in_overrides(obj):
     return mro_bases
 
 
-def method_is_static(obj):
+def is_staticmethod(obj):
+    return not hasattr(obj, "im_self")
+
+
+def is_classmethod(obj):
     try:
         return obj.im_self is not None
     except AttributeError:
-        return True
+        return False
+
+
+def is_normalmethod(obj):
+    return not is_staticmethod(obj) and not is_classmethod(obj)
 
 
 def make_rest_title(text, char="="):
