@@ -40,6 +40,9 @@ class Namespace(object):
         namespace = self.namespace
         types = {}
 
+        # {key of the to be replaces function: c def of the replacement}
+        shadowed = {}
+
         # classes and aliases: GtkFooBar -> Gtk.FooBar
         for t in dom.getElementsByTagName("type"):
             local_name = t.getAttribute("name")
@@ -47,27 +50,29 @@ class Namespace(object):
             types[c_name] = local_name
 
         # gtk_main -> Gtk.main
-        for t in dom.getElementsByTagName("function"):
-            local_name = t.getAttribute("name")
-            # Copy escaping from gi: Foo.break -> Foo.break_
-            local_name = util.escape_keyword(local_name)
-            namespace = t.parentNode.getAttribute("name")
-            c_name = t.getAttribute("c:identifier")
-            name = namespace + "." + local_name
-            types[c_name] = name
-
         # gtk_dialog_get_response_for_widget ->
         #     Gtk.Dialog.get_response_for_widget
         elements = dom.getElementsByTagName("constructor")
         elements += dom.getElementsByTagName("method")
+        elements += dom.getElementsByTagName("function")
         for t in elements:
+            shadows = t.getAttribute("shadows")
             local_name = t.getAttribute("name")
-            # Copy escaping from gi: Foo.break -> Foo.break_
-            local_name = util.escape_keyword(local_name)
-            owner = t.parentNode.getAttribute("name")
             c_name = t.getAttribute("c:identifier")
-            name = namespace + "." + owner + "." + local_name
-            types[c_name] = name
+
+            # Copy escaping from gi: Foo.break -> Foo.break_
+            full_name = util.escape_keyword(local_name)
+            parent = t.parentNode
+            while parent.getAttribute("name"):
+                full_name = parent.getAttribute("name") + "." + full_name
+                parent = parent.parentNode
+
+            if shadows:
+                shadows = util.escape_keyword(shadows)
+                shadowed_name = ".".join(full_name.split(".")[:-1] + [shadows])
+                shadowed[shadowed_name] = c_name
+
+            types[c_name] = full_name
 
         # enums etc. GTK_SOME_FLAG_FOO -> Gtk.SomeFlag.FOO
         for t in dom.getElementsByTagName("member"):
@@ -91,6 +96,25 @@ class Namespace(object):
             if t.parentNode.tagName == "namespace":
                 name = namespace + "." + t.getAttribute("name")
                 types[c_name] = name
+
+        # the keys we want to replace have should exist
+        assert not (set(shadowed.keys()) - set(types.values()))
+
+        # make c defs which are replaced point to the key of the replacement
+        # so that: "gdk_threads_add_timeout_full" -> Gdk.threads_add_timeout
+        for c_name, name in types.items():
+            if name in shadowed:
+                replacement = shadowed[name]
+                types[replacement] = name
+
+        if namespace == "GObject":
+            # these come from overrides and aren't in the gir
+            # e.g. G_TYPE_INT -> GObject.TYPE_INT
+            from gi.repository import GObject
+            type_keys = [k for k in dir(GObject) if k.startswith("TYPE_")]
+            assert "TYPE_INT" in type_keys
+            for key in type_keys:
+                types["G_" + key] = "GObject." + key
 
         return types
 
