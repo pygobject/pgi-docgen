@@ -26,15 +26,11 @@
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
 <style>
-.wy-side-nav-search {
+.wy-side-nav-search, .wy-nav-top {
     background-color: #75507b !important;
 }
 .wy-side-nav-search input[type="text"] {
     border-color: #75507b !important;
-}
-
-.wy-menu-vertical li .toctree-l3 {
-display: none;
 }
 
 .wy-menu-vertical li .toctree-l3 {
@@ -139,7 +135,7 @@ display: block;
       {# MOBILE NAV, TRIGGLES SIDE NAV ON TOGGLE #}
       <nav class="wy-nav-top">
         <i data-toggle="wy-nav-top" class="icon icon-reorder"></i>
-        <a href="/">{{ project }}</a>
+        <a href="{{ pathto(master_doc) }}">{{ project }}</a>
       </nav>
 
 
