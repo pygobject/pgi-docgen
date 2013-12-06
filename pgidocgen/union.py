@@ -74,6 +74,32 @@ class UnionGenerator(util.Generator):
             title = name
             h.write(util.make_rest_title(title, "=") + "\n")
 
+            h.write("""
+Methods
+-------
+
+""")
+
+            methods = self._methods.get(cls, [])
+            if not methods:
+                h.write("None\n\n")
+            else:
+                h.write(".. autosummary::\n\n")
+
+            # sort static methods first, then by name
+            def sort_func(e):
+                return util.is_normalmethod(e[0]), e[0].__name__
+            methods.sort(key=sort_func)
+            for obj, code in methods:
+                h.write("    " + cls.__module__ + "." + cls.__name__ +
+                        "." + obj.__name__ + "\n")
+
+            h.write("""
+Details
+-------
+
+""")
+
             if util.is_base(cls):
                 h.write("""
 .. autoclass:: %s

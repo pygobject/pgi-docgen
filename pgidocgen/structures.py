@@ -78,13 +78,13 @@ class StructGenerator(util.Generator):
 Methods
 -------
 
-.. autosummary::
-
 """)
 
             methods = self._methods.get(cls, [])
             if not methods:
                 h.write("None\n\n")
+            else:
+                h.write(".. autosummary::\n\n")
 
             # sort static methods first, then by name
             def sort_func(e):
