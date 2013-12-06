@@ -6,6 +6,7 @@
 # License as published by the Free Software Foundation; either
 # version 2.1 of the License, or (at your option) any later version.
 
+import os
 import re
 
 
@@ -21,7 +22,19 @@ def parse_stock_icon(name):
     define_p = re.compile("\\s+")
     mapping = {}
 
-    with open("/usr/include/gtk-3.0/gtk/gtkstock.h", "rb") as fp:
+    paths = [
+        "/usr/include/gtk-3.0/gtk/deprecated/gtkstock.h",
+        "/usr/include/gtk-3.0/gtk/gtkstock.h",
+    ]
+
+    for path in paths:
+        if os.path.exists(path):
+            header_path = path
+            break
+    else:
+        raise LookupError("gtk header files missing: gtkstock.h not found")
+
+    with open(header_path, "rb") as fp:
         imgs = []
         item = None
         for line in fp:
