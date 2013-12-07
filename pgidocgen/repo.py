@@ -498,9 +498,17 @@ r'''
             if util.is_staticmethod(obj) or util.is_classmethod(obj):
                 name = "staticmethod(%s)" % name
 
-        return """
+            return """
 %s = %s
 r'''
 %s
 '''
 """ % (func_name, name, docs.encode("utf-8"))
+
+        return """
+%s = %s
+%s.__doc__ = \
+r'''
+%s
+'''
+""" % (func_name, name ,name, docs.encode("utf-8"))
