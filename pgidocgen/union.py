@@ -8,10 +8,13 @@
 import os
 
 from . import util
+from .fields import FieldsMixin
 
 
-class UnionGenerator(util.Generator):
+class UnionGenerator(util.Generator, FieldsMixin):
     def __init__(self, dir_, module_fileobj):
+        super(UnionGenerator, self).__init__()
+
         self._sub_dir = os.path.join(dir_, "unions")
         self.path = os.path.join(self._sub_dir, "index.rst")
 
@@ -94,6 +97,10 @@ Methods
                 h.write("    " + cls.__module__ + "." + cls.__name__ +
                         "." + obj.__name__ + "\n")
 
+            # Fields
+            self.write_field_table(cls, h)
+
+            # Details
             h.write("""
 Details
 -------

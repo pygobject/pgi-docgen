@@ -10,6 +10,8 @@ import os
 import re
 import keyword
 import inspect
+import csv
+import cStringIO
 
 
 def escape_keyword(text, reg=re.compile("^(%s)$" % "|".join(keyword.kwlist))):
@@ -65,6 +67,13 @@ def is_enum(obj):
     from gi.repository import GObject
     enum_base = GObject.GEnum
     return issubclass(obj, enum_base)
+
+
+def is_field(obj):
+    from gi.repository import GObject
+
+    field_base = type(GObject.Value.g_type)
+    return isinstance(obj, field_base)
 
 
 def is_base(cls):
@@ -166,6 +175,22 @@ def get_gir_files():
             if ext == ".gir":
                 all_modules[root] = os.path.join(d, entry)
     return all_modules
+
+
+def get_csv_line(values):
+    class CSVDialect(csv.Dialect):
+        delimiter = ','
+        quotechar = '"'
+        doublequote = True
+        skipinitialspace = False
+        lineterminator = '\n'
+        quoting = csv.QUOTE_ALL
+
+    values = [v.replace("\n", " ") for v in values]
+    h = cStringIO.StringIO()
+    w = csv.writer(h, CSVDialect)
+    w.writerow(values)
+    return h.getvalue().rstrip()
 
 
 class Generator(object):

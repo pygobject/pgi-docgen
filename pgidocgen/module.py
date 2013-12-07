@@ -188,9 +188,8 @@ class ModuleGenerator(util.Generator):
                             code = repo.parse_function(func_key, obj, attr_obj)
                             if code:
                                 gen.add_method(obj, attr_obj, code)
-                        else:
-                            # fields
-                            pass
+                        elif util.is_field(attr_obj):
+                            gen.add_field(obj, attr_obj)
                 else:
                     # unions..
                     code = repo.parse_class(name, obj)

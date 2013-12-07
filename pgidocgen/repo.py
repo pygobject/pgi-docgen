@@ -6,14 +6,12 @@
 # License as published by the Free Software Foundation; either
 # version 2.1 of the License, or (at your option) any later version.
 
-import cStringIO
-import csv
 import re
 import xml.sax.saxutils as saxutils
 
 from .namespace import Namespace
 from . import util
-from .util import escape_rest, unindent
+from .util import unindent, get_csv_line
 from .gtkstock import parse_stock_icon
 from .funcsig import FuncSignature
 
@@ -26,22 +24,6 @@ def gtype_to_rest(gtype):
     if p.__module__ != "__builtin__":
         name = p.__module__ + "." + name
     return ":class:`%s`" % name
-
-
-def get_csv_line(values):
-    class CSVDialect(csv.Dialect):
-        delimiter = ','
-        quotechar = '"'
-        doublequote = True
-        skipinitialspace = False
-        lineterminator = '\n'
-        quoting = csv.QUOTE_ALL
-
-    values = [v.replace("\n", " ") for v in values]
-    h = cStringIO.StringIO()
-    w = csv.writer(h, CSVDialect)
-    w.writerow(values)
-    return h.getvalue().rstrip()
 
 
 class Repository(object):

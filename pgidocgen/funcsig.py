@@ -10,6 +10,34 @@ import re
 from .util import escape_rest
 
 
+def _get_type_name(type_):
+    """Gives a name for a type that is suitable for a docstring.
+
+    int -> "int"
+    Gtk.Window -> "Gtk.Window"
+    [int] -> "[int]"
+    {int: Gtk.Button} -> "{int: Gtk.Button}"
+    """
+
+    if isinstance(type_, basestring):
+        return type_
+    elif isinstance(type_, list):
+        assert len(type_) == 1
+        return "[%s]" % _get_type_name(type_[0])
+    elif isinstance(type_, dict):
+        assert len(type_) == 1
+        key, value = type_.popitem()
+        return "{%s: %s}" % (_get_type_name(key), _get_type_name(value))
+    elif type_.__module__ in "__builtin__":
+        return type_.__name__
+    else:
+        return "%s.%s" % (type_.__module__, type_.__name__)
+
+
+def py_type_to_class_ref(type_):
+    return arg_to_class_ref(_get_type_name(type_))
+
+
 def arg_to_class_ref(text):
     """Convert a docstring argument to a string with reST references"""
 
