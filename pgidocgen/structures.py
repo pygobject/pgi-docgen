@@ -77,6 +77,9 @@ class StructGenerator(util.Generator, FieldsMixin):
             title = name
             h.write(util.make_rest_title(title, "=") + "\n")
 
+            # Fields
+            self.write_field_table(cls, h)
+
             h.write("""
 Methods
 -------
@@ -96,9 +99,6 @@ Methods
             for obj, code in methods:
                 h.write("    " + cls.__module__ + "." + cls.__name__ +
                         "." + obj.__name__ + "\n")
-
-            # Fields
-            self.write_field_table(cls, h)
 
             # Details
             h.write("""
