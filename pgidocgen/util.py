@@ -193,6 +193,16 @@ def get_csv_line(values):
     return h.getvalue().rstrip()
 
 
+def gtype_to_rest(gtype):
+    p = gtype.pytype
+    if p is None:
+        return ""
+    name = p.__name__
+    if p.__module__ != "__builtin__":
+        name = p.__module__ + "." + name
+    return ":class:`%s`" % name
+
+
 class Generator(object):
     """Abstract base class"""
 

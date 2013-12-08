@@ -11,19 +11,81 @@ import xml.sax.saxutils as saxutils
 
 from .namespace import Namespace
 from . import util
-from .util import unindent, get_csv_line
+from .util import unindent, get_csv_line, gtype_to_rest
 from .gtkstock import parse_stock_icon
 from .funcsig import FuncSignature
 
 
-def gtype_to_rest(gtype):
-    p = gtype.pytype
-    if p is None:
+def docstring_to_rest(types, namespace, d):
+
+    d = saxutils.unescape(d)
+
+    def fixup_code(match):
+        # FIXME: do this right.. skipped for now
         return ""
-    name = p.__name__
-    if p.__module__ != "__builtin__":
-        name = p.__module__ + "." + name
-    return ":class:`%s`" % name
+        code = match.group(1)
+        lines = code.splitlines()
+        return "\n::\n\n%s" % ("\n".join(["    %s" % l for l in lines]))
+
+    d = re.sub('\|\[(.*?)\]\|', fixup_code, d,
+               flags=re.MULTILINE | re.DOTALL)
+    d = re.sub('<programlisting>(.*?)</programlisting>', fixup_code, d,
+               flags=re.MULTILINE | re.DOTALL)
+
+    d = re.sub('<literal>(.*?)</literal>', '`\\1`', d)
+    d = re.sub('<[^<]+?>', '', d)
+
+    def fixup_class_refs(match):
+        x = match.group(1)
+        if x in types:
+            local = types[x]
+            if "." not in local:
+                local = namespace + "." + local
+            return ":class:`%s` " % local
+        return x
+
+    d = re.sub('[#%]?([A-Za-z0-9_]+)', fixup_class_refs, d)
+
+    def fixup_param_refs(match):
+        return "`%s`" % match.group(1)
+
+    d = re.sub('@([A-Za-z0-9_]+)', fixup_param_refs, d)
+
+    def fixup_function_refs(match):
+        x = match.group(1)
+        # functions are always prefixed
+        if not "_" in x:
+            return x
+        new = x.rstrip(")").rstrip("(")
+        if new in types:
+            return ":func:`%s`" % types[new]
+        return x
+
+    d = re.sub('([a-z0-9_]+(\(\)|))', fixup_function_refs, d)
+
+    def fixup_signal_refs(match):
+        name = match.group(1)
+        name = name.replace("_", "-")
+        return " :ref:`\:\:%s <%s>` " % (name, name)
+
+    d = re.sub('::([a-z\-_]+)', fixup_signal_refs, d)
+
+    def fixup_added_since(match):
+        return """
+
+.. versionadded:: %s
+""" % match.group(1)
+
+    d = re.sub('Since (\d+\.\d+)\s*$', fixup_added_since, d)
+
+    d = d.replace("NULL", ":obj:`None`")
+    d = d.replace("%NULL", ":obj:`None`")
+    d = d.replace("%TRUE", ":obj:`True`")
+    d = d.replace("TRUE", ":obj:`True`")
+    d = d.replace("%FALSE", ":obj:`False`")
+    d = d.replace("FALSE", ":obj:`False`")
+
+    return d
 
 
 class Repository(object):
@@ -126,75 +188,7 @@ class Repository(object):
                 self._returns[key] = docs
 
     def _fix_docs(self, d):
-
-        d = saxutils.unescape(d)
-
-        def fixup_code(match):
-            # FIXME: do this right.. skipped for now
-            return ""
-            code = match.group(1)
-            lines = code.splitlines()
-            return "\n::\n\n%s" % ("\n".join(["    %s" % l for l in lines]))
-
-        d = re.sub('\|\[(.*?)\]\|', fixup_code, d,
-                   flags=re.MULTILINE | re.DOTALL)
-        d = re.sub('<programlisting>(.*?)</programlisting>', fixup_code, d,
-                   flags=re.MULTILINE | re.DOTALL)
-
-        d = re.sub('<literal>(.*?)</literal>', '`\\1`', d)
-        d = re.sub('<[^<]+?>', '', d)
-
-        def fixup_class_refs(match):
-            x = match.group(1)
-            if x in self._types:
-                local = self._types[x]
-                if "." not in local:
-                    local = self.namespace + "." + local
-                return ":class:`%s` " % local
-            return x
-
-        d = re.sub('[#%]?([A-Za-z0-9_]+)', fixup_class_refs, d)
-
-        def fixup_param_refs(match):
-            return "`%s`" % match.group(1)
-
-        d = re.sub('@([A-Za-z0-9_]+)', fixup_param_refs, d)
-
-        def fixup_function_refs(match):
-            x = match.group(1)
-            # functions are always prefixed
-            if not "_" in x:
-                return x
-            new = x.rstrip(")").rstrip("(")
-            if new in self._types:
-                return ":func:`%s`" % self._types[new]
-            return x
-
-        d = re.sub('([a-z0-9_]+(\(\)|))', fixup_function_refs, d)
-
-        def fixup_signal_refs(match):
-            name = match.group(1)
-            name = name.replace("_", "-")
-            return " :ref:`\:\:%s <%s>` " % (name, name)
-
-        d = re.sub('::([a-z\-_]+)', fixup_signal_refs, d)
-
-        def fixup_added_since(match):
-            return """
-
-.. versionadded:: %s
-""" % match.group(1)
-
-        d = re.sub('Since (\d+\.\d+)\s*$', fixup_added_since, d)
-
-        d = d.replace("NULL", ":obj:`None`")
-        d = d.replace("%NULL", ":obj:`None`")
-        d = d.replace("%TRUE", ":obj:`True`")
-        d = d.replace("TRUE", ":obj:`True`")
-        d = d.replace("%FALSE", ":obj:`False`")
-        d = d.replace("FALSE", ":obj:`False`")
-
-        return d
+        return docstring_to_rest(self._types, self.namespace, d)
 
     def parse_constant(self, name):
         # FIXME: broken escaping in pgi
