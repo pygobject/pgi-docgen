@@ -43,11 +43,12 @@ Constants
 
 """)
 
-        if not names:
-            handle.write("None\n\n")
-
         for name in names:
             handle.write("* :obj:`" + name + "`\n")
+
+        if not names:
+            handle.write("None\n")
+        handle.write("\n")
 
         handle.write("""\
 Details

@@ -93,12 +93,18 @@ def is_base(cls):
     return False
 
 
-def unindent(text):
+def indent(text):
+    return "\n".join(["    " + l for l in text.splitlines()])
+
+
+def unindent(text, ignore_first_line=False):
     """Unindent a piece of text"""
 
     lines = text.splitlines()
     common_indent = -1
-    for line in lines:
+    for i, line in enumerate(lines):
+        if i == 0 and ignore_first_line:
+            continue
         if not line.strip():
             continue
         indent = len(line) - len(line.lstrip())
@@ -107,7 +113,22 @@ def unindent(text):
         else:
             common_indent = min(indent, common_indent)
 
-    return "\n".join([l[common_indent:] for l in lines])
+    new = []
+    for l in lines:
+        indent = min(len(l) - len(l.lstrip()), common_indent)
+        new.append(l[indent:])
+    return "\n".join(new)
+
+
+def force_unindent(text, ignore_first_line=False):
+    """Unindent a piece of text, line by line"""
+
+    lines = text.split("\n")
+
+    if ignore_first_line:
+        return "\n".join(lines[:1] + [l.lstrip() for l in lines[1:]])
+    else:
+        return "\n".join([l.lstrip() for l in lines])
 
 
 def escape_rest(text):

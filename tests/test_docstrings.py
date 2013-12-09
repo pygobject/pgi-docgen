@@ -47,10 +47,10 @@ class TDocstring(unittest.TestCase):
             ":obj:`True` if :class:`GObject.Value.copy` () with `src_type` and `dest_type`.",
         ),(
             "To free this list, you can use |[ g_slist_free_full (list, (GDestroyNotify) g_object_unref); ]|",
-            "To free this list, you can use ",
+            "To free this list, you can use ``g_slist_free_full (list, (GDestroyNotify) g_object_unref);``",
         ),(
             "target attribute on &lt;a&gt; elements.",
-            "target attribute on  elements.",
+            "target attribute on <a> elements.",
         ),(
             """\
 Retrieves the current length of the text in
@@ -62,13 +62,13 @@ This is equivalent to:
 gtk_entry_buffer_get_length (gtk_entry_get_buffer (entry));
 </programlisting></informalexample>\
 """,
-            "Retrieves the current length of the text in\n`entry`. \n\nThis is equivalent to:\n\n",
+            "Retrieves the current length of the text in\n`entry`. \n\nThis is equivalent to:\n\n``gtk_entry_buffer_get_length (gtk_entry_get_buffer (entry));``",
         ),(
             "the unique ID for @window, or <literal>0</literal> if the window has not yet been added to a #GtkApplication",
-            "the unique ID for `window`, or `0` if the window has not yet been added to a GtkApplication",
+            "the unique ID for `window`, or ``0`` if the window has not yet been added to a GtkApplication",
         ),(
             "This is called for each unknown element under &lt;child&gt;.",
-            "This is called for each unknown element under ."
+            "This is called for each unknown element under <child>."
         ),(
             "GQuark",
             ":class:`GLib.Quark` "
@@ -94,8 +94,8 @@ gtk_entry_buffer_get_length (gtk_entry_get_buffer (entry));
             "always returns %FALSE.",
             "always returns :obj:`False`."
         ),(
-            "you would\nwrite: &lt;literal&gt;gtk_tree_model_get (model, iter, 0, &amp;amp;place_string_here, -1)&lt;/literal&gt;,\nwhere &lt;literal&gt;place_string_here&lt;/literal&gt; is a &lt;type&gt;gchar*&lt;/type&gt;\nto be filled with the string.",
-            "you would\nwrite: `:class:`Gtk.TreeModel.get`  (model, iter, 0, &amp;place_string_here, -1)`,\nwhere `place_string_here` is a gchar*\nto be filled with the string.",
+            "you would\nwrite: <literal>;gtk_tree_model_get (model, iter, 0, &amp;place_string_here, -1)</literal>,\nwhere <literal>place_string_here</literal> is a <type>gchar*</type>\nto be filled with the string.",
+            "you would\nwrite: ``;gtk_tree_model_get (model, iter, 0, &place_string_here, -1)``,\nwhere ``place_string_here`` is a ``gchar*``\nto be filled with the string.",
         ),(
             "Please note\nthat @GTK_TREE_VIEW_COLUMN_AUTOSIZE are inefficient",
             "Please note\nthat @:class:`Gtk.TreeViewColumnSizing.AUTOSIZE`  are inefficient"
@@ -104,28 +104,29 @@ gtk_entry_buffer_get_length (gtk_entry_get_buffer (entry));
             "the :obj:`None` state or initial state"
         ),(
             """\
-&lt;itemizedlist&gt;
-  &lt;listitem&gt;#GtkWidgetClass.get_request_mode()&lt;/listitem&gt;
-  &lt;listitem&gt;#GtkWidgetClass.get_preferred_width()&lt;/listitem&gt;
-  &lt;listitem&gt;#GtkWidgetClass.get_preferred_height()&lt;/listitem&gt;
-  &lt;listitem&gt;#GtkWidgetClass.get_preferred_height_for_width()&lt;/listitem&gt;
-  &lt;listitem&gt;#GtkWidgetClass.get_preferred_width_for_height()&lt;/listitem&gt;
-  &lt;listitem&gt;#GtkWidgetClass.get_preferred_height_and_baseline_for_width()&lt;/listitem&gt;
-&lt;/itemizedlist&gt;\
+<itemizedlist>
+  <listitem>#GtkWidgetClass.get_request_mode()</listitem>
+  <listitem>#GtkWidgetClass.get_preferred_width()</listitem>
+  <listitem>#GtkWidgetClass.get_preferred_height()</listitem>
+  <listitem>#GtkWidgetClass.get_preferred_height_for_width()</listitem>
+  <listitem>#GtkWidgetClass.get_preferred_width_for_height()</listitem>
+  <listitem>#GtkWidgetClass.get_preferred_height_and_baseline_for_width()</listitem>
+</itemizedlist>\
 """,
-            """\
-
-  GtkWidgetClass.get_request_mode()
-  GtkWidgetClass.get_preferred_width()
-  GtkWidgetClass.get_preferred_height()
-  GtkWidgetClass.get_preferred_height_for_width()
-  GtkWidgetClass.get_preferred_width_for_height()
-  GtkWidgetClass.get_preferred_height_and_baseline_for_width()
-\
+            """
+* GtkWidgetClass.get_request_mode()
+* GtkWidgetClass.get_preferred_width()
+* GtkWidgetClass.get_preferred_height()
+* GtkWidgetClass.get_preferred_height_for_width()
+* GtkWidgetClass.get_preferred_width_for_height()
+* GtkWidgetClass.get_preferred_height_and_baseline_for_width()
 """
 ),(
             "the #AtkTextAttribute enumerated type corresponding to the specified name, or #ATK_TEXT_ATTRIBUTE_INVALID if no matching text attribute is found.",
             "the :class:`Atk.TextAttribute`  enumerated type corresponding to the specified name, or ATK_TEXT_ATTRIBUTE_INVALID if no matching text attribute is found."
+),(
+        "a |[ blaa()\n ]| adsad",
+        "a ``blaa()`` adsad",
         )]
 
         for in_, out in data:

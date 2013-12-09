@@ -7,33 +7,17 @@
 # version 2.1 of the License, or (at your option) any later version.
 
 import re
-import xml.sax.saxutils as saxutils
+from BeautifulSoup import BeautifulStoneSoup, Tag
 
 from .namespace import Namespace
 from . import util
 from .util import unindent, get_csv_line, gtype_to_rest
+from .util import force_unindent
 from .gtkstock import parse_stock_icon
 from .funcsig import FuncSignature
 
 
-def docstring_to_rest(types, namespace, d):
-
-    d = saxutils.unescape(d)
-
-    def fixup_code(match):
-        # FIXME: do this right.. skipped for now
-        return ""
-        code = match.group(1)
-        lines = code.splitlines()
-        return "\n::\n\n%s" % ("\n".join(["    %s" % l for l in lines]))
-
-    d = re.sub('\|\[(.*?)\]\|', fixup_code, d,
-               flags=re.MULTILINE | re.DOTALL)
-    d = re.sub('<programlisting>(.*?)</programlisting>', fixup_code, d,
-               flags=re.MULTILINE | re.DOTALL)
-
-    d = re.sub('<literal>(.*?)</literal>', '`\\1`', d)
-    d = re.sub('<[^<]+?>', '', d)
+def handle_data(types, namespace, d):
 
     def fixup_class_refs(match):
         x = match.group(1)
@@ -86,6 +70,60 @@ def docstring_to_rest(types, namespace, d):
     d = d.replace("FALSE", ":obj:`False`")
 
     return d
+
+
+def handle_xml(types, namespace, out, item):
+    if isinstance(item, Tag):
+        if item.name == "literal" or item.name == "type":
+            out.append("``%s``" % item.text)
+        elif item.name == "itemizedlist":
+            lines = []
+            for item in item.contents:
+                if not isinstance(item, Tag):
+                    continue
+
+                lines.append("* " + " ".join(handle_data(
+                             types, namespace, item.getText()
+                             ).splitlines()))
+            out.append("\n" + "\n".join(lines) + "\n")
+
+        elif item.name == "programlisting":
+            text = item.getText()
+            if not text.count("\n"):
+                out.append("``%s``" % item.getText())
+            else:
+                code = "\n.. code-block:: c\n\n%s" % util.indent(util.unindent(item.getText(), ignore_first_line=True))
+                out.append(code)
+
+        elif item.name == "title":
+            out.append(handle_data(types, namespace, item.getText()))
+        else:
+            for sub in item.contents:
+                handle_xml(types, namespace, out, sub)
+    else:
+        if not out or out[-1].endswith("\n"):
+            data = force_unindent(item.string, ignore_first_line=False)
+        else:
+            data = force_unindent(item.string, ignore_first_line=True)
+        out.append(handle_data(types, namespace, data))
+
+
+def docstring_to_rest(types, namespace, docstring):
+    # |[ ]| seems to mark inline code. Move it to docbook so we have a
+    # single thing to work with below
+    docstring = re.sub("\|\[(.*?)\]\|", "<programlisting>\\1</programlisting>",
+                       docstring, flags=re.MULTILINE | re.DOTALL)
+
+    # We don't care about para
+    docstring = re.sub("<para>", "", docstring)
+    docstring = re.sub("</para>", "", docstring)
+
+    soup = BeautifulStoneSoup(docstring,
+                              convertEntities=BeautifulStoneSoup.HTML_ENTITIES)
+    out = []
+    for item in soup.contents:
+        handle_xml(types, namespace, out, item)
+    return "".join(out)
 
 
 class Repository(object):
