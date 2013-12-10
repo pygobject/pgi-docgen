@@ -93,7 +93,7 @@ class Namespace(object):
         for t in dom.getElementsByTagName("record"):
             c_name = t.getAttribute("c:type")
             type_name = t.getAttribute("name")
-            types[c_name] = type_name
+            types[c_name] = namespace + "." + type_name
 
         # G_TIME_SPAN_MINUTE -> GLib.TIME_SPAN_MINUTE
         for t in dom.getElementsByTagName("constant"):

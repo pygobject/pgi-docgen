@@ -17,7 +17,7 @@ from .gtkstock import parse_stock_icon
 from .funcsig import FuncSignature
 
 
-def handle_data(types, namespace, d):
+def handle_data(types, d):
 
     scanner = re.Scanner([
         (r"[#%@]?[A-Za-z0-9_:\-]+\**", lambda scanner, token:("ID", token)),
@@ -51,13 +51,16 @@ def handle_data(types, namespace, d):
         if sub in objects:
             return ":obj:`%s`" % objects[sub]
         elif sub in types:
-            return ":class:`%s`" % types[sub]
+            pytype = types[sub]
+            assert "." in pytype
+            return ":class:`%s`" % pytype
         elif token.startswith(("#", "%")) and token.endswith("s"):
             # if we are sure it's a reference and it ends with 's'
             # like "a list of #GtkWindows", we also try "#GtkWindow"
             sub = token[1:-1]
             if sub in types:
                 pytype = types[sub]
+                assert "." in pytype
                 return ":class:`%s <%s>`" % (pytype + "s", pytype)
 
         return token
@@ -118,7 +121,7 @@ def handle_data(types, namespace, d):
     return "".join(out)
 
 
-def handle_xml(types, namespace, out, item):
+def handle_xml(types, out, item):
     if isinstance(item, Tag):
         if item.name == "literal" or item.name == "type":
             out.append("``%s``" % item.text)
@@ -129,7 +132,7 @@ def handle_xml(types, namespace, out, item):
                     continue
 
                 lines.append("* " + " ".join(handle_data(
-                             types, namespace, item.getText()
+                             types, item.getText()
                              ).splitlines()))
             out.append("\n" + "\n".join(lines) + "\n")
 
@@ -143,19 +146,19 @@ def handle_xml(types, namespace, out, item):
                 out.append(code)
 
         elif item.name == "title":
-            out.append(handle_data(types, namespace, item.getText()))
+            out.append(handle_data(types, item.getText()))
         else:
             for sub in item.contents:
-                handle_xml(types, namespace, out, sub)
+                handle_xml(types, out, sub)
     else:
         if not out or out[-1].endswith("\n"):
             data = force_unindent(item.string, ignore_first_line=False)
         else:
             data = force_unindent(item.string, ignore_first_line=True)
-        out.append(handle_data(types, namespace, data))
+        out.append(handle_data(types, data))
 
 
-def docstring_to_rest(types, namespace, docstring):
+def docstring_to_rest(types, docstring):
     # |[ ]| seems to mark inline code. Move it to docbook so we have a
     # single thing to work with below
 
@@ -175,7 +178,7 @@ def docstring_to_rest(types, namespace, docstring):
                               convertEntities=BeautifulStoneSoup.HTML_ENTITIES)
     out = []
     for item in soup.contents:
-        handle_xml(types, namespace, out, item)
+        handle_xml(types, out, item)
     rst = "".join(out)
 
     def fixup_added_since(match):
@@ -289,7 +292,7 @@ class Repository(object):
                 self._returns[key] = docs
 
     def _fix_docs(self, d):
-        return docstring_to_rest(self._types, self.namespace, d)
+        return docstring_to_rest(self._types, d)
 
     def parse_constant(self, name):
         # FIXME: broken escaping in pgi

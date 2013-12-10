@@ -32,8 +32,8 @@ class TDocstring(unittest.TestCase):
             "GtkContainer": "Gtk.Container",
         }
 
-    def _check(self, text, expected, namespace="Default"):
-        out = docstring_to_rest(self.types, namespace, text)
+    def _check(self, text, expected):
+        out = docstring_to_rest(self.types, text)
         self.assertEqual(out, expected)
 
     def test_various(self):
