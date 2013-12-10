@@ -137,7 +137,6 @@ def escape_rest(text):
     text = text.replace("_", "\\_")
     return text
 
-
 def merge_in_overrides(obj):
     # hide overrides by merging the bases in
     possible_bases = []

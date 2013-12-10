@@ -47,6 +47,11 @@ class Namespace(object):
         for t in dom.getElementsByTagName("type"):
             local_name = t.getAttribute("name")
             c_name = t.getAttribute("c:type").rstrip("*")
+            if c_name.lower() == c_name:
+                # skip gboolean, gint etc.
+                continue
+            if "." not in local_name:
+                local_name = namespace + "."+ local_name
             types[c_name] = local_name
 
         # gtk_main -> Gtk.main

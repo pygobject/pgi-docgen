@@ -57,7 +57,7 @@ def arg_to_class_ref(text):
             v = arg_to_class_ref(v.strip())
             out.append("{%s: %s}" % (k, v))
         else:
-            if p == "None":
+            if p in ("None", "int", "bool", "str"):
                 out.append(":obj:`%s`" % p)
             else:
                 out.append(":class:`%s`" % p)
@@ -138,7 +138,6 @@ class FuncSignature(object):
         for key, value in self.args:
             param_key = full_name + "." + key
             text = doc_repo.lookup_parameter_docs(param_key)
-            text = escape_rest(text)
             key = escape_rest(key)
             docs.append(":param %s: %s" % (key, text))
             docs.append(":type %s: %s" % (key, arg_to_class_ref(value)))

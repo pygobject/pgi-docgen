@@ -8,6 +8,7 @@
 import unittest
 
 from pgidocgen.funcsig import FuncSignature, arg_to_class_ref
+from pgidocgen.util import escape_rest
 
 
 class TFuncSigs(unittest.TestCase):
@@ -54,16 +55,16 @@ class TFuncSigs(unittest.TestCase):
         self.assertEqual(sig.raises, True)
 
     def test_arg_to_class_ref(self):
-        self.assertEqual(arg_to_class_ref("int"), ":class:`int`")
-        self.assertEqual(arg_to_class_ref("[int]"), "[:class:`int`]")
+        self.assertEqual(arg_to_class_ref("int"), ":obj:`int`")
+        self.assertEqual(arg_to_class_ref("[int]"), "[:obj:`int`]")
         self.assertEqual(
             arg_to_class_ref("[Gtk.Window]"), "[:class:`Gtk.Window`]")
         self.assertEqual(
             arg_to_class_ref("{Gtk.Window or None: int}"),
-            "{:class:`Gtk.Window` or :obj:`None`: :class:`int`}")
+            "{:class:`Gtk.Window` or :obj:`None`: :obj:`int`}")
         self.assertEqual(
             arg_to_class_ref("[str] or None"),
-            "[:class:`str`] or :obj:`None`")
+            "[:obj:`str`] or :obj:`None`")
 
     def test_to_rest_listing(self):
         sig = FuncSignature.from_string("go", "go(a_: [str]) -> b_: [str]")
@@ -71,15 +72,15 @@ class TFuncSigs(unittest.TestCase):
         class FakeRepo(object):
 
             def lookup_parameter_docs(self, name):
-                return "PARADOC(%s)" % name
+                return escape_rest("PARADOC(%s)" % name)
 
             def lookup_return_docs(self, name):
-                return "RETURNDOC(%s)" % name
+                return escape_rest("RETURNDOC(%s)" % name)
 
         doc = sig.to_rest_listing(FakeRepo(), "Foo.bar.go")
         self.assertEqual(doc, """\
 :param a\\_: PARADOC(Foo.bar.go.a\\_)
-:type a\\_: [:class:`str`]
+:type a\\_: [:obj:`str`]
 :returns: RETURNDOC(Foo.bar.go)
-:rtype: b\\_: [:class:`str`]\
+:rtype: b\\_: [:obj:`str`]\
 """)

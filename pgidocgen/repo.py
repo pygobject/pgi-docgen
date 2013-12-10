@@ -11,7 +11,7 @@ from BeautifulSoup import BeautifulStoneSoup, Tag
 
 from .namespace import Namespace
 from . import util
-from .util import unindent, get_csv_line, gtype_to_rest
+from .util import unindent, get_csv_line, gtype_to_rest, escape_rest
 from .util import force_unindent
 from .gtkstock import parse_stock_icon
 from .funcsig import FuncSignature
@@ -19,57 +19,104 @@ from .funcsig import FuncSignature
 
 def handle_data(types, namespace, d):
 
-    def fixup_class_refs(match):
-        x = match.group(1)
-        if x in types:
-            local = types[x]
-            if "." not in local:
-                local = namespace + "." + local
-            return ":class:`%s` " % local
-        return x
+    scanner = re.Scanner([
+        (r"[#%@]?[A-Za-z0-9_:\-]+\**", lambda scanner, token:("ID", token)),
+        (r"\(", lambda scanner, token:("OTHER", token)),
+        (r"\)", lambda scanner, token:("OTHER", token)),
+        (r",", lambda scanner, token:("OTHER", token)),
+        (r"\s", lambda scanner, token:("SPACE", token)),
+        (r"[^\s]+", lambda scanner, token:("OTHER", token)),
+    ])
 
-    d = re.sub('[#%]?([A-Za-z0-9_]+)', fixup_class_refs, d)
+    results, remainder = scanner.scan(d)
+    assert not remainder
 
-    def fixup_param_refs(match):
-        return "`%s`" % match.group(1)
+    objects = {
+        "NULL": "None",
+        "TRUE": "True",
+        "FALSE": "False",
+        "gint": "int",
+        "gboolean": "bool",
+        "gchar": "str",
+    }
 
-    d = re.sub('@([A-Za-z0-9_]+)', fixup_param_refs, d)
+    def id_ref(token):
+        # possible identifier reference
 
-    def fixup_function_refs(match):
-        x = match.group(1)
-        # functions are always prefixed
-        if not "_" in x:
-            return x
-        new = x.rstrip(")").rstrip("(")
-        if new in types:
-            return ":func:`%s`" % types[new]
-        return x
+        # strip pointer
+        sub = token.rstrip("*")
+        if sub.startswith(("#", "%")):
+            sub = sub[1:]
 
-    d = re.sub('([a-z0-9_]+(\(\)|))', fixup_function_refs, d)
+        if sub in objects:
+            return ":obj:`%s`" % objects[sub]
+        elif sub in types:
+            return ":class:`%s`" % types[sub]
+        elif token.startswith(("#", "%")) and token.endswith("s"):
+            # if we are sure it's a reference and it ends with 's'
+            # like "a list of #GtkWindows", we also try "#GtkWindow"
+            sub = token[1:-1]
+            if sub in types:
+                pytype = types[sub]
+                return ":class:`%s <%s>`" % (pytype + "s", pytype)
 
-    def fixup_signal_refs(match):
-        name = match.group(1)
-        name = name.replace("_", "-")
-        return " :ref:`\:\:%s <%s>` " % (name, name)
+        return token
 
-    d = re.sub('::([a-z\-_]+)', fixup_signal_refs, d)
+    out = []
+    need_space_at_start = False
+    for type_, token in results:
+        orig_token = token
+        if type_ == "ID":
 
-    def fixup_added_since(match):
-        return """
+            # paremeter reference
+            if token.startswith("@"):
+                token = token[1:]
+                # don't trust if uppercase, check if it's a type first
+                if token.upper() == token and token in types:
+                    token = ":class:`%s`" % types[token]
+                else:
+                    token = "`%s`" % token
+            else:
+                parts = re.split("(:+)", token)
+                if len(parts) > 2 and parts[2]:
+                    obj, sep, sigprop = parts[0], parts[1], "".join(parts[2:])
+                    name = sigprop.replace("_", "-")
+                    obj_token = id_ref(obj)
+                    token = ""
+                    if obj_token:
+                        token = obj_token + " "
+                    token += ":ref:`%s%s <%s>`" % (sep, name, name)
+                else:
+                    if token.endswith(":"):
+                        token = id_ref(token[:-1]) + ":"
+                    else:
+                        token = id_ref(token)
 
-.. versionadded:: %s
-""" % match.group(1)
+        changed = orig_token != token
 
-    d = re.sub('Since (\d+\.\d+)\s*$', fixup_added_since, d)
+        # nothing changed, escape
+        if not changed:
+            token = escape_rest(token)
 
-    d = d.replace("NULL", ":obj:`None`")
-    d = d.replace("%NULL", ":obj:`None`")
-    d = d.replace("%TRUE", ":obj:`True`")
-    d = d.replace("TRUE", ":obj:`True`")
-    d = d.replace("%FALSE", ":obj:`False`")
-    d = d.replace("FALSE", ":obj:`False`")
+        # insert a space for the previous one
+        if need_space_at_start:
+            if not token:
+                pass
+            else:
+                # ., is also OK
+                if not token.startswith((" ", ".", ",")):
+                    token = " " + token
+                need_space_at_start = False
 
-    return d
+        if changed:
+            # something changed, we have to make sure that
+            # the previous and next character is a space so
+            # docutils doesn't get confused wit references
+            need_space_at_start = True
+
+        out.append(token)
+
+    return "".join(out)
 
 
 def handle_xml(types, namespace, out, item):
@@ -92,7 +139,8 @@ def handle_xml(types, namespace, out, item):
             if not text.count("\n"):
                 out.append("``%s``" % item.getText())
             else:
-                code = "\n.. code-block:: c\n\n%s" % util.indent(util.unindent(item.getText(), ignore_first_line=True))
+                code = "\n.. code-block:: c\n\n%s" % util.indent(
+                    util.unindent(item.getText(), ignore_first_line=True))
                 out.append(code)
 
         elif item.name == "title":
@@ -111,7 +159,13 @@ def handle_xml(types, namespace, out, item):
 def docstring_to_rest(types, namespace, docstring):
     # |[ ]| seems to mark inline code. Move it to docbook so we have a
     # single thing to work with below
-    docstring = re.sub("\|\[(.*?)\]\|", "<programlisting>\\1</programlisting>",
+
+    def to_programlisting(match):
+        from xml.sax.saxutils import escape
+        escaped = escape(match.group(1))
+        return "<programlisting>%s</programlisting>" % escaped
+
+    docstring = re.sub("\|\[(.*?)\]\|", to_programlisting,
                        docstring, flags=re.MULTILINE | re.DOTALL)
 
     # We don't care about para
@@ -351,6 +405,7 @@ class %s(%s):
         lines = []
         for n, t, f, b in props:
             b = self._fix_docs(b)
+            n = "_`%s`" % n  # inline target
             prop = get_csv_line([n, t, f, b])
             lines.append("    %s" % prop)
         lines = "\n".join(lines)
