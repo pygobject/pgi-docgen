@@ -158,6 +158,12 @@ gtk_entry_buffer_get_length (gtk_entry_get_buffer (entry));
 ),(
         "a #gint** that",
         "a :obj:`int` that"
+),(
+        "a @Since: ATK-2.1.0",
+        "a \n\n:Since: *ATK-2.1.0*\n\n"
+),(
+        "Since: this is",
+        "Since: this is",
         )]
 
         for in_, out in data:

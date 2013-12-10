@@ -71,11 +71,10 @@ def handle_data(types, namespace, d):
             # paremeter reference
             if token.startswith("@"):
                 token = token[1:]
-                # don't trust if uppercase, check if it's a type first
-                if token.upper() == token and token in types:
-                    token = ":class:`%s`" % types[token]
-                else:
+                if token.lower() == token:
                     token = "`%s`" % token
+                else:
+                    token = id_ref(token)
             else:
                 parts = re.split("(:+)", token)
                 if len(parts) > 2 and parts[2]:
@@ -177,7 +176,17 @@ def docstring_to_rest(types, namespace, docstring):
     out = []
     for item in soup.contents:
         handle_xml(types, namespace, out, item)
-    return "".join(out)
+    rst = "".join(out)
+
+    def fixup_added_since(match):
+        return """
+
+:Since: *%s*
+
+""" % match.group(1).strip()
+
+    rst = re.sub('@?Since:?\s+([^\s]+)$', fixup_added_since, rst)
+    return rst
 
 
 class Repository(object):
