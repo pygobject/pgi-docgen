@@ -149,7 +149,7 @@ class FuncSignature(object):
         if text:
             # don't allow newlines here
             doc_string = " ".join(text.splitlines())
-            docs.append(":returns: %s" % escape_rest(doc_string))
+            docs.append(":returns: %s" % doc_string)
 
         res = []
         for r in self.res:
