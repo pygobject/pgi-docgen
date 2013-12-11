@@ -21,6 +21,7 @@ def handle_data(types, d):
 
     scanner = re.Scanner([
         (r"[#%@]?[A-Za-z0-9_:\-]+\**", lambda scanner, token:("ID", token)),
+        (r"[#%@]?[A-Za-z0-9_:\-]+\**", lambda scanner, token:("ID", token)),
         (r"\(", lambda scanner, token:("OTHER", token)),
         (r"\)", lambda scanner, token:("OTHER", token)),
         (r",", lambda scanner, token:("OTHER", token)),
@@ -38,6 +39,12 @@ def handle_data(types, d):
         "gint": "int",
         "gboolean": "bool",
         "gchar": "str",
+        "gdouble": "float",
+        "glong": "int",
+        "gfloat": "float",
+        "guint": "int",
+        "gulong": "int",
+        "char": "str",
     }
 
     def id_ref(token):
@@ -45,6 +52,7 @@ def handle_data(types, d):
 
         # strip pointer
         sub = token.rstrip("*")
+
         if sub.startswith(("#", "%")):
             sub = sub[1:]
 
@@ -54,14 +62,26 @@ def handle_data(types, d):
             pytype = types[sub]
             assert "." in pytype
             return ":class:`%s`" % pytype
-        elif token.startswith(("#", "%")) and token.endswith("s"):
-            # if we are sure it's a reference and it ends with 's'
-            # like "a list of #GtkWindows", we also try "#GtkWindow"
-            sub = token[1:-1]
-            if sub in types:
-                pytype = types[sub]
-                assert "." in pytype
-                return ":class:`%s <%s>`" % (pytype + "s", pytype)
+        elif token.startswith(("#", "%")):
+            if token.endswith("s"):
+                # if we are sure it's a reference and it ends with 's'
+                # like "a list of #GtkWindows", we also try "#GtkWindow"
+                sub = token[1:-1]
+                if sub in types:
+                    pytype = types[sub]
+                    assert "." in pytype
+                    return ":class:`%s <%s>`" % (pytype + "s", pytype)
+            else:
+                # also try to add "s", GdkFrameTiming(s)
+                sub = token[1:] + "s"
+                if sub in types:
+                    pytype = types[sub]
+                    assert "." in pytype
+                    py_no_s = pytype[:-1] if pytype[-1] == "s" else pytype
+                    return ":class:`%s <%s>`" % (py_no_s, pytype)
+
+        #if token.startswith(("#", "%")):
+        #    print token
 
         return token
 
@@ -89,7 +109,10 @@ def handle_data(types, d):
                         token = obj_token + " "
                     token += ":ref:`%s%s <%s>`" % (sep, name, name)
                 else:
-                    if token.endswith(":"):
+                    if "-" in token:
+                        first, rest = token.split("-", 1)
+                        token = id_ref(first) + "-" + rest
+                    elif token.endswith(":"):
                         token = id_ref(token[:-1]) + ":"
                     else:
                         token = id_ref(token)

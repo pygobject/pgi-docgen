@@ -14,7 +14,7 @@ import csv
 import cStringIO
 
 
-def escape_keyword(text, reg=re.compile("^(%s)$" % "|".join(keyword.kwlist))):
+def escape_argument(text, reg=re.compile("^(%s)$" % "|".join(keyword.kwlist))):
     return reg.sub(r"\1_", text)
 
 

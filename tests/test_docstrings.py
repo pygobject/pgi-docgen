@@ -30,6 +30,7 @@ class TDocstring(unittest.TestCase):
             "AtkTable": "Atk.Table",
             "GtkSettings": "Gtk.Settings",
             "GtkContainer": "Gtk.Container",
+            "GdkFrameTimings": "Gdk.FrameTimings",
         }
 
     def _check(self, text, expected):
@@ -164,6 +165,12 @@ gtk_entry_buffer_get_length (gtk_entry_get_buffer (entry));
 ),(
         "Since: this is",
         "Since: this is",
+),(
+        "foo #GdkFrameTiming",
+        "foo :class:`Gdk.FrameTiming <Gdk.FrameTimings>`",
+),(
+        "%NULL-terminated",
+        ":obj:`None`-terminated",  # kinda useless, but hey
         )]
 
         for in_, out in data:
