@@ -8,14 +8,32 @@
 
 import os
 import re
-import keyword
 import inspect
+import keyword
 import csv
 import cStringIO
 
 
-def escape_argument(text, reg=re.compile("^(%s)$" % "|".join(keyword.kwlist))):
+_KWD_RE = re.compile("^(%s)$" % "|".join(keyword.kwlist))
+
+
+def escape_identifier(text, reg=_KWD_RE):
+    """Escape C identifiers so they can be used as attributes/arguments"""
+
+    # see http://docs.python.org/reference/lexical_analysis.html#identifiers
+    if not text:
+        return text
+    if text[0].isdigit():
+        text = "_" + text
     return reg.sub(r"\1_", text)
+
+
+def escape_parameter(text):
+    """Escape a GObject parameter name so it can be used as python
+    attribute/argument
+    """
+
+    return escape_identifier(text.replace("-", "_"))
 
 
 def is_iface(obj):

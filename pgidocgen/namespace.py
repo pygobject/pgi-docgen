@@ -49,6 +49,10 @@ class Namespace(object):
                     return
                 else:
                     assert types[c_name] == py_name, (types[c_name], py_name)
+
+            # escape each potential attribute
+            py_name = ".".join(
+                map(util.escape_identifier,  py_name.split(".")))
             types[c_name] = py_name
 
         # {key of the to be replaces function: c def of the replacement}
@@ -67,19 +71,19 @@ class Namespace(object):
             assert c_name
 
             # Copy escaping from gi: Foo.break -> Foo.break_
-            full_name = util.escape_argument(local_name)
+            full_name = local_name
             parent = t.parentNode
             while parent.getAttribute("name"):
                 full_name = parent.getAttribute("name") + "." + full_name
                 parent = parent.parentNode
 
             if shadows:
-                shadows = util.escape_argument(shadows)
                 shadowed_name = ".".join(full_name.split(".")[:-1] + [shadows])
+                shadowed_name = ".".join(
+                    map(util.escape_identifier, shadowed_name.split(".")))
                 shadowed[shadowed_name] = c_name
 
             add(c_name, full_name)
-
 
         # enums etc. GTK_SOME_FLAG_FOO -> Gtk.SomeFlag.FOO
         for t in dom.getElementsByTagName("member"):

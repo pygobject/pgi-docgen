@@ -56,3 +56,8 @@ class TNamespace(unittest.TestCase):
         ns = Namespace("cairo", "1.0")
 
         self.assertEqual(ns.types["cairo_t"], "cairo.Context")
+
+    def test_pango(self):
+        ns = Namespace("Pango", "1.0")
+
+        self.assertEqual(ns.types["pango_break"], "Pango.break_")

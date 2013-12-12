@@ -306,6 +306,7 @@ class Repository(object):
                     continue
                 l.insert(0, name)
 
+            l = map(util.escape_identifier, l)
             key = ".".join(l)
             if not kind:
                 self._all[key] = docs
