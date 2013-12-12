@@ -8,9 +8,10 @@
 import os
 
 from . import util
+from .fields import FieldsMixin
 
 
-class ClassGenerator(util.Generator):
+class ClassGenerator(util.Generator, FieldsMixin):
     """Base class for GObjects an GInterfaces"""
 
     DIR_NAME = ""
@@ -160,6 +161,11 @@ Signals
 -------
 """ % name)
             h.write(self._sigs.get(cls, "") or "None\n\n")
+
+            # fields aren't common with GObjects, so only print the
+            # header when some are there
+            if self.has_fields(cls):
+                self.write_field_table(cls, h)
 
             h.write("""
 Details

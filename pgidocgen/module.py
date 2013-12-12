@@ -150,6 +150,8 @@ class ModuleGenerator(util.Generator):
                             code = repo.parse_function(func_key, obj, attr_obj)
                             if code:
                                 class_gen.add_method(obj, attr_obj, code)
+                        elif util.is_field(attr_obj):
+                            class_gen.add_field(obj, attr_obj)
 
                 elif util.is_flags(obj):
                     code = repo.parse_flags(name, obj)

@@ -19,6 +19,9 @@ class FieldsMixin(object):
         else:
             self._fields[cls_obj] = [field_info]
 
+    def has_fields(self, cls):
+        return bool(self._fields.get(cls, []))
+
     def write_field_table(self, cls, h):
 
         h.write("""
