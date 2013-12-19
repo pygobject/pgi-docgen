@@ -45,6 +45,7 @@ def handle_data(types, d):
         "guint": "int",
         "gulong": "int",
         "char": "str",
+        "gpointer": "object",
     }
 
     def id_ref(token):

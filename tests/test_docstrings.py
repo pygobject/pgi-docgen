@@ -171,6 +171,9 @@ gtk_entry_buffer_get_length (gtk_entry_get_buffer (entry));
 ),(
         "%NULL-terminated",
         ":obj:`None`-terminated",  # kinda useless, but hey
+),(
+        "returns a #gpointer",
+        "returns a :obj:`object`"
         )]
 
         for in_, out in data:
