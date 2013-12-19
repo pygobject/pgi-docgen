@@ -102,8 +102,8 @@ class FuncSignature(object):
         arg_map = []
         for arg in args:
             arg = arg.strip()
-            # skip *args, **kwargs
-            if arg.startswith("*"):
+            # **kwargs
+            if arg.startswith("**"):
                 continue
             parts = arg.split(":", 1)
             if len(parts) == 1:
@@ -136,6 +136,8 @@ class FuncSignature(object):
 
         docs = []
         for key, value in self.args:
+            # strip * from *args
+            key = key.lstrip("*")
             param_key = full_name + "." + key
             text = doc_repo.lookup_parameter_docs(param_key)
             key = escape_rest(key)

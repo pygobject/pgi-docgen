@@ -36,11 +36,11 @@ class TFuncSigs(unittest.TestCase):
 
     def test_from_string_args(self):
         sig = FuncSignature.from_string(
-            "init", "init(*args)")
+            "init", "init(foo: bool, *args: int)")
         self.assertTrue(sig)
         self.assertEqual(sig.name, "init")
         self.assertEqual(sig.raises, False)
-        self.assertEqual(sig.args, [])
+        self.assertEqual(sig.args, [["foo", "bool"], ["*args", "int"]])
 
     def test_from_string_notype(self):
         sig = FuncSignature.from_string(
@@ -83,4 +83,12 @@ class TFuncSigs(unittest.TestCase):
 :type a\\_: [:obj:`str`]
 :returns: RETURNDOC(Foo.bar.go)
 :rtype: b\\_: [:obj:`str`]\
+""")
+
+        sig = FuncSignature.from_string("go", "go(*args: int)")
+        doc = sig.to_rest_listing(FakeRepo(), "Foo.bar.go")
+        self.assertEqual(doc, """\
+:param args: PARADOC(Foo.bar.go.args)
+:type args: :obj:`int`
+:returns: RETURNDOC(Foo.bar.go)\
 """)
