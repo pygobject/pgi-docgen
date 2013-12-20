@@ -46,11 +46,15 @@ class TNamespace(unittest.TestCase):
         self.assertEqual(ns.types["GTypeCValue"], "GObject.TypeCValue")
         self.assertEqual(ns.types["GBoxed"], "GObject.GBoxed")
 
+        self.assertEqual(ns.types["G_MAXSSIZE"], "GObject.G_MAXSSIZE")
+
     def test_glib(self):
         ns = Namespace("GLib", "2.0")
 
         self.assertEqual(ns.types["GBookmarkFileError"],
                          "GLib.BookmarkFileError")
+
+        self.assertEqual(ns.types["G_MININT8"], "GLib.MININT8")
 
     def test_cairo(self):
         ns = Namespace("cairo", "1.0")

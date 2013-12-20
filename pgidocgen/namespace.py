@@ -5,6 +5,7 @@
 # License as published by the Free Software Foundation; either
 # version 2.1 of the License, or (at your option) any later version.
 
+import re
 from xml.dom import minidom
 
 from . import util
@@ -145,12 +146,20 @@ class Namespace(object):
             # these come from overrides and aren't in the gir
             # e.g. G_TYPE_INT -> GObject.TYPE_INT
             from gi.repository import GObject
-            type_keys = [k for k in dir(GObject) if k.startswith("TYPE_")]
-            assert "TYPE_INT" in type_keys
-            for key in type_keys:
-                types["G_" + key] = "GObject." + key
+
+            for key in dir(GObject):
+                if key.startswith("TYPE_"):
+                    types["G_" + key] = "GObject." + key
+                elif key.startswith(("G_MAX", "G_MIN")):
+                    types[key] = "GObject." + key
 
             types["GBoxed"] = "GObject.GBoxed"
+        elif namespace == "GLib":
+            from gi.repository import GLib
+
+            for k in dir(GLib):
+                if re.match("MINU?INT\d+", k) or re.match("MAXU?INT\d+", k):
+                    types["G_" + k] = "GLib." + k
 
         return types
 
