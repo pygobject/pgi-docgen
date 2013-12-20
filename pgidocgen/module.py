@@ -17,6 +17,7 @@ from .enum import EnumGenerator
 from .repo import Repository
 from .structures import StructGenerator
 from .union import UnionGenerator
+from .callback import CallbackGenerator
 from . import util
 
 
@@ -88,6 +89,7 @@ class ModuleGenerator(util.Generator):
         struct_gen = StructGenerator(self._module_path, module)
         union_gen = UnionGenerator(self._module_path, module)
         const_gen = ConstantsGenerator(self._module_path, module)
+        cb_gen = CallbackGenerator(self._module_path, module)
 
         def is_method_owner(cls, method_name):
             for base in util.merge_in_overrides(cls):
@@ -112,9 +114,13 @@ class ModuleGenerator(util.Generator):
             name = "%s.%s" % (namespace, key)
 
             if isinstance(obj, types.FunctionType):
-                code = repo.parse_function(name, None, obj)
-                if code:
-                    func_gen.add_function(name, code)
+                if hasattr(obj, "_is_callback"):
+                    code = repo.parse_function(name, None, obj)
+                    cb_gen.add_callback(obj, code)
+                else:
+                    code = repo.parse_function(name, None, obj)
+                    if code:
+                        func_gen.add_function(name, code)
             elif inspect.isclass(obj):
                 if util.is_iface(obj) or util.is_object(obj):
 
@@ -214,7 +220,7 @@ class ModuleGenerator(util.Generator):
 
 """)
 
-        gens = [func_gen, iface_gen, obj_gen, struct_gen, union_gen,
+        gens = [func_gen, cb_gen, iface_gen, obj_gen, struct_gen, union_gen,
                 flags_gen, enums_gen, const_gen]
         for gen in gens:
             if gen.is_empty():
