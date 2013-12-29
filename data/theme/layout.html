@@ -32,15 +32,6 @@
 .wy-side-nav-search input[type="text"] {
     border-color: #75507b !important;
 }
-
-.wy-menu-vertical li .toctree-l3 {
-display: none;
-}
-
-.wy-menu-vertical li .current {
-display: block;
-}
-
 </style>
 
   {# JS #}
@@ -119,7 +110,7 @@ display: block;
       </div>
 
       <div class="wy-menu wy-menu-vertical" data-spy="affix">
-        {% set toctree = toctree(maxdepth=3, collapse=False, titles_only=True) %}
+        {% set toctree = pruned_toctree(maxdepth=2, collapse=False, titles_only=True) %}
         {% if toctree %}
             {{ toctree }}
         {% else %}

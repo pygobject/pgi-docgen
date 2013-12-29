@@ -27,6 +27,7 @@ extensions = [
     'sphinx.ext.intersphinx',
     'ext.inheritance_diagram_fork',
     'ext.autosummary_fork',
+    'ext.toctree',
 ]
 source_suffix = '.rst'
 master_doc = 'index'
