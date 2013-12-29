@@ -18,5 +18,14 @@
     PangoFT2-1.0 PangoXft-1.0 Soup-2.4 cairo-1.0 fontconfig-2.0 \
     freetype2-2.0 libxml2-2.0 xfixes-4.0 xft-2.0 xlib-2.0 xrandr-1.3 \
     Notify-0.7 Cally-1.0 Clutter-1.0 ClutterGdk-1.0 ClutterX11-1.0 \
-    ClutterGst-2.0 WebKit2-3.0 JavaScriptCore-3.0 \
+    ClutterGst-2.0 WebKit2-3.0 JavaScriptCore-3.0 AccountsService-1.0 \
+    Anjuta-3.0 Anthy-9000 AppIndicator3-0.1 Atspi-2.0 \
+    Caribou-1.0 Champlain-0.12 Cheese-3.0 Colord-1.0 ColordGtk-1.0 \
+    ColorHug-1.0 CryptUI-0.0 Dbusmenu-0.4 DbusmenuGtk3-0.4 Dee-1.0 \
+    EBook-1.2 EBookContacts-1.2 EDataServer-1.2 Evd-0.1 EvinceDocument-3.0 \
+    EvinceView-3.0 Gck-1 GConf-2.0 Gcr-3 GcrUi-3 GData-0.0 Gdl-3 Gdm-1.0 \
+    GeocodeGlib-1.0 GExiv2-0.4 Gkbd-3.0 GMenu-3.0 GnomeBluetooth-1.0 \
+    GnomeDesktop-3.0 GnomeKeyring-1.0 GnomeKeyring-1.0 Goa-1.0 Gsf-1 \
+    GSSDP-1.0 GtkChamplain-0.12 GtkClutter-1.0 GtkSource-3.0 GtkSpell-3.0 \
+    GtkVnc-2.0 Gucharmap-2.90 GUdev-1.0 GUPnP-1.0 UDisks-2.0 \
     && ./pgi-docgen-build.py _docs/_build _docs

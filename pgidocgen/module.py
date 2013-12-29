@@ -166,8 +166,11 @@ class ModuleGenerator(util.Generator):
                     code = repo.parse_flags(name, obj)
                     enums_gen.add_enum(obj, code)
                 elif util.is_struct(obj) or util.is_union(obj):
-                    # Hide FooPrivate if Foo exists
-                    if key.endswith("Private") and hasattr(mod, key[:-7]):
+                    # Hide disguised structs
+                    if obj._size == 0 and ((
+                            key.endswith("Private") and hasattr(mod, key[:-7]))
+                            or (key.endswith("Priv") and
+                                hasattr(mod, key[:-4]))):
                         continue
                     code = repo.parse_class(name, obj, add_bases=True)
 

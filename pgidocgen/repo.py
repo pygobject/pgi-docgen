@@ -8,6 +8,7 @@
 
 import re
 from BeautifulSoup import BeautifulStoneSoup, Tag
+import gi
 
 from .namespace import Namespace
 from . import util
@@ -251,6 +252,10 @@ class Repository(object):
             loaded[key] = sub_ns
             to_load.extend(sub_ns.get_dependencies())
 
+        # try to fail early
+        for k, v in loaded.keys():
+            gi.require_version(k, v)
+
         for sub_ns in loaded.values():
             self._parse_types(sub_ns)
 
@@ -441,6 +446,8 @@ class %s(%s):
 
         lines = []
         for n, t, f, b in props:
+            if b is None:
+                b = ""
             b = self._fix_docs(b)
             n = "_`%s`" % n  # inline target
             prop = get_csv_line([n, t, f, b])
