@@ -70,12 +70,7 @@ class ModuleGenerator(util.Generator):
         self._add_dependency(module, "GLib", "2.0")
         self._add_dependency(module, "Atk", "1.0")
 
-        try:
-            mod = import_namespace(namespace, version)
-        except ImportError:
-            print "Couldn't import %s-%s, skipping" % (namespace, version)
-            return
-
+        mod = import_namespace(namespace, version)
         repo = Repository(namespace, version)
 
         for dep in repo.get_dependencies():
@@ -138,11 +133,11 @@ class ModuleGenerator(util.Generator):
 
                         try:
                             attr_obj = getattr(obj, attr)
+                            if not util.is_method_owner(obj, attr):
+                                continue
                         except NotImplementedError:
                             # FIXME.. pgi exposes methods it can't compile
-                            continue
-
-                        if not util.is_method_owner(obj, attr):
+                            print "PGI-ERROR: %s.%s" % (name, attr)
                             continue
 
                         if callable(attr_obj):
@@ -181,11 +176,11 @@ class ModuleGenerator(util.Generator):
 
                         try:
                             attr_obj = getattr(obj, attr)
+                            if not util.is_method_owner(obj, attr):
+                                continue
                         except NotImplementedError:
                             # FIXME.. pgi exposes methods it can't compile
-                            continue
-
-                        if not util.is_method_owner(obj, attr):
+                            print "PGI-ERROR: %s.%s" % (name, attr)
                             continue
 
                         if callable(attr_obj):
