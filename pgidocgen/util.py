@@ -36,6 +36,32 @@ def escape_parameter(text):
     return escape_identifier(text.replace("-", "_"))
 
 
+def get_overridden_class(obj):
+    assert inspect.isclass(obj)
+
+    # if the class has a base with the same gtype, it's certainly an
+    # override
+    for base in obj.__mro__[1:]:
+        if getattr(base, "__gtype__", None) == obj.__gtype__ and obj is not base:
+            return base
+
+    return
+
+
+def is_method_owner(cls, method_name):
+    obj = getattr(cls, method_name)
+    assert obj
+
+    ovr = get_overridden_class(cls)
+    if ovr and method_name in ovr.__dict__:
+        return True
+
+    for base in merge_in_overrides(cls):
+        if getattr(base, method_name, None) == obj:
+            return False
+    return True
+
+
 def is_iface(obj):
     if not inspect.isclass(obj):
         return False
@@ -155,12 +181,13 @@ def escape_rest(text):
     text = text.replace("_", "\\_")
     return text
 
+
 def merge_in_overrides(obj):
     # hide overrides by merging the bases in
     possible_bases = []
     for base in obj.__bases__:
         if base.__name__ == obj.__name__ and base.__module__ == obj.__module__:
-            for upper_base in base.__bases__:
+            for upper_base in merge_in_overrides(base):
                 possible_bases.append(upper_base)
         else:
             possible_bases.append(base)

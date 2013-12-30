@@ -91,12 +91,6 @@ class ModuleGenerator(util.Generator):
         const_gen = ConstantsGenerator(self._module_path, module)
         cb_gen = CallbackGenerator(self._module_path, module)
 
-        def is_method_owner(cls, method_name):
-            for base in util.merge_in_overrides(cls):
-                if hasattr(base, method_name):
-                    return False
-            return True
-
         for key in dir(mod):
             if key.startswith("_"):
                 continue
@@ -142,13 +136,13 @@ class ModuleGenerator(util.Generator):
                         if attr.startswith("_"):
                             continue
 
-                        if not is_method_owner(obj, attr):
-                            continue
-
                         try:
                             attr_obj = getattr(obj, attr)
                         except NotImplementedError:
                             # FIXME.. pgi exposes methods it can't compile
+                            continue
+
+                        if not util.is_method_owner(obj, attr):
                             continue
 
                         if callable(attr_obj):
@@ -185,13 +179,13 @@ class ModuleGenerator(util.Generator):
                         if attr.startswith("_"):
                             continue
 
-                        if not is_method_owner(obj, attr):
-                            continue
-
                         try:
                             attr_obj = getattr(obj, attr)
                         except NotImplementedError:
                             # FIXME.. pgi exposes methods it can't compile
+                            continue
+
+                        if not util.is_method_owner(obj, attr):
                             continue
 
                         if callable(attr_obj):
