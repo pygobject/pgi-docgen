@@ -262,7 +262,12 @@ class Repository(object):
         self._parse_types(ns)
         self._parse_docs(ns)
 
-    def _get_docs(self, name):
+    def lookup_attr_docs(self, name):
+        """Get docs for a namespace attribute.
+
+        e.g. 'GObject.Value'
+        """
+
         if name in self._all:
             return self._fix_docs(self._all[name])
         return ""
@@ -329,7 +334,7 @@ class Repository(object):
         if name.split(".")[-1][:1].isdigit():
             return
 
-        docs = self._get_docs(name)
+        docs = self.lookup_attr_docs(name)
 
         # Add images for stock icon constants
         if name.startswith("Gtk.STOCK_"):
@@ -364,7 +369,7 @@ r'''
 
         bases = ", ".join(names)
 
-        docs = self._get_docs(name)
+        docs = self.lookup_attr_docs(name)
 
         return """
 class %s(%s):
@@ -394,7 +399,7 @@ class %s(%s):
             name = sig.name
 
             doc_name = obj.__module__ + "." + obj.__name__ + "." + name
-            docs = self._get_docs(doc_name)
+            docs = self.lookup_attr_docs(doc_name)
 
             params = ", ".join([gtype_to_rest(t) for t in sig.param_types])
             ret = gtype_to_rest(sig.return_type)
@@ -480,7 +485,7 @@ class %s(%s):
     r'''
 %s
     '''
-""" % (obj.__name__, base_name, self._get_docs(name))
+""" % (obj.__name__, base_name, self.lookup_attr_docs(name))
 
         escaped = []
 
@@ -503,8 +508,8 @@ class %s(%s):
         for val, n in values:
             code += "    %s = %r\n" % (n, val)
             doc_key = name + "." + n.lower()
-            docs = self._get_docs(doc_key)
-            code += "    r'''%s'''\n" % docs
+            docs = self.lookup_attr_docs(doc_key)
+            code += "    r'''\n%s\n'''\n" % docs
 
         name = obj.__name__
         for v in escaped:
@@ -562,7 +567,7 @@ class %s(%s):
 r'''
 %s
 '''
-""" % (func_name, name, self._get_docs(name))
+""" % (func_name, name, self.lookup_attr_docs(name))
             else:
                 # for toplevel functions, replace the introspected one
                 # since sphinx ignores docstrings on the module level
@@ -572,7 +577,7 @@ r'''
 %s.__doc__ = r'''
 %s
 '''
-""" % (func_name, name, func_name, self._get_docs(name))
+""" % (func_name, name, func_name, self.lookup_attr_docs(name))
 
         # we got a valid signature here
         assert sig
@@ -594,7 +599,7 @@ r'''
             docs.append(unindent(user_docstring))
         elif name in self._all:
             docs.append("")
-            docs.append(self._get_docs(name))
+            docs.append(self.lookup_attr_docs(name))
 
         docs = "\n".join(docs)
 
