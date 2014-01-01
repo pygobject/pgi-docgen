@@ -262,6 +262,12 @@ class Repository(object):
         self._parse_types(ns)
         self._parse_docs(ns)
 
+        # private
+        self._private = set()
+        for sub_ns in loaded.values():
+            self._parse_private(sub_ns)
+        self._parse_private(ns)
+
     def lookup_attr_docs(self, name):
         """Get docs for a namespace attribute.
 
@@ -297,6 +303,26 @@ class Repository(object):
 
     def _parse_types(self, ns):
         self._types.update(ns.types)
+
+    def _parse_private(self, ns):
+        dom = ns.get_dom()
+
+        # if disguised and no record content... not perfect, but
+        # we have no other way
+        for record in dom.getElementsByTagName("record"):
+            disguised = bool(int(record.getAttribute("disguised") or "0"))
+            if disguised:
+                children = record.childNodes
+                if len(children) == 1 and \
+                        children[0].nodeType == children[0].TEXT_NODE:
+                    name = ns.namespace + "." + record.getAttribute("name")
+                    self._private.add(name)
+
+    def is_private(self, name):
+        """is_private('Gtk.ViewportPrivate')"""
+
+        assert "." in name
+        return name in self._private
 
     def _parse_docs(self, ns):
         """Parse docs"""

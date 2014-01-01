@@ -21,3 +21,6 @@ class TRepository(unittest.TestCase):
 
         self.assertTrue(
             repo.lookup_parameter_docs("Pango.break_.text"))
+
+        self.assertTrue(repo.is_private("Pango.RendererPrivate"))
+        self.assertFalse(repo.is_private("Pango.AttrIterator"))

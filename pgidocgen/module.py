@@ -146,7 +146,10 @@ class ModuleGenerator(util.Generator):
                             if code:
                                 class_gen.add_method(obj, attr_obj, code)
                         elif util.is_field(attr_obj):
-                            class_gen.add_field(obj, attr_obj)
+                            atype = attr_obj.py_type
+                            type_name = atype.__module__ + "." + atype.__name__
+                            if not repo.is_private(type_name):
+                                class_gen.add_field(obj, attr_obj)
 
                 elif util.is_flags(obj):
                     code = repo.parse_flags(name, obj)
@@ -155,12 +158,10 @@ class ModuleGenerator(util.Generator):
                     code = repo.parse_flags(name, obj)
                     enums_gen.add_enum(obj, code)
                 elif util.is_struct(obj) or util.is_union(obj):
-                    # Hide disguised structs
-                    if obj._size == 0 and ((
-                            key.endswith("Private") and hasattr(mod, key[:-7]))
-                            or (key.endswith("Priv") and
-                                hasattr(mod, key[:-4]))):
+                    # Hide private structs
+                    if repo.is_private(namespace + "." + obj.__name__):
                         continue
+
                     code = repo.parse_class(name, obj, add_bases=True)
 
                     if util.is_struct(obj):
