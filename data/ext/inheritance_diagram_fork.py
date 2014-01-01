@@ -241,13 +241,18 @@ class InheritanceGraph(object):
         res.append('digraph %s {\n' % name)
         res.append(self._format_graph_attrs(g_attrs))
 
-        for name, fullname, bases in self.class_info:
-            # PGI-DOCGEN: remove overrides
+        class_info = self.class_info[:]
+
+        # PGI-DOCGEN: remove overrides
+        for name, fullname, bases in class_info:
             try:
                 bases.remove(fullname)
             except ValueError:
                 pass
 
+        class_info.sort(key=lambda x: len(x[2]), reverse=True)
+
+        for name, fullname, bases in class_info:
             # Write the node
             this_node_attrs = n_attrs.copy()
             url = urls.get(fullname)
