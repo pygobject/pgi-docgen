@@ -242,6 +242,12 @@ class InheritanceGraph(object):
         res.append(self._format_graph_attrs(g_attrs))
 
         for name, fullname, bases in self.class_info:
+            # PGI-DOCGEN: remove overrides
+            try:
+                bases.remove(fullname)
+            except ValueError:
+                pass
+
             # Write the node
             this_node_attrs = n_attrs.copy()
             url = urls.get(fullname)
