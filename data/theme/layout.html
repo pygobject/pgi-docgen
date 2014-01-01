@@ -110,7 +110,7 @@
       </div>
 
       <div class="wy-menu wy-menu-vertical" data-spy="affix">
-        {% set toctree = pruned_toctree(maxdepth=2, collapse=False, titles_only=True) %}
+        {% set toctree = pruned_toctree(maxdepth=2, collapse=True, titles_only=True) %}
         {% if toctree %}
             {{ toctree }}
         {% else %}
