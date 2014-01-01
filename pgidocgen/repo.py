@@ -159,7 +159,7 @@ def handle_xml(types, out, item):
                 lines.append("* " + " ".join(handle_data(
                              types, item.getText()
                              ).splitlines()))
-            out.append("\n" + "\n".join(lines) + "\n")
+            out.append("\n\n" + "\n".join(lines) + "\n\n")
 
         elif item.name == "programlisting":
             text = item.getText()

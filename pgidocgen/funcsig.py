@@ -7,7 +7,7 @@
 
 import re
 
-from .util import escape_rest
+from .util import escape_rest, indent
 
 
 def _get_type_name(type_):
@@ -141,7 +141,7 @@ class FuncSignature(object):
             param_key = full_name + "." + key
             text = doc_repo.lookup_parameter_docs(param_key)
             key = escape_rest(key)
-            docs.append(":param %s: %s" % (key, text))
+            docs.append(":param %s:\n%s\n" % (key, indent(text)))
             docs.append(":type %s: %s" % (key, arg_to_class_ref(value)))
 
         if self.raises:
@@ -149,9 +149,7 @@ class FuncSignature(object):
 
         text = doc_repo.lookup_return_docs(full_name)
         if text:
-            # don't allow newlines here
-            doc_string = " ".join(text.splitlines())
-            docs.append(":returns: %s" % doc_string)
+            docs.append(":returns:\n%s\n" % indent(text))
 
         res = []
         for r in self.res:

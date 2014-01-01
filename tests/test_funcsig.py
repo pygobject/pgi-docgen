@@ -79,16 +79,23 @@ class TFuncSigs(unittest.TestCase):
 
         doc = sig.to_rest_listing(FakeRepo(), "Foo.bar.go")
         self.assertEqual(doc, """\
-:param a\\_: PARADOC(Foo.bar.go.a\\_)
+:param a\\_:
+    PARADOC(Foo.bar.go.a\\_)
+
 :type a\\_: [:obj:`str`]
-:returns: RETURNDOC(Foo.bar.go)
+:returns:
+    RETURNDOC(Foo.bar.go)
+
 :rtype: b\\_: [:obj:`str`]\
 """)
 
         sig = FuncSignature.from_string("go", "go(*args: int)")
         doc = sig.to_rest_listing(FakeRepo(), "Foo.bar.go")
         self.assertEqual(doc, """\
-:param args: PARADOC(Foo.bar.go.args)
+:param args:
+    PARADOC(Foo.bar.go.args)
+
 :type args: :obj:`int`
-:returns: RETURNDOC(Foo.bar.go)\
+:returns:
+    RETURNDOC(Foo.bar.go)
 """)

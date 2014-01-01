@@ -119,12 +119,14 @@ gtk_entry_buffer_get_length (gtk_entry_get_buffer (entry));
 </itemizedlist>\
 """,
             """
+
 * #GtkWidgetClass.get\\_request\\_mode()
 * #GtkWidgetClass.get\\_preferred\\_width()
 * #GtkWidgetClass.get\\_preferred\\_height()
 * #GtkWidgetClass.get\\_preferred\\_height\\_for\\_width()
 * #GtkWidgetClass.get\\_preferred\\_width\\_for\\_height()
 * #GtkWidgetClass.get\\_preferred\\_height\\_and\\_baseline\\_for\\_width()
+
 """
 ),(
             "the #AtkTextAttribute enumerated type corresponding to the specified name, or #ATK_TEXT_ATTRIBUTE_INVALID if no matching text attribute is found.",
