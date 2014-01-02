@@ -36,8 +36,8 @@ class MainGenerator(util.Generator):
 
         with open(os.path.join(self._dest, "index.rst"), "wb") as h:
             h.write("""
-Python GObject Introspection API Reference
-==========================================
+Index
+=====
 
 .. toctree::
     :maxdepth: 1
