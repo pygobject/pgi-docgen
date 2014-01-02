@@ -241,16 +241,21 @@ class InheritanceGraph(object):
         res.append('digraph %s {\n' % name)
         res.append(self._format_graph_attrs(g_attrs))
 
-        class_info = self.class_info[:]
-
         # PGI-DOCGEN: remove overrides
-        for name, fullname, bases in class_info:
+        merged = {}
+        for name, fullname, bases in self.class_info[:]:
             try:
                 bases.remove(fullname)
             except ValueError:
                 pass
+            if fullname in merged:
+                bases = merged[fullname][1] + bases
+            bases = sorted(set(bases))
+            merged[fullname] = (name, bases)
 
-        class_info.sort(key=lambda x: len(x[2]), reverse=True)
+        class_info = [(v[0], k, v[1]) for (k, v) in merged.items()]
+        class_info.sort(key=lambda x: (len(x[2]), x[1]))
+        # PGI-DOCGEN: done
 
         for name, fullname, bases in class_info:
             # Write the node
@@ -258,6 +263,12 @@ class InheritanceGraph(object):
             url = urls.get(fullname)
             if url is not None:
                 this_node_attrs['URL'] = '"%s"' % url
+
+            if "GObject.GInterface" in bases + [name]:
+                this_node_attrs["color"] = '"#3091D1"'
+            else:
+                this_node_attrs["color"] = '"#75507B"'
+
             res.append('  "%s" [%s];\n' %
                        (name, self._format_node_attrs(this_node_attrs)))
 
