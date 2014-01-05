@@ -70,7 +70,7 @@ This is equivalent to:
 gtk_entry_buffer_get_length (gtk_entry_get_buffer (entry));
 </programlisting></informalexample>\
 """,
-            "Retrieves the current length of the text in\n`entry`. \n\nThis is equivalent to:\n\n``gtk_entry_buffer_get_length (gtk_entry_get_buffer (entry));``",
+            "Retrieves the current length of the text in\n`entry`. \n\nThis is equivalent to\\:\n\n``gtk_entry_buffer_get_length (gtk_entry_get_buffer (entry));``",
         ),(
             "the unique ID for @window, or <literal>0</literal> if the window has not yet been added to a #GtkApplication",
             "the unique ID for `window`, or ``0`` if the window has not yet been added to a :class:`Gtk.Application`",
@@ -100,7 +100,7 @@ gtk_entry_buffer_get_length (gtk_entry_get_buffer (entry));
             "always returns :obj:`False`."
         ),(
             "you would\nwrite: <literal>;gtk_tree_model_get (model, iter, 0, &amp;place_string_here, -1)</literal>,\nwhere <literal>place_string_here</literal> is a <type>gchar*</type>\nto be filled with the string.",
-            "you would\nwrite: ``;gtk_tree_model_get (model, iter, 0, &place_string_here, -1)``,\nwhere ``place_string_here`` is a ``gchar*``\nto be filled with the string.",
+            "you would\nwrite\\: ``;gtk_tree_model_get (model, iter, 0, &place_string_here, -1)``,\nwhere ``place_string_here`` is a ``gchar*``\nto be filled with the string.",
         ),(
             "Please note\nthat @GTK_TREE_VIEW_COLUMN_AUTOSIZE are inefficient",
             "Please note\nthat :class:`Gtk.TreeViewColumnSizing.AUTOSIZE` are inefficient"
@@ -166,7 +166,7 @@ gtk_entry_buffer_get_length (gtk_entry_get_buffer (entry));
         "a \n\n:Since: *ATK-2.1.0*\n\n"
 ),(
         "Since: this is",
-        "Since: this is",
+        "Since\\: this is",
 ),(
         "foo #GdkFrameTiming",
         "foo :class:`Gdk.FrameTiming <Gdk.FrameTimings>`",
@@ -176,6 +176,22 @@ gtk_entry_buffer_get_length (gtk_entry_get_buffer (entry));
 ),(
         "returns a #gpointer",
         "returns a :obj:`object`"
+),(
+        "<keycombo><keycap>Control</keycap><keycap>L</keycap></keycombo>",
+        "Control + L",
+),(
+        '<variablelist role="params">\n\t  <varlistentry>\n\t    <term><parameter>chooser</parameter>&nbsp;:</term>\n\t    <listitem>\n\t      <simpara>\n\t\tthe object which received the signal.\n\t      </simpara>\n\t    </listitem>\n\t  </varlistentry>\n\t  <varlistentry>\n\t    <term><parameter>path</parameter>&nbsp;:</term>\n\t    <listitem>\n\t      <simpara>\n\t\tdefault contents for the text entry for the file name\n\t      </simpara>\n\t    </listitem>\n\t  </varlistentry>\n\t  <varlistentry>\n\t    <term><parameter>user_data</parameter>&nbsp;:</term>\n\t    <listitem>\n\t      <simpara>\n\t\tuser data set when the signal handler was connected.\n\t      </simpara>\n\t    </listitem>\n\t  </varlistentry>\n\t</variablelist>',
+        """
+chooser\\:
+    the object which received the signal.
+
+path\\:
+    default contents for the text entry for the file name
+
+user\\_data\\:
+    user data set when the signal handler was connected.
+
+""",
         )]
 
         for in_, out in data:

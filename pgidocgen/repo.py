@@ -172,6 +172,36 @@ def handle_xml(types, out, item):
 
         elif item.name == "title":
             out.append(handle_data(types, item.getText()))
+        elif item.name == "keycombo":
+            subs = []
+            for sub in item.contents:
+                if not isinstance(sub, Tag):
+                    continue
+                subs.append(handle_data(types, sub.getText()))
+            out.append(" + ".join(subs))
+
+        elif item.name == "varlistentry":
+            terms = []
+            listitem = None
+            for sub in item.contents:
+                if not isinstance(sub, Tag):
+                    continue
+
+                if sub.name == "term":
+                    terms.append(sub.getText())
+                elif sub.name == "listitem":
+                    listitem = sub.getText()
+                else:
+                    assert 0
+            assert listitem
+            assert terms
+
+            lines = []
+            terms_line = ", ".join([handle_data(types, t) for t in terms])
+            lines.append("%s\n" % terms_line)
+            listitem = force_unindent(listitem, ignore_first_line=True)
+            lines.append(util.indent(handle_data(types, listitem)) + "\n")
+            out.extend(lines)
         else:
             for sub in item.contents:
                 handle_xml(types, out, sub)
@@ -213,7 +243,7 @@ def docstring_to_rest(types, docstring):
 
 """ % match.group(1).strip()
 
-    rst = re.sub('@?Since:?\s+([^\s]+)$', fixup_added_since, rst)
+    rst = re.sub('@?Since\\\\?:?\s+([^\s]+)$', fixup_added_since, rst)
     return rst
 
 
