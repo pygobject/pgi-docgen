@@ -192,6 +192,9 @@ user\\_data\\:
     user data set when the signal handler was connected.
 
 """,
+),(
+        "<varlistentry><term>#POPPLER_ANNOT_TEXT_ICON_NOTE</term></varlistentry>",
+        "#POPPLER\\_ANNOT\\_TEXT\\_ICON\\_NOTE\n\n",
         )]
 
         for in_, out in data:

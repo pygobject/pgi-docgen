@@ -193,7 +193,11 @@ def handle_xml(types, out, item):
                     listitem = sub.getText()
                 else:
                     assert 0
-            assert listitem
+
+            # Poppler-0.18
+            if not listitem:
+                listitem = ""
+
             assert terms
 
             lines = []

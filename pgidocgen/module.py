@@ -137,7 +137,7 @@ class ModuleGenerator(util.Generator):
                                 continue
                         except NotImplementedError:
                             # FIXME.. pgi exposes methods it can't compile
-                            print "PGI-ERROR: %s.%s" % (name, attr)
+                            print "PGI-ERROR: %s.%s()" % (name, attr)
                             continue
 
                         if callable(attr_obj):
