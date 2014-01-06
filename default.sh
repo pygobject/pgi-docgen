@@ -30,7 +30,7 @@
     GtkVnc-2.0 Gucharmap-2.90 GUdev-1.0 GUPnP-1.0 UDisks-2.0 GUPnPAV-1.0 \
     GUPnPDLNA-2.0 GUPnPDLNAGst-2.0 \
     GUPnPIgd-1.0 GUsb-1.0 GVnc-1.0 GVncPulse-1.0 GWeather-3.0 GXPS-0.1 \
-    IBus-1.0 Indicate-0.7 Itl-1.0 JavaScriptCore-1.0 \
+    IBus-1.0 Indicate-0.7 Itl-1.0 \
     Keybinder-0.0 LangTag-0.5 libisocodes-1.0 Libosinfo-1.0 \
     LibvirtGConfig-1.0 LibvirtGLib-1.0 LibvirtGObject-1.0 \
     LunarDate-2.0 Mx-1.0 Nautilus-3.0 Nemo-3.0 NetworkManager-1.0 \
