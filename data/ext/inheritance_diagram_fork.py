@@ -199,8 +199,8 @@ class InheritanceGraph(object):
         'shape': 'box',
         'fontsize': 10,
         'height': 0.25,
-        'fontname': 'Vera Sans, DejaVu Sans, Liberation Sans, '
-                    'Arial, Helvetica, sans',
+        'fontname': '"Vera Sans, DejaVu Sans, Liberation Sans, '
+                    'Arial, Helvetica, sans"',
         'style': '"setlinewidth(0.5)"',
     }
     default_edge_attrs = {
@@ -335,6 +335,14 @@ class InheritanceDiagram(Directive):
         return [node]
 
 
+def tred(dotcode):
+    """transitive reduction filter for directed graphs"""
+
+    from subprocess import Popen, PIPE, STDOUT
+    p = Popen(['tred'], stdout=PIPE, stdin=PIPE, stderr=PIPE)
+    return p.communicate(input=dotcode)[0]
+
+
 def get_graph_hash(node):
     return md5(node['content'] + str(node['parts'])).hexdigest()[-10:]
 
@@ -358,6 +366,7 @@ def html_visit_inheritance_diagram(self, node):
             urls[child['reftitle']] = '#' + child.get('refid')
 
     dotcode = graph.generate_dot(name, urls, env=self.builder.env)
+    dotcode = tred(dotcode)
     render_dot_html(self, node, dotcode, [], 'inheritance', 'inheritance',
                     alt='Inheritance diagram of ' + node['content'])
     raise nodes.SkipNode
