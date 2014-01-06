@@ -58,6 +58,8 @@ if __name__ == "__main__":
         if name not in girs:
             print "GIR file for %s not found, aborting." % name
             raise SystemExit(1)
+        if name in filtered:
+            print "Passed multiple times: %r" % name
         filtered[name] = girs[name]
 
     dest_dir = args.target
