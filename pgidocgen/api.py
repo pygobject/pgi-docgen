@@ -20,6 +20,14 @@ class APIGenerator(util.Generator):
 
     def add_module(self, namespace, version):
         """Add a module: add_module('Gtk', '3.0')"""
+
+        # XXX: we bind all attributes here so the class hierarchy is created
+        # and cls.__subclasses__() works in each ModuleGenerator
+        # even across namespaces
+        mod = util.import_namespace(namespace, version)
+        for key in dir(mod):
+            getattr(mod, key, None)
+
         self._modules.append((namespace, version))
 
     def is_empty(self):

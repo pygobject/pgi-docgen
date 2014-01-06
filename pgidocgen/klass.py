@@ -126,6 +126,17 @@ class ClassGenerator(util.Generator, FieldsMixin):
 .. inheritance-diagram:: %s
 """ % name)
 
+            # subclasses
+            subclasses = cls.__subclasses__()
+            if subclasses:
+                h.write("\n:Subclasses:\n")
+                refs = []
+                for sub in subclasses:
+                    sub_name = sub.__module__ + "." + sub.__name__
+                    refs.append(":class:`%s`" % sub_name)
+                h.write("    " + ", ".join(refs))
+                h.write("\n\n")
+
             h.write("""
 Methods
 -------

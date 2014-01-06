@@ -21,16 +21,6 @@ from .callback import CallbackGenerator
 from . import util
 
 
-def import_namespace(namespace, version):
-    import gi
-    try:
-        gi.require_version(namespace, version)
-    except ValueError as e:
-        raise ImportError(e)
-    module = __import__("gi.repository", fromlist=[namespace])
-    return getattr(module, namespace)
-
-
 class ModuleGenerator(util.Generator):
 
     def __init__(self, dir_, namespace, version):
@@ -70,7 +60,7 @@ class ModuleGenerator(util.Generator):
         self._add_dependency(module, "GLib", "2.0")
         self._add_dependency(module, "Atk", "1.0")
 
-        mod = import_namespace(namespace, version)
+        mod = util.import_namespace(namespace, version)
         repo = Repository(namespace, version)
 
         for dep in repo.get_dependencies():

@@ -17,6 +17,16 @@ import cStringIO
 _KWD_RE = re.compile("^(%s)$" % "|".join(keyword.kwlist))
 
 
+def import_namespace(namespace, version):
+    import gi
+    try:
+        gi.require_version(namespace, version)
+    except ValueError as e:
+        raise ImportError(e)
+    module = __import__("gi.repository", fromlist=[namespace])
+    return getattr(module, namespace)
+
+
 def escape_identifier(text, reg=_KWD_RE):
     """Escape C identifiers so they can be used as attributes/arguments"""
 
