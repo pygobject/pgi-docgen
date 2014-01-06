@@ -134,6 +134,7 @@ class ClassGenerator(util.Generator, FieldsMixin):
                 for sub in subclasses:
                     sub_name = sub.__module__ + "." + sub.__name__
                     refs.append(":class:`%s`" % sub_name)
+                refs = sorted(set(refs))
                 h.write("    " + ", ".join(refs))
                 h.write("\n\n")
 
