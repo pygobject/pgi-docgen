@@ -38,11 +38,14 @@ or using the default output path ``./_docs``:
 ::
 
     # API docs for Gtk/Gst:
-    ./single.sh Gtk-3.0
+    ./build.sh Gtk-3.0 Gst-1.0
+
+    # On Windows:
+    build.bat Gtk-3.0 Gst-1.0
 
     # Create docs for all (working) packages in Debian Jessie
     # Warning: This can take about an hour.
-    ./default.sh
+    ./build_all.sh
 
     # Force-pushes the result to my github.io repo, adjust the URL if needed
     ./push.sh
