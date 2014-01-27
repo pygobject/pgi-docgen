@@ -231,11 +231,9 @@ def make_rest_title(text, char="="):
 
 
 def get_gir_dirs():
-    if "XDG_DATA_DIRS" in os.environ:
-        dirs = os.environ["XDG_DATA_DIRS"].split(os.pathsep)
-    else:
-        dirs = ["/usr/local/share/", "/usr/share/"]
+    from gi.repository import GLib
 
+    dirs = GLib.get_system_data_dirs()
     return [os.path.join(d, "gir-1.0") for d in dirs]
 
 
@@ -248,7 +246,8 @@ def get_gir_files():
             continue
         for entry in os.listdir(d):
             root, ext = os.path.splitext(entry)
-            if ext == ".gir":
+            # use the first one found
+            if ext == ".gir" and root not in all_modules:
                 all_modules[root] = os.path.join(d, entry)
     return all_modules
 
