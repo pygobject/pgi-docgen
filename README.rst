@@ -12,28 +12,44 @@ pgi-docgen-build.py builds html docs using sphinx and optimizes pngs.
 Both steps need a working (and the same) pgi.
 
 
+Requirements
+------------
+
+* Python2.7 or PyPy
+* pgi (trunk)
+* Sphinx
+* BeautifulSoup 3
+
+
 How do I get started?
 ---------------------
 
 ::
 
-    # Tutorial only:
-    ./pgi-docgen.py -t <some_path>
-    # Tutorial + API docs for Gtk/Gst:
-    ./pgi-docgen.py -t <some_path> Gtk-3.0
-    # Finally create the docs in <dest_path>
+    # API docs for Gtk:
+    ./pgi-docgen.py <some_path> Gtk-3.0
+
+    # Use sphinx to create the docs in <dest_path>
     ./pgi-docgen-build.py <dest_path> <some_path>
+
+
+or using the default output path ``./_docs``:
+
+::
+
+    # API docs for Gtk/Gst:
+    ./single.sh Gtk-3.0
+
+    # Create docs for all (working) packages in Debian Jessie
+    # Warning: This can take about an hour.
+    ./default.sh
+
+    # Force-pushes the result to my github.io repo, adjust the URL if needed
+    ./push.sh
 
 
 License
 -------
-
-Everything in the `tutorial` sub directory:
-
-    https://github.com/sebp/PyGObject-Tutorial
-
-    GNU Free Documentation License 1.3 with no Invariant Sections, no
-    Front-Cover Texts, and no Back-Cover Texts
 
 Everything in the `data/theme` sub directory:
 
