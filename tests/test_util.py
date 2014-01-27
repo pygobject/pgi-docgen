@@ -5,6 +5,7 @@
 # License as published by the Free Software Foundation; either
 # version 2.1 of the License, or (at your option) any later version.
 
+import os
 import unittest
 
 from pgidocgen.util import is_staticmethod, is_classmethod, is_normalmethod
@@ -45,7 +46,8 @@ class TUtil(unittest.TestCase):
 
         self.assertTrue(is_method_owner(Gtk.ActionGroup, "add_actions"))
         self.assertFalse(is_method_owner(Gtk.Range, "get_has_tooltip"))
-        self.assertTrue(is_method_owner(Gtk.Plug, "new"))
+        if os.name != "nt":
+            self.assertTrue(is_method_owner(Gtk.Plug, "new"))
         self.assertTrue(is_method_owner(Gtk.Viewport, "get_vadjustment"))
         self.assertTrue(is_method_owner(Gtk.AccelGroup, "connect"))
         self.assertFalse(is_method_owner(Gtk.AboutDialog, "get_focus_on_map"))
