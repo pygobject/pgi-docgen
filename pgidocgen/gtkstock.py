@@ -18,6 +18,9 @@ def parse_stock_icon(name):
     e.g. name == 'Gtk.STOCK_ORIENTATION_LANDSCAPE'
     """
 
+    if os.name == "nt":
+        return ""
+
     img_p = re.compile("fileref=\"(.+?)\"")
     define_p = re.compile("\\s+")
     mapping = {}

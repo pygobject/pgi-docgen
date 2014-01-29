@@ -262,6 +262,7 @@ def get_csv_line(values):
         quoting = csv.QUOTE_ALL
 
     values = [v.replace("\n", " ") for v in values]
+    values = [v.encode("utf-8") for v in values if isinstance(v, unicode)]
     h = cStringIO.StringIO()
     w = csv.writer(h, CSVDialect)
     w.writerow(values)

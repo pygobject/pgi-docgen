@@ -339,7 +339,12 @@ def tred(dotcode):
     """transitive reduction filter for directed graphs"""
 
     from subprocess import Popen, PIPE, STDOUT
-    p = Popen(['tred'], stdout=PIPE, stdin=PIPE, stderr=PIPE)
+    try:
+        p = Popen(['tred'], stdout=PIPE, stdin=PIPE, stderr=PIPE)
+    except OSError:
+        # graphviz is probably missing and the ext will be disabled
+        # anyway, so return the input unchanged
+        return dotcode
     return p.communicate(input=dotcode)[0]
 
 

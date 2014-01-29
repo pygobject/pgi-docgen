@@ -164,7 +164,8 @@ class Namespace(object):
         return types
 
     def get_path(self):
-        return "/usr/share/gir-1.0/%s-%s.gir" % (self.namespace, self.version)
+        key = "%s-%s" % (self.namespace, self.version)
+        return util.get_gir_files()[key]
 
     def get_dom(self):
         return self._dom

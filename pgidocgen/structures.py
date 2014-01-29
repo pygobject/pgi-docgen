@@ -23,7 +23,7 @@ class StructGenerator(util.Generator, FieldsMixin):
         self._module = module_fileobj
 
     def get_names(self):
-        return [os.path.join("structs", "index.rst")]
+        return ["structs/index.rst"]
 
     def is_empty(self):
         return not bool(self._structs)

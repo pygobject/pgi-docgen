@@ -23,7 +23,7 @@ class UnionGenerator(util.Generator, FieldsMixin):
         self._module = module_fileobj
 
     def get_names(self):
-        return [os.path.join("unions", "index.rst")]
+        return ["unions/index.rst"]
 
     def is_empty(self):
         return not bool(self._unions)

@@ -56,7 +56,7 @@ class ClassGenerator(util.Generator, FieldsMixin):
         self._sigs[cls] = code
 
     def get_names(self):
-        return [os.path.join(self.DIR_NAME, "index.rst")]
+        return [self.DIR_NAME + "/index.rst"]
 
     def is_empty(self):
         return not bool(self._classes)

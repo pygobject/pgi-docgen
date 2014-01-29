@@ -29,7 +29,7 @@ class ModuleGenerator(util.Generator):
         self.version = version
 
         nick = "%s_%s" % (namespace, version)
-        self._index_name = os.path.join(nick, "index")
+        self._index_name = nick + "/index"
         self._module_path = os.path.join(dir_, nick)
 
     def get_names(self):

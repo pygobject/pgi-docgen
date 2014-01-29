@@ -1,3 +1,4 @@
+@echo off
 REM Copyright 2014 Christoph Reiter
 REM
 REM This library is free software; you can redistribute it and/or
