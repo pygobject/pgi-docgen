@@ -261,11 +261,15 @@ def get_csv_line(values):
         lineterminator = '\n'
         quoting = csv.QUOTE_ALL
 
-    values = [v.replace("\n", " ") for v in values]
-    values = [v.encode("utf-8") for v in values if isinstance(v, unicode)]
+    encoded = []
+    for value in [v.replace("\n", " ") for v in values]:
+        if isinstance(value, unicode):
+            value = value.encode("utf-8")
+        encoded.append(value)
+
     h = cStringIO.StringIO()
     w = csv.writer(h, CSVDialect)
-    w.writerow(values)
+    w.writerow(encoded)
     return h.getvalue().rstrip()
 
 
