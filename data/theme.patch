@@ -1,5 +1,5 @@
 diff -Nur sphinx_rtd_theme/breadcrumbs.html theme/breadcrumbs.html
---- sphinx_rtd_theme/breadcrumbs.html	2014-02-02 23:30:03.290670000 +0100
+--- sphinx_rtd_theme/breadcrumbs.html	2014-02-03 00:28:28.751354924 +0100
 +++ theme/breadcrumbs.html	2014-02-02 23:34:03.626687092 +0100
 @@ -6,13 +6,7 @@
        {% endfor %}
@@ -17,8 +17,8 @@ diff -Nur sphinx_rtd_theme/breadcrumbs.html theme/breadcrumbs.html
    </ul>
    <hr/>
 diff -Nur sphinx_rtd_theme/layout.html theme/layout.html
---- sphinx_rtd_theme/layout.html	2014-02-02 23:30:03.290670000 +0100
-+++ theme/layout.html	2014-02-02 23:37:54.470707076 +0100
+--- sphinx_rtd_theme/layout.html	2014-02-03 00:28:28.751354924 +0100
++++ theme/layout.html	2014-02-03 00:20:47.351258896 +0100
 @@ -14,7 +14,13 @@
    <meta charset="utf-8">
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -34,7 +34,7 @@ diff -Nur sphinx_rtd_theme/layout.html theme/layout.html
    {% endblock %}
  
    {# FAVICON #}
-@@ -25,6 +31,26 @@
+@@ -25,6 +31,30 @@
    {# CSS #}
    <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
  
@@ -56,12 +56,16 @@ diff -Nur sphinx_rtd_theme/layout.html theme/layout.html
 +.wy-table-responsive table td {
 +    white-space: normal !important;
 +}
++
++.rst-content a tt {
++    color: #000 !important;
++}
 +</style>
 +
    {# JS #}
    {% if not embedded %}
  
-@@ -110,7 +136,7 @@
+@@ -110,7 +140,7 @@
        </div>
  
        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
