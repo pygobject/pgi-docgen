@@ -273,7 +273,7 @@ class %s(%s):
                 s.append("r")
             if flags & GObject.ParamFlags.WRITABLE:
                 s.append("w")
-            if flags & GObject.ParamFlags.CONSTRUCT_ONLY:
+            if flags & GObject.ParamFlags.CONSTRUCT:
                 s.append("c")
             return "/".join(s)
 
