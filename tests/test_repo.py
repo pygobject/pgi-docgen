@@ -24,3 +24,13 @@ class TRepository(unittest.TestCase):
 
         self.assertTrue(repo.is_private("Pango.RendererPrivate"))
         self.assertFalse(repo.is_private("Pango.AttrIterator"))
+
+    def test_gio(self):
+        repo = Repository("Gio", "2.0")
+
+        method = repo.lookup_attr_docs("Gio.Application.activate")
+        signal = repo.lookup_signal_docs("Gio.Application.activate")
+
+        self.assertTrue(method)
+        self.assertTrue(signal)
+        self.assertNotEqual(method, signal)

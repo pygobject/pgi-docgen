@@ -40,6 +40,9 @@ class Repository(object):
         # Gtk.FooBar -> "some doc"
         self._all = {}
 
+        # Gtk.Foo.some-signal -> "some doc"
+        self._signals = {}
+
         self._ns = ns = Namespace(namespace, version)
 
         loaded = {}
@@ -98,6 +101,11 @@ class Repository(object):
             return self._fix_docs(self._parameters[name])
         return ""
 
+    def lookup_signal_docs(self, name):
+        if name in self._signals:
+            return self._fix_docs(self._signals[name])
+        return ""
+
     def get_dependencies(self):
         return self._ns.get_dependencies()
 
@@ -138,6 +146,8 @@ class Repository(object):
             while current.tagName != "namespace":
                 current = current.parentNode
                 name = current.getAttribute("name")
+                if current.tagName == "glib:signal":
+                    kind = "signal"
                 if not name:
                     kind = current.tagName
                     continue
@@ -151,6 +161,10 @@ class Repository(object):
                 self._parameters[key] = docs
             elif kind == "return-value":
                 self._returns[key] = docs
+            elif kind == "signal":
+                self._signals[key] = docs
+            else:
+                assert 0, (kind, key)
 
     def _fix_docs(self, d):
         return docstring_to_rest(self._types, d)
@@ -225,7 +239,7 @@ class %s(%s):
             name = sig.name
 
             doc_name = obj.__module__ + "." + obj.__name__ + "." + name
-            docs = self.lookup_attr_docs(doc_name)
+            docs = self.lookup_signal_docs(doc_name)
 
             params = ", ".join([gtype_to_rest(t) for t in sig.param_types])
             ret = gtype_to_rest(sig.return_type)
