@@ -1,0 +1,72 @@
+diff -Nur sphinx_rtd_theme/breadcrumbs.html theme/breadcrumbs.html
+--- sphinx_rtd_theme/breadcrumbs.html	2014-02-02 23:30:03.290670000 +0100
++++ theme/breadcrumbs.html	2014-02-02 23:34:03.626687092 +0100
+@@ -6,13 +6,7 @@
+       {% endfor %}
+     <li>{{ title }}</li>
+       <li class="wy-breadcrumbs-aside">
+-        {% if display_github %}
+-          <a href="https://github.com/{{ github_user }}/{{ github_repo }}/blob/{{ github_version }}{{ conf_py_path }}{{ pagename }}.rst" class="fa fa-github"> Edit on GitHub</a>
+-        {% elif display_bitbucket %}
+-          <a href="https://bitbucket.org/{{ bitbucket_user }}/{{ bitbucket_repo }}/src/{{ bitbucket_version}}{{ conf_py_path }}{{ pagename }}.rst" class="fa fa-bitbucket"> Edit on Bitbucket</a>
+-        {% elif show_source and has_source and sourcename %}
+-          <a href="{{ pathto('_sources/' + sourcename, true)|e }}" rel="nofollow"> View page source</a>
+-        {% endif %}
++        <a href="https://github.com/lazka/pgi-docgen/issues/new?title=BUG: {{ pagename }}" class="icon icon-github"> Report a Bug</a>
+       </li>
+   </ul>
+   <hr/>
+diff -Nur sphinx_rtd_theme/layout.html theme/layout.html
+--- sphinx_rtd_theme/layout.html	2014-02-02 23:30:03.290670000 +0100
++++ theme/layout.html	2014-02-02 23:37:54.470707076 +0100
+@@ -14,7 +14,13 @@
+   <meta charset="utf-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   {% block htmltitle %}
+-  <title>{{ title|striptags|e }}{{ titlesuffix }}</title>
++  <title>
++    {{ title|striptags|e }} -
++    {% for parent in parents|reverse %}
++      {{ parent.title|striptags|e }} -
++    {% endfor %}
++    {{ project|striptags|e }}
++  </title>
+   {% endblock %}
+ 
+   {# FAVICON #}
+@@ -25,6 +31,26 @@
+   {# CSS #}
+   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+ 
++<style>
++.wy-side-nav-search, .wy-nav-top {
++    background-color: #75507b !important;
++}
++.wy-side-nav-search input[type="text"] {
++    border-color: #75507b !important;
++}
++
++@media screen and (max-width: 768px){
++    img {
++        width: auto !important;
++    }
++}
++
++.wy-table-responsive table th,
++.wy-table-responsive table td {
++    white-space: normal !important;
++}
++</style>
++
+   {# JS #}
+   {% if not embedded %}
+ 
+@@ -110,7 +136,7 @@
+       </div>
+ 
+       <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+-        {% set toctree = toctree(maxdepth=2, collapse=False, includehidden=True) %}
++        {% set toctree = pruned_toctree(maxdepth=2, collapse=True, titles_only=True) %}
+         {% if toctree %}
+             {{ toctree }}
+         {% else %}
