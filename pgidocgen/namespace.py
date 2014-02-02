@@ -48,8 +48,6 @@ class Namespace(object):
                 # prefer static methods over functions
                 if old_count > new_count:
                     return
-                else:
-                    assert types[c_name] == py_name, (types[c_name], py_name)
 
             # escape each potential attribute
             py_name = ".".join(
