@@ -49,6 +49,8 @@ class Namespace(object):
                 if old_count > new_count:
                     return
 
+            assert py_name.count("."), py_name
+
             # escape each potential attribute
             py_name = ".".join(
                 map(util.escape_identifier,  py_name.split(".")))
@@ -72,6 +74,11 @@ class Namespace(object):
             # Copy escaping from gi: Foo.break -> Foo.break_
             full_name = local_name
             parent = t.parentNode
+
+            # glib:boxed toplevel in Farstream-0.1
+            if not parent.getAttribute("name"):
+                continue
+
             while parent.getAttribute("name"):
                 full_name = parent.getAttribute("name") + "." + full_name
                 parent = parent.parentNode
@@ -119,7 +126,9 @@ class Namespace(object):
         # cairo_t -> cairo.Context
         for t in dom.getElementsByTagName("record"):
             c_name = t.getAttribute("c:type")
-            assert c_name
+            # Gee-0.8 HazardPointer
+            if not c_name:
+                continue
             type_name = t.getAttribute("name")
             add(c_name, namespace + "." + type_name)
 
