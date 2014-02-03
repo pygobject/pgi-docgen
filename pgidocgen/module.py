@@ -9,6 +9,8 @@ import os
 import types
 import inspect
 
+from BeautifulSoup import BeautifulStoneSoup
+
 from .klass import GObjectGenerator, InterfaceGenerator
 from .flags import FlagsGenerator
 from .constants import ConstantsGenerator
@@ -19,6 +21,21 @@ from .structures import StructGenerator
 from .union import UnionGenerator
 from .callback import CallbackGenerator
 from . import util
+
+
+def get_project_summary(namespace, version):
+    key = "%s-%s" % (namespace, version)
+    doap_path = os.path.join("doap", key)
+    if not os.path.exists(doap_path):
+        return ""
+
+    soup = BeautifulStoneSoup(open(doap_path, "rb"))
+    return """\
+:Project: %s (%s)
+:Description:
+%s
+""" % (soup.find("name").string, soup.find("shortdesc").string,
+       util.indent(util.unindent(soup.find("description").string)))
 
 
 class ModuleGenerator(util.Generator):
@@ -191,26 +208,30 @@ class ModuleGenerator(util.Generator):
                 if code:
                     const_gen.add_constant(name, code)
 
-        handle = open(os.path.join(self._module_path, "index.rst"),  "wb")
+        with open(os.path.join(self._module_path, "index.rst"),  "wb") as h:
 
-        title = "%s %s" % (namespace, version)
-        handle.write(title + "\n")
-        handle.write(len(title) * "=" + "\n")
+            title = "%s %s" % (namespace, version)
+            h.write(util.make_rest_title(title) + "\n")
 
-        handle.write("""
+            summary = get_project_summary(namespace, version)
+            h.write(summary)
+
+            h.write(util.make_rest_title("API", "-") + "\n")
+
+            h.write("""
 .. toctree::
     :maxdepth: 1
 
 """)
 
-        gens = [func_gen, cb_gen, iface_gen, obj_gen, struct_gen, union_gen,
-                flags_gen, enums_gen, const_gen]
-        for gen in gens:
-            if gen.is_empty():
-                continue
-            for name in gen.get_names():
-                handle.write("    %s\n" % name)
-            gen.write()
+            gens = [func_gen, cb_gen, iface_gen, obj_gen, struct_gen,
+                    union_gen, flags_gen, enums_gen, const_gen]
+            for gen in gens:
+                if gen.is_empty():
+                    continue
+                for name in gen.get_names():
+                    h.write("    %s\n" % name)
+                gen.write()
 
         module.close()
 
