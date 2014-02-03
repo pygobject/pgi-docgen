@@ -34,3 +34,7 @@ class TRepository(unittest.TestCase):
         self.assertTrue(method)
         self.assertTrue(signal)
         self.assertNotEqual(method, signal)
+
+    def test_other(self):
+        Repository("GLib", "2.0")
+        Repository("GObject", "2.0")

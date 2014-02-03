@@ -163,8 +163,6 @@ class Repository(object):
                 self._returns[key] = docs
             elif kind == "signal":
                 self._signals[key] = docs
-            else:
-                assert 0, (kind, key)
 
     def _fix_docs(self, d):
         return docstring_to_rest(self._types, d)
