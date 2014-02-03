@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Project xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+         xmlns:foaf="http://xmlns.com/foaf/0.1/"
+         xmlns:gnome="http://api.gnome.org/doap-extensions#"
+         xmlns="http://usefulinc.com/ns/doap#">
+
+  <name xml:lang="en">atk</name>
+  <shortdesc xml:lang="en">The interface definitions of accessibility infrastructure.</shortdesc>
+  <homepage rdf:resource="http://developer.gnome.org/atk"/>
+  <mailing-list rdf:resource="http://mail.gnome.org/mailman/listinfo/gnome-accessibility-devel"/>
+
+  <maintainer>
+    <foaf:Person>
+      <foaf:name>Alejandro Piñeiro Iglesias</foaf:name>
+      <foaf:mbox rdf:resource="mailto:apinheiro@igalia.com" />
+      <gnome:userid>apinheiro</gnome:userid>
+    </foaf:Person>
+  </maintainer>
+  <author>
+    <foaf:Person>
+      <foaf:name>Bill Haneman</foaf:name>
+      <foaf:mbox rdf:resource="mailto:bill.haneman@sun.com" />
+    </foaf:Person>
+  </author>
+  <author>
+    <foaf:Person>
+      <foaf:name>Li Yuan</foaf:name>
+      <foaf:mbox rdf:resource="mailto:lee.yuan@oracle.com" />
+      <gnome:userid>liyuan</gnome:userid>
+    </foaf:Person>
+  </author>
+  <author>
+    <foaf:Person>
+      <foaf:name>Leon Fan</foaf:name>
+      <foaf:mbox rdf:resource="mailto:leon.fan@oracle.com" />
+      <gnome:userid>leonfan</gnome:userid>
+    </foaf:Person>
+  </author>
+
+</Project>

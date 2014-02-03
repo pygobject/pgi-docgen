@@ -30,12 +30,55 @@ def get_project_summary(namespace, version):
         return ""
 
     soup = BeautifulStoneSoup(open(doap_path, "rb"))
-    return """\
-:Project: %s (%s)
-:Description:
-%s
-""" % (soup.find("name").string, soup.find("shortdesc").string,
-       util.indent(util.unindent(soup.find("description").string)))
+
+    name = soup.find("name")
+    shortdesc = soup.find("shortdesc")
+    description = soup.find("description")
+    mailing_lists = soup.findAll("mailing-list")
+    homepage = soup.find("homepage")
+    bug_database = soup.find("bug-database")
+    repository = soup.find("repository")
+    repositories = (repository and repository.findAll("browse")) or []
+
+    to_sub = lambda x: util.indent(util.unindent(x))
+
+    summ = []
+
+    if name:
+        name_text = ":Parent Project:\n%s" % to_sub(name.string)
+        if shortdesc:
+            name_text += " (%s)" % shortdesc.string.strip()
+        summ.append(name_text)
+
+    if description:
+        summ.append(":Description:\n%s" % to_sub(description.string))
+
+    if homepage:
+        summ.append(":Homepage:\n%s" % to_sub(homepage["rdf:resource"]))
+
+    if bug_database:
+        summ.append(":Bug Tracker:\n%s" % to_sub(bug_database["rdf:resource"]))
+
+    if len(repositories) == 1:
+        l = repositories[0]
+        summ.append(":Repository:\n%s" % to_sub(l["rdf:resource"]))
+    elif len(mailing_lists) > 1:
+        repo_text = ":Repositories:\n"
+        for r in repositories:
+            ml_text += "    * %s\n" % r["rdf:resource"]
+        summ.append(repo_text)
+
+    if len(mailing_lists) == 1:
+        l = mailing_lists[0]
+        summ.append(":Mailing List:\n%s" % to_sub(l["rdf:resource"]))
+    elif len(mailing_lists) > 1:
+        ml_text = ":Mailing Lists:\n"
+        for l in mailing_lists:
+            ml_text += "    * %s\n" % l["rdf:resource"]
+        summ.append(ml_text)
+
+
+    return "\n".join(summ)
 
 
 class ModuleGenerator(util.Generator):
@@ -214,7 +257,7 @@ class ModuleGenerator(util.Generator):
             h.write(util.make_rest_title(title) + "\n")
 
             summary = get_project_summary(namespace, version)
-            h.write(summary)
+            h.write(summary + "\n")
 
             h.write(util.make_rest_title("API", "-") + "\n")
 
