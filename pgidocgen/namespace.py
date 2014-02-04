@@ -5,6 +5,7 @@
 # License as published by the Free Software Foundation; either
 # version 2.1 of the License, or (at your option) any later version.
 
+import gc
 import re
 from xml.dom import minidom
 
@@ -19,47 +20,43 @@ def get_namespace(namespace, version, _ns_cache={}):
     return _ns_cache[key]
 
 
+def _get_dom(path, _cache={}):
+    # caches the last dom
+    if path in _cache:
+        return _cache[path]
+    _cache.clear()
+    # reduce peak memory
+    gc.collect()
+    _cache[path] = minidom.parse(path)
+    return _cache[path]
+
+
 class Namespace(object):
 
     def __init__(self, namespace, version):
         self.namespace = namespace
         self.version = version
 
-        self._dom = None
-        self._types = None
+        print "Parsing GIR (%s-%s)" % (namespace, version)
+        dom = _get_dom(self.path)
 
-        # Gtk.foo_bar.arg1 -> "some doc"
-        self._parameters = {}
+        self._types = _parse_types(dom, namespace)
 
-        # Gtk.foo_bar -> "some doc"
-        # Gtk.Foo.foo_bar -> "some doc"
-        self._returns = {}
+        # dependencies
+        deps = []
+        for include in dom.getElementsByTagName("include"):
+            name = include.getAttribute("name")
+            version = include.getAttribute("version")
+            deps.append((name, version))
+        self._dependencies = deps
 
-        # Gtk.foo_bar -> "some doc"
-        # Gtk.Foo.foo_bar -> "some doc"
-        # Gtk.FooBar -> "some doc"
-        self._all = {}
+    def parse_private(self):
+        return _parse_private(_get_dom(self.path), self.namespace)
 
-        # Gtk.Foo.some-signal -> "some doc"
-        self._signals = {}
-
-        self._private = None
-
-        a, p, r, s =_parse_docs(self.get_dom())
-        self._all.update(a)
-        self._parameters.update(p)
-        self._returns.update(r)
-        self._signals.update(s)
-
-    def get_dom(self):
-        if self._dom is None:
-            print "Parsing GIR: %s-%s" % (self.namespace, self.version)
-            self._dom = minidom.parse(self.path)
-        return self._dom
+    def parse_docs(self):
+         return _parse_docs(_get_dom(self.path))
 
     def get_types(self):
-        if self._types is None:
-            self._types = _parse_types(self.get_dom(), self.namespace)
         return self._types
 
     @property
@@ -68,23 +65,7 @@ class Namespace(object):
         return util.get_gir_files()[key]
 
     def get_dependencies(self):
-        dom = self.get_dom()
-        deps = []
-        for include in dom.getElementsByTagName("include"):
-            name = include.getAttribute("name")
-            version = include.getAttribute("version")
-            deps.append((name, version))
-        return deps
-
-    def is_private(self, name):
-        """is_private('Gtk.ViewportPrivate')"""
-
-        assert "." in name
-
-        if self._private is None:
-            self._private = _parse_private(self.get_dom(), self.namespace)
-
-        return name in self._private
+        return list(self._dependencies)
 
 
 def _parse_types(dom, namespace):

@@ -6,7 +6,6 @@
 # License as published by the Free Software Foundation; either
 # version 2.1 of the License, or (at your option) any later version.
 
-import gi
 
 from .namespace import get_namespace
 from . import util
@@ -25,6 +24,29 @@ class Repository(object):
         self.version = version
 
         self._ns = ns = get_namespace(namespace, version)
+
+        # Gtk.foo_bar.arg1 -> "some doc"
+        self._parameters = {}
+
+        # Gtk.foo_bar -> "some doc"
+        # Gtk.Foo.foo_bar -> "some doc"
+        self._returns = {}
+
+        # Gtk.foo_bar -> "some doc"
+        # Gtk.Foo.foo_bar -> "some doc"
+        # Gtk.FooBar -> "some doc"
+        self._all = {}
+
+        # Gtk.Foo.some-signal -> "some doc"
+        self._signals = {}
+
+        a, p, r, s = ns.parse_docs()
+        self._all.update(a)
+        self._parameters.update(p)
+        self._returns.update(r)
+        self._signals.update(s)
+
+        self._private = ns.parse_private()
 
         loaded = {}
         to_load = ns.get_dependencies()
@@ -48,8 +70,8 @@ class Repository(object):
         e.g. 'GObject.Value'
         """
 
-        if name in self._ns._all:
-            return self._fix_docs(self._ns._all[name])
+        if name in self._all:
+            return self._fix_docs(self._all[name])
         return ""
 
     def lookup_return_docs(self, name):
@@ -58,8 +80,8 @@ class Repository(object):
         e.g. 'GObject.Value.set_char'
         """
 
-        if name in self._ns._returns:
-            return self._fix_docs(self._ns._returns[name])
+        if name in self._returns:
+            return self._fix_docs(self._returns[name])
         return ""
 
     def lookup_parameter_docs(self, name):
@@ -68,13 +90,13 @@ class Repository(object):
         e.g. 'GObject.Value.set_char.v_char'
         """
 
-        if name in self._ns._parameters:
-            return self._fix_docs(self._ns._parameters[name])
+        if name in self._parameters:
+            return self._fix_docs(self._parameters[name])
         return ""
 
     def lookup_signal_docs(self, name):
-        if name in self._ns._signals:
-            return self._fix_docs(self._ns._signals[name])
+        if name in self._signals:
+            return self._fix_docs(self._signals[name])
         return ""
 
     def get_dependencies(self):
@@ -83,7 +105,9 @@ class Repository(object):
     def is_private(self, name):
         """is_private('Gtk.ViewportPrivate')"""
 
-        return self._ns.is_private(name)
+        assert "." in name
+
+        return name in self._private
 
     def _fix_docs(self, d):
         return docstring_to_rest(self._types, d)
