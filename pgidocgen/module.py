@@ -27,7 +27,7 @@ def get_project_summary(namespace, version):
     key = "%s-%s" % (namespace, version)
     doap_path = os.path.join("doap", key)
     if not os.path.exists(doap_path):
-        return ""
+        return u""
 
     soup = BeautifulStoneSoup(open(doap_path, "rb"))
 
@@ -40,7 +40,7 @@ def get_project_summary(namespace, version):
     repository = soup.find("repository")
     repositories = (repository and repository.findAll("browse")) or []
 
-    to_sub = lambda x: util.indent(util.unindent(x))
+    to_sub = lambda x: util.indent(util.force_unindent(x))
 
     summ = []
 
@@ -65,7 +65,7 @@ def get_project_summary(namespace, version):
     elif len(mailing_lists) > 1:
         repo_text = ":Repositories:\n"
         for r in repositories:
-            ml_text += "    * %s\n" % r["rdf:resource"]
+            repo_text += "    * %s\n" % r["rdf:resource"]
         summ.append(repo_text)
 
     if len(mailing_lists) == 1:
@@ -257,7 +257,7 @@ class ModuleGenerator(util.Generator):
             h.write(util.make_rest_title(title) + "\n")
 
             summary = get_project_summary(namespace, version)
-            h.write(summary + "\n")
+            h.write(summary.encode("utf-8") + "\n")
 
             h.write(util.make_rest_title("API", "-") + "\n")
 

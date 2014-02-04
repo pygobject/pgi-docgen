@@ -118,8 +118,11 @@ class FuncSignature(object):
         ret = ret and ret.split(",") or []
         res = []
         for r in ret:
-            parts = [p.strip() for p in r.split(":")]
-            res.append(parts)
+            if r.startswith("{"):
+                res.append([r])
+            else:
+                parts = [p.strip() for p in r.split(":")]
+                res.append(parts)
 
         raises = bool(raises)
 

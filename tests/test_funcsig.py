@@ -54,6 +54,13 @@ class TFuncSigs(unittest.TestCase):
         sig = FuncSignature.from_string("init", "init(foo) raises")
         self.assertEqual(sig.raises, True)
 
+    def test_from_string_hash(self):
+        sig = FuncSignature.from_string("to_hash",
+            "to_hash(flags: NetworkManager.SettingHashFlags) -> "
+            "{str: {int: int}}")
+
+        self.assertEqual(sig.res, [["{str: {int: int}}"]])
+
     def test_arg_to_class_ref(self):
         self.assertEqual(arg_to_class_ref("int"), ":obj:`int`")
         self.assertEqual(arg_to_class_ref("[int]"), "[:obj:`int`]")

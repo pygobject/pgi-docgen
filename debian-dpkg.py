@@ -40,11 +40,24 @@ if __name__ == "__main__":
             raise SystemExit(1)
         filtered[name] = girs[name]
 
+    mapping = {}
+
     packages = []
     for name, path in filtered.iteritems():
         out = subprocess.check_output(["dpkg", "-S", path])
-        packages.append(out.split(":", 1)[0])
+        package = out.split(":", 1)[0]
+        packages.append(package)
+
+        out = subprocess.check_output(["apt-cache", "show", package])
+        for line in out.splitlines():
+            if line.startswith("Source:"):
+                source_package = line.split(":", 1)[-1].strip()
+        mapping.setdefault(source_package, []).append(name)
+
     packages = list(set(packages))
     packages.sort()
+
+    for key, value in mapping.items():
+        print key, value
 
     print "sudo apt-get install " + " ".join(packages)

@@ -34,10 +34,10 @@
     Keybinder-0.0 LangTag-0.5 libisocodes-1.0 Libosinfo-1.0 TrackerMiner-0.16 \
     LibvirtGConfig-1.0 LibvirtGLib-1.0 LibvirtGObject-1.0 TrackerExtract-0.16 \
     LunarDate-2.0 Mx-1.0 Nautilus-3.0 Nemo-3.0 NetworkManager-1.0 \
-    PackageKitGlib-1.0 PackageKitPlugin-1.0 PanelApplet-4.0 Gee-0.8 \
+    PackageKitGlib-1.0 PackageKitPlugin-1.0 PanelApplet-4.0 \
     Peas-1.0 PeasGtk-1.0 Polkit-1.0 UPowerGlib-1.0 SecretUnstable-0 \
     PolkitAgent-1.0 Rest-0.7 RestExtras-0.7 Rsvg-2.0 UMockdev-1.0 \
-    SocialWebClient-0.25 SoupGNOME-2.4 SpiceClientGLib-2.0 Folks-0.6 \
+    SocialWebClient-0.25 SoupGNOME-2.4 SpiceClientGLib-2.0 \
     SpiceClientGtk-3.0 SugarGestures-1.0 TelepathyGLib-0.12 Wnck-3.0 \
     TelepathyLogger-0.2 TotemPlParser-1.0 Xkl-1.0 Zpj-0.0 Zeitgeist-2.0 \
     && ./pgi-docgen-build.py _docs/_build _docs
