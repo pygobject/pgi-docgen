@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Project xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+         xmlns:foaf="http://xmlns.com/foaf/0.1/"
+         xmlns:gnome="http://api.gnome.org/doap-extensions#"
+         xmlns="http://usefulinc.com/ns/doap#">
+
+	<name>Clutter-Gst</name>
+  <shortname>clutter-gst</shortname>
+	<created>2006-11-29</created>
+
+  <shortdesc xml:lang="en">A GStreamer integration library for Clutter</shortdesc>
+
+  <description xml:lang="en">Clutter-Gst is an integration library for using
+    GStreamer with Clutter.</description>
+
+	<homepage rdf:resource="http://clutter-project.org" />
+	<license rdf:resource="http://usefulinc.com/doap/licenses/lgpl" />
+  <bug-database rdf:resource="http://bugzilla.o-hand.com/enter_bug.cgi?product=Clutter"/>
+  <download-page rdf:resource="http://clutter-project.org/sources" />
+  <mailing-list rdf:resource="mailto:clutter+subscribe@o-hand.com" />
+
+  <programming-language>C</programming-language>
+
+  <maintainer>
+    <foaf:Person>
+      <foaf:name>Damien Lespiau</foaf:name>
+      <foaf:mbox rdf:resource="mailto:damien.lespiau@intel.com"/>
+      <gnome:userid>dlespiau</gnome:userid>
+    </foaf:Person>
+  </maintainer>
+
+  <maintainer>
+    <foaf:Person>
+      <foaf:name>Lionel Landwerlin</foaf:name>
+      <foaf:mbox rdf:resource="mailto:llandwerlin@gmail.com"/>
+      <gnome:userid>llandwerlin</gnome:userid>
+    </foaf:Person>
+  </maintainer>
+
+  <author>
+    <foaf:Person>
+      <foaf:name>Jorn Baayen</foaf:name>
+      <foaf:mbox rdf:resource="mailto:jorn@o-hand.com"/>
+    </foaf:Person>
+  </author>
+
+  <author>
+    <foaf:Person>
+      <foaf:name>Matthew Allum</foaf:name>
+      <foaf:mbox rdf:resource="mailto:mallum@o-hand.com"/>
+    </foaf:Person>
+  </author>
+
+  <author>
+    <foaf:Person>
+      <foaf:name>Chris Lord</foaf:name>
+      <foaf:mbox rdf:resource="mailto:chris@o-hand.com"/>
+    </foaf:Person>
+  </author>
+
+  <author>
+    <foaf:Person>
+      <foaf:name>Damien Lespiau</foaf:name>
+      <foaf:mbox rdf:resource="mailto:damien.lespiau@intel.com"/>
+    </foaf:Person>
+  </author>
+
+  <author>
+    <foaf:Person>
+      <foaf:name>Bastien Nocera</foaf:name>
+      <foaf:mbox rdf:resource="mailto:hadess@hadess.net"/>
+    </foaf:Person>
+  </author>
+
+  <author>
+    <foaf:Person>
+      <foaf:name>Lionel Landwerlin</foaf:name>
+      <foaf:mbox rdf:resource="mailto:lionel.g.landwerlin@linux.intel.com"/>
+    </foaf:Person>
+  </author>
+
+  <repository>
+    <GitRepository>
+      <browse rdf:resource="http://git.clutter-project.org/?r=clutter-gst"/>
+      <location rdf:resource="git://git.clutter-project.org/clutter-gst"/>
+    </GitRepository>
+  </repository>
+
+  <release>
+    <Version>
+      <name>2.99.0 Release</name>
+      <created>2013-11-19</created>
+      <branch>master</branch>
+      <revision>2.99.0</revision>
+      <file-release rdf:resource="http://download.gnome.org/sources/clutter-gst/2.99/clutter-gst-2.99.0.tar.xz" />
+    </Version>
+  </release>
+
+  <release>
+    <Version>
+      <name>2.0.8 Release</name>
+      <created>2013-09-18</created>
+      <branch>clutter-gst-2.0</branch>
+      <revision>2.0.8</revision>
+      <file-release rdf:resource="http://download.gnome.org/sources/clutter-gst/2.0/clutter-gst-2.0.8.tar.xz" />
+    </Version>
+  </release>
+
+  <release>
+    <Version>
+      <name>2.0.6 Release</name>
+      <created>2013-07-23</created>
+      <branch>clutter-gst-2.0</branch>
+      <revision>2.0.6</revision>
+      <file-release rdf:resource="http://download.gnome.org/sources/clutter-gst/2.0/clutter-gst-2.0.6.tar.xz" />
+    </Version>
+  </release>
+
+  <release>
+    <Version>
+      <name>2.0.4 Release</name>
+      <created>2013-05-24</created>
+      <branch>clutter-gst-2.0</branch>
+      <revision>2.0.4</revision>
+      <file-release rdf:resource="http://download.gnome.org/sources/clutter-gst/2.0/clutter-gst-2.0.4.tar.xz" />
+    </Version>
+  </release>
+
+  <release>
+    <Version>
+      <name>2.0.2 Release</name>
+      <created>2013-02-26</created>
+      <branch>clutter-gst-2.0</branch>
+      <revision>2.0.2</revision>
+      <file-release rdf:resource="http://download.gnome.org/sources/clutter-gst/2.0/clutter-gst-2.0.2.tar.xz" />
+    </Version>
+  </release>
+
+  <release>
+    <Version>
+      <name>2.0.0 Release</name>
+      <created>2013-01-22</created>
+      <branch>clutter-gst-2.0</branch>
+      <revision>2.0.0</revision>
+      <file-release rdf:resource="http://download.gnome.org/sources/clutter-gst/2.0/clutter-gst-2.0.0.tar.xz" />
+    </Version>
+  </release>
+
+  <release>
+    <Version>
+      <name>1.6.0 Release</name>
+      <created>2012-06-25</created>
+      <branch>clutter-gst-1.6</branch>
+      <revision>1.6.0</revision>
+      <file-release rdf:resource="http://download.gnome.org/sources/clutter-gst/1.6/clutter-gst-1.6.0.tar.xz" />
+    </Version>
+  </release>
+
+  <release>
+    <Version>
+      <name>1.4.2 Release</name>
+      <created>2011-10-03</created>
+      <branch>clutter-gst-1.4</branch>
+      <revision>1.4.2</revision>
+      <file-release rdf:resource="http://download.gnome.org/sources/clutter-gst/1.4/clutter-gst-1.4.2.tar.xz" />
+    </Version>
+  </release>
+
+  <release>
+    <Version>
+      <name>1.4.0 Release</name>
+      <created>2011-09-30</created>
+      <branch>clutter-gst-1.4</branch>
+      <revision>1.4.0</revision>
+      <file-release rdf:resource="http://download.gnome.org/sources/clutter-gst/1.4/clutter-gst-1.4.0.tar.xz" />
+    </Version>
+  </release>
+
+  <release>
+    <Version>
+      <name>1.2.0 Release</name>
+      <created>2010-08-18</created>
+      <branch>clutter-gst-1.2</branch>
+      <revision>1.2.0</revision>
+      <file-release rdf:resource="http://www.clutter-project.org/sources/clutter-gst/1.2/clutter-gst-1.2.0.tar.gz" />
+    </Version>
+  </release>
+
+  <release>
+    <Version>
+      <name>1.0.0 Release</name>
+      <created>2010-01-11</created>
+      <branch>clutter-gst-1.0</branch>
+      <revision>1.0.0</revision>
+      <file-release rdf:resource="http://www.clutter-project.org/sources/clutter-gst/0.10/clutter-gst-1.0.0.tar.gz" />
+    </Version>
+  </release>
+
+  <release>
+    <Version>
+      <name>0.10.0 Release</name>
+      <created>2009-07-29</created>
+      <branch>clutter-gst-0.10</branch>
+      <revision>0.10.0</revision>
+      <file-release rdf:resource="http://www.clutter-project.org/sources/clutter-gst/0.10/clutter-gst-0.10.0.tar.gz" />
+    </Version>
+  </release>
+
+  <release>
+    <Version>
+      <name>0.9.0 Release</name>
+      <created>2009-07-24</created>
+      <branch>clutter-gst-0.9</branch>
+      <revision>0.9.0</revision>
+      <file-release rdf:resource="http://www.clutter-project.org/sources/clutter-gst/0.9/clutter-gst-0.9.0.tar.gz" />
+    </Version>
+  </release>
+
+  <release>
+    <Version>
+      <name>0.8 Release</name>
+      <created>2008-07-18</created>
+      <branch>clutter-gst-0.8</branch>
+      <revision>0.8</revision>
+      <file-release rdf:resource="http://www.clutter-project.org/sources/clutter-gst/0.8/clutter-gst-0.8.0.tar.gz" />
+    </Version>
+  </release>
+
+  <release>
+    <Version>
+      <name>0.6 Release</name>
+      <created>2008-02-18</created>
+      <branch>clutter-gst-0.6</branch>
+      <revision>0.6</revision>
+      <file-release rdf:resource="http://www.clutter-project.org/sources/clutter-gst/0.6/clutter-gst-0.6.0.tar.gz" />
+    </Version>
+  </release>
+
+  <release>
+    <Version>
+      <name>0.4 Release</name>
+      <created>2007-08-08</created>
+      <branch>clutter-gst-0.4</branch>
+      <revision>0.4</revision>
+      <file-release rdf:resource="http://www.clutter-project.org/sources/clutter-gst/0.4/clutter-gst-0.4.0.tar.gz" />
+    </Version>
+  </release>
+
+  <release>
+    <Version>
+      <name>0.1 Release</name>
+      <created>2007-01-18</created>
+      <branch>clutter-gst-0.1</branch>
+      <revision>0.1</revision>
+      <file-release rdf:resource="http://www.clutter-project.org/sources/clutter-gst/0.1/clutter-gst-0.1.0.tar.gz" />
+    </Version>
+  </release>
+
+</Project>

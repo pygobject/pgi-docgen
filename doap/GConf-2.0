@@ -1,0 +1,42 @@
+<Project xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+         xmlns:foaf="http://xmlns.com/foaf/0.1/"
+         xmlns:gnome="http://api.gnome.org/doap-extensions#"
+         xmlns="http://usefulinc.com/ns/doap#">
+
+  <name xml:lang="en">GConf</name>
+  <shortdesc xml:lang="en">Process-transparent configuration system (deprecated)</shortdesc>
+
+  <bug-database  rdf:resource="https://bugzilla.gnome.org/browse.cgi?product=GConf" />
+  <description xml:lang="en">
+    GConf is a process-transparent configuration database API used to store
+    user preferences. It has pluggable backends and features to support
+    workgroup administration.
+
+    This component is deprecated - new code should be written to use
+    GSettings.
+  </description>
+
+  <maintainer>
+    <foaf:Person>
+      <foaf:name>Rob Bradford</foaf:name>
+      <foaf:mbox rdf:resource="mailto:rbradford@gnome.org" />
+      <gnome:userid>rbradford</gnome:userid>
+    </foaf:Person>
+  </maintainer>
+
+  <maintainer>
+     <foaf:Person>
+       <foaf:name>Ross Burton</foaf:name>
+       <foaf:mbox rdf:resource="mailto:rburton@gnome.org"/>
+       <gnome:userid>rburton</gnome:userid>
+     </foaf:Person>
+  </maintainer>
+
+  <maintainer>
+    <foaf:Person>
+      <foaf:name>Havoc Pennington</foaf:name>
+      <gnome:userid>hp</gnome:userid>
+    </foaf:Person>
+  </maintainer>
+</Project>

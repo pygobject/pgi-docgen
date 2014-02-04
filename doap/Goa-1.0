@@ -1,0 +1,41 @@
+<Project xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+         xmlns:foaf="http://xmlns.com/foaf/0.1/"
+         xmlns:gnome="http://api.gnome.org/doap-extensions#"
+         xmlns="http://usefulinc.com/ns/doap#">
+
+  <name xml:lang="en">GNOME Online Accounts</name>
+  <shortname xml:lang="en">gnome-online-accounts</shortname>
+
+  <shortdesc xml:lang="en">
+    Single sign-on framework for GNOME
+  </shortdesc>
+  <description xml:lang="en">
+    GNOME Online Accounts provides interfaces so that applications and
+    libraries in GNOME can access the user's online accounts. It has
+    providers for Google, ownCloud, Facebook, Flickr, Windows Live,
+    Microsoft Exchange, IMAP/SMTP, Jabber, SIP and Kerberos.
+  </description>
+
+  <homepage rdf:resource="https://wiki.gnome.org/Projects/GnomeOnlineAccounts" />
+  <license rdf:resource="http://usefulinc.com/doap/licenses/lgpl" />
+  <download-page rdf:resource="http://download.gnome.org/sources/gnome-online-accounts" />
+  <bug-database rdf:resource="https://bugzilla.gnome.org/enter_bug.cgi?product=gnome-online-accounts" />
+
+  <programming-language>C</programming-language>
+
+  <repository>
+    <GitRepository>
+      <location rdf:resource="git://git.gnome.org/gnome-online-accounts" />
+      <browse rdf:resource="https://git.gnome.org/browse/gnome-online-accounts/" />
+    </GitRepository>
+  </repository>
+
+  <maintainer>
+    <foaf:Person>
+      <foaf:name>Debarshi Ray</foaf:name>
+      <foaf:mbox rdf:resource="mailto:debarshir@gnome.org" />
+      <gnome:userid>debarshir</gnome:userid>
+    </foaf:Person>
+  </maintainer>
+</Project>

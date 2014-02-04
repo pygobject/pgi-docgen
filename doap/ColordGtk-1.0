@@ -1,0 +1,28 @@
+<Project xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+         xmlns:foaf="http://xmlns.com/foaf/0.1/"
+         xmlns:gnome="http://api.gnome.org/doap-extensions#"
+         xmlns="http://usefulinc.com/ns/doap#">
+
+  <name xml:lang="en">colord</name>
+  <shortdesc xml:lang="en">colord maps devices to color profiles.</shortdesc>
+  <description xml:lang="en">
+    colord is a system activated daemon that maps devices to color
+    profiles.
+    It is used by gnome-color-manager for system integration and use
+    when there are no users logged in.
+  </description>
+
+  <homepage rdf:resource="http://colord.hughsie.com/" />
+
+  <maintainer>
+    <foaf:Person>
+      <foaf:name>Richard Hughes</foaf:name>
+      <foaf:mbox rdf:resource="mailto:richard@hughsie.com" />
+      <foaf:homepage rdf:resource="http://www.hughsie.com/" />
+    </foaf:Person>
+  </maintainer>
+
+  <license rdf:resource="http://www.gnu.org/licenses/gpl-2.0.txt" />
+
+</Project>

@@ -1,0 +1,23 @@
+<Project xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+	 xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+	 xmlns:foaf="http://xmlns.com/foaf/0.1/"
+	 xmlns:gnome="http://api.gnome.org/doap-extensions#"
+	 xmlns="http://usefulinc.com/ns/doap#">
+	<name xml:lang="en">libgovirt</name>
+	<shortdesc xml:lang="en">GObject-based library to access oVirt REST API</shortdesc>
+	<description xml:lang="en">libgovirt is a GObject-based library to
+	access oVirt REST API. It uses GObject and librest to integrate well with
+	GNOME applications.</description> <description>libsoup is an HTTP
+	client/server library for GNOME. It uses GObjects and the glib main loop,
+	to integrate well with GNOME applications.</description>
+	<download-page rdf:resource="http://people.freedesktop.org/~teuf/govirt/"/>
+	<bug-database rdf:resource="http://bugzilla.gnome.org/browse.cgi?product=libgovirt"/>
+	<category rdf:resource="http://api.gnome.org/doap-extensions#development" />
+	<maintainer>
+		<foaf:Person>
+			<foaf:name>Christophe Fergeau</foaf:name>
+			<foaf:mbox rdf:resource="mailto:teuf@gnome.org" />
+			<gnome:userid>teuf</gnome:userid>
+		</foaf:Person>
+	</maintainer>
+</Project>

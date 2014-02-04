@@ -1,0 +1,33 @@
+<Project xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+         xmlns:foaf="http://xmlns.com/foaf/0.1/"
+         xmlns:gnome="http://api.gnome.org/doap-extensions#"
+         xmlns="http://usefulinc.com/ns/doap#">
+
+  <name xml:lang="en">at-spi2-core</name>
+  <shortdesc xml:lang="en">D-Bus accessibility specifications and registration daemon.</shortdesc>
+  <homepage rdf:resource="http://www.linuxfoundation.org/en/Accessibility/ATK/AT-SPI/AT-SPI_on_D-Bus"/>
+  <mailing-list rdf:resource="https://lists.linux-foundation.org/mailman/listinfo/accessibility-atspi"/>
+
+  <maintainer>
+    <foaf:Person>
+      <foaf:name>Mark Doffman</foaf:name>
+      <foaf:mbox rdf:resource="mailto:mark.doffman@codethink.co.uk" />
+      <gnome:userid>markdoffman</gnome:userid>
+    </foaf:Person>
+  </maintainer>
+  <maintainer>
+    <foaf:Person>
+      <foaf:name>Mike Gorse</foaf:name>
+      <foaf:mbox rdf:resource="mailto:mgorse@suse.com" />
+      <gnome:userid>mgorse</gnome:userid>
+    </foaf:Person>
+  </maintainer>
+  <maintainer>
+    <foaf:Person>
+      <foaf:name>Li Yuan</foaf:name>
+      <foaf:mbox rdf:resource="mailto:lee.yuan@oracle.com" />
+      <gnome:userid>liyuan</gnome:userid>
+    </foaf:Person>
+  </maintainer>
+</Project>

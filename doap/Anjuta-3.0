@@ -1,0 +1,46 @@
+<Project xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+         xmlns:foaf="http://xmlns.com/foaf/0.1/"
+         xmlns:gnome="http://api.gnome.org/doap-extensions#"
+         xmlns="http://usefulinc.com/ns/doap#">
+
+  <name xml:lang="en">Anjuta IDE</name>
+  <shortdesc xml:lang="en">Develop software in an integrated development environment</shortdesc>
+  <description xml:lang="en">
+  Anjuta DevStudio is a versatile software development studio featuring 
+  a number of advanced programming facilities including project management, 
+  application wizard, interactive debugger, source editor, version control, GUI designer,
+  profiler and many more tools. 
+  It focuses on providing simple and usable user interface, yet powerful for efficient development.
+  </description>
+  <homepage rdf:resource="http://www.anjuta.org/" />
+  <mailing-list rdf:resource="http://mail.gnome.org/mailman/listinfo/anjuta-devel-list" />
+  <download-page rdf:resource="http://download.gnome.org/sources/anjuta/" />
+  <bug-database rdf:resource="http://bugzilla.gnome.org/browse.cgi?product=anjuta" />
+  <category rdf:resource="http://api.gnome.org/doap-extensions#development" />
+
+  <maintainer>
+    <foaf:Person>
+      <foaf:name>Naba Kumar</foaf:name>
+      <gnome:userid>naba</gnome:userid>
+    </foaf:Person>
+  </maintainer>
+  <maintainer>
+    <foaf:Person>
+      <foaf:name>Johannes Schmid</foaf:name>
+      <gnome:userid>jhs</gnome:userid>
+    </foaf:Person>
+  </maintainer>
+  <maintainer>
+    <foaf:Person>
+      <foaf:name>Sebastien Granjoux</foaf:name>
+      <gnome:userid>seb</gnome:userid>
+    </foaf:Person>
+  </maintainer>
+  <maintainer>
+    <foaf:Person>
+      <foaf:name>James Liggett</foaf:name>
+      <gnome:userid>jrliggett</gnome:userid>
+    </foaf:Person>
+  </maintainer>
+</Project>

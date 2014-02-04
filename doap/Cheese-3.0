@@ -1,0 +1,60 @@
+<Project xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+         xmlns:foaf="http://xmlns.com/foaf/0.1/"
+         xmlns:gnome="http://api.gnome.org/doap-extensions#"
+         xmlns="http://usefulinc.com/ns/doap#">
+
+  <name xml:lang="en">Cheese</name>
+  <shortdesc xml:lang="en">Take photos and videos with your webcam, with fun graphical effects</shortdesc>
+  <description>Cheese uses your webcam to take photos and videos, applies fancy
+  special effects and lets you share the fun with others. It was written as
+  part of Google's 2007 Summer of Code lead by daniel g. siegel and mentored by
+  Raphaël Slinckx. Under the hood, Cheese uses GStreamer to apply fancy effects
+  to photos and videos. With Cheese it is easy to take photos of you, your
+  friends, pets or whatever you want and share them with others. After the
+  success of the Summer of Code, the development continued and we are still
+  looking for people with nice ideas and patches ;)</description>
+  <homepage rdf:resource="https://wiki.gnome.org/Apps/Cheese" />
+  <download-page rdf:resource="https://download.gnome.org/sources/cheese/" />
+  <mailing-list rdf:resource="http://mail.gnome.org/mailman/listinfo/cheese-list" />
+  <bug-database rdf:resource="https://bugzilla.gnome.org/browse.cgi?product=cheese" />
+  <category rdf:resource="http://api.gnome.org/doap-extensions#desktop" />
+  <repository>
+    <GitRepository>
+      <location rdf:resource="git://git.gnome.org/cheese" />
+      <browse rdf:resource="https://git.gnome.org/browse/cheese/" />
+    </GitRepository>
+  </repository>
+  <programming-language>C</programming-language>
+  <programming-language>Vala</programming-language>
+
+  <maintainer>
+    <foaf:Person>
+      <foaf:name>daniel g. siegel</foaf:name>
+      <foaf:mbox rdf:resource="mailto:dgsiegel@gnome.org" />
+      <gnome:userid>dgsiegel</gnome:userid>
+    </foaf:Person>
+  </maintainer>
+  <maintainer>
+    <foaf:Person>
+      <foaf:name>Filippo Argiolas</foaf:name>
+      <foaf:mbox rdf:resource="mailto:filippo.argiolas@gmail.com" />
+      <gnome:userid>fargiolas</gnome:userid>
+    </foaf:Person>
+  </maintainer>
+  <maintainer>
+    <foaf:Person>
+      <foaf:name>Luciana Fujii Pontello</foaf:name>
+      <foaf:mbox rdf:resource="mailto:luciana@fujii.eti.br" />
+      <gnome:userid>lufujii</gnome:userid>
+    </foaf:Person>
+  </maintainer>
+  <maintainer>
+    <foaf:Person>
+      <foaf:name>David King</foaf:name>
+      <foaf:mbox rdf:resource="mailto:amigadave@amigadave.com" />
+      <foaf:seeAlso rdf:resource="http://amigadave.com/foaf.rdf#david" />
+      <gnome:userid>davidk</gnome:userid>
+    </foaf:Person>
+  </maintainer>
+</Project>
