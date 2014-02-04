@@ -15,53 +15,60 @@ class TNamespace(unittest.TestCase):
 
     def test_soup(self):
         ns = Namespace("Soup", "2.4")
+        types = ns.get_types()
 
-        self.assertEqual(ns.types["SOUP_STATUS_CANCELLED"],
+        self.assertEqual(types["SOUP_STATUS_CANCELLED"],
                          "Soup.Status.CANCELLED")
 
-        self.assertEqual(ns.types["SoupContentDecoder"],
+        self.assertEqual(types["SoupContentDecoder"],
                          "Soup.ContentDecoder")
 
-        self.assertEqual(ns.types["SoupContentDecoder"],
+        self.assertEqual(types["SoupContentDecoder"],
                          "Soup.ContentDecoder")
 
-        self.assertEqual(ns.types["soup_cookie_parse"],
+        self.assertEqual(types["soup_cookie_parse"],
                          "Soup.Cookie.parse")
 
     def test_gtk(self):
         ns = Namespace("Gtk", "3.0")
+        types = ns.get_types()
 
-        self.assertEqual(ns.types["GtkWindow"], "Gtk.Window")
-        self.assertEqual(ns.types["GtkAppChooser"], "Gtk.AppChooser")
-        self.assertEqual(ns.types["GtkArrowType"], "Gtk.ArrowType")
+        self.assertEqual(types["GtkWindow"], "Gtk.Window")
+        self.assertEqual(types["GtkAppChooser"], "Gtk.AppChooser")
+        self.assertEqual(types["GtkArrowType"], "Gtk.ArrowType")
 
     def test_gdk(self):
         ns = Namespace("Gdk", "3.0")
+        types = ns.get_types()
 
-        self.assertEqual(ns.types["GdkModifierType"], "Gdk.ModifierType")
+        self.assertEqual(types["GdkModifierType"], "Gdk.ModifierType")
 
     def test_gobject(self):
         ns = Namespace("GObject", "2.0")
+        types = ns.get_types()
 
-        self.assertEqual(ns.types["GTypeCValue"], "GObject.TypeCValue")
-        self.assertEqual(ns.types["GBoxed"], "GObject.GBoxed")
+        self.assertEqual(types["GTypeCValue"], "GObject.TypeCValue")
+        self.assertEqual(types["GBoxed"], "GObject.GBoxed")
 
-        self.assertEqual(ns.types["G_MAXSSIZE"], "GObject.G_MAXSSIZE")
+        self.assertEqual(types["G_MAXSSIZE"], "GObject.G_MAXSSIZE")
 
     def test_glib(self):
         ns = Namespace("GLib", "2.0")
+        types = ns.get_types()
 
-        self.assertEqual(ns.types["GBookmarkFileError"],
+        self.assertEqual(types["GBookmarkFileError"],
                          "GLib.BookmarkFileError")
 
-        self.assertEqual(ns.types["G_MININT8"], "GLib.MININT8")
+        self.assertEqual(types["G_MININT8"], "GLib.MININT8")
 
     def test_cairo(self):
         ns = Namespace("cairo", "1.0")
+        types = ns.get_types()
 
-        self.assertEqual(ns.types["cairo_t"], "cairo.Context")
+        self.assertEqual(types["cairo_t"], "cairo.Context")
 
     def test_pango(self):
         ns = Namespace("Pango", "1.0")
+        types = ns.get_types()
 
-        self.assertEqual(ns.types["pango_break"], "Pango.break_")
+        self.assertEqual(types["pango_break"], "Pango.break_")

@@ -1,11 +1,12 @@
 #!/usr/bin/python
-# Copyright 2013 Christoph Reiter
+# Copyright 2013, 2014 Christoph Reiter
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
 # License as published by the Free Software Foundation; either
 # version 2.1 of the License, or (at your option) any later version.
 
+import sys
 import os
 import shutil
 import argparse
@@ -23,11 +24,7 @@ from pgidocgen.main import MainGenerator
 from pgidocgen.util import get_gir_files
 
 
-PGI_MIN_VERSION = "0.0.6.2"
-
-
-if __name__ == "__main__":
-
+def main(argv):
     parser = argparse.ArgumentParser(
         description='Create a sphinx environ')
     parser.add_argument('-f', '--force', action='store_true',
@@ -37,19 +34,12 @@ if __name__ == "__main__":
                         help='A list of namespaces including versions '
                              '(e.g. "Gtk-3.0 GLib-2.0")')
 
-    args = parser.parse_args()
+    args = parser.parse_args(argv[1:])
 
     if not is_pgi and args.namespaces:
         print "Can't build API docs without pgi"
         print "Get here: https://github.com/lazka/pgi"
         raise SystemExit(1)
-
-    if args.namespaces:
-        try:
-            pgi.check_version(PGI_MIN_VERSION)
-        except ValueError as e:
-            print e
-            raise SystemExit(1)
 
     girs = get_gir_files()
 
@@ -79,3 +69,7 @@ if __name__ == "__main__":
             continue
         gen.add_module(namespace, version)
     gen.write()
+
+
+if __name__ == "__main__":
+    main(sys.argv)

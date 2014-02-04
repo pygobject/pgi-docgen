@@ -1,4 +1,4 @@
-# Copyright 2013 Christoph Reiter
+# Copyright 2013,2014 Christoph Reiter
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -11,171 +11,61 @@ from xml.dom import minidom
 from . import util
 
 
-class Namespace(object):
+def get_namespace(namespace, version, _ns_cache={}):
+    key = namespace, version
+    if not key in _ns_cache:
+        ns = Namespace(namespace, version)
+        _ns_cache[key] = ns
+    return _ns_cache[key]
 
-    _doms = {}
-    _types = {}
+
+class Namespace(object):
 
     def __init__(self, namespace, version):
         self.namespace = namespace
         self.version = version
 
-        key = namespace + version
+        self._dom = None
+        self._types = None
 
-        if key not in self._doms:
-            self._doms[key] = self._parse_dom()
-        self._dom = self._doms[key]
+        # Gtk.foo_bar.arg1 -> "some doc"
+        self._parameters = {}
 
-        if not key in self._types:
-            self._types[key] = self._parse_types()
-        self.types = self._types[key]
+        # Gtk.foo_bar -> "some doc"
+        # Gtk.Foo.foo_bar -> "some doc"
+        self._returns = {}
 
-    def _parse_dom(self):
-        print "Parsing GIR: %s-%s" % (self.namespace, self.version)
-        return minidom.parse(self.get_path())
+        # Gtk.foo_bar -> "some doc"
+        # Gtk.Foo.foo_bar -> "some doc"
+        # Gtk.FooBar -> "some doc"
+        self._all = {}
 
-    def _parse_types(self):
-        """Create a mapping of various C names to python names"""
+        # Gtk.Foo.some-signal -> "some doc"
+        self._signals = {}
 
-        dom = self.get_dom()
-        namespace = self.namespace
-        types = {}
+        self._private = None
 
-        def add(c_name, py_name):
-            if c_name in types:
-                old_count = types[c_name].count(".")
-                new_count = py_name.count(".")
-                # prefer static methods over functions
-                if old_count > new_count:
-                    return
-
-            assert py_name.count("."), py_name
-
-            # escape each potential attribute
-            py_name = ".".join(
-                map(util.escape_identifier,  py_name.split(".")))
-            types[c_name] = py_name
-
-        # {key of the to be replaces function: c def of the replacement}
-        shadowed = {}
-
-        # gtk_main -> Gtk.main
-        # gtk_dialog_get_response_for_widget ->
-        #     Gtk.Dialog.get_response_for_widget
-        elements = dom.getElementsByTagName("function")
-        elements += dom.getElementsByTagName("constructor")
-        elements += dom.getElementsByTagName("method")
-        for t in elements:
-            shadows = t.getAttribute("shadows")
-            local_name = t.getAttribute("name")
-            c_name = t.getAttribute("c:identifier")
-            assert c_name
-
-            # Copy escaping from gi: Foo.break -> Foo.break_
-            full_name = local_name
-            parent = t.parentNode
-
-            # glib:boxed toplevel in Farstream-0.1
-            if not parent.getAttribute("name"):
-                continue
-
-            while parent.getAttribute("name"):
-                full_name = parent.getAttribute("name") + "." + full_name
-                parent = parent.parentNode
-
-            if shadows:
-                shadowed_name = ".".join(full_name.split(".")[:-1] + [shadows])
-                shadowed_name = ".".join(
-                    map(util.escape_identifier, shadowed_name.split(".")))
-                shadowed[shadowed_name] = c_name
-
-            add(c_name, full_name)
-
-        # enums etc. GTK_SOME_FLAG_FOO -> Gtk.SomeFlag.FOO
-        for t in dom.getElementsByTagName("member"):
-            c_name = t.getAttribute("c:identifier")
-            assert c_name
-            class_name = t.parentNode.getAttribute("name")
-            field_name = t.getAttribute("name").upper()
-            local_name = namespace + "." + class_name + "." + field_name
-            add(c_name, local_name)
-
-        # classes
-        elements = dom.getElementsByTagName("class")
-        elements += dom.getElementsByTagName("interface")
-        elements += dom.getElementsByTagName("enumeration")
-        elements += dom.getElementsByTagName("bitfield")
-        elements += dom.getElementsByTagName("callback")
-        elements += dom.getElementsByTagName("union")
-        elements += dom.getElementsByTagName("alias")
-        for t in elements:
-            # only top level
-            if t.parentNode.tagName != "namespace":
-                continue
-
-            c_name = t.getAttribute("c:type")
-            c_name = c_name or t.getAttribute("glib:type-name")
-
-            # e.g. GObject _Value__data__union
-            if not c_name:
-                continue
-
-            type_name = t.getAttribute("name")
-            add(c_name, namespace + "." + type_name)
-
-        # cairo_t -> cairo.Context
-        for t in dom.getElementsByTagName("record"):
-            c_name = t.getAttribute("c:type")
-            # Gee-0.8 HazardPointer
-            if not c_name:
-                continue
-            type_name = t.getAttribute("name")
-            add(c_name, namespace + "." + type_name)
-
-        # G_TIME_SPAN_MINUTE -> GLib.TIME_SPAN_MINUTE
-        for t in dom.getElementsByTagName("constant"):
-            c_name = t.getAttribute("c:type")
-            if t.parentNode.tagName == "namespace":
-                name = namespace + "." + t.getAttribute("name")
-                add(c_name, name)
-
-        # the keys we want to replace have should exist
-        assert not (set(shadowed.keys()) - set(types.values()))
-
-        # make c defs which are replaced point to the key of the replacement
-        # so that: "gdk_threads_add_timeout_full" -> Gdk.threads_add_timeout
-        for c_name, name in types.items():
-            if name in shadowed:
-                replacement = shadowed[name]
-                types[replacement] = name
-
-        if namespace == "GObject":
-            # these come from overrides and aren't in the gir
-            # e.g. G_TYPE_INT -> GObject.TYPE_INT
-            from gi.repository import GObject
-
-            for key in dir(GObject):
-                if key.startswith("TYPE_"):
-                    types["G_" + key] = "GObject." + key
-                elif key.startswith(("G_MAX", "G_MIN")):
-                    types[key] = "GObject." + key
-
-            types["GBoxed"] = "GObject.GBoxed"
-        elif namespace == "GLib":
-            from gi.repository import GLib
-
-            for k in dir(GLib):
-                if re.match("MINU?INT\d+", k) or re.match("MAXU?INT\d+", k):
-                    types["G_" + k] = "GLib." + k
-
-        return types
-
-    def get_path(self):
-        key = "%s-%s" % (self.namespace, self.version)
-        return util.get_gir_files()[key]
+        a, p, r, s =_parse_docs(self.get_dom())
+        self._all.update(a)
+        self._parameters.update(p)
+        self._returns.update(r)
+        self._signals.update(s)
 
     def get_dom(self):
+        if self._dom is None:
+            print "Parsing GIR: %s-%s" % (self.namespace, self.version)
+            self._dom = minidom.parse(self.path)
         return self._dom
+
+    def get_types(self):
+        if self._types is None:
+            self._types = _parse_types(self.get_dom(), self.namespace)
+        return self._types
+
+    @property
+    def path(self):
+        key = "%s-%s" % (self.namespace, self.version)
+        return util.get_gir_files()[key]
 
     def get_dependencies(self):
         dom = self.get_dom()
@@ -185,3 +75,203 @@ class Namespace(object):
             version = include.getAttribute("version")
             deps.append((name, version))
         return deps
+
+    def is_private(self, name):
+        """is_private('Gtk.ViewportPrivate')"""
+
+        assert "." in name
+
+        if self._private is None:
+            self._private = _parse_private(self.get_dom(), self.namespace)
+
+        return name in self._private
+
+
+def _parse_types(dom, namespace):
+    """Create a mapping of various C names to python names"""
+
+    types = {}
+
+    def add(c_name, py_name):
+        if c_name in types:
+            old_count = types[c_name].count(".")
+            new_count = py_name.count(".")
+            # prefer static methods over functions
+            if old_count > new_count:
+                return
+
+        assert py_name.count("."), py_name
+
+        # escape each potential attribute
+        py_name = ".".join(
+            map(util.escape_identifier,  py_name.split(".")))
+        types[c_name] = py_name
+
+    # {key of the to be replaces function: c def of the replacement}
+    shadowed = {}
+
+    # gtk_main -> Gtk.main
+    # gtk_dialog_get_response_for_widget ->
+    #     Gtk.Dialog.get_response_for_widget
+    elements = dom.getElementsByTagName("function")
+    elements += dom.getElementsByTagName("constructor")
+    elements += dom.getElementsByTagName("method")
+    for t in elements:
+        shadows = t.getAttribute("shadows")
+        local_name = t.getAttribute("name")
+        c_name = t.getAttribute("c:identifier")
+        assert c_name
+
+        # Copy escaping from gi: Foo.break -> Foo.break_
+        full_name = local_name
+        parent = t.parentNode
+
+        # glib:boxed toplevel in Farstream-0.1
+        if not parent.getAttribute("name"):
+            continue
+
+        while parent.getAttribute("name"):
+            full_name = parent.getAttribute("name") + "." + full_name
+            parent = parent.parentNode
+
+        if shadows:
+            shadowed_name = ".".join(full_name.split(".")[:-1] + [shadows])
+            shadowed_name = ".".join(
+                map(util.escape_identifier, shadowed_name.split(".")))
+            shadowed[shadowed_name] = c_name
+
+        add(c_name, full_name)
+
+    # enums etc. GTK_SOME_FLAG_FOO -> Gtk.SomeFlag.FOO
+    for t in dom.getElementsByTagName("member"):
+        c_name = t.getAttribute("c:identifier")
+        assert c_name
+        class_name = t.parentNode.getAttribute("name")
+        field_name = t.getAttribute("name").upper()
+        local_name = namespace + "." + class_name + "." + field_name
+        add(c_name, local_name)
+
+    # classes
+    elements = dom.getElementsByTagName("class")
+    elements += dom.getElementsByTagName("interface")
+    elements += dom.getElementsByTagName("enumeration")
+    elements += dom.getElementsByTagName("bitfield")
+    elements += dom.getElementsByTagName("callback")
+    elements += dom.getElementsByTagName("union")
+    elements += dom.getElementsByTagName("alias")
+    for t in elements:
+        # only top level
+        if t.parentNode.tagName != "namespace":
+            continue
+
+        c_name = t.getAttribute("c:type")
+        c_name = c_name or t.getAttribute("glib:type-name")
+
+        # e.g. GObject _Value__data__union
+        if not c_name:
+            continue
+
+        type_name = t.getAttribute("name")
+        add(c_name, namespace + "." + type_name)
+
+    # cairo_t -> cairo.Context
+    for t in dom.getElementsByTagName("record"):
+        c_name = t.getAttribute("c:type")
+        # Gee-0.8 HazardPointer
+        if not c_name:
+            continue
+        type_name = t.getAttribute("name")
+        add(c_name, namespace + "." + type_name)
+
+    # G_TIME_SPAN_MINUTE -> GLib.TIME_SPAN_MINUTE
+    for t in dom.getElementsByTagName("constant"):
+        c_name = t.getAttribute("c:type")
+        if t.parentNode.tagName == "namespace":
+            name = namespace + "." + t.getAttribute("name")
+            add(c_name, name)
+
+    # the keys we want to replace have should exist
+    assert not (set(shadowed.keys()) - set(types.values()))
+
+    # make c defs which are replaced point to the key of the replacement
+    # so that: "gdk_threads_add_timeout_full" -> Gdk.threads_add_timeout
+    for c_name, name in types.items():
+        if name in shadowed:
+            replacement = shadowed[name]
+            types[replacement] = name
+
+    if namespace == "GObject":
+        # these come from overrides and aren't in the gir
+        # e.g. G_TYPE_INT -> GObject.TYPE_INT
+        from gi.repository import GObject
+
+        for key in dir(GObject):
+            if key.startswith("TYPE_"):
+                types["G_" + key] = "GObject." + key
+            elif key.startswith(("G_MAX", "G_MIN")):
+                types[key] = "GObject." + key
+
+        types["GBoxed"] = "GObject.GBoxed"
+    elif namespace == "GLib":
+        from gi.repository import GLib
+
+        for k in dir(GLib):
+            if re.match("MINU?INT\d+", k) or re.match("MAXU?INT\d+", k):
+                types["G_" + k] = "GLib." + k
+
+    return types
+
+
+def _parse_private(dom, namespace):
+    private = set()
+
+    # if disguised and no record content... not perfect, but
+    # we have no other way
+    for record in dom.getElementsByTagName("record"):
+        disguised = bool(int(record.getAttribute("disguised") or "0"))
+        if disguised:
+            children = record.childNodes
+            if len(children) == 1 and \
+                    children[0].nodeType == children[0].TEXT_NODE:
+                name = namespace + "." + record.getAttribute("name")
+                private.add(name)
+
+    return private
+
+
+def _parse_docs(dom):
+    """Parse docs"""
+
+    all_ = {}
+    parameters = {}
+    returns = {}
+    signals = {}
+
+    for doc in dom.getElementsByTagName("doc"):
+        docs = doc.firstChild.nodeValue
+
+        l = []
+        current = doc
+        kind = ""
+        while current.tagName != "namespace":
+            current = current.parentNode
+            name = current.getAttribute("name")
+            if current.tagName == "glib:signal":
+                kind = "signal"
+            if not name:
+                kind = current.tagName
+                continue
+            l.insert(0, name)
+
+        l = map(util.escape_identifier, l)
+        key = ".".join(l)
+        if not kind:
+            all_[key] = docs
+        elif kind == "parameters":
+            parameters[key] = docs
+        elif kind == "return-value":
+            returns[key] = docs
+        elif kind == "signal":
+            signals[key] = docs
+
+    return all_, parameters, returns, signals

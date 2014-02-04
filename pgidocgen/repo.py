@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2013 Christoph Reiter
+# Copyright 2013,2014 Christoph Reiter
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -8,7 +8,7 @@
 
 import gi
 
-from .namespace import Namespace
+from .namespace import get_namespace
 from . import util
 from .util import unindent, get_csv_line, gtype_to_rest
 
@@ -24,26 +24,7 @@ class Repository(object):
         self.namespace = namespace
         self.version = version
 
-        # c def name -> python name
-        # gtk_foo_bar -> Gtk.foo_bar
-        self._types = {}
-
-        # Gtk.foo_bar.arg1 -> "some doc"
-        self._parameters = {}
-
-        # Gtk.foo_bar -> "some doc"
-        # Gtk.Foo.foo_bar -> "some doc"
-        self._returns = {}
-
-        # Gtk.foo_bar -> "some doc"
-        # Gtk.Foo.foo_bar -> "some doc"
-        # Gtk.FooBar -> "some doc"
-        self._all = {}
-
-        # Gtk.Foo.some-signal -> "some doc"
-        self._signals = {}
-
-        self._ns = ns = Namespace(namespace, version)
+        self._ns = ns = get_namespace(namespace, version)
 
         loaded = {}
         to_load = ns.get_dependencies()
@@ -51,25 +32,15 @@ class Repository(object):
             key = to_load.pop()
             if key in loaded:
                 continue
-            sub_ns = Namespace(*key)
+            sub_ns = get_namespace(*key)
             loaded[key] = sub_ns
             to_load.extend(sub_ns.get_dependencies())
 
-        # try to fail early
-        for k, v in loaded.keys():
-            gi.require_version(k, v)
-
+        # merge all type mappings
+        self._types = {}
         for sub_ns in loaded.values():
-            self._parse_types(sub_ns)
-
-        self._parse_types(ns)
-        self._parse_docs(ns)
-
-        # private
-        self._private = set()
-        for sub_ns in loaded.values():
-            self._parse_private(sub_ns)
-        self._parse_private(ns)
+            self._types.update(sub_ns.get_types())
+        self._types.update(ns.get_types())
 
     def lookup_attr_docs(self, name):
         """Get docs for a namespace attribute.
@@ -77,8 +48,8 @@ class Repository(object):
         e.g. 'GObject.Value'
         """
 
-        if name in self._all:
-            return self._fix_docs(self._all[name])
+        if name in self._ns._all:
+            return self._fix_docs(self._ns._all[name])
         return ""
 
     def lookup_return_docs(self, name):
@@ -87,8 +58,8 @@ class Repository(object):
         e.g. 'GObject.Value.set_char'
         """
 
-        if name in self._returns:
-            return self._fix_docs(self._returns[name])
+        if name in self._ns._returns:
+            return self._fix_docs(self._ns._returns[name])
         return ""
 
     def lookup_parameter_docs(self, name):
@@ -97,72 +68,22 @@ class Repository(object):
         e.g. 'GObject.Value.set_char.v_char'
         """
 
-        if name in self._parameters:
-            return self._fix_docs(self._parameters[name])
+        if name in self._ns._parameters:
+            return self._fix_docs(self._ns._parameters[name])
         return ""
 
     def lookup_signal_docs(self, name):
-        if name in self._signals:
-            return self._fix_docs(self._signals[name])
+        if name in self._ns._signals:
+            return self._fix_docs(self._ns._signals[name])
         return ""
 
     def get_dependencies(self):
         return self._ns.get_dependencies()
 
-    def _parse_types(self, ns):
-        self._types.update(ns.types)
-
-    def _parse_private(self, ns):
-        dom = ns.get_dom()
-
-        # if disguised and no record content... not perfect, but
-        # we have no other way
-        for record in dom.getElementsByTagName("record"):
-            disguised = bool(int(record.getAttribute("disguised") or "0"))
-            if disguised:
-                children = record.childNodes
-                if len(children) == 1 and \
-                        children[0].nodeType == children[0].TEXT_NODE:
-                    name = ns.namespace + "." + record.getAttribute("name")
-                    self._private.add(name)
-
     def is_private(self, name):
         """is_private('Gtk.ViewportPrivate')"""
 
-        assert "." in name
-        return name in self._private
-
-    def _parse_docs(self, ns):
-        """Parse docs"""
-
-        dom = ns.get_dom()
-
-        for doc in dom.getElementsByTagName("doc"):
-            docs = doc.firstChild.nodeValue
-
-            l = []
-            current = doc
-            kind = ""
-            while current.tagName != "namespace":
-                current = current.parentNode
-                name = current.getAttribute("name")
-                if current.tagName == "glib:signal":
-                    kind = "signal"
-                if not name:
-                    kind = current.tagName
-                    continue
-                l.insert(0, name)
-
-            l = map(util.escape_identifier, l)
-            key = ".".join(l)
-            if not kind:
-                self._all[key] = docs
-            elif kind == "parameters":
-                self._parameters[key] = docs
-            elif kind == "return-value":
-                self._returns[key] = docs
-            elif kind == "signal":
-                self._signals[key] = docs
+        return self._ns.is_private(name)
 
     def _fix_docs(self, d):
         return docstring_to_rest(self._types, d)
@@ -391,7 +312,7 @@ class %s(%s):
 
         # still nothing, try making the best out of it
         if not sig:
-            if name not in self._all:
+            if not self.lookup_attr_docs(name):
                 # no gir docs, let sphinx handle it
                 return "%s = %s\n" % (func_name, name)
             elif is_method:
@@ -435,7 +356,7 @@ r'''
         if user_docstring:
             docs.append("")
             docs.append(unindent(user_docstring))
-        elif name in self._all:
+        elif self.lookup_attr_docs(name):
             docs.append("")
             docs.append(self.lookup_attr_docs(name))
 
