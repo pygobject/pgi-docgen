@@ -42,3 +42,12 @@ class TRepository(unittest.TestCase):
     def test_other(self):
         Repository("GLib", "2.0")
         Repository("GObject", "2.0")
+
+    def test_version_added(self):
+        repo = Repository("Atk", "1.0")
+        docs = repo.lookup_attr_docs("Atk.Document.get_attributes")
+        self.assertTrue(".. versionadded:: 1.12" in docs)
+
+        # FIXME
+        # docs = repo.lookup_attr_docs("Atk.Document.get_attribute_value")
+        # self.assertTrue(".. versionadded:: 1.12" in docs)

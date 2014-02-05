@@ -228,6 +228,8 @@ def _parse_docs(dom):
     returns = {}
     signals = {}
     properties = {}
+    # FIXME: what about elements without doc sub element but a version attr?
+    versions = {}
 
     for doc in dom.getElementsByTagName("doc"):
         docs = doc.firstChild.nodeValue
@@ -235,6 +237,7 @@ def _parse_docs(dom):
         l = []
         current = doc
         kind = ""
+        version = current.parentNode.getAttribute("version")
         while current.tagName != "namespace":
             current = current.parentNode
             name = current.getAttribute("name")
@@ -249,15 +252,16 @@ def _parse_docs(dom):
 
         l = map(util.escape_identifier, l)
         key = ".".join(l)
+
         if not kind:
-            all_[key] = docs
+            all_[key] = (docs, version)
         elif kind == "parameters":
-            parameters[key] = docs
+            parameters[key] = (docs, version)
         elif kind == "return-value":
-            returns[key] = docs
+            returns[key] = (docs, version)
         elif kind == "signal":
-            signals[key] = docs
+            signals[key] = (docs, version)
         elif kind == "property":
-            properties[key] = docs
+            properties[key] = (docs, version)
 
     return all_, parameters, returns, signals, properties

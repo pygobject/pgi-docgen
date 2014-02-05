@@ -91,7 +91,7 @@ class Repository(object):
         """
 
         if name in self._all:
-            return self._fix_docs(self._all[name])
+            return self._fix_docs(*self._all[name])
         return ""
 
     def lookup_return_docs(self, name):
@@ -101,7 +101,7 @@ class Repository(object):
         """
 
         if name in self._returns:
-            return self._fix_docs(self._returns[name])
+            return self._fix_docs(*self._returns[name])
         return ""
 
     def lookup_parameter_docs(self, name):
@@ -111,17 +111,17 @@ class Repository(object):
         """
 
         if name in self._parameters:
-            return self._fix_docs(self._parameters[name])
+            return self._fix_docs(*self._parameters[name])
         return ""
 
     def lookup_signal_docs(self, name):
         if name in self._signals:
-            return self._fix_docs(self._signals[name])
+            return self._fix_docs(*self._signals[name])
         return ""
 
     def lookup_prop_docs(self, name):
         if name in self._properties:
-            return self._fix_docs(self._properties[name])
+            return self._fix_docs(*self._properties[name])
         return ""
 
     def get_dependencies(self):
@@ -134,8 +134,11 @@ class Repository(object):
 
         return name in self._private
 
-    def _fix_docs(self, d):
-        return docstring_to_rest(self._types, d)
+    def _fix_docs(self, d, version=None):
+        rest = docstring_to_rest(self._types, d)
+        if version:
+            rest += "\n\n.. versionadded:: %s\n" % version
+        return rest
 
     def parse_constant(self, name):
         # FIXME: broken escaping in pgi
