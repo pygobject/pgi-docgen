@@ -1,0 +1,54 @@
+<Project xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+         xmlns:foaf="http://xmlns.com/foaf/0.1/"
+         xmlns:gnome="http://api.gnome.org/doap-extensions#"
+         xmlns="http://usefulinc.com/ns/doap#">
+
+  <name xml:lang="en">libgweather</name>
+  <shortdesc xml:lang="en">Location and timezone database and weather-lookup library</shortdesc>
+
+  <homepage rdf:resource="http://live.gnome.org/LibGWeather" />
+  <mailing-list rdf:resource="http://mail.gnome.org/mailman/listinfo/desktop-devel-list" />
+  <download-page rdf:resource="http://download.gnome.org/sources/libgweather/"/>
+  <bug-database rdf:resource="http://bugzilla.gnome.org/browse.cgi?product=libgweather"/>
+
+  <!-- DOAP category: This is used to categorize repositories in cgit.
+       Pulse has taken its best guess at the correct category.  You may
+       want to replace the rdf:resource attribute with one of the following:
+         http://api.gnome.org/doap-extensions#admin
+         http://api.gnome.org/doap-extensions#bindings
+         http://api.gnome.org/doap-extensions#deprecated
+         http://api.gnome.org/doap-extensions#desktop
+         http://api.gnome.org/doap-extensions#development
+         http://api.gnome.org/doap-extensions#infrastructure
+         http://api.gnome.org/doap-extensions#platform
+         http://api.gnome.org/doap-extensions#productivity
+       NOTE: There is an "Other" categorization on cgit, but we do not have a
+       DOAP category for it.  If your module does not belong to one of these
+       groups, then do not include a category property in your DOAP file.
+  -->
+  <category rdf:resource="http://api.gnome.org/doap-extensions#desktop" />
+  <programming-language>C</programming-language>
+
+  <maintainer>
+    <foaf:Person>
+      <foaf:name>Javier Jardón</foaf:name>
+      <foaf:mbox rdf:resource="mailto:jjardon@gnome.org" />
+      <gnome:userid>jjardon</gnome:userid>
+    </foaf:Person>
+  </maintainer>
+  <maintainer>
+    <foaf:Person>
+      <foaf:name>Giovanni Campagna</foaf:name>
+      <foaf:mbox rdf:resource="mailto:gcampagna@src.gnome.org" />
+      <gnome:userid>gcampagna</gnome:userid>
+    </foaf:Person>
+  </maintainer>
+  <!--<maintainer>
+    <foaf:Person>
+      <foaf:name>Frank Solensky</foaf:name>
+      <foaf:mbox rdf:resource="mailto:fsolensky@src.gnome.org" />
+      <gnome:userid>fsolensky</gnome:userid>
+    </foaf:Person>
+  </maintainer>-->
+</Project>

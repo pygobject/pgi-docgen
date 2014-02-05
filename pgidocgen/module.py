@@ -197,7 +197,7 @@ class ModuleGenerator(util.Generator):
             title = "%s %s" % (namespace, version)
             h.write(util.make_rest_title(title) + "\n")
 
-            summary = get_project_summary(namespace, version)
+            summary = get_project_summary(".", namespace, version)
             h.write(summary.encode("utf-8") + "\n")
 
             h.write(util.make_rest_title("API", "-") + "\n")

@@ -1,0 +1,18 @@
+<Project xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+	 xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+	 xmlns:foaf="http://xmlns.com/foaf/0.1/"
+	 xmlns:gnome="http://api.gnome.org/doap-extensions#"
+	 xmlns="http://usefulinc.com/ns/doap#">
+	<name xml:lang="en">totem-pl-parser</name>
+	<shortdesc xml:lang="en">Simple GObject-based library to parse and save a host of playlist formats</shortdesc>
+	<homepage rdf:resource="https://wiki.gnome.org/Apps/Videos"/>
+	<bug-database rdf:resource="http://bugzilla.gnome.org/browse.cgi?product=totem-pl-parser"/>
+	<category rdf:resource="http://api.gnome.org/doap-extensions#desktop" />
+	<maintainer>
+		<foaf:Person>
+			<foaf:name>Bastien Nocera</foaf:name>
+			<foaf:mbox rdf:resource="mailto:hadess@hadess.net"/>
+			<gnome:userid>hadess</gnome:userid>
+		</foaf:Person>
+	</maintainer>
+</Project>

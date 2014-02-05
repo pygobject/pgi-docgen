@@ -11,9 +11,9 @@ import os
 
 LIBS = {
     'https://git.gnome.org/browse/librest/plain/librest.doap':
-        ['Rest-0.7'],
+        ['RestExtras-0.7', 'Rest-0.7'],
     'https://git.gnome.org/browse/gtk+/plain/gtk+.doap':
-        ['Gtk-3.0'],
+        ['Gtk-3.0', 'GdkX11-3.0', 'Gdk-3.0'],
     'http://cgit.freedesktop.org/gstreamer/gstreamer/plain/gstreamer.doap':
         ['GstController-1.0', 'GstNet-1.0', 'Gst-1.0', 'GstCheck-1.0',
          'GstBase-1.0'],
@@ -104,6 +104,54 @@ LIBS = {
         ['GDesktopEnums-3.0'],
     'https://git.gnome.org/browse/gssdp/plain/gssdp.doap':
         ['GSSDP-1.0'],
+    'https://git.gnome.org/browse/gtksourceview/plain/gtksourceview.doap':
+        ['GtkSource-3.0'],
+    'https://git.gnome.org/browse/gtk-vnc/plain/gtk-vnc.doap':
+        ['GVncPulse-1.0', 'GtkVnc-2.0', 'GVnc-1.0'],
+    'https://git.gnome.org/browse/gucharmap/plain/gucharmap.doap':
+        ['Gucharmap-2.90'],
+    'https://git.gnome.org/browse/gupnp-dlna/plain/gupnp-dlna.doap':
+        ['GUPnPDLNAGst-2.0', 'GUPnPDLNA-2.0'],
+    'https://git.gnome.org/browse/json-glib/plain/json-glib.doap':
+        ['Json-1.0'],
+    'https://git.gnome.org/browse/libchamplain/plain/libchamplain.doap':
+        ['Champlain-0.12', 'GtkChamplain-0.12'],
+    'https://git.gnome.org/browse/libcryptui/plain/libcryptui.doap':
+        ['CryptUI-0.0'],
+    'https://git.gnome.org/browse/libgda/plain/libgda.doap':
+        ['Gda-5.0'],
+    'https://git.gnome.org/browse/libgee/plain/libgee.doap':
+        ['Gee-0.8'],
+    'https://git.gnome.org/browse/libgnomekbd/plain/libgnomekbd.doap':
+        ['Gkbd-3.0'],
+    'https://git.gnome.org/browse/gnome-keyring/plain/gnome-keyring.doap':
+        ['GnomeKeyring-1.0'],
+    'https://git.gnome.org/browse/libgweather/plain/libgweather.doap':
+        ['GWeather-3.0'],
+    'https://git.gnome.org/browse/libgxps/plain/libgxps.doap':
+        ['GXPS-0.1'],
+    'https://git.gnome.org/browse/libnotify/plain/libnotify.doap':
+        ['Notify-0.7'],
+    'https://git.gnome.org/browse/librsvg/plain/librsvg.doap':
+        ['Rsvg-2.0'],
+    'https://git.gnome.org/browse/libsocialweb/plain/libsocialweb.doap':
+        ['SocialWebClient-0.25'],
+    'https://git.gnome.org/browse/libsoup/plain/libsoup.doap':
+        ['SoupGNOME-2.4', 'Soup-2.4'],
+    'https://git.gnome.org/browse/libwnck/plain/libwnck.doap':
+        ['Wnck-3.0'],
+    'https://git.gnome.org/browse/libzapojit/plain/libzapojit.doap':
+        ['Zpj-0.0'],
+    'https://gitorious.org/packagekit/packagekit/raw/PackageKit.doap':
+        ['PackageKitGlib-1.0', 'PackageKitPlugin-1.0'],
+    'https://git.gnome.org/browse/pango/plain/pango.doap':
+        ['PangoCairo-1.0', 'PangoXft-1.0', 'PangoFT2-1.0', 'Pango-1.0'],
+    'https://git.gnome.org/browse/totem-pl-parser/plain/totem-pl-parser.doap':
+        ['TotemPlParser-1.0'],
+    'https://git.gnome.org/browse/tracker/plain/tracker.doap':
+        ['TrackerMiner-0.16', 'TrackerExtract-0.16', 'Tracker-0.16'],
+    'https://git.gnome.org/browse/vte/plain/vte.doap':
+        ['Vte-2.90'],
 }
 
 
@@ -114,5 +162,5 @@ if __name__ == '__main__':
         print url
         r = requests.get(url)
         for ns in ns_list:
-            with open(os.path.join('doap', ns), 'wb') as h:
+            with open(os.path.join('doap', ns) + ".doap", 'wb') as h:
                 h.write(r.content)

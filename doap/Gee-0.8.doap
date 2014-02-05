@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Project xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+         xmlns:foaf="http://xmlns.com/foaf/0.1/"
+         xmlns:gnome="http://api.gnome.org/doap-extensions#"
+         xmlns:owl="http://www.w3.org/2002/07/owl#"
+         xmlns="http://usefulinc.com/ns/doap#">
+
+  <name xml:lang="en">libgee</name>
+  <shortdesc xml:lang="en">A collection library providing GObject-based interfaces and classes for commonly used data structures</shortdesc>
+
+  <homepage rdf:resource="http://live.gnome.org/Libgee" />
+  <mailing-list rdf:resource="http://mail.gnome.org/mailman/listinfo/vala-list" />
+  <download-page rdf:resource="http://live.gnome.org/Libgee/Release" />
+  <bug-database rdf:resource="http://bugzilla.gnome.org/browse.cgi?product=libgee" />
+  <category rdf:resource="http://api.gnome.org/doap-extensions#development" />
+
+  <maintainer>
+    <foaf:Person>
+      <foaf:name>Jürg Billeter</foaf:name>
+      <foaf:mbox rdf:resource="mailto:j@bitron.ch" />
+      <gnome:userid>juergbi</gnome:userid>
+    </foaf:Person>
+  </maintainer>
+  <maintainer>
+    <foaf:Person>
+      <foaf:name>Didier Villevalois</foaf:name>
+      <foaf:mbox rdf:resource="mailto:ptitjes@free.fr" />
+      <gnome:userid>dvillevalois</gnome:userid>
+    </foaf:Person>
+  </maintainer>
+  <maintainer>
+    <foaf:Person>
+      <foaf:name>Maciej Piechotka</foaf:name>
+      <foaf:mbox rdf:resource="mailto:uzytkownik2@gmail.com" />
+      <gnome:userid>mpiechotka</gnome:userid>
+      <owl:sameAs rdf:resource="maciej.m.piechotka.com.pl/contact.xml#me" />
+    </foaf:Person>
+  </maintainer>
+
+</Project>
+

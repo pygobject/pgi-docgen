@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Project xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+         xmlns:foaf="http://xmlns.com/foaf/0.1/"
+         xmlns:gnome="http://api.gnome.org/doap-extensions#"
+         xmlns="http://usefulinc.com/ns/doap#">
+  <name>JSON-GLib</name>
+  <shortname>json-glib</shortname>
+  <shortdesc>GLib-based JSON manipulation library</shortdesc>
+  <description>JSON-GLib implements a full JSON parser using GLib and GObject. Use JSON-GLib it is possible to parse and generate valid JSON data structures, using a DOM-like API. JSON-GLib also offers GObject integration, providing the ability to serialize and deserialize GObject instances to and from JSON data types.</description>
+
+  <homepage rdf:resource="http://live.gnome.org/JsonGlib"/>
+  <license rdf:resource="http://usefulinc.com/doap/licenses/lgpl"/>
+  <download-page rdf:resource="http://download.gnome.org/sources/json-glib/" />
+  <bug-database rdf:resource="http://bugzilla.gnome.org/enter_bug.cgi?product=json-glib"/>
+
+  <category rdf:resource="http://api.gnome.org/doap-extensions#development"/>
+
+  <programming-language>C</programming-language>
+
+  <maintainer>
+    <foaf:Person>
+      <foaf:name>Emmanuele Bassi</foaf:name>
+      <foaf:mbox rdf:resource="mailto:ebassi@gnome.org"/>
+      <gnome:userid>ebassi</gnome:userid>
+    </foaf:Person>
+  </maintainer>
+
+  <author>
+    <foaf:Person>
+      <foaf:name>Emmanuele Bassi</foaf:name>
+      <foaf:mbox rdf:resource="mailto:ebassi@gnome.org"/>
+      <gnome:userid>ebassi</gnome:userid>
+    </foaf:Person>
+  </author>
+
+</Project>
