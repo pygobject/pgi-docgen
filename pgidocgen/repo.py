@@ -250,7 +250,10 @@ class %s(%s):
             readable = spec.flags & GObject.ParamFlags.READABLE
             writable = spec.flags & GObject.ParamFlags.WRITABLE
             construct = spec.flags & GObject.ParamFlags.CONSTRUCT
-            short_desc = self._fix_docs(spec.blurb)
+            if spec.blurb is not None:
+                short_desc = self._fix_docs(spec.blurb)
+            else:
+                short_desc = ""
             doc_name = obj.__module__ + "." + obj.__name__ + "." + name
             desc = self.lookup_prop_docs(doc_name)
 
