@@ -50,8 +50,8 @@ Fields
         else:
             h.write('''
 .. csv-table::
-    :header: "Name", "Type", "Access"
-    :widths: 20, 1, 1
+    :header: "Name", "Type", "Access", "Description"
+    :widths: 20, 1, 1, 100
 
 %s
 ''' % lines)
