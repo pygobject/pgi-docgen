@@ -62,7 +62,11 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     build_dir = args.target
-    subprocess.check_call(["sphinx-build", args.path, build_dir])
+    args = [args.path, build_dir]
+    jobs = os.environ.get("JOBS", "")
+    if jobs:
+        args.insert(0, "-j" + jobs)
+    subprocess.check_call(["sphinx-build"] + args)
 
     if has_optipng():
         png_dirs = [
