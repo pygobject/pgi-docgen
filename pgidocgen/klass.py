@@ -9,6 +9,7 @@ import os
 
 from . import util
 from .fields import FieldsMixin
+from .util import get_csv_line
 
 
 class ClassGenerator(util.Generator, FieldsMixin):
@@ -43,11 +44,10 @@ class ClassGenerator(util.Generator, FieldsMixin):
         else:
             self._methods[cls_obj] = [(obj, code)]
 
-    def add_properties(self, cls, code):
-        if isinstance(code, unicode):
-            code = code.encode("utf-8")
+    def add_properties(self, cls, props):
+        assert cls not in self._props
 
-        self._props[cls] = code
+        self._props[cls] = props
 
     def add_signals(self, cls, code):
         if isinstance(code, unicode):
@@ -118,13 +118,14 @@ class ClassGenerator(util.Generator, FieldsMixin):
         # create a new file for each class
         for cls in classes:
             h = open(os.path.join(self._sub_dir, cls.__name__) + ".rst", "wb")
-            name = cls.__module__ + "." + cls.__name__
-            title = name
-            h.write(util.make_rest_title(title, "=") + "\n")
+            cls_name = cls.__module__ + "." + cls.__name__
+            h.write(util.make_rest_title(cls_name, "=") + "\n")
+
+            # INHERITANCE DIAGRAM
 
             h.write("""
 .. inheritance-diagram:: %s
-""" % name)
+""" % cls_name)
 
             # subclasses
             subclasses = cls.__subclasses__()
@@ -137,6 +138,8 @@ class ClassGenerator(util.Generator, FieldsMixin):
                 refs = sorted(set(refs))
                 h.write("    " + ", ".join(refs))
                 h.write("\n\n")
+
+            # METHODS
 
             h.write("""
 Methods
@@ -155,23 +158,56 @@ Methods
                 return util.is_normalmethod(e[0]), e[0].__name__
             methods.sort(key=sort_func)
             for obj, code in methods:
-                h.write("    " + cls.__module__ + "." + cls.__name__ +
-                        "." + obj.__name__ + "\n")
+                h.write("    " + cls_name + "." + obj.__name__ + "\n")
+
+            # PROPERTIES
 
             h.write("""
 .. _%s-props:
 
 Properties
 ----------
-""" % name)
-            h.write(self._props.get(cls, "") or "None\n\n")
+""" % cls_name)
+
+            # sort props by name
+            if cls in self._props:
+                self._props[cls].sort(key=lambda p: p.name)
+
+            lines = []
+            for p in self._props.get(cls, []):
+                flags = []
+                if p.readable:
+                    flags.append("r")
+                if p.writable:
+                    flags.append("w")
+                if p.construct:
+                    flags.append("c")
+                fstr = "/".join(flags)
+
+                name = "_`%s`" % p.name  # inline target
+                line = get_csv_line([name, p.type_desc, fstr, p.short_desc])
+                lines.append("    %s" % line)
+            lines = "\n".join(lines)
+
+            if not lines:
+                h.write("None\n\n")
+            else:
+                h.write('''
+.. csv-table::
+    :header: "Name", "Type", "Flags", "Description"
+    :widths: 20, 1, 1, 100
+
+%s
+    ''' % lines)
+
+            # SIGNALS
 
             h.write("""
 .. _%s-sigs:
 
 Signals
 -------
-""" % name)
+""" % cls_name)
             h.write(self._sigs.get(cls, "") or "None\n\n")
 
             # fields aren't common with GObjects, so only print the
@@ -189,14 +225,14 @@ Details
 .. autoclass:: %s
     :members:
     :undoc-members:
-""" % name)
+""" % cls_name)
             else:
                 h.write("""
 .. autoclass:: %s
     :show-inheritance:
     :members:
     :undoc-members:
-""" % name)
+""" % cls_name)
 
             h.close()
 

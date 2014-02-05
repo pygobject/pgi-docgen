@@ -35,6 +35,10 @@ class TRepository(unittest.TestCase):
         self.assertTrue(signal)
         self.assertNotEqual(method, signal)
 
+    def test_properties(self):
+        repo = Repository("Gio", "2.0")
+        print repo.lookup_prop_docs("Gio.Application.action-group")
+
     def test_other(self):
         Repository("GLib", "2.0")
         Repository("GObject", "2.0")

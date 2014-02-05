@@ -227,6 +227,7 @@ def _parse_docs(dom):
     parameters = {}
     returns = {}
     signals = {}
+    properties = {}
 
     for doc in dom.getElementsByTagName("doc"):
         docs = doc.firstChild.nodeValue
@@ -239,6 +240,8 @@ def _parse_docs(dom):
             name = current.getAttribute("name")
             if current.tagName == "glib:signal":
                 kind = "signal"
+            if current.tagName == "property":
+                kind = "property"
             if not name:
                 kind = current.tagName
                 continue
@@ -254,5 +257,7 @@ def _parse_docs(dom):
             returns[key] = docs
         elif kind == "signal":
             signals[key] = docs
+        elif kind == "property":
+            properties[key] = docs
 
-    return all_, parameters, returns, signals
+    return all_, parameters, returns, signals, properties
