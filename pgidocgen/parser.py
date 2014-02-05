@@ -97,16 +97,30 @@ def _handle_data(types, d):
                 else:
                     token = id_ref(token)
             else:
-                parts = re.split("(:+)", token)
-                if len(parts) > 2 and parts[2]:
+                parts = re.split("(::?)", token)
+                fallback = True
+                if len(parts) > 2:
                     obj, sep, sigprop = parts[0], parts[1], "".join(parts[2:])
-                    name = sigprop.replace("_", "-")
-                    obj_token = id_ref(obj)
-                    token = ""
-                    if obj_token:
-                        token = obj_token + " "
-                    token += ":ref:`%s%s <%s>`" % (sep, name, name)
-                else:
+                    obj_id = obj.lstrip("#")
+                    # FIXME: default to the current object
+                    # so ::signal-name works
+                    if sigprop and obj_id in types:
+                        fallback = False
+                        token = id_ref(obj)
+                        is_prop = len(sep) == 1
+
+                        if is_prop:
+                            obj_name = types.get(obj.lstrip("#"), obj)
+                            prop_name = sigprop.replace("_", "-")
+                            prop_attr = sigprop.replace("-", "_")
+                            rst_target = obj_name + ".props." + prop_attr
+                            token += " :py:data:`:%s<%s>`" % (
+                                prop_name, rst_target)
+                        else:
+                            name = sigprop.replace("_", "-")
+                            token += " :ref:`%s%s <%s>`" % (sep, name, name)
+
+                if fallback:
                     if "-" in token:
                         first, rest = token.split("-", 1)
                         token = id_ref(first) + "-" + rest

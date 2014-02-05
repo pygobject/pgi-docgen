@@ -88,7 +88,7 @@ gtk_entry_buffer_get_length (gtk_entry_get_buffer (entry));
             "Emits the :class:`Gtk.CellEditable` :ref:`::editing-done <editing-done>` signal.",
         ),(
             "Returns the value of the ::columns property.",
-            "Returns the value of the :ref:`::columns <columns>` property.",
+            "Returns the value of the \\:\\:columns property.",
         ),(
             "a filename or %NULL",
             "a filename or :obj:`None`",
@@ -151,7 +151,7 @@ gtk_entry_buffer_get_length (gtk_entry_get_buffer (entry));
         "appropriate.  :class:`Atk.Table` summaries may themselves be (simplified) :class:`Atk.Tables <Atk.Table>`, etc.",
 ),(
         "the #GtkSettings:gtk-error-bell setting",
-        "the :class:`Gtk.Settings` :ref:`:gtk-error-bell <gtk-error-bell>` setting"
+        "the :class:`Gtk.Settings` :py:data:`:gtk-error-bell<Gtk.Settings.props.gtk_error_bell>` setting",
 ),(
         "implementing a #GtkContainer: a",
         "implementing a :class:`Gtk.Container`: a",

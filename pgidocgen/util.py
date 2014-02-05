@@ -279,8 +279,8 @@ def gtype_to_rest(gtype):
         return ""
     name = p.__name__
     if p.__module__ != "__builtin__":
-        name = p.__module__ + "." + name
-    return ":class:`%s`" % name
+        return ":class:`%s`" % (p.__module__ + "." + name)
+    return ":obj:`%s`" % name
 
 
 class Generator(object):

@@ -19,9 +19,10 @@ from .parser import docstring_to_rest
 
 class Property(object):
 
-    def __init__(self, name, type_desc, readable, writable, construct,
+    def __init__(self, name, attr_name, type_desc, readable, writable, construct,
                  short_desc, desc):
         self.name = name
+        self.attr_name = attr_name
         self.type_desc = type_desc
 
         self.readable = readable
@@ -31,6 +32,16 @@ class Property(object):
         self.short_desc = short_desc
         self.desc = desc
 
+    @property
+    def flags_string(self):
+        flags = []
+        if self.readable:
+            flags.append("r")
+        if self.writable:
+            flags.append("w")
+        if self.construct:
+            flags.append("c")
+        return "/".join(flags)
 
 class Repository(object):
     """Takes gi objects and gives documented code"""
@@ -244,10 +255,10 @@ class %s(%s):
             spec = getattr(obj.props, attr, None)
             if not spec or spec.owner_type.pytype is not obj:
                 continue
-            specs.append(spec)
+            specs.append((attr, spec))
 
         props = []
-        for spec in specs:
+        for attr_name, spec in specs:
             name = spec.name
             type_desc = gtype_to_rest(spec.value_type)
             readable = spec.flags & GObject.ParamFlags.READABLE
@@ -258,10 +269,10 @@ class %s(%s):
             else:
                 short_desc = ""
             doc_name = obj.__module__ + "." + obj.__name__ + "." + name
-            desc = self.lookup_prop_docs(doc_name)
+            desc = self.lookup_prop_docs(doc_name) or short_desc
 
-            props.append(Property(name, type_desc, readable, writable,
-                                  construct, short_desc, desc))
+            props.append(Property(name, attr_name, type_desc, readable,
+                                  writable, construct, short_desc, desc))
 
         return props
 

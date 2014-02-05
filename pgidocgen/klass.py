@@ -47,7 +47,8 @@ class ClassGenerator(util.Generator, FieldsMixin):
     def add_properties(self, cls, props):
         assert cls not in self._props
 
-        self._props[cls] = props
+        if props:
+            self._props[cls] = props
 
     def add_signals(self, cls, code):
         if isinstance(code, unicode):
@@ -175,16 +176,9 @@ Properties
 
             lines = []
             for p in self._props.get(cls, []):
-                flags = []
-                if p.readable:
-                    flags.append("r")
-                if p.writable:
-                    flags.append("w")
-                if p.construct:
-                    flags.append("c")
-                fstr = "/".join(flags)
-
-                name = "_`%s`" % p.name  # inline target
+                fstr = p.flags_string
+                rest_target = cls_name + ".props." + p.attr_name
+                name = ":py:data:`%s<%s>`" % (p.name, rest_target)
                 line = get_csv_line([name, p.type_desc, fstr, p.short_desc])
                 lines.append("    %s" % line)
             lines = "\n".join(lines)
@@ -194,8 +188,8 @@ Properties
             else:
                 h.write('''
 .. csv-table::
-    :header: "Name", "Type", "Flags", "Description"
-    :widths: 20, 1, 1, 100
+    :header: "Name", "Type", "Flags", "Short Description"
+    :widths: 1, 1, 1, 100
 
 %s
     ''' % lines)
@@ -233,6 +227,21 @@ Details
     :members:
     :undoc-members:
 """ % cls_name)
+
+            if cls in self._props:
+                h.write(util.make_rest_title("Property Details", "-"))
+
+            for p in self._props.get(cls, []):
+                rest_target = cls_name + ".props." + p.attr_name
+                h.write("""
+
+.. py:data:: %s
+
+    :Name: %s
+    :Type: %s
+    :Flags: %s
+%s
+""" % (rest_target, p.name, p.type_desc, p.flags_string, util.indent(p.desc)))
 
             h.close()
 
