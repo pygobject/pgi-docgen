@@ -112,8 +112,8 @@ class ModuleGenerator(util.Generator):
                     code = repo.parse_class(name, obj, add_bases=True)
                     class_gen.add_class(obj, code)
 
-                    code = repo.parse_properties(obj)
-                    class_gen.add_properties(obj, code)
+                    props = repo.parse_properties(obj)
+                    class_gen.add_properties(obj, props)
 
                     code = repo.parse_signals(obj)
                     class_gen.add_signals(obj, code)

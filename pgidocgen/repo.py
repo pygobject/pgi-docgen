@@ -234,7 +234,7 @@ class %s(%s):
     def parse_properties(self, obj):
 
         if not hasattr(obj, "props"):
-            return ""
+            return []
 
         # get all specs owned by the class
         specs = []
