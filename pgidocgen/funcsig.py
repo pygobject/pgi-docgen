@@ -128,7 +128,7 @@ class FuncSignature(object):
 
         return cls(res, arg_map, raises, name)
 
-    def to_rest_listing(self, doc_repo, full_name):
+    def to_rest_listing(self, doc_repo, full_name, current=None):
         """A reST listing for this function signature.
 
         full_name: e.g. 'GObject.Binding.get_flags'
@@ -142,7 +142,7 @@ class FuncSignature(object):
             # strip * from *args
             key = key.lstrip("*")
             param_key = full_name + "." + key
-            text = doc_repo.lookup_parameter_docs(param_key)
+            text = doc_repo.lookup_parameter_docs(param_key, current=current)
             key = escape_rest(key)
             docs.append(":param %s:\n%s\n" % (key, indent(text)))
             docs.append(":type %s: %s" % (key, arg_to_class_ref(value)))
@@ -150,7 +150,7 @@ class FuncSignature(object):
         if self.raises:
             docs.append(":raises: :class:`GLib.GError`")
 
-        text = doc_repo.lookup_return_docs(full_name)
+        text = doc_repo.lookup_return_docs(full_name, current=current)
         if text:
             docs.append(":returns:\n%s\n" % indent(text))
 

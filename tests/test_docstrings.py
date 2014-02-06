@@ -34,7 +34,7 @@ class TDocstring(unittest.TestCase):
         }
 
     def _check(self, text, expected):
-        out = docstring_to_rest(self.types, text)
+        out = docstring_to_rest(self.types, "Gtk.Widget", text)
         self.assertEqual(out, expected)
 
     def test_various(self):
@@ -85,10 +85,10 @@ gtk_entry_buffer_get_length (gtk_entry_get_buffer (entry));
             "`icon_set`.",
         ),(
             "Emits the #GtkCellEditable::editing-done signal.",
-            "Emits the :class:`Gtk.CellEditable` :ref:`:editing-done<Gtk.CellEditable.signals.editing-done>` signal.",
+            "Emits the :class:`Gtk.CellEditable` :ref:`::editing-done<Gtk.CellEditable.signals.editing-done>` signal.",
         ),(
-            "Returns the value of the ::columns property.",
-            "Returns the value of the \\:\\:columns property.",
+            "Returns the value of the ::columns signal.",
+            "Returns the value of the :ref:`::columns<Gtk.Widget.signals.columns>` signal.",
         ),(
             "a filename or %NULL",
             "a filename or :obj:`None`",
@@ -195,6 +195,9 @@ user\\_data\\:
 ),(
         "<varlistentry><term>#POPPLER_ANNOT_TEXT_ICON_NOTE</term></varlistentry>",
         "#POPPLER\\_ANNOT\\_TEXT\\_ICON\\_NOTE\n\n",
+),(
+        "this is some ::signal-foo blah",
+        "this is some :ref:`::signal-foo<Gtk.Widget.signals.signal-foo>` blah",
         )]
 
         for in_, out in data:

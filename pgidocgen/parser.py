@@ -14,7 +14,7 @@ from . import util
 from .util import escape_rest, force_unindent
 
 
-def _handle_data(types, d):
+def _handle_data(types, current, d):
 
     scanner = re.Scanner([
         (r"[#%@]?[A-Za-z0-9_:\-]+\**", lambda scanner, token:("ID", token)),
@@ -99,25 +99,26 @@ def _handle_data(types, d):
                 if len(parts) > 2:
                     obj, sep, sigprop = parts[0], parts[1], "".join(parts[2:])
                     obj_id = obj.lstrip("#")
-                    # FIXME: default to the current object
-                    # so ::signal-name works
-                    if sigprop and obj_id in types:
+                    obj_rst_id = types.get(obj_id, current)
+
+                    if sigprop and obj_rst_id:
                         fallback = False
                         token = id_ref(obj)
                         is_prop = len(sep) == 1
 
+                        if token:
+                            token += " "
+
                         if is_prop:
-                            obj_name = types.get(obj.lstrip("#"), obj)
                             prop_name = sigprop.replace("_", "-")
                             prop_attr = sigprop.replace("-", "_")
-                            rst_target = obj_name + ".props." + prop_attr
-                            token += " :py:data:`:%s<%s>`" % (
+                            rst_target = obj_rst_id + ".props." + prop_attr
+                            token += ":py:data:`:%s<%s>`" % (
                                 prop_name, rst_target)
                         else:
-                            obj_name = types.get(obj.lstrip("#"), obj)
                             prop_name = sigprop.replace("_", "-")
-                            rst_target = obj_name + ".signals." + prop_name
-                            token += " :ref:`:%s<%s>`" % (
+                            rst_target = obj_rst_id + ".signals." + prop_name
+                            token += ":ref:`::%s<%s>`" % (
                                 prop_name, rst_target)
 
                 if fallback:
@@ -156,7 +157,7 @@ def _handle_data(types, d):
     return "".join(out)
 
 
-def _handle_xml(types, out, item):
+def _handle_xml(types, current, out, item):
     if isinstance(item, Tag):
         if item.name == "literal" or item.name == "type":
             out.append("``%s``" % item.text)
@@ -167,7 +168,7 @@ def _handle_xml(types, out, item):
                     continue
 
                 lines.append("* " + " ".join(_handle_data(
-                             types, item.getText()
+                             types, current, item.getText()
                              ).splitlines()))
             out.append("\n\n" + "\n".join(lines) + "\n\n")
 
@@ -181,13 +182,13 @@ def _handle_xml(types, out, item):
                 out.append(code)
 
         elif item.name == "title":
-            out.append(_handle_data(types, item.getText()))
+            out.append(_handle_data(types, current, item.getText()))
         elif item.name == "keycombo":
             subs = []
             for sub in item.contents:
                 if not isinstance(sub, Tag):
                     continue
-                subs.append(_handle_data(types, sub.getText()))
+                subs.append(_handle_data(types, current, sub.getText()))
             out.append(" + ".join(subs))
 
         elif item.name == "varlistentry":
@@ -211,23 +212,25 @@ def _handle_xml(types, out, item):
             assert terms
 
             lines = []
-            terms_line = ", ".join([_handle_data(types, t) for t in terms])
+            terms_line = ", ".join(
+                [_handle_data(types, current, t) for t in terms])
             lines.append("%s\n" % terms_line)
             listitem = force_unindent(listitem, ignore_first_line=True)
-            lines.append(util.indent(_handle_data(types, listitem)) + "\n")
+            lines.append(
+                util.indent(_handle_data(types, current, listitem)) + "\n")
             out.extend(lines)
         else:
             for sub in item.contents:
-                _handle_xml(types, out, sub)
+                _handle_xml(types, current, out, sub)
     else:
         if not out or out[-1].endswith("\n"):
             data = force_unindent(item.string, ignore_first_line=False)
         else:
             data = force_unindent(item.string, ignore_first_line=True)
-        out.append(_handle_data(types, data))
+        out.append(_handle_data(types, current, data))
 
 
-def docstring_to_rest(types, docstring):
+def docstring_to_rest(types, current, docstring):
     # |[ ]| seems to mark inline code. Move it to docbook so we have a
     # single thing to work with below
 
@@ -247,7 +250,7 @@ def docstring_to_rest(types, docstring):
                               convertEntities=BeautifulStoneSoup.HTML_ENTITIES)
     out = []
     for item in soup.contents:
-        _handle_xml(types, out, item)
+        _handle_xml(types, current, out, item)
     rst = "".join(out)
 
     def fixup_added_since(match):

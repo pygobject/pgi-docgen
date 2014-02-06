@@ -78,10 +78,10 @@ class TFuncSigs(unittest.TestCase):
 
         class FakeRepo(object):
 
-            def lookup_parameter_docs(self, name):
+            def lookup_parameter_docs(self, name, current=None):
                 return escape_rest("PARADOC(%s)" % name)
 
-            def lookup_return_docs(self, name):
+            def lookup_return_docs(self, name, current=None):
                 return escape_rest("RETURNDOC(%s)" % name)
 
         doc = sig.to_rest_listing(FakeRepo(), "Foo.bar.go")

@@ -53,7 +53,7 @@ Callbacks
         for f in funcs:
             handle.write("    " + get_name(f) + "\n")
 
-        handle.write("""\
+        handle.write("""
 Details
 -------
 

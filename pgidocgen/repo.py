@@ -109,52 +109,57 @@ class Repository(object):
             self._types.update(sub_ns.get_types())
         self._types.update(ns.get_types())
 
-    def lookup_attr_docs(self, name):
+    def lookup_attr_docs(self, name, current=None):
         """Get docs for a namespace attribute.
 
         e.g. 'GObject.Value'
         """
 
         if name in self._all:
-            return self._fix_docs(*self._all[name])
+            docs, version = self._all[name]
+            return self._fix_docs(docs, version, current)
         return ""
 
-    def lookup_return_docs(self, name):
+    def lookup_return_docs(self, name, current=None):
         """Get docs for the return value by function name.
 
         e.g. 'GObject.Value.set_char'
         """
 
         if name in self._returns:
-            return self._fix_docs(*self._returns[name])
+            docs, version = self._returns[name]
+            return self._fix_docs(docs, version, current)
         return ""
 
-    def lookup_parameter_docs(self, name):
+    def lookup_parameter_docs(self, name, current=None):
         """Get docs for a function parameter by function name + parameter name.
 
         e.g. 'GObject.Value.set_char.v_char'
         """
 
         if name in self._parameters:
-            return self._fix_docs(*self._parameters[name])
+            docs, version = self._parameters[name]
+            return self._fix_docs(docs, version, current)
         return ""
 
-    def lookup_signal_docs(self, name, short=False):
+    def lookup_signal_docs(self, name, short=False, current=None):
         if name in self._signals:
             docs, version = self._signals[name]
             if short:
                 parts = re.split("\.[\s$]", docs, 1, re.MULTILINE)
                 if len(parts) > 1:
-                    return self._fix_docs(parts[0] + ".", "")
+                    return self._fix_docs(parts[0] + ".", "", current)
                 else:
-                    return self._fix_docs(docs, "")
+                    return self._fix_docs(docs, "", current)
             else:
-                return self._fix_docs(*self._signals[name])
+                docs, version = self._signals[name]
+                return self._fix_docs(docs, version, current)
         return ""
 
-    def lookup_prop_docs(self, name):
+    def lookup_prop_docs(self, name, current=None):
         if name in self._properties:
-            return self._fix_docs(*self._properties[name])
+            docs, version = self._properties[name]
+            return self._fix_docs(docs, version, current)
         return ""
 
     def get_dependencies(self):
@@ -167,8 +172,8 @@ class Repository(object):
 
         return name in self._private
 
-    def _fix_docs(self, d, version=None):
-        rest = docstring_to_rest(self._types, d)
+    def _fix_docs(self, d, version=None, current=None):
+        rest = docstring_to_rest(self._types, current, d)
         if version:
             rest += "\n\n.. versionadded:: %s\n" % version
         return rest
@@ -198,6 +203,8 @@ r'''
     def parse_class(self, name, obj, add_bases=False):
         names = []
 
+        current_rst_target = obj.__module__ + "." + obj.__name__
+
         if add_bases:
             mro_bases = util.merge_in_overrides(obj)
 
@@ -213,7 +220,7 @@ r'''
 
         bases = ", ".join(names)
 
-        docs = self.lookup_attr_docs(name)
+        docs = self.lookup_attr_docs(name, current=current_rst_target)
 
         return """
 class %s(%s):
@@ -226,6 +233,8 @@ class %s(%s):
 """ % (name.split(".")[-1], bases, docs.encode("utf-8"), name)
 
     def parse_signals(self, obj):
+
+        current_rst_target = obj.__module__ + "." + obj.__name__
 
         if not hasattr(obj, "signals"):
             return ""
@@ -242,8 +251,9 @@ class %s(%s):
         for sig in sigs:
             name = sig.name
             doc_key = obj.__module__ + "." + obj.__name__ + "." + name
-            desc = self.lookup_signal_docs(doc_key)
-            short_desc = self.lookup_signal_docs(doc_key, short=True)
+            desc = self.lookup_signal_docs(doc_key, current=current_rst_target)
+            short_desc = self.lookup_signal_docs(
+                doc_key, short=True, current=current_rst_target)
             params = ", ".join([gtype_to_rest(t) for t in sig.param_types])
             ret = gtype_to_rest(sig.return_type)
 
@@ -252,6 +262,8 @@ class %s(%s):
         return result
 
     def parse_properties(self, obj):
+
+        current_rst_target = obj.__module__ + "." + obj.__name__
 
         if not hasattr(obj, "props"):
             return []
@@ -274,11 +286,13 @@ class %s(%s):
             writable = spec.flags & GObject.ParamFlags.WRITABLE
             construct = spec.flags & GObject.ParamFlags.CONSTRUCT
             if spec.blurb is not None:
-                short_desc = self._fix_docs(spec.blurb)
+                short_desc = self._fix_docs(
+                    spec.blurb, current=current_rst_target)
             else:
                 short_desc = ""
             doc_name = obj.__module__ + "." + obj.__name__ + "." + name
-            desc = self.lookup_prop_docs(doc_name) or short_desc
+            desc = self.lookup_prop_docs(
+                doc_name, current=current_rst_target) or short_desc
 
             props.append(Property(name, attr_name, type_desc, readable,
                                   writable, construct, short_desc, desc))
@@ -337,6 +351,11 @@ class %s(%s):
 
         is_method = owner is not None
 
+        if is_method:
+            current_rst_target = owner.__module__ + "." + owner.__name__
+        else:
+            current_rst_target = None
+
         def get_sig(obj):
             doc = str(obj.__doc__)
             first_line = doc and doc.splitlines()[0] or ""
@@ -368,7 +387,7 @@ class %s(%s):
 
         # still nothing, try making the best out of it
         if not sig:
-            if not self.lookup_attr_docs(name):
+            if not self.lookup_attr_docs(name, current=current_rst_target):
                 # no gir docs, let sphinx handle it
                 return "%s = %s\n" % (func_name, name)
             elif is_method:
@@ -382,7 +401,8 @@ class %s(%s):
 r'''
 %s
 '''
-""" % (func_name, name, self.lookup_attr_docs(name))
+""" % (func_name, name,
+       self.lookup_attr_docs(name, current=current_rst_target))
             else:
                 # for toplevel functions, replace the introspected one
                 # since sphinx ignores docstrings on the module level
@@ -392,7 +412,8 @@ r'''
 %s.__doc__ = r'''
 %s
 '''
-""" % (func_name, name, func_name, self.lookup_attr_docs(name))
+""" % (func_name, name, func_name,
+       self.lookup_attr_docs(name, current=current_rst_target))
 
         # we got a valid signature here
         assert sig
@@ -406,15 +427,17 @@ r'''
         user_docstring = "\n".join(lines)
 
         # create sphinx lists for the signature we found
-        docs = sig.to_rest_listing(self, name).splitlines()
+        docs = sig.to_rest_listing(
+            self, name, current=current_rst_target).splitlines()
 
         # if we have a user docstring, use it, otherwise use the gir one
         if user_docstring:
             docs.append("")
             docs.append(unindent(user_docstring))
-        elif self.lookup_attr_docs(name):
+        elif self.lookup_attr_docs(name, current=current_rst_target):
             docs.append("")
-            docs.append(self.lookup_attr_docs(name))
+            docs.append(
+                self.lookup_attr_docs(name, current=current_rst_target))
 
         docs = "\n".join(docs)
 

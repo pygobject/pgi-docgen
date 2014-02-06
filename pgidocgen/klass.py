@@ -240,6 +240,7 @@ Details
 .. autoclass:: %s
     :members:
     :undoc-members:
+
 """ % cls_name)
             else:
                 h.write("""
@@ -247,6 +248,7 @@ Details
     :show-inheritance:
     :members:
     :undoc-members:
+
 """ % cls_name)
 
             # SIGNAL details
@@ -267,6 +269,7 @@ Details
     :Return Value: %s
 
 %s
+
 """ % (rst_label, sig.name, sig.params, sig.ret, util.indent(sig.desc))
 
                 h.write(data.encode("utf-8"))
@@ -285,7 +288,9 @@ Details
     :Name: ``%s``
     :Type: %s
     :Flags: %s
+
 %s
+
 """ % (rest_target, p.name, p.type_desc, p.flags_string, util.indent(p.desc))
 
                 h.write(data.encode("utf-8"))
