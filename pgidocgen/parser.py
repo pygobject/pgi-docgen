@@ -256,7 +256,7 @@ def docstring_to_rest(types, current, docstring):
     def fixup_added_since(match):
         return """
 
-:Since: *%s*
+.. versionadded:: %s
 
 """ % match.group(1).strip()
 
