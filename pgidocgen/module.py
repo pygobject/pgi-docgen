@@ -115,8 +115,8 @@ class ModuleGenerator(util.Generator):
                     props = repo.parse_properties(obj)
                     class_gen.add_properties(obj, props)
 
-                    code = repo.parse_signals(obj)
-                    class_gen.add_signals(obj, code)
+                    sigs = repo.parse_signals(obj)
+                    class_gen.add_signals(obj, sigs)
 
                     for attr in dir(obj):
                         if attr.startswith("_"):

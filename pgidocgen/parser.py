@@ -78,9 +78,6 @@ def _handle_data(types, d):
                     py_no_s = pytype[:-1] if pytype[-1] == "s" else pytype
                     return ":class:`%s <%s>`" % (py_no_s, pytype)
 
-        #if token.startswith(("#", "%")):
-        #    print token
-
         return token
 
     out = []
@@ -117,8 +114,11 @@ def _handle_data(types, d):
                             token += " :py:data:`:%s<%s>`" % (
                                 prop_name, rst_target)
                         else:
-                            name = sigprop.replace("_", "-")
-                            token += " :ref:`%s%s <%s>`" % (sep, name, name)
+                            obj_name = types.get(obj.lstrip("#"), obj)
+                            prop_name = sigprop.replace("_", "-")
+                            rst_target = obj_name + ".signals." + prop_name
+                            token += " :ref:`:%s<%s>`" % (
+                                prop_name, rst_target)
 
                 if fallback:
                     if "-" in token:

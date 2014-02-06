@@ -85,7 +85,7 @@ gtk_entry_buffer_get_length (gtk_entry_get_buffer (entry));
             "`icon_set`.",
         ),(
             "Emits the #GtkCellEditable::editing-done signal.",
-            "Emits the :class:`Gtk.CellEditable` :ref:`::editing-done <editing-done>` signal.",
+            "Emits the :class:`Gtk.CellEditable` :ref:`:editing-done<Gtk.CellEditable.signals.editing-done>` signal.",
         ),(
             "Returns the value of the ::columns property.",
             "Returns the value of the \\:\\:columns property.",

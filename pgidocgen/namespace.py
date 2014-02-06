@@ -229,7 +229,6 @@ def _parse_docs(dom):
     signals = {}
     properties = {}
     # FIXME: what about elements without doc sub element but a version attr?
-    versions = {}
 
     for doc in dom.getElementsByTagName("doc"):
         docs = doc.firstChild.nodeValue

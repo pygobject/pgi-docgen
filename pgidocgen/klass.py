@@ -24,8 +24,8 @@ class ClassGenerator(util.Generator, FieldsMixin):
 
         self._classes = {}  # cls -> code
         self._methods = {}  # cls -> code
-        self._props = {}  # cls -> code
-        self._sigs = {}  # cls -> code
+        self._props = {}  # cls -> [prop]
+        self._sigs = {}  # cls -> [sig]
 
         self._module = module_fileobj
 
@@ -50,11 +50,11 @@ class ClassGenerator(util.Generator, FieldsMixin):
         if props:
             self._props[cls] = props
 
-    def add_signals(self, cls, code):
-        if isinstance(code, unicode):
-            code = code.encode("utf-8")
+    def add_signals(self, cls, sigs):
+        assert cls not in self._sigs
 
-        self._sigs[cls] = code
+        if sigs:
+            self._sigs[cls] = sigs
 
     def get_names(self):
         return [self.DIR_NAME + "/index.rst"]
@@ -164,7 +164,7 @@ Methods
             # PROPERTIES
 
             h.write("""
-.. _%s-props:
+.. _%s.props:
 
 Properties
 ----------
@@ -177,8 +177,8 @@ Properties
             lines = []
             for p in self._props.get(cls, []):
                 fstr = p.flags_string
-                rest_target = cls_name + ".props." + p.attr_name
-                name = ":py:data:`%s<%s>`" % (p.name, rest_target)
+                rst_target = cls_name + ".props." + p.attr_name
+                name = ":py:data:`%s<%s>`" % (p.name, rst_target)
                 line = get_csv_line([name, p.type_desc, fstr, p.short_desc])
                 lines.append("    %s" % line)
             lines = "\n".join(lines)
@@ -197,12 +197,33 @@ Properties
             # SIGNALS
 
             h.write("""
-.. _%s-sigs:
+.. _%s.sigs:
 
 Signals
 -------
 """ % cls_name)
-            h.write(self._sigs.get(cls, "") or "None\n\n")
+
+            if cls in self._sigs:
+                self._sigs[cls].sort(key=lambda s: s.name)
+
+            lines = []
+            for sig in self._sigs.get(cls, []):
+                rst_target = cls_name + ".signals." + sig.name
+                name_ref = ":ref:`%s<%s>`" % (sig.name, rst_target)
+                line = get_csv_line([name_ref, sig.short_desc])
+                lines.append("    %s" % line)
+            lines = "\n".join(lines)
+
+            if not lines:
+                h.write("None\n\n")
+            else:
+                h.write('''
+.. csv-table::
+    :header: "Name", "Short Description"
+    :widths: 30, 70
+
+%s
+''' % lines)
 
             # fields aren't common with GObjects, so only print the
             # header when some are there
@@ -228,6 +249,24 @@ Details
     :undoc-members:
 """ % cls_name)
 
+            if cls in self._sigs:
+                h.write(util.make_rest_title("Signal Details", "-"))
+
+            for sig in self._sigs.get(cls, []):
+                rst_label = cls_name + ".signals." + sig.name
+                h.write("""
+
+.. _%s:
+
+.. py:function:: %s(...)
+    :noindex:
+
+    :Parameters: %s
+    :Return Value: %s
+
+%s
+""" % (rst_label, sig.name, sig.params, sig.ret, util.indent(sig.desc)))
+
             if cls in self._props:
                 h.write(util.make_rest_title("Property Details", "-"))
 
@@ -237,7 +276,7 @@ Details
 
 .. py:data:: %s
 
-    :Name: %s
+    :Name: ``%s``
     :Type: %s
     :Flags: %s
 %s

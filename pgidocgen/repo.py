@@ -6,11 +6,13 @@
 # License as published by the Free Software Foundation; either
 # version 2.1 of the License, or (at your option) any later version.
 
+import re
+
 from gi.repository import GObject
 
 from .namespace import get_namespace
 from . import util
-from .util import unindent, get_csv_line, gtype_to_rest
+from .util import unindent, gtype_to_rest
 
 from .gtkstock import parse_stock_icon
 from .funcsig import FuncSignature
@@ -19,8 +21,8 @@ from .parser import docstring_to_rest
 
 class Property(object):
 
-    def __init__(self, name, attr_name, type_desc, readable, writable, construct,
-                 short_desc, desc):
+    def __init__(self, name, attr_name, type_desc, readable, writable,
+                 construct, short_desc, desc):
         self.name = name
         self.attr_name = attr_name
         self.type_desc = type_desc
@@ -42,6 +44,18 @@ class Property(object):
         if self.construct:
             flags.append("c")
         return "/".join(flags)
+
+
+class Signal(object):
+
+    def __init__(self, name, params, ret, desc, short_desc):
+        self.name = name
+        self.params = params
+        self.ret = ret
+
+        self.desc = desc
+        self.short_desc = short_desc
+
 
 class Repository(object):
     """Takes gi objects and gives documented code"""
@@ -125,9 +139,17 @@ class Repository(object):
             return self._fix_docs(*self._parameters[name])
         return ""
 
-    def lookup_signal_docs(self, name):
+    def lookup_signal_docs(self, name, short=False):
         if name in self._signals:
-            return self._fix_docs(*self._signals[name])
+            docs, version = self._signals[name]
+            if short:
+                parts = re.split("\.[\s$]", docs, 1, re.MULTILINE)
+                if len(parts) > 1:
+                    return self._fix_docs(parts[0] + ".", "")
+                else:
+                    return self._fix_docs(docs, "")
+            else:
+                return self._fix_docs(*self._signals[name])
         return ""
 
     def lookup_prop_docs(self, name):
@@ -216,31 +238,18 @@ class %s(%s):
             sig = getattr(obj.signals, attr)
             sigs.append(sig)
 
-        lines = []
+        result = []
         for sig in sigs:
             name = sig.name
-
-            doc_name = obj.__module__ + "." + obj.__name__ + "." + name
-            docs = self.lookup_signal_docs(doc_name)
-
+            doc_key = obj.__module__ + "." + obj.__name__ + "." + name
+            desc = self.lookup_signal_docs(doc_key)
+            short_desc = self.lookup_signal_docs(doc_key, short=True)
             params = ", ".join([gtype_to_rest(t) for t in sig.param_types])
             ret = gtype_to_rest(sig.return_type)
 
-            name = "_`%s`" % name  # inline target
-            line = get_csv_line([name, params, ret, docs])
-            lines.append('    %s' % line)
+            result.append(Signal(name, params, ret, desc, short_desc))
 
-        lines = "\n".join(lines)
-        if not lines:
-            return ""
-
-        return '''
-.. csv-table::
-    :header: "Name", "Parameters", "Return", "Description"
-    :widths: 25, 10, 10, 100
-
-%s
-''' % lines
+        return result
 
     def parse_properties(self, obj):
 
