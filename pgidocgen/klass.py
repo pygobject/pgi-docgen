@@ -249,12 +249,14 @@ Details
     :undoc-members:
 """ % cls_name)
 
+            # SIGNAL details
+
             if cls in self._sigs:
                 h.write(util.make_rest_title("Signal Details", "-"))
 
             for sig in self._sigs.get(cls, []):
                 rst_label = cls_name + ".signals." + sig.name
-                h.write("""
+                data = """
 
 .. _%s:
 
@@ -265,14 +267,18 @@ Details
     :Return Value: %s
 
 %s
-""" % (rst_label, sig.name, sig.params, sig.ret, util.indent(sig.desc)))
+""" % (rst_label, sig.name, sig.params, sig.ret, util.indent(sig.desc))
+
+                h.write(data.encode("utf-8"))
+
+            # PROPERTY details
 
             if cls in self._props:
                 h.write(util.make_rest_title("Property Details", "-"))
 
             for p in self._props.get(cls, []):
                 rest_target = cls_name + ".props." + p.attr_name
-                h.write("""
+                data = """
 
 .. py:data:: %s
 
@@ -280,7 +286,9 @@ Details
     :Type: %s
     :Flags: %s
 %s
-""" % (rest_target, p.name, p.type_desc, p.flags_string, util.indent(p.desc)))
+""" % (rest_target, p.name, p.type_desc, p.flags_string, util.indent(p.desc))
+
+                h.write(data.encode("utf-8"))
 
             h.close()
 
