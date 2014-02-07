@@ -273,6 +273,9 @@ def _parse_docs(dom):
             while current.tagName != "namespace":
                 tags.append(current.tagName)
                 current = current.parentNode
+                # Tracker-0.16 includes <constant> outside of <namespace>
+                if current.tagName == "repository":
+                    break
                 name = current.getAttribute("name")
                 l.insert(0, name)
 
