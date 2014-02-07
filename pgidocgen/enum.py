@@ -16,7 +16,6 @@ class EnumGenerator(util.Generator):
         self.path = os.path.join(dir_, "enums.rst")
 
         self._enums = {}
-        self._methods = {}
         self._module = module_fileobj
 
     def add_enum(self, obj, code):
@@ -24,15 +23,6 @@ class EnumGenerator(util.Generator):
             code = code.encode("utf-8")
 
         self._enums[obj] = code
-
-    def add_method(self, enum_obj, obj, code):
-        if isinstance(code, unicode):
-            code = code.encode("utf-8")
-
-        if enum_obj in self._methods:
-            self._methods[enum_obj].append((obj, code))
-        else:
-            self._methods[enum_obj] = [(obj, code)]
 
     def get_names(self):
         return [os.path.basename(self.path)]
@@ -79,14 +69,5 @@ Details
         for cls in classes:
             code = self._enums[cls]
             self._module.write(code + "\n")
-
-            methods = self._methods.get(cls, [])
-
-            # sort static methods first, then by name
-            def sort_func(e):
-                return util.is_normalmethod(e[0]), e[0].__name__
-            methods.sort(key=sort_func)
-            for obj, code in methods:
-                self._module.write(util.indent(code) + "\n")
 
         handle.close()

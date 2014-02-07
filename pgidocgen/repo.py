@@ -323,6 +323,18 @@ class %s(%s):
     '''
 """ % (obj.__name__, base_name, docs)
 
+        methods_code = []
+        for attr, attr_obj in util.iter_public_attr(obj):
+            if not callable(attr_obj):
+                continue
+
+            if not util.is_method_owner(obj, attr):
+                continue
+
+            func_key = name + "." + attr
+            code += util.indent(self.parse_function(func_key, obj, attr_obj))
+            code += "\n\n"
+
         escaped = []
 
         values = []

@@ -17,6 +17,20 @@ import cStringIO
 _KWD_RE = re.compile("^(%s)$" % "|".join(keyword.kwlist))
 
 
+def iter_public_attr(obj):
+    for attr in sorted(dir(obj)):
+        if attr.startswith("_"):
+            continue
+
+        try:
+            attr_obj = getattr(obj, attr)
+        except NotImplementedError:
+            # FIXME.. pgi exposes methods it can't compile
+            print "PGI-ERROR: %s.%s.%s" % (obj.__module__, obj.__name__, attr)
+            continue
+        yield attr, attr_obj
+
+
 def import_namespace(namespace, version):
     import gi
     try:

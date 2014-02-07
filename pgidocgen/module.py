@@ -22,20 +22,6 @@ from .doap import get_project_summary
 from . import util
 
 
-def iter_public_attr(obj):
-    for attr in dir(obj):
-        if attr.startswith("_"):
-            continue
-
-        try:
-            attr_obj = getattr(obj, attr)
-        except NotImplementedError:
-            # FIXME.. pgi exposes methods it can't compile
-            print "PGI-ERROR: %s.%s.%s" % (obj.__module__, obj.__name__, attr)
-            continue
-        yield attr, attr_obj
-
-
 class ModuleGenerator(util.Generator):
 
     def __init__(self, dir_, namespace, version):
@@ -132,10 +118,7 @@ class ModuleGenerator(util.Generator):
                     sigs = repo.parse_signals(obj)
                     class_gen.add_signals(obj, sigs)
 
-                    for attr, attr_obj in iter_public_attr(obj):
-                        if attr.startswith("_"):
-                            continue
-
+                    for attr, attr_obj in util.iter_public_attr(obj):
                         # can fail for the base class
                         try:
                             if not util.is_method_owner(obj, attr):
@@ -160,17 +143,6 @@ class ModuleGenerator(util.Generator):
                 elif util.is_enum(obj):
                     code = repo.parse_flags(name, obj)
                     enums_gen.add_enum(obj, code)
-                    for attr, attr_obj in iter_public_attr(obj):
-                        if not callable(attr_obj):
-                            continue
-
-                        if not util.is_method_owner(obj, attr):
-                            continue
-
-                        func_key = name + "." + attr
-                        code = repo.parse_function(func_key, obj, attr_obj)
-                        if code:
-                            enums_gen.add_method(obj, attr_obj, code)
                 elif util.is_struct(obj) or util.is_union(obj):
                     # Hide private structs
                     if repo.is_private(namespace + "." + obj.__name__):
@@ -185,7 +157,7 @@ class ModuleGenerator(util.Generator):
                         gen = union_gen
                         union_gen.add_union(obj, code)
 
-                    for attr, attr_obj in iter_public_attr(obj):
+                    for attr, attr_obj in util.iter_public_attr(obj):
                         try:
                             if not util.is_method_owner(obj, attr):
                                 continue
