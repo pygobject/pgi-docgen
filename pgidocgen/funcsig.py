@@ -59,7 +59,7 @@ def arg_to_class_ref(text):
         else:
             if p in ("None", "int", "bool", "str"):
                 out.append(":obj:`%s`" % p)
-            else:
+            elif p:
                 out.append(":class:`%s`" % p)
 
     return " or ".join(out)

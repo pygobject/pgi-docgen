@@ -72,9 +72,9 @@ class TFuncSigs(unittest.TestCase):
         self.assertEqual(
             arg_to_class_ref("[str] or None"),
             "[:obj:`str`] or :obj:`None`")
+        self.assertEqual(arg_to_class_ref(""), "")
 
     def test_to_rest_listing(self):
-        sig = FuncSignature.from_string("go", "go(a_: [str]) -> b_: [str]")
 
         class FakeRepo(object):
 
@@ -84,6 +84,12 @@ class TFuncSigs(unittest.TestCase):
             def lookup_return_docs(self, name, current=None):
                 return escape_rest("RETURNDOC(%s)" % name)
 
+        sig = FuncSignature.from_string("go", "go(*args)")
+        doc = sig.to_rest_listing(FakeRepo(), "Foo.bar.go")
+        # no empty reST references
+        self.assertTrue("``" not in doc)
+
+        sig = FuncSignature.from_string("go", "go(a_: [str]) -> b_: [str]")
         doc = sig.to_rest_listing(FakeRepo(), "Foo.bar.go")
         self.assertEqual(doc, """\
 :param a\\_:
