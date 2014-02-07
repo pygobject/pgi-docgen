@@ -109,58 +109,57 @@ class Repository(object):
             self._types.update(sub_ns.get_types())
         self._types.update(ns.get_types())
 
-    def lookup_attr_docs(self, name, current=None):
-        """Get docs for a namespace attribute.
+    def lookup_attr_docs(self, *args, **kwargs):
+        return self._lookup_docs(self._all, *args, **kwargs)
 
-        e.g. 'GObject.Value'
-        """
+    def _lookup_meta(self, source, name):
+        docs = u""
+        if name in source:
+            version, dep_version, dep = source[name][1:]
+            if version:
+                docs += u"\n\n.. versionadded:: %s\n\n" % version
+            if dep_version or dep:
+                dep_version = dep_version or "??"
+                docs += u"\n\n.. deprecated:: %s\n%s\n\n" % (
+                    dep_version, util.indent(self._fix_docs(dep)))
+        return docs
 
-        if name in self._all:
-            docs, version = self._all[name]
-            return self._fix_docs(docs, version, current)
-        return ""
+    def _lookup_docs(self, source, name, current=None):
+        if name in source:
+            docs = source[name][0]
+            return self._fix_docs(docs, current)
+        return u""
 
-    def lookup_return_docs(self, name, current=None):
-        """Get docs for the return value by function name.
+    def lookup_attr_meta(self, name):
+        return self._lookup_meta(self._all, name)
 
-        e.g. 'GObject.Value.set_char'
-        """
+    def lookup_return_docs(self, *args, **kwargs):
+        return self._lookup_docs(self._returns, *args, **kwargs)
 
-        if name in self._returns:
-            docs, version = self._returns[name]
-            return self._fix_docs(docs, version, current)
-        return ""
-
-    def lookup_parameter_docs(self, name, current=None):
-        """Get docs for a function parameter by function name + parameter name.
-
-        e.g. 'GObject.Value.set_char.v_char'
-        """
-
-        if name in self._parameters:
-            docs, version = self._parameters[name]
-            return self._fix_docs(docs, version, current)
-        return ""
+    def lookup_parameter_docs(self, *args, **kwargs):
+        return self._lookup_docs(self._parameters, *args, **kwargs)
 
     def lookup_signal_docs(self, name, short=False, current=None):
         if name in self._signals:
-            docs, version = self._signals[name]
+            docs = self._signals[name][0]
             if short:
                 parts = re.split("\.[\s$]", docs, 1, re.MULTILINE)
                 if len(parts) > 1:
-                    return self._fix_docs(parts[0] + ".", "", current)
+                    return self._fix_docs(parts[0] + ".", current)
                 else:
-                    return self._fix_docs(docs, "", current)
+                    return self._fix_docs(docs, current)
             else:
-                docs, version = self._signals[name]
-                return self._fix_docs(docs, version, current)
-        return ""
+                return self._fix_docs(docs, current)
+        return u""
 
-    def lookup_prop_docs(self, name, current=None):
-        if name in self._properties:
-            docs, version = self._properties[name]
-            return self._fix_docs(docs, version, current)
-        return ""
+    def lookup_signal_meta(self, name):
+        return self._lookup_meta(self._signals, name)
+
+    def lookup_prop_docs(self, *args, **kwargs):
+        return self._lookup_docs(self._properties, *args, **kwargs)
+
+    def lookup_prop_meta(self, name):
+        return self._lookup_meta(self._properties, name)
 
     def get_dependencies(self):
         return self._ns.get_dependencies()
@@ -172,10 +171,10 @@ class Repository(object):
 
         return name in self._private
 
-    def _fix_docs(self, d, version=None, current=None):
+    def _fix_docs(self, d, current=None):
+        if not d:
+            return u""
         rest = docstring_to_rest(self._types, current, d)
-        if version:
-            rest += "\n\n.. versionadded:: %s\n" % version
         return rest
 
     def parse_constant(self, name):
@@ -188,6 +187,8 @@ class Repository(object):
         # Add images for stock icon constants
         if name.startswith("Gtk.STOCK_"):
             docs += parse_stock_icon(name)
+
+        docs += self.lookup_attr_meta(name)
 
         # sphinx gets confused by empty docstrings
         return """
@@ -221,6 +222,7 @@ r'''
         bases = ", ".join(names)
 
         docs = self.lookup_attr_docs(name, current=current_rst_target)
+        docs += self.lookup_attr_meta(name)
 
         return """
 class %s(%s):
@@ -252,6 +254,7 @@ class %s(%s):
             name = sig.name
             doc_key = obj.__module__ + "." + obj.__name__ + "." + name
             desc = self.lookup_signal_docs(doc_key, current=current_rst_target)
+            desc += self.lookup_signal_meta(doc_key)
             short_desc = self.lookup_signal_docs(
                 doc_key, short=True, current=current_rst_target)
             params = ", ".join([gtype_to_rest(t) for t in sig.param_types])
@@ -290,9 +293,10 @@ class %s(%s):
                     spec.blurb, current=current_rst_target)
             else:
                 short_desc = ""
-            doc_name = obj.__module__ + "." + obj.__name__ + "." + name
+            doc_key = obj.__module__ + "." + obj.__name__ + "." + name
             desc = self.lookup_prop_docs(
-                doc_name, current=current_rst_target) or short_desc
+                doc_key, current=current_rst_target) or short_desc
+            desc += self.lookup_prop_meta(doc_key)
 
             props.append(Property(name, attr_name, type_desc, readable,
                                   writable, construct, short_desc, desc))
@@ -309,12 +313,15 @@ class %s(%s):
         base = obj.__bases__[0]
         base_name = base.__module__ + "." + base.__name__
 
+        docs = self.lookup_attr_docs(name)
+        docs += self.lookup_attr_meta(name)
+
         code = """
 class %s(%s):
     r'''
 %s
     '''
-""" % (obj.__name__, base_name, self.lookup_attr_docs(name))
+""" % (obj.__name__, base_name, docs)
 
         escaped = []
 
@@ -338,6 +345,7 @@ class %s(%s):
             code += "    %s = %r\n" % (n, val)
             doc_key = name + "." + n.lower()
             docs = self.lookup_attr_docs(doc_key)
+            docs += self.lookup_attr_meta(doc_key)
             code += "    r'''\n%s\n'''\n" % docs
 
         name = obj.__name__
@@ -353,11 +361,32 @@ class %s(%s):
 
         if is_method:
             current_rst_target = owner.__module__ + "." + owner.__name__
+
+            # for methods, add the docstring after
+            def get_func_def(func_name, name, docs):
+                return """
+%s = %s
+r'''
+%s
+'''
+""" % (func_name, name, docs)
+
         else:
             current_rst_target = None
 
+            # for toplevel functions, replace the introspected one
+            # since sphinx ignores docstrings on the module level
+            # and replacing __doc__ for normal functions is possible
+            def get_func_def(func_name, name, docs):
+                return """
+%s = %s
+%s.__doc__ = r'''
+%s
+'''
+""" % (func_name, name, func_name, docs)
+
         def get_sig(obj):
-            doc = str(obj.__doc__)
+            doc = str(obj.__doc__ or "")
             first_line = doc and doc.splitlines()[0] or ""
             return FuncSignature.from_string(name.split(".")[-1], first_line)
 
@@ -371,7 +400,10 @@ class %s(%s):
         # no valid sig, but still a docstring, probably new function
         # or an override with a new docstring
         if not sig and obj.__doc__:
-            return "%s = %s\n" % (func_name, name)
+            # add the versionadded from the gir here too
+            docs = str(obj.__doc__ or "")
+            docs += self.lookup_attr_meta(name)
+            return get_func_def(func_name, name, docs)
 
         # no docstring, try to get the signature from base classes
         if not sig and owner:
@@ -387,38 +419,20 @@ class %s(%s):
 
         # still nothing, try making the best out of it
         if not sig:
-            if not self.lookup_attr_docs(name, current=current_rst_target):
-                # no gir docs, let sphinx handle it
-                return "%s = %s\n" % (func_name, name)
-            elif is_method:
-                # INFO: this probably only happens if there is an override
-                # for something pgi doesn't support. The base class
-                # is missing the real one, but the gir docs are still there
+            # INFO: this probably only happens if there is an override
+            # for something pgi doesn't support. The base class
+            # is missing the real one, but the gir docs may be still there
 
-                # for methods, add the docstring after
-                return """
-%s = %s
-r'''
-%s
-'''
-""" % (func_name, name,
-       self.lookup_attr_docs(name, current=current_rst_target))
-            else:
-                # for toplevel functions, replace the introspected one
-                # since sphinx ignores docstrings on the module level
-                # and replacing __doc__ for normal functions is possible
-                return """
-%s = %s
-%s.__doc__ = r'''
-%s
-'''
-""" % (func_name, name, func_name,
-       self.lookup_attr_docs(name, current=current_rst_target))
+            docs = self.lookup_attr_docs(name, current=current_rst_target)
+            if not docs:
+                docs = str(obj.__doc__ or "")
+            docs += self.lookup_attr_meta(name)
+            return get_func_def(func_name, name, docs)
 
         # we got a valid signature here
         assert sig
 
-        docstring = str(obj.__doc__)
+        docstring = str(obj.__doc__ or "")
         # the docstring contains additional text, propably an override
         # or internal function (GObject.Object methods for example)
         lines = docstring.splitlines()[1:]
@@ -429,22 +443,15 @@ r'''
         # create sphinx lists for the signature we found
         docs = sig.to_rest_listing(
             self, name, current=current_rst_target).splitlines()
+        docs = "\n".join(docs)
 
         # if we have a user docstring, use it, otherwise use the gir one
         if user_docstring:
-            docs.append("")
-            docs.append(unindent(user_docstring))
-        elif self.lookup_attr_docs(name, current=current_rst_target):
-            docs.append("")
-            docs.append(
-                self.lookup_attr_docs(name, current=current_rst_target))
-
-        docs = "\n".join(docs)
-
-        # in case the function is overriden, let sphinx get the funcspec
-        # but still keep around the old docstring (sphinx seems to understand
-        # the string under attribute thing.. good, since we can't change
-        # a docstring in py2)
+            docs += "\n\n" + unindent(user_docstring)
+        elif self.lookup_attr_docs(name):
+            docs += "\n\n" + self.lookup_attr_docs(name,
+                                                   current=current_rst_target)
+            docs += self.lookup_attr_meta(name)
 
         if is_method:
             # Rewrap them here so spinx knows that they static and
@@ -454,17 +461,4 @@ r'''
             if util.is_staticmethod(obj) or util.is_classmethod(obj):
                 name = "staticmethod(%s)" % name
 
-            return """
-%s = %s
-r'''
-%s
-'''
-""" % (func_name, name, docs.encode("utf-8"))
-
-        return """
-%s = %s
-%s.__doc__ = \
-r'''
-%s
-'''
-""" % (func_name, name ,name, docs.encode("utf-8"))
+        return get_func_def(func_name, name, docs)

@@ -228,39 +228,68 @@ def _parse_docs(dom):
     returns = {}
     signals = {}
     properties = {}
-    # FIXME: what about elements without doc sub element but a version attr?
 
-    for doc in dom.getElementsByTagName("doc"):
-        docs = doc.firstChild.nodeValue
+    tag_names = {
+        "glib:signal": signals,
+        "property": properties,
+        "parameter": parameters,
+        "instance-parameter": parameters,
+        "return-value": returns,
+        "interface": all_,
+        "method": all_,
+        "function": all_,
+        "constant": all_,
+        "record": all_,
+        "enumeration": all_,
+        "member": all_,
+        "callback": all_,
+        "alias": all_,
+        "constructor": all_,
+        "class": all_,
+        # "virtual-method": all_, # warning: name clash with methods
+        "bitfield": all_,
+    }
 
-        l = []
-        current = doc
-        kind = ""
-        version = current.parentNode.getAttribute("version")
-        while current.tagName != "namespace":
-            current = current.parentNode
-            name = current.getAttribute("name")
-            if current.tagName == "glib:signal":
-                kind = "signal"
-            if current.tagName == "property":
-                kind = "property"
-            if not name:
-                kind = current.tagName
+    def get_child_by_tag(node, tag_name):
+        for sub in node.childNodes:
+            try:
+                if sub.tagName == tag_name:
+                    return sub
+            except AttributeError:
                 continue
-            l.insert(0, name)
 
-        l = map(util.escape_identifier, l)
-        key = ".".join(l)
+    for tag, result in tag_names.items():
+        for e in dom.getElementsByTagName(tag):
+            doc_elm = get_child_by_tag(e, "doc")
+            docs = (doc_elm and doc_elm.firstChild.nodeValue) or ""
+            version = e.getAttribute("version")
+            deprecated = e.getAttribute("deprecated")
+            deprecated_version = e.getAttribute("deprecated-version")
 
-        if not kind:
-            all_[key] = (docs, version)
-        elif kind == "parameters":
-            parameters[key] = (docs, version)
-        elif kind == "return-value":
-            returns[key] = (docs, version)
-        elif kind == "signal":
-            signals[key] = (docs, version)
-        elif kind == "property":
-            properties[key] = (docs, version)
+            l = []
+            tags = []
+            current = e
+            l.append(current.getAttribute("name"))
+            while current.tagName != "namespace":
+                tags.append(current.tagName)
+                current = current.parentNode
+                name = current.getAttribute("name")
+                l.insert(0, name)
+
+            # avoid name clashes for stuff we don't support yet
+            if "virtual-method" in tags:
+                continue
+            if tag in ("parameter", "return-value") and "glib:signal" in tags:
+                continue
+
+            # special case: GLib.IConv._
+            if not l[-1]:
+                l[-1] = "_"
+            l = filter(None, l)
+            key = ".".join(map(util.escape_identifier, l))
+
+            # FIXME: still name clashes somewhere.. (e.g. Atspi-2.0)
+            #assert key not in result, (key, tags, result[key], tag, docs)
+            result[key] = (docs, version, deprecated_version, deprecated)
 
     return all_, parameters, returns, signals, properties
