@@ -34,12 +34,12 @@ def _md_tag(tag):
         text = _md_text(tag)
         return [text, "^" * len(text)]
     elif tag.name == "em":
-        return "*%s*" % _md_text(tag)
-    return _md_text(tag)
+        return ["*%s*" % _md_text(tag)]
+    return [_md_text(tag)]
 
 
 def _md_text(tag):
-    return "".join(_md_list(tag))
+    return " ".join(filter(None, _md_list(tag)))
 
 
 def _md_list(soup):

@@ -43,8 +43,8 @@ documentation ...
 Height-for-width Geometry Management
 ====================================
 
-A level-one header with a `link </url>`__ and *emphasis*
-========================================================
+A level-one header with a  `link </url>`__  and  *emphasis*
+===========================================================
 
 adsad
 -----
@@ -55,7 +55,7 @@ afaf
 Documentation:
 
 * list item 1
-* list item 2 `link </url>`__
+* list item 2  `link </url>`__
 
 Even more docs.\
 """
