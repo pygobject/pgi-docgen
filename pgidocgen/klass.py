@@ -267,10 +267,12 @@ Details
 
     :Parameters: %s
     :Return Value: %s
+    :Flags: %s
 
 %s
 
-""" % (rst_label, sig.name, sig.params, sig.ret, util.indent(sig.desc))
+""" % (rst_label, sig.name, sig.params, sig.ret, sig.flags_string,
+       util.indent(sig.desc))
 
                 h.write(data.encode("utf-8"))
 

@@ -48,13 +48,28 @@ class Property(object):
 
 class Signal(object):
 
-    def __init__(self, name, params, ret, desc, short_desc):
+    def __init__(self, name, flags, params, ret, desc, short_desc):
         self.name = name
         self.params = params
         self.ret = ret
+        self.flags = flags
 
         self.desc = desc
         self.short_desc = short_desc
+
+    @property
+    def flags_string(self):
+        descs = []
+
+        for key in dir(GObject.SignalFlags):
+            if key != key.upper():
+                continue
+            flag = getattr(GObject.SignalFlags, key)
+            if self.flags & flag:
+                d = ":data:`%s <GObject.SignalFlags.%s>`" % (key, key)
+                descs.append(d)
+
+        return "/".join(descs)
 
 
 class Field(object):
@@ -274,6 +289,7 @@ class %s(%s):
         result = []
         for sig in sigs:
             name = sig.name
+            flags = sig.flags
             doc_key = obj.__module__ + "." + obj.__name__ + "." + name
             desc = self.lookup_signal_docs(doc_key, current=current_rst_target)
             desc += self.lookup_signal_meta(doc_key)
@@ -282,7 +298,7 @@ class %s(%s):
             params = ", ".join([gtype_to_rest(t) for t in sig.param_types])
             ret = gtype_to_rest(sig.return_type)
 
-            result.append(Signal(name, params, ret, desc, short_desc))
+            result.append(Signal(name, flags, params, ret, desc, short_desc))
 
         return result
 
