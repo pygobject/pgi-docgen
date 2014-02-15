@@ -228,9 +228,11 @@ def _parse_docs(dom):
     returns = {}
     signals = {}
     properties = {}
+    fields = {}
 
     tag_names = {
         "glib:signal": signals,
+        "field": fields,
         "property": properties,
         "parameter": parameters,
         "instance-parameter": parameters,
@@ -295,4 +297,4 @@ def _parse_docs(dom):
             #assert key not in result, (key, tags, result[key], tag, docs)
             result[key] = (docs, version, deprecated_version, deprecated)
 
-    return all_, parameters, returns, signals, properties
+    return all_, parameters, returns, signals, properties, fields

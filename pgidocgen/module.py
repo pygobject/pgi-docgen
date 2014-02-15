@@ -1,4 +1,4 @@
-# Copyright 2013 Christoph Reiter
+# Copyright 2013,2014 Christoph Reiter
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -118,6 +118,9 @@ class ModuleGenerator(util.Generator):
                     sigs = repo.parse_signals(obj)
                     class_gen.add_signals(obj, sigs)
 
+                    fields = repo.parse_fields(obj)
+                    class_gen.add_fields(obj, fields)
+
                     for attr, attr_obj in util.iter_public_attr(obj):
                         # can fail for the base class
                         try:
@@ -131,11 +134,6 @@ class ModuleGenerator(util.Generator):
                             code = repo.parse_function(func_key, obj, attr_obj)
                             if code:
                                 class_gen.add_method(obj, attr_obj, code)
-                        elif util.is_field(attr_obj):
-                            atype = attr_obj.py_type
-                            type_name = atype.__module__ + "." + atype.__name__
-                            if not repo.is_private(type_name):
-                                class_gen.add_field(obj, attr_obj)
 
                 elif util.is_flags(obj):
                     code = repo.parse_flags(name, obj)
@@ -157,6 +155,9 @@ class ModuleGenerator(util.Generator):
                         gen = union_gen
                         union_gen.add_union(obj, code)
 
+                    fields = repo.parse_fields(obj)
+                    gen.add_fields(obj, fields)
+
                     for attr, attr_obj in util.iter_public_attr(obj):
                         try:
                             if not util.is_method_owner(obj, attr):
@@ -169,8 +170,6 @@ class ModuleGenerator(util.Generator):
                             code = repo.parse_function(func_key, obj, attr_obj)
                             if code:
                                 gen.add_method(obj, attr_obj, code)
-                        elif util.is_field(attr_obj):
-                            gen.add_field(obj, attr_obj)
                 else:
                     # unions..
                     code = repo.parse_class(name, obj)

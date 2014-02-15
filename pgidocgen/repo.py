@@ -15,7 +15,7 @@ from . import util
 from .util import unindent, gtype_to_rest
 
 from .gtkstock import parse_stock_icon
-from .funcsig import FuncSignature
+from .funcsig import FuncSignature, py_type_to_class_ref
 from .parser import docstring_to_rest
 
 
@@ -57,6 +57,25 @@ class Signal(object):
         self.short_desc = short_desc
 
 
+class Field(object):
+
+    def __init__(self, name, readable, writable, type_desc, desc):
+        self.name = name
+        self.readable = readable
+        self.writable = writable
+        self.type_desc = type_desc
+        self.desc = desc
+
+    @property
+    def flags_string(self):
+        flags = []
+        if self.readable:
+            flags.append("r")
+        if self.writable:
+            flags.append("w")
+        return "/".join(flags)
+
+
 class Repository(object):
     """Takes gi objects and gives documented code"""
 
@@ -84,12 +103,15 @@ class Repository(object):
         # Gtk.Foo.some-prop -> "some doc"
         self._properties = {}
 
-        a, pa, r, s, pr = ns.parse_docs()
+        self._fields = {}
+
+        a, pa, r, s, pr, fi = ns.parse_docs()
         self._all.update(a)
         self._parameters.update(pa)
         self._returns.update(r)
         self._signals.update(s)
         self._properties.update(pr)
+        self._fields.update(fi)
 
         self._private = ns.parse_private()
 
@@ -132,6 +154,9 @@ class Repository(object):
 
     def lookup_attr_meta(self, name):
         return self._lookup_meta(self._all, name)
+
+    def lookup_field_docs(self, *args, **kwargs):
+        return self._lookup_docs(self._fields, *args, **kwargs)
 
     def lookup_return_docs(self, *args, **kwargs):
         return self._lookup_docs(self._returns, *args, **kwargs)
@@ -235,18 +260,15 @@ class %s(%s):
 """ % (name.split(".")[-1], bases, docs.encode("utf-8"), name)
 
     def parse_signals(self, obj):
+        assert util.is_object(obj) or util.is_iface(obj)
 
         current_rst_target = obj.__module__ + "." + obj.__name__
 
         if not hasattr(obj, "signals"):
-            return ""
+            return []
 
         sigs = []
-        for attr in dir(obj.signals):
-            if attr.startswith("_"):
-                continue
-
-            sig = getattr(obj.signals, attr)
+        for attr, sig in util.iter_public_attr(obj.signals):
             sigs.append(sig)
 
         result = []
@@ -264,7 +286,31 @@ class %s(%s):
 
         return result
 
+    def parse_fields(self, obj):
+        current_rst_target = obj.__module__ + "." + obj.__name__
+
+        fields = []
+        for attr, field_info in util.iter_public_attr(obj):
+            if not util.is_field(field_info):
+                continue
+
+            atype = field_info.py_type
+            type_name = atype.__module__ + "." + atype.__name__
+            if self.is_private(type_name):
+                continue
+
+            name = field_info.name
+            type_desc = py_type_to_class_ref(field_info.py_type)
+            readable = field_info.readable
+            writable = field_info.writeable
+            doc_name = current_rst_target + "." + name
+            desc = self.lookup_field_docs(doc_name, current=current_rst_target)
+            fields.append(Field(name, readable, writable, type_desc, desc))
+
+        return fields
+
     def parse_properties(self, obj):
+        assert util.is_object(obj) or util.is_iface(obj)
 
         current_rst_target = obj.__module__ + "." + obj.__name__
 
@@ -273,10 +319,7 @@ class %s(%s):
 
         # get all specs owned by the class
         specs = []
-        for attr in dir(obj.props):
-            if attr.startswith("_"):
-                continue
-            spec = getattr(obj.props, attr, None)
+        for attr, spec in util.iter_public_attr(obj.props):
             if not spec or spec.owner_type.pytype is not obj:
                 continue
             specs.append((attr, spec))
@@ -323,7 +366,6 @@ class %s(%s):
     '''
 """ % (obj.__name__, base_name, docs)
 
-        methods_code = []
         for attr, attr_obj in util.iter_public_attr(obj):
             if not callable(attr_obj):
                 continue

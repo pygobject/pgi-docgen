@@ -1,4 +1,4 @@
-# Copyright 2013 Christoph Reiter
+# Copyright 2013,2014 Christoph Reiter
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -6,21 +6,20 @@
 # version 2.1 of the License, or (at your option) any later version.
 
 from . import util
-from .funcsig import py_type_to_class_ref
 
 
 class FieldsMixin(object):
 
     _fields = {}
 
-    def add_field(self, cls_obj, field_info):
-        if cls_obj in self._fields:
-            self._fields[cls_obj].append(field_info)
-        else:
-            self._fields[cls_obj] = [field_info]
+    def add_fields(self, cls_obj, fields):
+        assert cls_obj not in self._fields
+
+        if fields:
+            self._fields[cls_obj] = fields
 
     def has_fields(self, cls):
-        return bool(self._fields.get(cls, []))
+        return cls in self._fields
 
     def write_field_table(self, cls, h):
 
@@ -31,17 +30,9 @@ Fields
 """)
 
         lines = []
-        for field_info in self._fields.get(cls, []):
-            flags = []
-            if field_info.readable:
-                flags.append("r")
-            if field_info.writeable:
-                flags.append("w")
-
+        for field in self._fields.get(cls, []):
             prop = util.get_csv_line([
-                field_info.name,
-                py_type_to_class_ref(field_info.py_type),
-                "/".join(flags)])
+                field.name, field.type_desc, field.flags_string, field.desc])
             lines.append("    %s" % prop)
         lines = "\n".join(lines)
 
