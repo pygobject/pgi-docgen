@@ -182,11 +182,14 @@ gtk_entry_buffer_get_length (gtk_entry_get_buffer (entry));
 ),(
         '<variablelist role="params">\n\t  <varlistentry>\n\t    <term><parameter>chooser</parameter>&nbsp;:</term>\n\t    <listitem>\n\t      <simpara>\n\t\tthe object which received the signal.\n\t      </simpara>\n\t    </listitem>\n\t  </varlistentry>\n\t  <varlistentry>\n\t    <term><parameter>path</parameter>&nbsp;:</term>\n\t    <listitem>\n\t      <simpara>\n\t\tdefault contents for the text entry for the file name\n\t      </simpara>\n\t    </listitem>\n\t  </varlistentry>\n\t  <varlistentry>\n\t    <term><parameter>user_data</parameter>&nbsp;:</term>\n\t    <listitem>\n\t      <simpara>\n\t\tuser data set when the signal handler was connected.\n\t      </simpara>\n\t    </listitem>\n\t  </varlistentry>\n\t</variablelist>',
         """
+
 chooser\\:
     the object which received the signal.
 
+
 path\\:
     default contents for the text entry for the file name
+
 
 user\\_data\\:
     user data set when the signal handler was connected.
@@ -194,10 +197,35 @@ user\\_data\\:
 """,
 ),(
         "<varlistentry><term>#POPPLER_ANNOT_TEXT_ICON_NOTE</term></varlistentry>",
-        "#POPPLER\\_ANNOT\\_TEXT\\_ICON\\_NOTE\n\n",
+        "\n#POPPLER\\_ANNOT\\_TEXT\\_ICON\\_NOTE\n\n",
 ),(
         "this is some ::signal-foo blah",
         "this is some :ref:`::signal-foo<Gtk.Widget.signals.signal-foo>` blah",
+),(
+        "unless it has handled or blocked `SIGPIPE'.",
+        "unless it has handled or blocked \\`SIGPIPE'.",
+),(
+        """\
+foo
+<programlisting>
+foo;
+bar;
+</programlisting>
+bar\
+""",
+        """\
+foo
+
+.. code-block:: c
+
+    foo;
+    bar;
+
+bar\
+""",
+),(
+        "a style class named <literal>level-</literal>@name",
+        "a style class named ``level-`` `name`"
         )]
 
         for in_, out in data:

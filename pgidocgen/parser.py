@@ -17,8 +17,8 @@ from .util import escape_rest, force_unindent
 def _handle_data(types, current, d):
 
     scanner = re.Scanner([
-        (r"[#%@]?[A-Za-z0-9_:\-]+\**", lambda scanner, token:("ID", token)),
-        (r"[#%@]?[A-Za-z0-9_:\-]+\**", lambda scanner, token:("ID", token)),
+        (r"@[A-Za-z0-9_]+", lambda scanner, token:("PARAM", token)),
+        (r"[#%]?[A-Za-z0-9_:\-]+\**", lambda scanner, token:("ID", token)),
         (r"\(", lambda scanner, token:("OTHER", token)),
         (r"\)", lambda scanner, token:("OTHER", token)),
         (r",", lambda scanner, token:("OTHER", token)),
@@ -84,51 +84,51 @@ def _handle_data(types, current, d):
     need_space_at_start = False
     for type_, token in results:
         orig_token = token
-        if type_ == "ID":
-
+        if type_ == "PARAM":
             # paremeter reference
-            if token.startswith("@"):
-                token = token[1:]
-                if token.lower() == token:
-                    token = "`%s`" % token
+            assert token[0] == "@"
+            token = token[1:]
+            if token.lower() == token:
+                token = "`%s`" % token
+            else:
+                # some docs use it to reference constants..
+                token = id_ref(token)
+        elif type_ == "ID":
+            parts = re.split("(::?)", token)
+            fallback = True
+            if len(parts) > 2:
+                obj, sep, sigprop = parts[0], parts[1], "".join(parts[2:])
+                obj_id = obj.lstrip("#")
+                obj_rst_id = types.get(obj_id, current)
+
+                if sigprop and obj_rst_id:
+                    fallback = False
+                    token = id_ref(obj)
+                    is_prop = len(sep) == 1
+
+                    if token:
+                        token += " "
+
+                    if is_prop:
+                        prop_name = sigprop.replace("_", "-")
+                        prop_attr = sigprop.replace("-", "_")
+                        rst_target = obj_rst_id + ".props." + prop_attr
+                        token += ":py:data:`:%s<%s>`" % (
+                            prop_name, rst_target)
+                    else:
+                        prop_name = sigprop.replace("_", "-")
+                        rst_target = obj_rst_id + ".signals." + prop_name
+                        token += ":ref:`::%s<%s>`" % (
+                            prop_name, rst_target)
+
+            if fallback:
+                if "-" in token:
+                    first, rest = token.split("-", 1)
+                    token = id_ref(first) + "-" + rest
+                elif token.endswith(":"):
+                    token = id_ref(token[:-1]) + ":"
                 else:
                     token = id_ref(token)
-            else:
-                parts = re.split("(::?)", token)
-                fallback = True
-                if len(parts) > 2:
-                    obj, sep, sigprop = parts[0], parts[1], "".join(parts[2:])
-                    obj_id = obj.lstrip("#")
-                    obj_rst_id = types.get(obj_id, current)
-
-                    if sigprop and obj_rst_id:
-                        fallback = False
-                        token = id_ref(obj)
-                        is_prop = len(sep) == 1
-
-                        if token:
-                            token += " "
-
-                        if is_prop:
-                            prop_name = sigprop.replace("_", "-")
-                            prop_attr = sigprop.replace("-", "_")
-                            rst_target = obj_rst_id + ".props." + prop_attr
-                            token += ":py:data:`:%s<%s>`" % (
-                                prop_name, rst_target)
-                        else:
-                            prop_name = sigprop.replace("_", "-")
-                            rst_target = obj_rst_id + ".signals." + prop_name
-                            token += ":ref:`::%s<%s>`" % (
-                                prop_name, rst_target)
-
-                if fallback:
-                    if "-" in token:
-                        first, rest = token.split("-", 1)
-                        token = id_ref(first) + "-" + rest
-                    elif token.endswith(":"):
-                        token = id_ref(token[:-1]) + ":"
-                    else:
-                        token = id_ref(token)
 
         changed = orig_token != token
 
@@ -177,7 +177,7 @@ def _handle_xml(types, current, out, item):
             if not text.count("\n"):
                 out.append("``%s``" % item.getText())
             else:
-                code = "\n.. code-block:: c\n\n%s" % util.indent(
+                code = "\n.. code-block:: c\n\n%s\n" % util.indent(
                     util.unindent(item.getText(), ignore_first_line=True))
                 out.append(code)
 
@@ -218,6 +218,7 @@ def _handle_xml(types, current, out, item):
             listitem = force_unindent(listitem, ignore_first_line=True)
             lines.append(
                 util.indent(_handle_data(types, current, listitem)) + "\n")
+            out.append("\n")
             out.extend(lines)
         else:
             for sub in item.contents:
@@ -251,7 +252,17 @@ def docstring_to_rest(types, current, docstring):
     out = []
     for item in soup.contents:
         _handle_xml(types, current, out, item)
-    rst = "".join(out)
+
+    # make sure to insert spaces between special reST chars
+    rst = ""
+    while out:
+        c = out.pop(0)
+        if rst and c:
+            last = rst[-1]
+            first = c[0]
+            if escape_rest(last) != last and escape_rest(first) != first:
+                rst += " "
+        rst += c
 
     def fixup_added_since(match):
         return """
@@ -260,5 +271,5 @@ def docstring_to_rest(types, current, docstring):
 
 """ % match.group(1).strip()
 
-    rst = re.sub('@?Since\\\\?:?\s+([^\s]+)$', fixup_added_since, rst)
+    rst = re.sub('@?Since\s*\\\\?:?\s+([^\s]+)$', fixup_added_since, rst)
     return rst
