@@ -18,6 +18,7 @@ class MainGenerator(util.Generator):
 
     THEME_DIR = "theme"
     STOCK_DIR = "stockicons"
+    CLSIMG_DIR = "clsimages"
     EXT_DIR = "ext"
     CONF_IN = "conf.in.py"
 
@@ -65,3 +66,6 @@ Index
 
         stock_dest = os.path.join(self._dest, self.STOCK_DIR)
         shutil.copytree(os.path.join("data", self.STOCK_DIR), stock_dest)
+
+        clsimg_dest = os.path.join(self._dest, self.CLSIMG_DIR)
+        shutil.copytree(os.path.join("data", self.CLSIMG_DIR), clsimg_dest)

@@ -140,6 +140,17 @@ class ClassGenerator(util.Generator, FieldsMixin):
                 h.write("    " + ", ".join(refs))
                 h.write("\n\n")
 
+            # IMAGE
+            if os.path.exists("data/clsimages/%s.png" % cls_name):
+                h.write("""
+
+Example
+-------
+
+.. image:: ../../../clsimages/%s.png
+
+""" % cls_name)
+
             # METHODS
 
             h.write("""
