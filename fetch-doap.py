@@ -162,5 +162,5 @@ if __name__ == '__main__':
         print url
         r = requests.get(url)
         for ns in ns_list:
-            with open(os.path.join('doap', ns) + ".doap", 'wb') as h:
+            with open(os.path.join('data', 'doap', ns) + ".doap", 'wb') as h:
                 h.write(r.content)
