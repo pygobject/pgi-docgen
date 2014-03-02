@@ -275,7 +275,7 @@ Details
 
 .. py:function:: %s
 
-    :Name: ``%s``
+    :Signal Name: ``%s``
     :Flags: %s
 
 %s
