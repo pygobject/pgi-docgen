@@ -35,9 +35,11 @@ class TRepository(unittest.TestCase):
         self.assertTrue(signal)
         self.assertNotEqual(method, signal)
 
-    def test_properties(self):
+    def test_returns(self):
         repo = Repository("Gio", "2.0")
-        print repo.lookup_prop_docs("Gio.Application.action-group")
+
+        ret = repo.lookup_return_docs("Gio.File.load_contents_finish")
+        self.assertTrue(ret.strip())
 
     def test_other(self):
         Repository("GLib", "2.0")

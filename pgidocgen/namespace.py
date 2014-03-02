@@ -288,7 +288,7 @@ def _parse_docs(dom):
                 continue
 
             # special case: GLib.IConv._
-            if not l[-1]:
+            if tag != "return-value" and not l[-1]:
                 l[-1] = "_"
             l = filter(None, l)
             key = ".".join(map(util.escape_identifier, l))
