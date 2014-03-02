@@ -61,6 +61,12 @@ class TFuncSigs(unittest.TestCase):
 
         self.assertEqual(sig.res, [["{str: {int: int}}"]])
 
+    def test_to_simple_sig(self):
+        sig = FuncSignature.from_string("to_hash",
+            "to_hash(flags: NetworkManager.SettingHashFlags, foo: [int]) -> "
+            "{str: {int: int}}")
+        self.assertEqual(sig.to_simple_signature(), "to_hash(flags, foo)")
+
     def test_arg_to_class_ref(self):
         self.assertEqual(arg_to_class_ref("int"), ":obj:`int`")
         self.assertEqual(arg_to_class_ref("[int]"), "[:obj:`int`]")
@@ -78,10 +84,10 @@ class TFuncSigs(unittest.TestCase):
 
         class FakeRepo(object):
 
-            def lookup_parameter_docs(self, name, current=None):
+            def lookup_parameter_docs(self, name, current=None, signal=False):
                 return escape_rest("PARADOC(%s)" % name)
 
-            def lookup_return_docs(self, name, current=None):
+            def lookup_return_docs(self, name, current=None, signal=False):
                 return escape_rest("RETURNDOC(%s)" % name)
 
         sig = FuncSignature.from_string("go", "go(*args)")

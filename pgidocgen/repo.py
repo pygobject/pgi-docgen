@@ -48,14 +48,12 @@ class Property(object):
 
 class Signal(object):
 
-    def __init__(self, name, flags, params, ret, desc, short_desc):
-        self.name = name
-        self.params = params
-        self.ret = ret
+    def __init__(self, name, sig, flags, desc, short_desc):
         self.flags = flags
-
         self.desc = desc
         self.short_desc = short_desc
+        self.name = name
+        self.sig = sig
 
     @property
     def flags_string(self):
@@ -69,7 +67,7 @@ class Signal(object):
                 d = ":data:`%s <GObject.SignalFlags.%s>`" % (key, key)
                 descs.append(d)
 
-        return "/".join(descs)
+        return ", ".join(descs)
 
 
 class Field(object):
@@ -103,9 +101,13 @@ class Repository(object):
         # Gtk.foo_bar.arg1 -> "some doc"
         self._parameters = {}
 
+        self._sig_parameters = {}
+
         # Gtk.foo_bar -> "some doc"
         # Gtk.Foo.foo_bar -> "some doc"
         self._returns = {}
+
+        self._sreturns = {}
 
         # Gtk.foo_bar -> "some doc"
         # Gtk.Foo.foo_bar -> "some doc"
@@ -120,13 +122,15 @@ class Repository(object):
 
         self._fields = {}
 
-        a, pa, r, s, pr, fi = ns.parse_docs()
+        a, pa, r, s, pr, fi, sp, sr = ns.parse_docs()
         self._all.update(a)
         self._parameters.update(pa)
         self._returns.update(r)
         self._signals.update(s)
         self._properties.update(pr)
         self._fields.update(fi)
+        self._sig_parameters.update(sp)
+        self._sreturns.update(sr)
 
         self._private = ns.parse_private()
 
@@ -174,10 +178,16 @@ class Repository(object):
         return self._lookup_docs(self._fields, *args, **kwargs)
 
     def lookup_return_docs(self, *args, **kwargs):
-        return self._lookup_docs(self._returns, *args, **kwargs)
+        if kwargs.pop("signal", False):
+            return self._lookup_docs(self._sreturns, *args, **kwargs)
+        else:
+            return self._lookup_docs(self._returns, *args, **kwargs)
 
     def lookup_parameter_docs(self, *args, **kwargs):
-        return self._lookup_docs(self._parameters, *args, **kwargs)
+        if kwargs.pop("signal", False):
+            return self._lookup_docs(self._sig_parameters, *args, **kwargs)
+        else:
+            return self._lookup_docs(self._parameters, *args, **kwargs)
 
     def lookup_signal_docs(self, name, short=False, current=None):
         if name in self._signals:
@@ -282,23 +292,21 @@ class %s(%s):
         if not hasattr(obj, "signals"):
             return []
 
-        sigs = []
-        for attr, sig in util.iter_public_attr(obj.signals):
-            sigs.append(sig)
-
         result = []
-        for sig in sigs:
-            name = sig.name
-            flags = sig.flags
-            doc_key = obj.__module__ + "." + obj.__name__ + "." + name
-            desc = self.lookup_signal_docs(doc_key, current=current_rst_target)
+        for attr, sig in util.iter_public_attr(obj.signals):
+            fsig = FuncSignature.from_string(attr, sig.__doc__)
+            assert fsig
+            doc_key = obj.__module__ + "." + obj.__name__ + "." + sig.name
+            desc = fsig.to_rest_listing(self, doc_key, current=current_rst_target, signal=True)
+            desc += "\n\n"
+            desc += self.lookup_signal_docs(doc_key, current=current_rst_target)
             desc += self.lookup_signal_meta(doc_key)
             short_desc = self.lookup_signal_docs(
                 doc_key, short=True, current=current_rst_target)
-            params = ", ".join([gtype_to_rest(t) for t in sig.param_types])
-            ret = gtype_to_rest(sig.return_type)
-
-            result.append(Signal(name, flags, params, ret, desc, short_desc))
+            flags = sig.flags
+            name = sig.name
+            ssig = fsig.to_simple_signature()
+            result.append(Signal(sig.name, ssig, flags, desc, short_desc))
 
         return result
 

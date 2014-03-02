@@ -273,17 +273,14 @@ Details
 
 .. _%s:
 
-.. py:function:: %s(...)
-    :noindex:
+.. py:function:: %s
 
-    :Parameters: %s
-    :Return Value: %s
+    :Name: ``%s``
     :Flags: %s
 
 %s
 
-""" % (rst_label, sig.name, sig.params, sig.ret, sig.flags_string,
-       util.indent(sig.desc))
+""" % (rst_label, sig.sig, sig.name, sig.flags_string, util.indent(sig.desc))
 
                 h.write(data.encode("utf-8"))
 

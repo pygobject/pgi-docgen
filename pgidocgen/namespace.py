@@ -225,31 +225,40 @@ def _parse_docs(dom):
 
     all_ = {}
     parameters = {}
+    sparas = {}
     returns = {}
+    sreturns = {}
     signals = {}
     properties = {}
     fields = {}
 
     tag_names = {
-        "glib:signal": signals,
-        "field": fields,
-        "property": properties,
-        "parameter": parameters,
-        "instance-parameter": parameters,
-        "return-value": returns,
-        "interface": all_,
-        "method": all_,
-        "function": all_,
-        "constant": all_,
-        "record": all_,
-        "enumeration": all_,
-        "member": all_,
-        "callback": all_,
-        "alias": all_,
-        "constructor": all_,
-        "class": all_,
-        # "virtual-method": all_, # warning: name clash with methods
-        "bitfield": all_,
+        ("glib:signal",): signals,
+        ("field",): fields,
+        ("property",): properties,
+        ("parameter", "glib:signal"): sparas,
+        ("parameter", "function"): parameters,
+        ("parameter", "method"): parameters,
+        ("parameter", "callback"): parameters,
+        ("parameter", "constructor"): parameters,
+        ("instance-parameter", "method"): parameters,
+        ("return-value", "callback"): returns,
+        ("return-value", "method"): returns,
+        ("return-value", "function"): returns,
+        ("return-value", "constructor"): returns,
+        ("return-value", "glib:signal"): sreturns,
+        ("interface",): all_,
+        ("method",): all_,
+        ("function",): all_,
+        ("constant",): all_,
+        ("record",): all_,
+        ("enumeration",): all_,
+        ("member",): all_,
+        ("callback",): all_,
+        ("alias",): all_,
+        ("constructor",): all_,
+        ("class",): all_,
+        ("bitfield",): all_,
     }
 
     def get_child_by_tag(node, tag_name):
@@ -260,7 +269,13 @@ def _parse_docs(dom):
             except AttributeError:
                 continue
 
-    for tag, result in tag_names.items():
+    path_seen = set()
+    path_done = set()
+
+    for target, result in tag_names.items():
+        tag = target[0]
+        needed = target[1:]
+
         for e in dom.getElementsByTagName(tag):
             doc_elm = get_child_by_tag(e, "doc")
             docs = (doc_elm and doc_elm.firstChild.nodeValue) or ""
@@ -281,11 +296,12 @@ def _parse_docs(dom):
                 name = current.getAttribute("name")
                 l.insert(0, name)
 
-            # avoid name clashes for stuff we don't support yet
-            if "virtual-method" in tags:
+            path_seen.add(tuple(tags))
+
+            if any(a for a in needed if a not in tags):
                 continue
-            if tag in ("parameter", "return-value") and "glib:signal" in tags:
-                continue
+
+            path_done.add(tuple(tags))
 
             # special case: GLib.IConv._
             if tag != "return-value" and not l[-1]:
@@ -293,8 +309,10 @@ def _parse_docs(dom):
             l = filter(None, l)
             key = ".".join(map(util.escape_identifier, l))
 
-            # FIXME: still name clashes somewhere.. (e.g. Atspi-2.0)
-            #assert key not in result, (key, tags, result[key], tag, docs)
+            assert key not in result
             result[key] = (docs, version, deprecated_version, deprecated)
 
-    return all_, parameters, returns, signals, properties, fields
+    # print path_seen - path_done
+
+    return (all_, parameters, returns, signals, properties, fields, sparas,
+            sreturns)

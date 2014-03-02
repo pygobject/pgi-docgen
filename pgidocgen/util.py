@@ -24,7 +24,9 @@ def iter_public_attr(obj):
 
         try:
             attr_obj = getattr(obj, attr)
-        except NotImplementedError:
+        except (NotImplementedError, AttributeError):
+            if not inspect.isclass(obj):
+                obj = type(obj)
             # FIXME.. pgi exposes methods it can't compile
             print "PGI-ERROR: %s.%s.%s" % (obj.__module__, obj.__name__, attr)
             continue

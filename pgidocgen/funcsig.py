@@ -128,21 +128,37 @@ class FuncSignature(object):
 
         return cls(res, arg_map, raises, name)
 
-    def to_rest_listing(self, doc_repo, full_name, current=None):
+    def to_simple_signature(self):
+        """Gives a simple Python signature.
+
+        e.g. foo(bar, bar2, *args)
+        """
+        name = self.name
+        args = []
+        for key, value in self.args:
+            args.append(key)
+
+        return "%s(%s)" % (name, ", ".join(args))
+
+    def to_rest_listing(self, doc_repo, full_name, current=None, signal=False):
         """A reST listing for this function signature.
 
         full_name: e.g. 'GObject.Binding.get_flags'
         doc_repo: Repository()
         """
 
-        assert full_name.split(".")[-1] == self.name
+        if signal:
+            assert full_name.split(".")[-1].replace("-", "_") == self.name
+        else:
+            assert full_name.split(".")[-1] == self.name
 
         docs = []
         for key, value in self.args:
             # strip * from *args
             key = key.lstrip("*")
             param_key = full_name + "." + key
-            text = doc_repo.lookup_parameter_docs(param_key, current=current)
+            text = doc_repo.lookup_parameter_docs(
+                param_key, current=current, signal=signal)
             key = escape_rest(key)
             docs.append(":param %s:\n%s\n" % (key, indent(text)))
             docs.append(":type %s: %s" % (key, arg_to_class_ref(value)))
@@ -154,14 +170,16 @@ class FuncSignature(object):
         for r in self.res:
             if len(r) == 1:
                 # normal return value
-                text = doc_repo.lookup_return_docs(full_name, current=current)
+                text = doc_repo.lookup_return_docs(
+                    full_name, current=current, signal=signal)
                 if text:
                     return_docs.append(text)
             else:
                 # out value
                 name, type_ = r
                 pkey = full_name + "." + name
-                text = doc_repo.lookup_parameter_docs(pkey, current=current)
+                text = doc_repo.lookup_parameter_docs(
+                    pkey, current=current, signal=signal)
                 if text:
                     text = ":%s:\n%s" % (escape_rest(name), indent(text))
                     return_docs.append(text)
