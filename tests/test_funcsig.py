@@ -95,7 +95,8 @@ class TFuncSigs(unittest.TestCase):
         # no empty reST references
         self.assertTrue("``" not in doc)
 
-        sig = FuncSignature.from_string("go", "go(a_: [str]) -> b_: [str]")
+        sig = FuncSignature.from_string(
+            "go", "go(a_: [str]) -> int, b_: [str]")
         doc = sig.to_rest_listing(FakeRepo(), "Foo.bar.go")
         self.assertEqual(doc, """\
 :param a\\_:
@@ -103,10 +104,12 @@ class TFuncSigs(unittest.TestCase):
 
 :type a\\_: [:obj:`str`]
 :returns:
+    RETURNDOC(Foo.bar.go)
+    
     :b\\_:
         PARADOC(Foo.bar.go.b\\_)
 
-:rtype: **b\\_**: [:obj:`str`]\
+:rtype: (:obj:`int`, **b\\_**: [:obj:`str`])\
 """)
 
         sig = FuncSignature.from_string("go", "go(*args: int)")
@@ -116,4 +119,14 @@ class TFuncSigs(unittest.TestCase):
     PARADOC(Foo.bar.go.args)
 
 :type args: :obj:`int`\
+""")
+
+        # only one out param
+        sig = FuncSignature.from_string("go", "go() -> foo: int")
+        doc = sig.to_rest_listing(FakeRepo(), "Foo.bar.go")
+        self.assertEqual(doc, """\
+:returns:
+    PARADOC(Foo.bar.go.foo)
+
+:rtype: :obj:`int`\
 """)
