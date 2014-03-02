@@ -150,19 +150,37 @@ class FuncSignature(object):
         if self.raises:
             docs.append(":raises: :class:`GLib.GError`")
 
-        text = doc_repo.lookup_return_docs(full_name, current=current)
-        if text:
-            docs.append(":returns:\n%s\n" % indent(text))
+        return_docs = []
+        for r in self.res:
+            if len(r) == 1:
+                # normal return value
+                text = doc_repo.lookup_return_docs(full_name, current=current)
+                if text:
+                    return_docs.append(text)
+            else:
+                # out value
+                name, type_ = r
+                pkey = full_name + "." + name
+                text = doc_repo.lookup_parameter_docs(pkey, current=current)
+                if text:
+                    text = ":%s:\n%s" % (escape_rest(name), indent(text))
+                    return_docs.append(text)
+
+        if return_docs:
+            docs.append(":returns:\n%s\n" % indent("\n\n".join(return_docs)))
 
         res = []
         for r in self.res:
             if len(r) > 1:
-                res.append("%s: %s" %
+                res.append("**%s**: %s" %
                            (escape_rest(r[0]), arg_to_class_ref(r[1])))
             else:
                 res.append(arg_to_class_ref(r[0]))
 
         if res:
-            docs.append(":rtype: %s" % ", ".join(res))
+            res_line = ", ".join(res)
+            if len(res) > 1:
+                res_line = "(%s)" % res_line
+            docs.append(":rtype: %s" % res_line)
 
         return "\n".join(docs)

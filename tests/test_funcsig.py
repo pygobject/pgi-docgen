@@ -97,9 +97,10 @@ class TFuncSigs(unittest.TestCase):
 
 :type a\\_: [:obj:`str`]
 :returns:
-    RETURNDOC(Foo.bar.go)
+    :b\\_:
+        PARADOC(Foo.bar.go.b\\_)
 
-:rtype: b\\_: [:obj:`str`]\
+:rtype: **b\\_**: [:obj:`str`]\
 """)
 
         sig = FuncSignature.from_string("go", "go(*args: int)")
@@ -108,7 +109,5 @@ class TFuncSigs(unittest.TestCase):
 :param args:
     PARADOC(Foo.bar.go.args)
 
-:type args: :obj:`int`
-:returns:
-    RETURNDOC(Foo.bar.go)
+:type args: :obj:`int`\
 """)
