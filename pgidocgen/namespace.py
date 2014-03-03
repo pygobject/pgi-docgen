@@ -309,8 +309,11 @@ def _parse_docs(dom):
             l = filter(None, l)
             key = ".".join(map(util.escape_identifier, l))
 
-            assert key not in result
-            result[key] = (docs, version, deprecated_version, deprecated)
+            new = (docs, version, deprecated_version, deprecated)
+            # Atspi-2.0 has some things declared twice, so
+            # don't be too strict here.
+            assert key not in result or new == result[key]
+            result[key] = new
 
     # print path_seen - path_done
 
