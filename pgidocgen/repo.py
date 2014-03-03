@@ -294,19 +294,28 @@ class %s(%s):
 
         result = []
         for attr, sig in util.iter_public_attr(obj.signals):
-            fsig = FuncSignature.from_string(attr, sig.__doc__)
-            assert fsig
             doc_key = obj.__module__ + "." + obj.__name__ + "." + sig.name
-            desc = fsig.to_rest_listing(self, doc_key, current=current_rst_target, signal=True)
+
+            try:
+                fsig = FuncSignature.from_string(attr, sig.__doc__)
+                assert fsig, (doc_key, sig.__doc__)
+            except NotImplementedError:
+                # FIXME pgi
+                print "FIXME: signal: %s " % doc_key
+                desc = "(FIXME pgi-docgen: arguments are missing here)"
+                ssig = "%s(*fixme)" % attr
+            else:
+                ssig = fsig.to_simple_signature()
+                desc = fsig.to_rest_listing(
+                    self, doc_key, current=current_rst_target, signal=True)
+
             desc += "\n\n"
             desc += self.lookup_signal_docs(doc_key, current=current_rst_target)
             desc += self.lookup_signal_meta(doc_key)
             short_desc = self.lookup_signal_docs(
                 doc_key, short=True, current=current_rst_target)
-            flags = sig.flags
-            name = sig.name
-            ssig = fsig.to_simple_signature()
-            result.append(Signal(sig.name, ssig, flags, desc, short_desc))
+
+            result.append(Signal(sig.name, ssig, sig.flags, desc, short_desc))
 
         return result
 

@@ -283,17 +283,20 @@ def _parse_docs(dom):
             deprecated = e.getAttribute("deprecated")
             deprecated_version = e.getAttribute("deprecated-version")
 
+            def get_name(elm):
+                return elm.getAttribute("name") or elm.getAttribute("glib:name")
+
             l = []
             tags = []
             current = e
-            l.append(current.getAttribute("name"))
+            l.append(get_name(current))
             while current.tagName != "namespace":
                 tags.append(current.tagName)
                 current = current.parentNode
                 # Tracker-0.16 includes <constant> outside of <namespace>
                 if current.tagName == "repository":
                     break
-                name = current.getAttribute("name")
+                name = get_name(current)
                 l.insert(0, name)
 
             path_seen.add(tuple(tags))
@@ -309,10 +312,13 @@ def _parse_docs(dom):
             l = filter(None, l)
             key = ".".join(map(util.escape_identifier, l))
 
+            if tag in ("method", "constructor"):
+                assert len(l) > 2
+
             new = (docs, version, deprecated_version, deprecated)
             # Atspi-2.0 has some things declared twice, so
             # don't be too strict here.
-            assert key not in result or new == result[key]
+            assert key not in result or new == result[key], key
             result[key] = new
 
     # print path_seen - path_done
