@@ -192,12 +192,9 @@ class FuncSignature(object):
         res_list = []
         for r in self.res:
             if len(r) > 1:
-                if len(self.res) != 1:
-                    res_list.append(
-                        "**%s**: %s" % (escape_rest(r[0]),
-                                        arg_to_class_ref(r[1])))
-                else:
-                    res_list.append(arg_to_class_ref(r[1]))
+                res_list.append(
+                    "**%s**: %s" % (escape_rest(r[0]),
+                                    arg_to_class_ref(r[1])))
             else:
                 res_list.append(arg_to_class_ref(r[0]))
 

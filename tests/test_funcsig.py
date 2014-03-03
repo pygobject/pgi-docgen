@@ -128,5 +128,5 @@ class TFuncSigs(unittest.TestCase):
 :returns:
     PARADOC(Foo.bar.go.foo)
 
-:rtype: :obj:`int`\
+:rtype: **foo**: :obj:`int`\
 """)
