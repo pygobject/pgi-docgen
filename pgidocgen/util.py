@@ -239,6 +239,12 @@ def is_classmethod(obj):
         return False
 
 
+def is_virtualmethod(obj):
+    assert callable(obj)
+
+    return getattr(obj, "_is_virtual", False)
+
+
 def is_normalmethod(obj):
     return not is_staticmethod(obj) and not is_classmethod(obj)
 

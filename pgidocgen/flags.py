@@ -56,8 +56,6 @@ Details
 """)
 
         for cls in classes:
-            title = util.make_rest_title(cls.__name__, "^")
-            handle.write(title + "\n")
             if util.is_base(cls):
                 handle.write("""
 .. autoclass:: %s

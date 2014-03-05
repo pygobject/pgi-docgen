@@ -231,35 +231,37 @@ def _parse_docs(dom):
     signals = {}
     properties = {}
     fields = {}
+    vfuncs = {}
 
-    tag_names = {
-        ("glib:signal",): signals,
-        ("field",): fields,
-        ("property",): properties,
-        ("parameter", "glib:signal"): sparas,
-        ("parameter", "function"): parameters,
-        ("parameter", "method"): parameters,
-        ("parameter", "callback"): parameters,
-        ("parameter", "constructor"): parameters,
-        ("instance-parameter", "method"): parameters,
-        ("return-value", "callback"): returns,
-        ("return-value", "method"): returns,
-        ("return-value", "function"): returns,
-        ("return-value", "constructor"): returns,
-        ("return-value", "glib:signal"): sreturns,
-        ("interface",): all_,
-        ("method",): all_,
-        ("function",): all_,
-        ("constant",): all_,
-        ("record",): all_,
-        ("enumeration",): all_,
-        ("member",): all_,
-        ("callback",): all_,
-        ("alias",): all_,
-        ("constructor",): all_,
-        ("class",): all_,
-        ("bitfield",): all_,
-    }
+    tag_names = [
+        [("glib:signal",), signals],
+        [("field",), fields],
+        [("property",), properties],
+        [("parameter", "glib:signal"), sparas],
+        [("parameter", "function"), parameters],
+        [("parameter", "method"), parameters],
+        [("parameter", "callback"), parameters],
+        [("parameter", "constructor"), parameters],
+        [("instance-parameter", "method"), parameters],
+        [("return-value", "callback"), returns],
+        [("return-value", "method"), returns],
+        [("return-value", "function"), returns],
+        [("return-value", "constructor"), returns],
+        [("return-value", "glib:signal"), sreturns],
+        [("interface",), all_],
+        [("method",), all_],
+        [("function",), all_],
+        [("constant",), all_],
+        [("record",), all_],
+        [("enumeration",), all_],
+        [("member",), all_],
+        [("callback",), all_],
+        [("alias",), all_],
+        [("constructor",), all_],
+        [("class",), all_],
+        [("bitfield",), all_],
+        [("virtual-method",), all_],
+    ]
 
     def get_child_by_tag(node, tag_name):
         for sub in node.childNodes:
@@ -272,7 +274,7 @@ def _parse_docs(dom):
     path_seen = set()
     path_done = set()
 
-    for target, result in tag_names.items():
+    for target, result in tag_names:
         tag = target[0]
         needed = target[1:]
 
@@ -284,7 +286,10 @@ def _parse_docs(dom):
             deprecated_version = e.getAttribute("deprecated-version")
 
             def get_name(elm):
-                return elm.getAttribute("name") or elm.getAttribute("glib:name")
+                n = elm.getAttribute("name") or elm.getAttribute("glib:name")
+                if elm.tagName == "virtual-method":
+                    n = "do_" + n
+                return n
 
             l = []
             tags = []
@@ -318,7 +323,10 @@ def _parse_docs(dom):
             new = (docs, version, deprecated_version, deprecated)
             # Atspi-2.0 has some things declared twice, so
             # don't be too strict here.
-            assert key not in result or new == result[key], key
+
+            # We prefix vfuncs with "do_", but this could still clash here
+            if tag != "virtual-method":
+                assert key not in result or new == result[key], key
             result[key] = new
 
     # print path_seen - path_done

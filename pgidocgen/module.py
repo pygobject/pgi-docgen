@@ -130,10 +130,18 @@ class ModuleGenerator(util.Generator):
                             continue
 
                         if callable(attr_obj):
-                            func_key = name + "." + attr
-                            code = repo.parse_function(func_key, obj, attr_obj)
-                            if code:
-                                class_gen.add_method(obj, attr_obj, code)
+                            if not util.is_virtualmethod(attr_obj):
+                                func_key = name + "." + attr
+                                code = repo.parse_function(
+                                    func_key, obj, attr_obj)
+                                if code:
+                                    class_gen.add_method(obj, attr_obj, code)
+                            else:
+                                func_key = name + "." + attr
+                                code = repo.parse_function(
+                                    func_key, obj, attr_obj)
+                                if code:
+                                    class_gen.add_vfunc(obj, attr_obj, code)
 
                 elif util.is_flags(obj):
                     code = repo.parse_flags(name, obj)

@@ -78,3 +78,5 @@ if __name__ == "__main__":
             png_optimize_dir(dir_)
     else:
         print "optipng missing, skipping compression"
+
+    print "Done. See file://%s/index.html" % os.path.abspath(build_dir)

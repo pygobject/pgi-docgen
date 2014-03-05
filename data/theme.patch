@@ -1,7 +1,7 @@
 diff -Nur sphinx_rtd_theme/breadcrumbs.html theme/breadcrumbs.html
---- sphinx_rtd_theme/breadcrumbs.html	2014-03-04 19:47:00.606021609 +0100
-+++ theme/breadcrumbs.html	2014-02-02 23:34:03.626687092 +0100
-@@ -6,13 +6,7 @@
+--- sphinx_rtd_theme/breadcrumbs.html	2014-03-05 00:38:28.311631703 +0100
++++ theme/breadcrumbs.html	2014-03-05 00:14:12.734943596 +0100
+@@ -6,14 +6,12 @@
        {% endfor %}
      <li>{{ title }}</li>
        <li class="wy-breadcrumbs-aside">
@@ -16,9 +16,14 @@ diff -Nur sphinx_rtd_theme/breadcrumbs.html theme/breadcrumbs.html
        </li>
    </ul>
    <hr/>
+ </div>
++
++<div class="local-toc">
++    {{ toc }}
++</div>
 diff -Nur sphinx_rtd_theme/layout.html theme/layout.html
---- sphinx_rtd_theme/layout.html	2014-03-04 19:47:00.606021609 +0100
-+++ theme/layout.html	2014-03-04 19:53:29.726220076 +0100
+--- sphinx_rtd_theme/layout.html	2014-03-05 00:38:28.311631703 +0100
++++ theme/layout.html	2014-03-05 00:27:20.963314565 +0100
 @@ -14,7 +14,13 @@
    <meta charset="utf-8">
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -34,11 +39,38 @@ diff -Nur sphinx_rtd_theme/layout.html theme/layout.html
    {% endblock %}
  
    {# FAVICON #}
-@@ -25,6 +31,36 @@
+@@ -25,6 +31,63 @@
    {# CSS #}
    <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
  
 +<style>
++
++.local-toc {
++    display: none;
++}
++
++@media screen and (min-width: 768px){
++    .local-toc {
++        position:fixed;
++        right: 1em;
++        bottom: 1em;
++        display: block;
++    }
++
++    .local-toc li
++    {
++        display:block;
++        text-align:right;
++        padding:0.3em 0;
++        text-transform:uppercase;
++        font-size: 0.9em;
++    }
++}
++
++.wy-nav-content {
++    margin: 0 !important;
++}
++
 +.wy-side-nav-search, .wy-nav-top {
 +    background-color: #75507b !important;
 +}
@@ -71,7 +103,7 @@ diff -Nur sphinx_rtd_theme/layout.html theme/layout.html
    {# OPENSEARCH #}
    {% if not embedded %}
      {% if use_opensearch %}
-@@ -87,7 +123,7 @@
+@@ -87,7 +150,7 @@
        </div>
  
        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">

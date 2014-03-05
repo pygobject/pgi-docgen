@@ -32,6 +32,33 @@
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
 <style>
+
+.local-toc {
+    display: none;
+}
+
+@media screen and (min-width: 768px){
+    .local-toc {
+        position:fixed;
+        right: 1em;
+        bottom: 1em;
+        display: block;
+    }
+
+    .local-toc li
+    {
+        display:block;
+        text-align:right;
+        padding:0.3em 0;
+        text-transform:uppercase;
+        font-size: 0.9em;
+    }
+}
+
+.wy-nav-content {
+    margin: 0 !important;
+}
+
 .wy-side-nav-search, .wy-nav-top {
     background-color: #75507b !important;
 }

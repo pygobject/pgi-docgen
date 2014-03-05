@@ -24,6 +24,7 @@ class ClassGenerator(util.Generator, FieldsMixin):
 
         self._classes = {}  # cls -> code
         self._methods = {}  # cls -> code
+        self._vfuncs = {}
         self._props = {}  # cls -> [prop]
         self._sigs = {}  # cls -> [sig]
 
@@ -43,6 +44,15 @@ class ClassGenerator(util.Generator, FieldsMixin):
             self._methods[cls_obj].append((obj, code))
         else:
             self._methods[cls_obj] = [(obj, code)]
+
+    def add_vfunc(self, cls_obj, obj, code):
+        if isinstance(code, unicode):
+            code = code.encode("utf-8")
+
+        if cls_obj in self._vfuncs:
+            self._vfuncs[cls_obj].append((obj, code))
+        else:
+            self._vfuncs[cls_obj] = [(obj, code)]
 
     def add_properties(self, cls, props):
         assert cls not in self._props
@@ -107,12 +117,19 @@ class ClassGenerator(util.Generator, FieldsMixin):
         # write the code
         for cls in classes:
             self._module.write(self._classes[cls])
-            methods = self._methods.get(cls, [])
 
             # sort static methods first, then by name
             def sort_func(e):
                 return util.is_normalmethod(e[0]), e[0].__name__
+
+            methods = self._methods.get(cls, [])[:]
             methods.sort(key=sort_func)
+
+            vfuncs = self._vfuncs.get(cls, [])[:]
+            vfuncs.sort(key=sort_func)
+
+            methods.extend(vfuncs)
+
             for obj, code in methods:
                 self._module.write(indent(code) + "\n")
 
@@ -160,6 +177,27 @@ Methods
 """)
 
             methods = self._methods.get(cls, [])
+            if not methods:
+                h.write("None\n\n")
+            else:
+                h.write(".. autosummary::\n\n")
+
+            # sort static methods first, then by name
+            def sort_func(e):
+                return util.is_normalmethod(e[0]), e[0].__name__
+            methods.sort(key=sort_func)
+            for obj, code in methods:
+                h.write("    " + cls_name + "." + obj.__name__ + "\n")
+
+            # VFUNC
+
+            h.write("""
+Virtual Methods
+---------------
+
+""")
+
+            methods = self._vfuncs.get(cls, [])
             if not methods:
                 h.write("None\n\n")
             else:
@@ -242,8 +280,8 @@ Signals
                 self.write_field_table(cls, h)
 
             h.write("""
-Details
--------
+Class Details
+-------------
 """)
 
             if util.is_base(cls):

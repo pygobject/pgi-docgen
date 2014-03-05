@@ -52,6 +52,12 @@ class TRepository(unittest.TestCase):
         ret = repo.lookup_return_docs("Gio.File.load_contents_finish")
         self.assertTrue(ret.strip())
 
+    def test_vfuns(self):
+        repo = Repository("Gtk", "3.0")
+
+        ret = repo.lookup_attr_docs("Gtk.TreeModel.do_get_iter")
+        self.assertTrue(ret.strip())
+
     def test_other(self):
         Repository("GLib", "2.0")
         Repository("GObject", "2.0")

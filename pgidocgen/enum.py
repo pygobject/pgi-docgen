@@ -54,9 +54,7 @@ Details
 """)
 
         for cls in classes:
-            title = util.make_rest_title(cls.__name__, "-")
             handle.write("""
-%s
 
 .. autoclass:: %s
     :show-inheritance:
@@ -64,7 +62,7 @@ Details
     :undoc-members:
     :private-members:
 
-""" % (title, cls.__module__ + "." + cls.__name__))
+""" % (cls.__module__ + "." + cls.__name__))
 
         for cls in classes:
             code = self._enums[cls]
