@@ -260,7 +260,11 @@ def _parse_docs(dom):
         [("constructor",), all_],
         [("class",), all_],
         [("bitfield",), all_],
+        # vfuncs last, since they replace normal onces in case of name clashes
         [("virtual-method",), all_],
+        [("parameter", "virtual-method"), parameters],
+        [("instance-parameter", "virtual-method"), parameters],
+        [("return-value", "virtual-method"), returns],
     ]
 
     def get_child_by_tag(node, tag_name):
@@ -325,11 +329,11 @@ def _parse_docs(dom):
             # don't be too strict here.
 
             # We prefix vfuncs with "do_", but this could still clash here
-            if tag != "virtual-method":
+            if "virtual-method" not in target:
                 assert key not in result or new == result[key], key
             result[key] = new
 
-    # print path_seen - path_done
+    assert not (path_seen - path_done)
 
     return (all_, parameters, returns, signals, properties, fields, sparas,
             sreturns)

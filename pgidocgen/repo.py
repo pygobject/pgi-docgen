@@ -532,6 +532,9 @@ r'''
             self, name, current=current_rst_target).splitlines()
         docs = "\n".join(docs)
 
+        if util.is_virtualmethod(obj):
+            docs = ":Type: virtual\n\n" + docs
+
         # if we have a user docstring, use it, otherwise use the gir one
         if user_docstring:
             docs += "\n\n" + unindent(user_docstring)
