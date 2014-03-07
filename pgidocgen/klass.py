@@ -17,6 +17,7 @@ class ClassGenerator(util.Generator, FieldsMixin):
 
     DIR_NAME = ""
     HEADLINE = ""
+    IS_INTERFACE = False
 
     def __init__(self, dir_, module_fileobj):
         self._sub_dir = os.path.join(dir_, self.DIR_NAME)
@@ -148,7 +149,10 @@ class ClassGenerator(util.Generator, FieldsMixin):
             # subclasses
             subclasses = cls.__subclasses__()
             if subclasses:
-                h.write("\n:Subclasses:\n")
+                if self.IS_INTERFACE:
+                    h.write("\n:Implementations:\n")
+                else:
+                    h.write("\n:Subclasses:\n")
                 refs = []
                 for sub in subclasses:
                     sub_name = sub.__module__ + "." + sub.__name__
@@ -351,8 +355,10 @@ Class Details
 class GObjectGenerator(ClassGenerator):
     DIR_NAME = "classes"
     HEADLINE = "Classes"
+    IS_INTERFACE = False
 
 
 class InterfaceGenerator(ClassGenerator):
     DIR_NAME = "interfaces"
     HEADLINE = "Interfaces"
+    IS_INTERFACE = True
