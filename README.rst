@@ -54,13 +54,25 @@ or using the default output path ``./_docs``:
 License
 -------
 
-Everything in the `data/theme` sub directory:
+Everything in the ``data/theme`` sub directory:
 
     https://github.com/rtfd/readthedocs.org
 
     MIT License
 
-Everything in the `data/ext` sub directory:
+``data/theme/static/js/modernizr.min.js``:
+
+    http://modernizr.com
+
+    MIT License
+
+``data/theme/static/fonts/lato*.wof``
+
+    http://www.latofonts.com
+
+    SIL Open Font License
+
+Everything in the ``data/ext`` sub directory:
 
     https://bitbucket.org/birkenfeld/sphinx/
 
