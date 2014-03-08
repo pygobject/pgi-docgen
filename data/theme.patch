@@ -1,5 +1,5 @@
 diff -Nur sphinx_rtd_theme/breadcrumbs.html theme/breadcrumbs.html
---- sphinx_rtd_theme/breadcrumbs.html	2014-03-07 11:00:58.625279517 +0100
+--- sphinx_rtd_theme/breadcrumbs.html	2014-03-08 22:40:26.446930156 +0100
 +++ theme/breadcrumbs.html	2014-03-05 00:14:12.734943596 +0100
 @@ -6,14 +6,12 @@
        {% endfor %}
@@ -22,8 +22,8 @@ diff -Nur sphinx_rtd_theme/breadcrumbs.html theme/breadcrumbs.html
 +    {{ toc }}
 +</div>
 diff -Nur sphinx_rtd_theme/layout.html theme/layout.html
---- sphinx_rtd_theme/layout.html	2014-03-07 11:00:58.625279517 +0100
-+++ theme/layout.html	2014-03-07 11:03:37.045372851 +0100
+--- sphinx_rtd_theme/layout.html	2014-03-08 22:40:26.446930156 +0100
++++ theme/layout.html	2014-03-08 22:40:15.654914410 +0100
 @@ -14,7 +14,13 @@
    <meta charset="utf-8">
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -39,7 +39,7 @@ diff -Nur sphinx_rtd_theme/layout.html theme/layout.html
    {% endblock %}
  
    {# FAVICON #}
-@@ -23,7 +29,74 @@
+@@ -23,7 +29,78 @@
    {% endif %}
  
    {# CSS #}
@@ -111,11 +111,15 @@ diff -Nur sphinx_rtd_theme/layout.html theme/layout.html
 +    font-size: 0.9em;
 +}
 +
++tt.descname, tt.descclassname {
++    font-family: "Lato" !important;
++}
++
 +</style>
  
    {# OPENSEARCH #}
    {% if not embedded %}
-@@ -71,7 +144,7 @@
+@@ -71,7 +148,7 @@
    {%- block extrahead %} {% endblock %}
  
    {# Keep modernizr in head - http://modernizr.com/docs/#installing #}
@@ -124,7 +128,7 @@ diff -Nur sphinx_rtd_theme/layout.html theme/layout.html
  
  </head>
  
-@@ -87,7 +160,7 @@
+@@ -87,7 +164,7 @@
        </div>
  
        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
