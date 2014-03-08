@@ -38,7 +38,13 @@ def main(argv):
 
     if not is_pgi and args.namespaces:
         print "Can't build API docs without pgi"
-        print "Get here: https://github.com/lazka/pgi"
+        print "Get it here: https://github.com/lazka/pgi"
+        raise SystemExit(1)
+
+    # this catches the "pip install pgi" case
+    if pgi.version_info[-1] != -1:
+        print "atm pgi-docgen needs pgi trunk and not a stable release"
+        print "Get it here: https://github.com/lazka/pgi"
         raise SystemExit(1)
 
     girs = get_gir_files()
