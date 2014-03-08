@@ -6,7 +6,7 @@
 # License as published by the Free Software Foundation; either
 # version 2.1 of the License, or (at your option) any later version.
 
-# after ./default.sh, call this to force push the build to github pages
+# after ./build_all.sh, call this to force push the build to github pages
 
 cd _docs/_build
 rm -f README.rst

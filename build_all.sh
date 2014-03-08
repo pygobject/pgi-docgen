@@ -8,7 +8,10 @@
 
 # this is the default build that gets published online
 
-./pgi-docgen.py -f _docs Atk-1.0 Cogl-1.0 CoglPango-1.0 DBus-1.0 \
+# Example usage: "./build_all.sh"
+# Result can be found in "_docs/_build"
+
+python ./pgi-docgen.py -f _docs Atk-1.0 Cogl-1.0 CoglPango-1.0 DBus-1.0 \
     DBusGLib-1.0 Fcitx-1.0 GDesktopEnums-3.0 GIRepository-2.0 GL-1.0 GLib-2.0 \
     GModule-2.0 GObject-2.0 Gdk-3.0 GdkPixbuf-2.0 GdkX11-3.0 Gio-2.0 \
     Grl-0.2 GrlNet-0.2 Gst-1.0 GstAllocators-1.0 GstApp-1.0 GstAudio-1.0 \
@@ -40,4 +43,4 @@
     SocialWebClient-0.25 SoupGNOME-2.4 SpiceClientGLib-2.0 GOffice-0.10 \
     SpiceClientGtk-3.0 SugarGestures-1.0 TelepathyGLib-0.12 Wnck-3.0 \
     TelepathyLogger-0.2 TotemPlParser-1.0 Xkl-1.0 Zpj-0.0 Zeitgeist-2.0 \
-    && ./pgi-docgen-build.py _docs/_build _docs
+    && ./tools/pgi-docgen-build.py _docs/_build _docs

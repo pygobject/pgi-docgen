@@ -20,20 +20,12 @@ Requirements
 * Sphinx
 * BeautifulSoup 3
 
+Calling ``source bootstrap.sh`` will put you in a virtualenv with all 
+dependencies installed.
+
 
 How do I get started?
 ---------------------
-
-::
-
-    # API docs for Gtk:
-    ./pgi-docgen.py <some_path> Gtk-3.0
-
-    # Use sphinx to create the docs in <dest_path>
-    ./pgi-docgen-build.py <dest_path> <some_path>
-
-
-or using the default output path ``./_docs``:
 
 ::
 
@@ -47,8 +39,11 @@ or using the default output path ``./_docs``:
     # Warning: This can take about an hour.
     ./build_all.sh
 
-    # Force-pushes the result to my github.io repo, adjust the URL if needed
-    ./push.sh
+    # To speed things up a bit set the JOBS env var.
+    # Only do this if you have enough RAM (~4 GB)
+    JOBS=4 ./build_all.sh
+
+The resulting docs can be found in ``_docs/_build``
 
 
 License
