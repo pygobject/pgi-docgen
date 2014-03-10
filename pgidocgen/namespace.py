@@ -67,6 +67,23 @@ class Namespace(object):
     def get_dependencies(self):
         return list(self._dependencies)
 
+    def get_all_dependencies(self):
+        loaded = []
+        to_load = self.get_dependencies()
+        while to_load:
+            key = to_load.pop()
+            if key in loaded:
+                continue
+            sub_ns = get_namespace(*key)
+            loaded.append(key)
+            to_load.extend(sub_ns.get_dependencies())
+
+        return loaded
+
+    def __repr__(self):
+        return "%s(%s, %s)" % (
+            type(self).__name__, self.namespace, self.version)
+
 
 def _parse_types(dom, namespace):
     """Create a mapping of various C names to python names"""

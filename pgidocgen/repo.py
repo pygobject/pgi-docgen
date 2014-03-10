@@ -134,19 +134,10 @@ class Repository(object):
 
         self._private = ns.parse_private()
 
-        loaded = {}
-        to_load = ns.get_dependencies()
-        while to_load:
-            key = to_load.pop()
-            if key in loaded:
-                continue
-            sub_ns = get_namespace(*key)
-            loaded[key] = sub_ns
-            to_load.extend(sub_ns.get_dependencies())
-
         # merge all type mappings
         self._types = {}
-        for sub_ns in loaded.values():
+        loaded = [ns] + [get_namespace(*x) for x in ns.get_all_dependencies()]
+        for sub_ns in loaded:
             self._types.update(sub_ns.get_types())
         self._types.update(ns.get_types())
 
@@ -254,6 +245,7 @@ r'''
     def parse_class(self, name, obj, add_bases=False):
         names = []
 
+        name = str(name)
         current_rst_target = obj.__module__ + "." + obj.__name__
 
         if add_bases:

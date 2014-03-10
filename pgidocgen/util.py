@@ -34,6 +34,8 @@ def iter_public_attr(obj):
 
 
 def import_namespace(namespace, version):
+    namespace = str(namespace)
+
     import gi
     try:
         gi.require_version(namespace, version)

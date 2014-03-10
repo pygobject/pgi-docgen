@@ -32,6 +32,9 @@ How do I get started?
     # API docs for Gtk/Gst:
     ./build.sh Gtk-3.0 Gst-1.0
 
+    # API docs for Atk including all dependencies (GLib, GObject)
+    ./build.sh -d Atk-1.0
+
     # On Windows:
     build.bat Gtk-3.0 Gst-1.0
 

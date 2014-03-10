@@ -21,6 +21,7 @@ else:
     pgi.set_backend("ctypes,null")
 
 from pgidocgen.main import MainGenerator
+from pgidocgen.namespace import get_namespace
 from pgidocgen.util import get_gir_files
 
 
@@ -29,12 +30,17 @@ def main(argv):
         description='Create a sphinx environ')
     parser.add_argument('-f', '--force', action='store_true',
                         help="Remove the target path if it exists")
+    parser.add_argument('-d', '--dependencies', action='store_true',
+                        help="Build all dependencies recursively")
     parser.add_argument('target', help='path to where the result should be')
     parser.add_argument('namespaces', nargs='+',
                         help='A list of namespaces including versions '
                              '(e.g. "Gtk-3.0 GLib-2.0")')
 
-    args = parser.parse_args(argv[1:])
+    try:
+        args = parser.parse_args(argv[1:])
+    except SystemExit:
+        raise SystemExit(1)
 
     if not is_pgi and args.namespaces:
         print "Can't build API docs without pgi"
@@ -66,9 +72,15 @@ def main(argv):
             print "Target already exists (pass -f to ignore): %s" % dest_dir
             raise SystemExit(1)
 
+    to_build = [tuple(n.split("-")) for n in filtered]
+    if args.dependencies:
+        print "Dependencies will be build"
+        for mod in to_build[:]:
+            to_build.extend(get_namespace(*mod).get_all_dependencies())
+        to_build = set(to_build)
+
     gen = MainGenerator(dest_dir)
-    for name in filtered:
-        namespace, version = name.split("-")
+    for namespace, version in to_build:
         print "Create docs: Namespace=%s, Version=%s" % (namespace, version)
         if namespace == "cairo":
             print "cairo gets referenced to external docs, skipping"
