@@ -29,77 +29,11 @@
   {% endif %}
 
   {# CSS #}
-  <style>
-@font-face {
-  font-family: 'Lato'; font-weight: 400; src: url({{ pathto('_static/fonts/lato.woff', 1) }});
-}
-@font-face {
-  font-family: 'Lato'; font-weight: 700; src: url({{ pathto('_static/fonts/lato-bold.woff', 1) }});
-}
-@font-face {
-  font-family: 'Roboto Slab'; font-weight: 400; src: url({{ pathto('_static/fonts/lato.woff', 1) }});
-}
-@font-face {
-  font-family: 'Roboto Slab'; font-weight: 700; src: url({{ pathto('_static/fonts/lato-bold.woff', 1) }});
-}
-
-.local-toc {
-    display: none;
-}
-
-@media screen and (min-width: 768px){
-    .local-toc {
-        position:fixed;
-        right: 1em;
-        bottom: 1em;
-        display: block;
-    }
-
-    .local-toc li
-    {
-        display:block;
-        text-align:right;
-        padding:0.3em 0;
-        text-transform:uppercase;
-        font-size: 0.9em;
-    }
-}
-
-.wy-nav-content {
-    margin: 0 !important;
-}
-
-.wy-side-nav-search, .wy-nav-top {
-    background-color: #75507b !important;
-}
-.wy-side-nav-search input[type="text"] {
-    border-color: #75507b !important;
-}
-
-@media screen and (max-width: 768px){
-    img {
-        width: auto !important;
-    }
-}
-
-.wy-table-responsive table th,
-.wy-table-responsive table td {
-    white-space: normal !important;
-}
-
-.rst-content a tt {
-    color: #174666 !important;
-}
-
-.versionmodified {
-    color: #a40000 !important;
-    font-size: 0.9em;
-}
-
-tt.descname, tt.descclassname {
-    font-family: "Lato" !important;
-}
-
+<style>
+@font-face {font-family: 'Lato'; font-weight: 400; src: url({{ pathto('_static/fonts/lato.woff', 1) }});}
+@font-face {font-family: 'Lato'; font-weight: 700; src: url({{ pathto('_static/fonts/lato-bold.woff', 1) }});}
+@font-face {font-family: 'Roboto Slab'; font-weight: 400; src: url({{ pathto('_static/fonts/lato.woff', 1) }});}
+@font-face {font-family: 'Roboto Slab'; font-weight: 700; src: url({{ pathto('_static/fonts/lato-bold.woff', 1) }});}
 </style>
 
   {# OPENSEARCH #}
@@ -118,6 +52,8 @@ tt.descname, tt.descclassname {
   {% for cssfile in css_files %}
     <link rel="stylesheet" href="{{ pathto(cssfile, 1) }}" type="text/css" />
   {% endfor %}
+
+  <link rel="stylesheet" href="{{ pathto('_static/css/pgi.css', 1) }}" type="text/css" />
 
   {%- block linktags %}
     {%- if hasdoc('about') %}

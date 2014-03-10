@@ -1,0 +1,56 @@
+.local-toc {
+    display: none;
+}
+
+@media screen and (min-width: 768px){
+    .local-toc {
+        position:fixed;
+        right: 1em;
+        bottom: 1em;
+        display: block;
+    }
+
+    .local-toc li
+    {
+        display:block;
+        text-align:right;
+        padding:0.3em 0;
+        text-transform:uppercase;
+        font-size: 0.9em;
+    }
+}
+
+.wy-nav-content {
+    margin: 0;
+}
+
+.wy-side-nav-search, .wy-nav-top {
+    background-color: #75507b;
+}
+.wy-side-nav-search input[type="text"] {
+    border-color: #75507b;
+}
+
+@media screen and (max-width: 768px){
+    img {
+        width: auto;
+    }
+}
+
+.wy-table-responsive table th,
+.wy-table-responsive table td {
+    white-space: normal;
+}
+
+.rst-content a tt {
+    color: #174666;
+}
+
+.versionmodified {
+    color: #a40000;
+    font-size: 0.9em;
+}
+
+tt.descname, tt.descclassname {
+    font-family: "Lato";
+}
