@@ -120,7 +120,7 @@ class ModuleGenerator(util.Generator):
             elif inspect.isclass(obj):
                 if util.is_iface(obj) or util.is_object(obj):
 
-                    code = repo.parse_class(name, obj, add_bases=True)
+                    code = repo.parse_class(name, obj)
                     if util.is_object(obj):
                         class_gen.add_class(obj, code)
                     else:
@@ -168,7 +168,7 @@ class ModuleGenerator(util.Generator):
                     if repo.is_private(namespace + "." + obj.__name__):
                         continue
 
-                    code = repo.parse_class(name, obj, add_bases=True)
+                    code = repo.parse_class(name, obj)
 
                     if util.is_struct(obj):
                         gen = struct_gen

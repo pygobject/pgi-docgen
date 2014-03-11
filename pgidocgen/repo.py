@@ -249,27 +249,18 @@ r'''
 
 """ % (name.split(".")[-1], name)
 
-    def parse_class(self, name, obj, add_bases=False):
+    def parse_class(self, name, obj):
         names = []
+        # prefix with the module if it's an external class
+        for base in util.merge_in_overrides(obj):
+            base_name = base.__name__
+            if base_name != "object":
+                base_name = base.__module__ + "." + base_name
+            names.append(base_name)
+        bases = ", ".join(names or ["object"])
 
         name = str(name)
         current_rst_target = obj.__module__ + "." + obj.__name__
-
-        if add_bases:
-            mro_bases = util.merge_in_overrides(obj)
-
-            # prefix with the module if it's an external class
-            for base in mro_bases:
-                base_name = base.__name__
-                if base.__module__ != self.namespace and base_name != "object":
-                    base_name = base.__module__ + "." + base_name
-                names.append(base_name)
-
-        if not names:
-            names = ["object"]
-
-        bases = ", ".join(names)
-
         docs = self.lookup_attr_docs(name, current=current_rst_target)
         docs += self.lookup_attr_meta(name)
 

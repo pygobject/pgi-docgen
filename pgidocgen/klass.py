@@ -109,35 +109,6 @@ class ClassGenerator(util.Generator, FieldsMixin):
                         self._classes, False)
 
     def _write(self, module_fileobj, sub_dir, classes, is_interface):
-
-        # try to get the right order, so all bases are defined
-        # this probably isn't right...
-        def check_order(cls):
-            for c in cls:
-                for b in util.merge_in_overrides(c):
-                    if b in cls and cls.index(b) > cls.index(c):
-                        return False
-            return True
-
-        def get_key(cls, c):
-            i = 0
-            for b in util.merge_in_overrides(c):
-                if b not in cls:
-                    continue
-                if cls.index(b) > cls.index(c):
-                    i += 1
-            return i
-
-        sorter_classes = classes.keys()
-        ranks = {}
-        while not check_order(sorter_classes):
-            for cls in classes:
-                ranks[cls] = ranks.get(cls, 0) + get_key(sorter_classes, cls)
-            sorter_classes.sort(key=lambda x: ranks[x])
-
-        def indent(c):
-            return "\n".join(["    %s" % l for l in c.splitlines()])
-
         os.mkdir(sub_dir)
 
         index_handle = open(os.path.join(sub_dir, "index.rst"), "wb")
@@ -154,7 +125,7 @@ class ClassGenerator(util.Generator, FieldsMixin):
 """ % cls.__name__)
 
         # write the code
-        for cls in sorter_classes:
+        for cls in classes:
             module_fileobj.write(classes[cls])
 
             # sort static methods first, then by name
@@ -170,7 +141,7 @@ class ClassGenerator(util.Generator, FieldsMixin):
             methods.extend(vfuncs)
 
             for obj, code in methods:
-                module_fileobj.write(indent(code) + "\n")
+                module_fileobj.write(util.indent(code) + "\n")
 
         # create a new file for each class
         for cls in classes:
