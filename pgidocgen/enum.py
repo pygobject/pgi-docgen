@@ -12,11 +12,10 @@ from . import util
 
 class EnumGenerator(util.Generator):
 
-    def __init__(self, dir_, module_fileobj):
+    def __init__(self, dir_):
         self.path = os.path.join(dir_, "enums.rst")
 
         self._enums = {}
-        self._module = module_fileobj
 
     def add_enum(self, obj, code):
         if isinstance(code, unicode):
@@ -30,7 +29,7 @@ class EnumGenerator(util.Generator):
     def is_empty(self):
         return not bool(self._enums)
 
-    def write(self):
+    def write(self, module_fileobj):
         classes = self._enums.keys()
         classes.sort(key=lambda x: x.__name__)
 
@@ -66,6 +65,6 @@ Details
 
         for cls in classes:
             code = self._enums[cls]
-            self._module.write(code + "\n")
+            module_fileobj.write(code + "\n")
 
         handle.close()

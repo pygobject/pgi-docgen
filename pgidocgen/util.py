@@ -315,7 +315,7 @@ class Generator(object):
         """If there is any content to create"""
         raise NotImplementedError
 
-    def write(self):
+    def write(self, module_fileobj):
         """Create and write everything"""
         raise NotImplementedError
 

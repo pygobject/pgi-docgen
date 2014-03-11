@@ -12,7 +12,7 @@ from .fields import FieldsMixin
 
 
 class StructGenerator(util.Generator, FieldsMixin):
-    def __init__(self, dir_, module_fileobj):
+    def __init__(self, dir_):
         super(StructGenerator, self).__init__()
 
         self._sub_dir = os.path.join(dir_, "structs")
@@ -20,7 +20,6 @@ class StructGenerator(util.Generator, FieldsMixin):
 
         self._structs = {}
         self._methods = {}
-        self._module = module_fileobj
 
     def get_names(self):
         return ["structs/index.rst"]
@@ -42,7 +41,7 @@ class StructGenerator(util.Generator, FieldsMixin):
         else:
             self._methods[cls_obj] = [(obj, code)]
 
-    def write(self):
+    def write(self, module_fileobj):
         os.mkdir(self._sub_dir)
 
         structs = self._structs.keys()
@@ -52,14 +51,14 @@ class StructGenerator(util.Generator, FieldsMixin):
 
         # write the code
         for cls in structs:
-            self._module.write(self._structs[cls])
+            module_fileobj.write(self._structs[cls])
             methods = self._methods.get(cls, [])
             def sort_func(e):
                 return util.is_normalmethod(e[0]), e[0].__name__
             methods.sort(key=sort_func)
 
             for obj, code in methods:
-                self._module.write(indent(code) + "\n")
+                module_fileobj.write(indent(code) + "\n")
 
         index_handle = open(self.path, "wb")
         index_handle.write(util.make_rest_title("Structures") + "\n\n")

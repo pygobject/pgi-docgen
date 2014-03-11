@@ -248,7 +248,6 @@ def _parse_docs(dom):
     signals = {}
     properties = {}
     fields = {}
-    vfuncs = {}
 
     tag_names = [
         [("glib:signal",), signals],

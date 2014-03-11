@@ -12,11 +12,10 @@ from . import util
 
 class CallbackGenerator(util.Generator):
 
-    def __init__(self, dir_, module_fileobj):
+    def __init__(self, dir_):
         self.path = os.path.join(dir_, "callbacks.rst")
 
         self._callbacks = {}
-        self._module = module_fileobj
 
     def add_callback(self, obj, code):
         if isinstance(code, unicode):
@@ -30,7 +29,7 @@ class CallbackGenerator(util.Generator):
     def is_empty(self):
         return not bool(self._callbacks)
 
-    def write(self):
+    def write(self, module_fileobj):
         funcs = self._callbacks.keys()
         funcs.sort(key=lambda x: x.__name__)
 
@@ -67,6 +66,6 @@ Details
 
         for f in funcs:
             code = self._callbacks[f]
-            self._module.write(code + "\n")
+            module_fileobj.write(code + "\n")
 
         handle.close()

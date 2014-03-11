@@ -9,7 +9,7 @@ import os
 import types
 import inspect
 
-from .klass import GObjectGenerator, InterfaceGenerator
+from .klass import ClassGenerator
 from .flags import FlagsGenerator
 from .constants import ConstantsGenerator
 from .function import FunctionGenerator
@@ -43,7 +43,7 @@ class ModuleGenerator(util.Generator):
         module.write("pgi.require_version('%s', '%s')\n" % (name, version))
         module.write("from pgi.repository import %s\n" % name)
 
-    def write(self):
+    def write(self, *args):
 
         namespace, version = self.namespace, self.version
 
@@ -67,15 +67,14 @@ class ModuleGenerator(util.Generator):
         for dep in repo.get_dependencies():
             self._add_dependency(module, *dep)
 
-        obj_gen = GObjectGenerator(self._module_path, module)
-        iface_gen = InterfaceGenerator(self._module_path, module)
-        flags_gen = FlagsGenerator(self._module_path, module)
-        enums_gen = EnumGenerator(self._module_path, module)
-        func_gen = FunctionGenerator(self._module_path, module)
-        struct_gen = StructGenerator(self._module_path, module)
-        union_gen = UnionGenerator(self._module_path, module)
-        const_gen = ConstantsGenerator(self._module_path, module)
-        cb_gen = CallbackGenerator(self._module_path, module)
+        class_gen = ClassGenerator(self._module_path)
+        flags_gen = FlagsGenerator(self._module_path)
+        enums_gen = EnumGenerator(self._module_path)
+        func_gen = FunctionGenerator(self._module_path)
+        struct_gen = StructGenerator(self._module_path)
+        union_gen = UnionGenerator(self._module_path)
+        const_gen = ConstantsGenerator(self._module_path)
+        cb_gen = CallbackGenerator(self._module_path)
 
         for key in dir(mod):
             if key.startswith("_"):
@@ -104,13 +103,11 @@ class ModuleGenerator(util.Generator):
             elif inspect.isclass(obj):
                 if util.is_iface(obj) or util.is_object(obj):
 
-                    if util.is_object(obj):
-                        class_gen = obj_gen
-                    else:
-                        class_gen = iface_gen
-
                     code = repo.parse_class(name, obj, add_bases=True)
-                    class_gen.add_class(obj, code)
+                    if util.is_object(obj):
+                        class_gen.add_class(obj, code)
+                    else:
+                        class_gen.add_interface(obj, code)
 
                     props = repo.parse_properties(obj)
                     class_gen.add_properties(obj, props)
@@ -179,10 +176,10 @@ class ModuleGenerator(util.Generator):
                             if code:
                                 gen.add_method(obj, attr_obj, code)
                 else:
-                    # unions..
+                    # classes defined in overrides
                     code = repo.parse_class(name, obj)
                     if code:
-                        obj_gen.add_class(obj, code)
+                        class_gen.add_class(obj, code)
             else:
                 code = repo.parse_constant(name)
                 if code:
@@ -204,14 +201,14 @@ class ModuleGenerator(util.Generator):
 
 """)
 
-            gens = [func_gen, cb_gen, iface_gen, obj_gen, struct_gen,
+            gens = [func_gen, cb_gen, class_gen, struct_gen,
                     union_gen, flags_gen, enums_gen, const_gen]
             for gen in gens:
                 if gen.is_empty():
                     continue
                 for name in gen.get_names():
                     h.write("    %s\n" % name)
-                gen.write()
+                gen.write(module)
 
         module.close()
 

@@ -13,11 +13,10 @@ from .util import Generator
 
 class ConstantsGenerator(Generator):
 
-    def __init__(self, dir_, module_fileobj):
+    def __init__(self, dir_):
         self.path = os.path.join(dir_, "constants.rst")
 
         self._consts = {}
-        self._module = module_fileobj
 
     def add_constant(self, name, code):
         if isinstance(code, unicode):
@@ -31,7 +30,7 @@ class ConstantsGenerator(Generator):
     def is_empty(self):
         return not bool(self._consts)
 
-    def write(self):
+    def write(self, module_fileobj):
         names = self._consts.keys()
         names.sort()
 
@@ -64,6 +63,6 @@ Details
 
         for name in names:
             code = self._consts[name]
-            self._module.write(code + "\n")
+            module_fileobj.write(code + "\n")
 
         handle.close()

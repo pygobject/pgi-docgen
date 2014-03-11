@@ -12,11 +12,10 @@ from . import util
 
 class FunctionGenerator(util.Generator):
 
-    def __init__(self, dir_, module_fileobj):
+    def __init__(self, dir_):
         self.path = os.path.join(dir_, "functions.rst")
 
         self._funcs = {}
-        self._module = module_fileobj
 
     def get_names(self):
         return [os.path.basename(self.path)]
@@ -30,7 +29,7 @@ class FunctionGenerator(util.Generator):
 
         self._funcs[name] = code
 
-    def write(self):
+    def write(self, module_fileobj):
 
         handle = open(self.path, "wb")
         handle.write("""
@@ -48,7 +47,7 @@ Details
 """)
 
         for name, code in sorted(self._funcs.items()):
-            self._module.write(code)
+            module_fileobj.write(code)
             handle.write(".. autofunction:: %s\n\n" % name)
 
         handle.close()
