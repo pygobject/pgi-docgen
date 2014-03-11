@@ -22,31 +22,48 @@ from .doap import get_project_summary
 from . import util
 
 
+def _import_dependency(fobj, name, version):
+    """Import the module in the generated code"""
+
+    fobj.write("import pgi\n")
+    fobj.write("pgi.set_backend('ctypes,null')\n")
+    fobj.write("pgi.require_version('%s', '%s')\n" % (name, version))
+    fobj.write("from pgi.repository import %s\n" % name)
+
+
 class ModuleGenerator(util.Generator):
 
-    def __init__(self, namespace, version):
-        # create the basic package structure
-        self.namespace = namespace
-        self.version = version
+    def __init__(self):
+        self._modules = []
 
     def get_names(self):
-        nick = "%s_%s" % (self.namespace, self.version)
-        return [nick + "/index"]
+        names = []
+        for namespace, version in self._modules:
+            nick = "%s_%s" % (namespace, version)
+            names.append(nick + "/index")
+        return names
 
-    def _add_dependency(self, module, name, version):
-        """Import the module in the generated code"""
+    def add_module(self, namespace, version):
 
-        module.write("import pgi\n")
-        module.write("pgi.set_backend('ctypes,null')\n")
-        module.write("pgi.require_version('%s', '%s')\n" % (name, version))
-        module.write("from pgi.repository import %s\n" % name)
+        # XXX: we bind all attributes here so the class hierarchy is created
+        # and cls.__subclasses__() works in each ModuleGenerator
+        # even across namespaces
+        mod = util.import_namespace(namespace, version)
+        for key in dir(mod):
+            getattr(mod, key, None)
+
+        self._modules.append((namespace, version))
+
+    def is_empty(self):
+        return not bool(self._modules)
 
     def write(self, dir_, *args):
+        for namespace, version in self._modules:
+            nick = "%s_%s" % (namespace, version)
+            sub_dir = os.path.join(dir_, nick)
+            self._write(sub_dir, namespace, version)
 
-        namespace, version = self.namespace, self.version
-
-        nick = "%s_%s" % (namespace, version)
-        sub_dir = os.path.join(dir_, nick)
+    def _write(self, sub_dir, namespace, version):
         os.mkdir(sub_dir)
         module_path = os.path.join(sub_dir, namespace + ".py")
         module = open(module_path, "wb")
@@ -54,18 +71,18 @@ class ModuleGenerator(util.Generator):
         # utf-8 encoded .py
         module.write("# -*- coding: utf-8 -*-\n")
         # for references to the real module
-        self._add_dependency(module, namespace, version)
+        _import_dependency(module, namespace, version)
         # basic deps
-        self._add_dependency(module, "GObject", "2.0")
-        self._add_dependency(module, "Gio", "2.0")
-        self._add_dependency(module, "GLib", "2.0")
-        self._add_dependency(module, "Atk", "1.0")
+        _import_dependency(module, "GObject", "2.0")
+        _import_dependency(module, "Gio", "2.0")
+        _import_dependency(module, "GLib", "2.0")
+        _import_dependency(module, "Atk", "1.0")
 
         mod = util.import_namespace(namespace, version)
         repo = Repository(namespace, version)
 
         for dep in repo.get_dependencies():
-            self._add_dependency(module, *dep)
+            _import_dependency(module, *dep)
 
         class_gen = ClassGenerator()
         flags_gen = FlagsGenerator()

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2013 Christoph Reiter
+# Copyright 2013,2014 Christoph Reiter
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -29,7 +29,7 @@ class MainGenerator(util.Generator):
         self._api_gen.add_module(*args)
 
     def is_empty(self):
-        self._api_gen.is_empty()
+        return self._api_gen.is_empty()
 
     def write(self, dir_, *args):
         os.mkdir(dir_)
@@ -50,7 +50,7 @@ Index
                     continue
                 gen.write(dir_)
 
-                for n in gen.get_names():
+                for n in sorted(gen.get_names()):
                     h.write("    %s\n" % n)
 
         # copy the theme, conf.py
