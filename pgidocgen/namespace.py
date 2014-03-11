@@ -41,6 +41,7 @@ class Namespace(object):
         dom = _get_dom(self.path)
 
         self._types = _parse_types(dom, namespace)
+        self._types.update(get_cairo_types())
 
         # dependencies
         deps = []
@@ -83,6 +84,34 @@ class Namespace(object):
     def __repr__(self):
         return "%s(%s, %s)" % (
             type(self).__name__, self.namespace, self.version)
+
+
+def get_cairo_types():
+    """Creates an (incomplete) c symbol to python key mapping for pycairo"""
+
+    import cairo
+
+    def get_mapping(obj, prefix):
+        map_ = {}
+        for arg in dir(obj):
+            if arg.startswith("_"):
+                continue
+            c_name = "_".join(filter(None, ["cairo", prefix, arg]))
+            map_[c_name] = obj.__module__ + "." + obj.__name__ + "." + arg
+            # import ctypes
+            # lib = ctypes.CDLL("libcairo.so")
+            # assert getattr(lib, c_name)
+        return map_
+
+    types = {}
+    types.update(get_mapping(cairo.Context, ""))
+    types.update(get_mapping(cairo.Surface, "surface"))
+    types.update(get_mapping(cairo.Pattern, "pattern"))
+    types.update(get_mapping(cairo.Matrix, "matrix"))
+    types.update(get_mapping(cairo.FontFace, "font_face"))
+
+    return types
+
 
 
 def _parse_types(dom, namespace):

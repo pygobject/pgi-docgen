@@ -8,7 +8,7 @@
 
 import unittest
 
-from pgidocgen.namespace import Namespace
+from pgidocgen.namespace import Namespace, get_cairo_types
 
 
 class TNamespace(unittest.TestCase):
@@ -72,6 +72,14 @@ class TNamespace(unittest.TestCase):
         ns.parse_docs()
 
         self.assertEqual(types["cairo_t"], "cairo.Context")
+
+    def test_pycairo(self):
+        types = get_cairo_types()
+        self.assertEqual(
+            types["cairo_set_operator"], "cairo.Context.set_operator")
+
+        self.assertEqual(
+            types["cairo_surface_get_content"], "cairo.Surface.get_content")
 
     def test_pango(self):
         ns = Namespace("Pango", "1.0")

@@ -59,7 +59,7 @@ def _handle_data(types, current, d):
         elif sub in types:
             pytype = types[sub]
             assert "." in pytype
-            return ":class:`%s`" % pytype
+            return ":py:obj:`%s`" % pytype
         elif token.startswith(("#", "%")):
             if token.endswith("s"):
                 # if we are sure it's a reference and it ends with 's'
