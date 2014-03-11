@@ -19,9 +19,10 @@ Requirements
 * pgi (trunk)
 * Sphinx
 * BeautifulSoup 3
+* graphviz
 
 Calling ``source bootstrap.sh`` will put you in a virtualenv with all 
-dependencies installed.
+dependencies installed (except graphviz).
 
 
 How do I get started?
