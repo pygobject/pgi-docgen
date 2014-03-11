@@ -68,6 +68,7 @@ class TFuncSigs(unittest.TestCase):
         self.assertEqual(sig.to_simple_signature(), "to_hash(flags, foo)")
 
     def test_arg_to_class_ref(self):
+        self.assertEqual(arg_to_class_ref("bytes"), ":obj:`bytes <str>`")
         self.assertEqual(arg_to_class_ref("int"), ":obj:`int`")
         self.assertEqual(arg_to_class_ref("[int]"), "[:obj:`int`]")
         self.assertEqual(

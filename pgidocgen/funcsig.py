@@ -59,6 +59,8 @@ def arg_to_class_ref(text):
         else:
             if p in ("None", "int", "bool", "str"):
                 out.append(":obj:`%s`" % p)
+            elif p == "bytes":
+                out.append(":obj:`%s <str>`" % p)
             elif p:
                 out.append(":class:`%s`" % p)
 
