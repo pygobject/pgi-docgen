@@ -54,3 +54,7 @@
 tt.descname, tt.descclassname {
     font-family: "Lato";
 }
+
+.rst-content table.field-list td {
+    padding-top: 8px;
+}
