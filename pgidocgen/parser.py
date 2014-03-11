@@ -17,7 +17,7 @@ from .util import escape_rest, force_unindent
 def _handle_data(types, current, d):
 
     scanner = re.Scanner([
-        (r"@[A-Za-z0-9_]+", lambda scanner, token:("PARAM", token)),
+        (r"\*?@[A-Za-z0-9_]+", lambda scanner, token:("PARAM", token)),
         (r"[#%]?[A-Za-z0-9_:\-]+\**", lambda scanner, token:("ID", token)),
         (r"\(", lambda scanner, token:("OTHER", token)),
         (r"\)", lambda scanner, token:("OTHER", token)),
@@ -85,6 +85,7 @@ def _handle_data(types, current, d):
     for type_, token in results:
         orig_token = token
         if type_ == "PARAM":
+            token = token.lstrip("*")
             # paremeter reference
             assert token[0] == "@"
             token = token[1:]

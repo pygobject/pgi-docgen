@@ -225,7 +225,10 @@ bar\
 """,
 ),(
         "a style class named <literal>level-</literal>@name",
-        "a style class named ``level-`` `name`"
+        "a style class named ``level-`` `name`",
+),(
+        "in *@dest_x and ",
+        "in `dest_x` and ",
         )]
 
         for in_, out in data:
