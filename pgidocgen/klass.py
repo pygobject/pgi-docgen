@@ -178,6 +178,18 @@ class ClassGenerator(util.Generator, FieldsMixin):
             cls_name = cls.__module__ + "." + cls.__name__
             h.write(util.make_rest_title(cls_name, "=") + "\n")
 
+            # special case classes which don't inherit from any GI class
+            # and are defined in the overrides:
+            # e.g. Gtk.TreeModelRow
+            if not util.is_iface(cls) and not util.is_object(cls):
+                h.write("""
+.. autoclass:: %s
+    :members:
+    :undoc-members:
+
+""" % cls_name)
+                continue
+
             # INHERITANCE DIAGRAM
 
             h.write("""

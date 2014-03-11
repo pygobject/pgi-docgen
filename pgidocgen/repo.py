@@ -242,6 +242,13 @@ r'''
 
 """ % (name.split(".")[-1], name, docs)
 
+    def parse_custom_class(self, name, obj):
+        return """
+
+%s = %s
+
+""" % (name.split(".")[-1], name)
+
     def parse_class(self, name, obj, add_bases=False):
         names = []
 

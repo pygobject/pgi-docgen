@@ -194,7 +194,7 @@ class ModuleGenerator(util.Generator):
                                 gen.add_method(obj, attr_obj, code)
                 else:
                     # classes defined in overrides
-                    code = repo.parse_class(name, obj)
+                    code = repo.parse_custom_class(name, obj)
                     if code:
                         class_gen.add_class(obj, code)
             else:
