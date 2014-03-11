@@ -79,14 +79,14 @@ def main(argv):
             to_build.extend(get_namespace(*mod).get_all_dependencies())
         to_build = set(to_build)
 
-    gen = MainGenerator(dest_dir)
+    gen = MainGenerator()
     for namespace, version in to_build:
         print "Create docs: Namespace=%s, Version=%s" % (namespace, version)
         if namespace == "cairo":
             print "cairo gets referenced to external docs, skipping"
             continue
         gen.add_module(namespace, version)
-    gen.write()
+    gen.write(dest_dir)
 
 
 if __name__ == "__main__":

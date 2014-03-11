@@ -12,13 +12,11 @@ from . import util
 
 class FunctionGenerator(util.Generator):
 
-    def __init__(self, dir_):
-        self.path = os.path.join(dir_, "functions.rst")
-
+    def __init__(self):
         self._funcs = {}
 
     def get_names(self):
-        return [os.path.basename(self.path)]
+        return ["functions"]
 
     def is_empty(self):
         return not bool(self._funcs)
@@ -29,9 +27,9 @@ class FunctionGenerator(util.Generator):
 
         self._funcs[name] = code
 
-    def write(self, module_fileobj):
-
-        handle = open(self.path, "wb")
+    def write(self, dir_, module_fileobj):
+        path = os.path.join(dir_, "functions.rst")
+        handle = open(path, "wb")
         handle.write("""
 Functions
 =========

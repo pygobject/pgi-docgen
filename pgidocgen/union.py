@@ -12,12 +12,7 @@ from .fields import FieldsMixin
 
 
 class UnionGenerator(util.Generator, FieldsMixin):
-    def __init__(self, dir_):
-        super(UnionGenerator, self).__init__()
-
-        self._sub_dir = os.path.join(dir_, "unions")
-        self.path = os.path.join(self._sub_dir, "index.rst")
-
+    def __init__(self):
         self._unions = {}
         self._methods = {}
 
@@ -41,8 +36,11 @@ class UnionGenerator(util.Generator, FieldsMixin):
         else:
             self._methods[cls_obj] = [(obj, code)]
 
-    def write(self, module_fileobj):
-        os.mkdir(self._sub_dir)
+    def write(self, dir_, module_fileobj):
+        sub_dir = os.path.join(dir_, "unions")
+        path = os.path.join(sub_dir, "index.rst")
+
+        os.mkdir(sub_dir)
 
         unions = self._unions.keys()
 
@@ -60,7 +58,7 @@ class UnionGenerator(util.Generator, FieldsMixin):
             for obj, code in methods:
                 module_fileobj.write(indent(code) + "\n")
 
-        index_handle = open(self.path, "wb")
+        index_handle = open(path, "wb")
         index_handle.write(util.make_rest_title("Unions") + "\n\n")
 
         # add classes to the index toctree
@@ -71,7 +69,7 @@ class UnionGenerator(util.Generator, FieldsMixin):
 """ % cls.__name__)
 
         for cls in unions:
-            h = open(os.path.join(self._sub_dir, cls.__name__) + ".rst", "wb")
+            h = open(os.path.join(sub_dir, cls.__name__) + ".rst", "wb")
             name = cls.__module__ + "." + cls.__name__
             title = name
             h.write(util.make_rest_title(title, "=") + "\n")

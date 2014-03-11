@@ -12,9 +12,7 @@ from . import util
 
 class EnumGenerator(util.Generator):
 
-    def __init__(self, dir_):
-        self.path = os.path.join(dir_, "enums.rst")
-
+    def __init__(self):
         self._enums = {}
 
     def add_enum(self, obj, code):
@@ -24,16 +22,17 @@ class EnumGenerator(util.Generator):
         self._enums[obj] = code
 
     def get_names(self):
-        return [os.path.basename(self.path)]
+        return ["enums"]
 
     def is_empty(self):
         return not bool(self._enums)
 
-    def write(self, module_fileobj):
+    def write(self, dir_, module_fileobj):
+        path = os.path.join(dir_, "enums.rst")
         classes = self._enums.keys()
         classes.sort(key=lambda x: x.__name__)
 
-        handle = open(self.path, "wb")
+        handle = open(path, "wb")
         handle.write("""\
 Enums
 =====

@@ -12,9 +12,7 @@ from . import util
 
 class FlagsGenerator(util.Generator):
 
-    def __init__(self, dir_):
-        self.path = os.path.join(dir_, "flags.rst")
-
+    def __init__(self):
         self._flags = {}
 
     def add_flags(self, obj, code):
@@ -24,16 +22,17 @@ class FlagsGenerator(util.Generator):
         self._flags[obj] = code
 
     def get_names(self):
-        return [os.path.basename(self.path)]
+        return ["flags"]
 
     def is_empty(self):
         return not bool(self._flags)
 
-    def write(self, module_fileobj):
+    def write(self, dir_, module_fileobj):
+        path = os.path.join(dir_, "flags.rst")
         classes = self._flags.keys()
         classes.sort(key=lambda x: x.__name__)
 
-        handle = open(self.path, "wb")
+        handle = open(path, "wb")
 
         handle.write("""
 =====

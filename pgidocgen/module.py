@@ -24,31 +24,31 @@ from . import util
 
 class ModuleGenerator(util.Generator):
 
-    def __init__(self, dir_, namespace, version):
+    def __init__(self, namespace, version):
         # create the basic package structure
         self.namespace = namespace
         self.version = version
 
-        nick = "%s_%s" % (namespace, version)
-        self._index_name = nick + "/index"
-        self._module_path = os.path.join(dir_, nick)
-
     def get_names(self):
-        return [self._index_name]
+        nick = "%s_%s" % (self.namespace, self.version)
+        return [nick + "/index"]
 
     def _add_dependency(self, module, name, version):
         """Import the module in the generated code"""
+
         module.write("import pgi\n")
         module.write("pgi.set_backend('ctypes,null')\n")
         module.write("pgi.require_version('%s', '%s')\n" % (name, version))
         module.write("from pgi.repository import %s\n" % name)
 
-    def write(self, *args):
+    def write(self, dir_, *args):
 
         namespace, version = self.namespace, self.version
 
-        os.mkdir(self._module_path)
-        module_path = os.path.join(self._module_path, namespace + ".py")
+        nick = "%s_%s" % (namespace, version)
+        sub_dir = os.path.join(dir_, nick)
+        os.mkdir(sub_dir)
+        module_path = os.path.join(sub_dir, namespace + ".py")
         module = open(module_path, "wb")
 
         # utf-8 encoded .py
@@ -67,14 +67,14 @@ class ModuleGenerator(util.Generator):
         for dep in repo.get_dependencies():
             self._add_dependency(module, *dep)
 
-        class_gen = ClassGenerator(self._module_path)
-        flags_gen = FlagsGenerator(self._module_path)
-        enums_gen = EnumGenerator(self._module_path)
-        func_gen = FunctionGenerator(self._module_path)
-        struct_gen = StructGenerator(self._module_path)
-        union_gen = UnionGenerator(self._module_path)
-        const_gen = ConstantsGenerator(self._module_path)
-        cb_gen = CallbackGenerator(self._module_path)
+        class_gen = ClassGenerator()
+        flags_gen = FlagsGenerator()
+        enums_gen = EnumGenerator()
+        func_gen = FunctionGenerator()
+        struct_gen = StructGenerator()
+        union_gen = UnionGenerator()
+        const_gen = ConstantsGenerator()
+        cb_gen = CallbackGenerator()
 
         for key in dir(mod):
             if key.startswith("_"):
@@ -185,7 +185,7 @@ class ModuleGenerator(util.Generator):
                 if code:
                     const_gen.add_constant(name, code)
 
-        with open(os.path.join(self._module_path, "index.rst"),  "wb") as h:
+        with open(os.path.join(sub_dir, "index.rst"),  "wb") as h:
 
             title = "%s %s" % (namespace, version)
             h.write(util.make_rest_title(title) + "\n\n")
@@ -208,7 +208,7 @@ class ModuleGenerator(util.Generator):
                     continue
                 for name in gen.get_names():
                     h.write("    %s\n" % name)
-                gen.write(module)
+                gen.write(sub_dir, module)
 
         module.close()
 

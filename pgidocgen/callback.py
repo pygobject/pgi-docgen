@@ -12,9 +12,7 @@ from . import util
 
 class CallbackGenerator(util.Generator):
 
-    def __init__(self, dir_):
-        self.path = os.path.join(dir_, "callbacks.rst")
-
+    def __init__(self):
         self._callbacks = {}
 
     def add_callback(self, obj, code):
@@ -24,16 +22,18 @@ class CallbackGenerator(util.Generator):
         self._callbacks[obj] = code
 
     def get_names(self):
-        return [os.path.basename(self.path)]
+        return ["callbacks"]
 
     def is_empty(self):
         return not bool(self._callbacks)
 
-    def write(self, module_fileobj):
+    def write(self, dir_, module_fileobj):
+        path = os.path.join(dir_, "callbacks.rst")
+
         funcs = self._callbacks.keys()
         funcs.sort(key=lambda x: x.__name__)
 
-        handle = open(self.path, "wb")
+        handle = open(path, "wb")
         handle.write("""\
 =========
 Callbacks

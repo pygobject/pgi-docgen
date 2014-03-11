@@ -14,8 +14,7 @@ from .module import ModuleGenerator
 class APIGenerator(util.Generator):
     API_DIR = "api"
 
-    def __init__(self, dest):
-        self._dest = dest
+    def __init__(self):
         self._modules = []
 
     def add_module(self, namespace, version):
@@ -34,17 +33,19 @@ class APIGenerator(util.Generator):
         return not self._modules
 
     def get_names(self):
-        return ["api/%s" % n for n in self._names]
-
-    def write(self):
         modules = sorted(self._modules, key=lambda x: x[0].lower())
-
-        path = os.path.join(self._dest, self.API_DIR)
-        os.mkdir(path)
-
         module_names = []
         for namespace, version in modules:
-            gen = ModuleGenerator(path, namespace, version)
-            gen.write()
+            gen = ModuleGenerator(namespace, version)
             module_names.extend(gen.get_names())
-        self._names = module_names
+        return ["api/%s" % n for n in module_names]
+
+    def write(self, dir_, *args):
+        modules = sorted(self._modules, key=lambda x: x[0].lower())
+
+        path = os.path.join(dir_, self.API_DIR)
+        os.mkdir(path)
+
+        for namespace, version in modules:
+            gen = ModuleGenerator(namespace, version)
+            gen.write(path)

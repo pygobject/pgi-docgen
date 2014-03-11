@@ -15,9 +15,7 @@ from .util import get_csv_line
 class ClassGenerator(util.Generator, FieldsMixin):
     """For GObjects an GInterfaces"""
 
-    def __init__(self, dir_):
-        self._dir = dir_
-
+    def __init__(self):
         self._classes = {}  # cls -> code
         self._ifaces = {}
         self._methods = {}  # cls -> code
@@ -101,13 +99,13 @@ class ClassGenerator(util.Generator, FieldsMixin):
         return [c for c in cls.__mro__ if
                 c in self._classes or c in self._ifaces]
 
-    def write(self, module_fileobj):
+    def write(self, dir_, module_fileobj):
         if self._ifaces:
-            self._write(module_fileobj, os.path.join(self._dir, "interfaces"),
+            self._write(module_fileobj, os.path.join(dir_, "interfaces"),
                         self._ifaces, True)
 
         if self._classes:
-            self._write(module_fileobj, os.path.join(self._dir, "classes"),
+            self._write(module_fileobj, os.path.join(dir_, "classes"),
                         self._classes, False)
 
     def _write(self, module_fileobj, sub_dir, classes, is_interface):

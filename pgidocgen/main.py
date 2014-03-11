@@ -22,9 +22,8 @@ class MainGenerator(util.Generator):
     EXT_DIR = "ext"
     CONF_IN = "conf.in.py"
 
-    def __init__(self, dest):
-        self._dest = dest
-        self._api_gen = APIGenerator(dest)
+    def __init__(self):
+        self._api_gen = APIGenerator()
 
     def add_module(self, *args):
         self._api_gen.add_module(*args)
@@ -32,10 +31,10 @@ class MainGenerator(util.Generator):
     def is_empty(self):
         self._api_gen.is_empty()
 
-    def write(self):
-        os.mkdir(self._dest)
+    def write(self, dir_, *args):
+        os.mkdir(dir_)
 
-        with open(os.path.join(self._dest, "index.rst"), "wb") as h:
+        with open(os.path.join(dir_, "index.rst"), "wb") as h:
             h.write("""
 Index
 =====
@@ -49,23 +48,23 @@ Index
             for gen in gens:
                 if gen.is_empty():
                     continue
-                gen.write()
+                gen.write(dir_)
 
                 for n in gen.get_names():
                     h.write("    %s\n" % n)
 
         # copy the theme, conf.py
-        dest_conf = os.path.join(self._dest, "conf.py")
+        dest_conf = os.path.join(dir_, "conf.py")
         shutil.copy(os.path.join("data", self.CONF_IN), dest_conf)
 
-        theme_dest = os.path.join(self._dest, self.THEME_DIR)
+        theme_dest = os.path.join(dir_, self.THEME_DIR)
         shutil.copytree(os.path.join("data", self.THEME_DIR), theme_dest)
 
-        ext_dest = os.path.join(self._dest, self.EXT_DIR)
+        ext_dest = os.path.join(dir_, self.EXT_DIR)
         shutil.copytree(os.path.join("data", self.EXT_DIR), ext_dest)
 
-        stock_dest = os.path.join(self._dest, self.STOCK_DIR)
+        stock_dest = os.path.join(dir_, self.STOCK_DIR)
         shutil.copytree(os.path.join("data", self.STOCK_DIR), stock_dest)
 
-        clsimg_dest = os.path.join(self._dest, self.CLSIMG_DIR)
+        clsimg_dest = os.path.join(dir_, self.CLSIMG_DIR)
         shutil.copytree(os.path.join("data", self.CLSIMG_DIR), clsimg_dest)

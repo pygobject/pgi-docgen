@@ -313,10 +313,12 @@ class Generator(object):
 
     def is_empty(self):
         """If there is any content to create"""
+
         raise NotImplementedError
 
-    def write(self, module_fileobj):
+    def write(self, dir_, module_fileobj=None):
         """Create and write everything"""
+
         raise NotImplementedError
 
     def get_names(self):
