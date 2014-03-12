@@ -43,4 +43,4 @@ python ./pgi-docgen.py -f _docs Atk-1.0 Cogl-1.0 CoglPango-1.0 DBus-1.0 \
     SocialWebClient-0.25 SoupGNOME-2.4 SpiceClientGLib-2.0 GOffice-0.10 \
     SpiceClientGtk-3.0 SugarGestures-1.0 TelepathyGLib-0.12 Wnck-3.0 \
     TelepathyLogger-0.2 TotemPlParser-1.0 Xkl-1.0 Zpj-0.0 Zeitgeist-2.0 \
-    && ./tools/pgi-docgen-build.py _docs/_build _docs
+    && ./pgi-docgen-build.py _docs/_build _docs
