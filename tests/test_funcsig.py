@@ -61,6 +61,12 @@ class TFuncSigs(unittest.TestCase):
 
         self.assertEqual(sig.res, [["{str: {int: int}}"]])
 
+        sig = FuncSignature.from_string("do_get_item_attributes",
+            "do_get_item_attributes(item_index: int) -> "
+            "attributes: {str: GLib.Variant}")
+
+        self.assertEqual(sig.res, [["attributes", "{str: GLib.Variant}"]])
+
     def test_to_simple_sig(self):
         sig = FuncSignature.from_string("to_hash",
             "to_hash(flags: NetworkManager.SettingHashFlags, foo: [int]) -> "

@@ -10,7 +10,7 @@ import re
 from .util import escape_rest, indent
 
 
-def _get_type_name(type_):
+def get_type_name(type_):
     """Gives a name for a type that is suitable for a docstring.
 
     int -> "int"
@@ -19,15 +19,18 @@ def _get_type_name(type_):
     {int: Gtk.Button} -> "{int: Gtk.Button}"
     """
 
+    if type_ is None:
+        raise TypeError
+
     if isinstance(type_, basestring):
         return type_
     elif isinstance(type_, list):
         assert len(type_) == 1
-        return "[%s]" % _get_type_name(type_[0])
+        return "[%s]" % get_type_name(type_[0])
     elif isinstance(type_, dict):
         assert len(type_) == 1
         key, value = type_.popitem()
-        return "{%s: %s}" % (_get_type_name(key), _get_type_name(value))
+        return "{%s: %s}" % (get_type_name(key), get_type_name(value))
     elif type_.__module__ in "__builtin__":
         return type_.__name__
     else:
@@ -35,7 +38,7 @@ def _get_type_name(type_):
 
 
 def py_type_to_class_ref(type_):
-    return arg_to_class_ref(_get_type_name(type_))
+    return arg_to_class_ref(get_type_name(type_))
 
 
 def arg_to_class_ref(text):
@@ -123,7 +126,7 @@ class FuncSignature(object):
             if r.startswith("{"):
                 res.append([r])
             else:
-                parts = [p.strip() for p in r.split(":")]
+                parts = [p.strip() for p in r.split(":", 1)]
                 res.append(parts)
 
         raises = bool(raises)

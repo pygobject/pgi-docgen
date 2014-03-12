@@ -15,7 +15,7 @@ from . import util
 from .util import unindent, gtype_to_rest
 
 from .gtkstock import parse_stock_icon
-from .funcsig import FuncSignature, py_type_to_class_ref
+from .funcsig import FuncSignature, py_type_to_class_ref, get_type_name
 from .parser import docstring_to_rest
 
 
@@ -317,9 +317,9 @@ class %s(%s):
             if not util.is_field(field_info):
                 continue
 
-            atype = field_info.py_type
-            type_name = atype.__module__ + "." + atype.__name__
-            if self.is_private(type_name):
+            py_type = field_info.py_type
+            type_name = get_type_name(py_type)
+            if "." in type_name and self.is_private(type_name):
                 continue
 
             name = field_info.name
