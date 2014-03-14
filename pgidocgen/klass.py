@@ -22,12 +22,15 @@ class ClassGenerator(util.Generator, FieldsMixin):
         self._vfuncs = {}
         self._props = {}  # cls -> [prop]
         self._sigs = {}  # cls -> [sig]
+        self._py_class = set()
 
-    def add_class(self, obj, code):
+    def add_class(self, obj, code, py_class=False):
         if isinstance(code, unicode):
             code = code.encode("utf-8")
 
         self._classes[obj] = code
+        if py_class:
+            self._py_class.add(obj)
 
     def add_interface(self, obj, code):
         if isinstance(code, unicode):
@@ -151,8 +154,8 @@ class ClassGenerator(util.Generator, FieldsMixin):
 
             # special case classes which don't inherit from any GI class
             # and are defined in the overrides:
-            # e.g. Gtk.TreeModelRow
-            if not util.is_iface(cls) and not util.is_object(cls):
+            # e.g. Gtk.TreeModelRow, GObject.ParamSpec
+            if cls in self._py_class:
                 h.write("""
 .. autoclass:: %s
     :members:

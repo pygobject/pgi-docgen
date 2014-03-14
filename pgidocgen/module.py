@@ -22,13 +22,19 @@ from .doap import get_project_summary
 from . import util
 
 
-def _import_dependency(fobj, name, version):
+def _import_dependency(fobj, namespace, version):
     """Import the module in the generated code"""
 
     fobj.write("import pgi\n")
     fobj.write("pgi.set_backend('ctypes,null')\n")
-    fobj.write("pgi.require_version('%s', '%s')\n" % (name, version))
-    fobj.write("from pgi.repository import %s\n" % name)
+    fobj.write("pgi.require_version('%s', '%s')\n" % (namespace, version))
+    fobj.write("from pgi.repository import %s\n" % namespace)
+
+    # this needs to be synced with util.import_namespace
+    if namespace in ("Clutter", "ClutterGst", "Gst", "Grl"):
+        fobj.write("%s.init([])\n" % namespace)
+    elif namespace in ("Gsf", "IBus"):
+        fobj.write("%s.init()\n" % namespace)
 
 
 class ModuleGenerator(util.Generator):
@@ -193,10 +199,17 @@ class ModuleGenerator(util.Generator):
                             if code:
                                 gen.add_method(obj, attr_obj, code)
                 else:
-                    # classes defined in overrides
-                    code = repo.parse_custom_class(name, obj)
-                    if code:
-                        class_gen.add_class(obj, code)
+                    # classes not subclassing from any gobject base class
+
+                    if util.is_paramspec(obj):
+                        # param specs are special, treat it as a GObject
+                        code = repo.parse_class(name, obj)
+                        if code:
+                            class_gen.add_class(obj, code)
+                    else:
+                        code = repo.parse_custom_class(name, obj)
+                        if code:
+                            class_gen.add_class(obj, code, py_class=True)
             else:
                 code = repo.parse_constant(name)
                 if code:

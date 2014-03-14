@@ -42,7 +42,15 @@ def import_namespace(namespace, version):
     except ValueError as e:
         raise ImportError(e)
     module = __import__("gi.repository", fromlist=[namespace])
-    return getattr(module, namespace)
+    module = getattr(module, namespace)
+
+    # this needs to be synced with module._import_dependency
+    if namespace in ("Clutter", "ClutterGst", "Gst", "Grl"):
+        module.init([])
+    elif namespace in ("Gsf", "IBus"):
+        module.init()
+
+    return module
 
 
 def escape_identifier(text, reg=_KWD_RE):
@@ -88,6 +96,14 @@ def is_method_owner(cls, method_name):
         if getattr(base, method_name, None) == obj:
             return False
     return True
+
+
+def is_paramspec(obj):
+    if not inspect.isclass(obj):
+        return False
+
+    from gi.repository import GObject
+    return issubclass(obj, GObject.ParamSpec)
 
 
 def is_iface(obj):
