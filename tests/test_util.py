@@ -9,7 +9,7 @@ import os
 import unittest
 
 from pgidocgen.util import is_staticmethod, is_classmethod, is_normalmethod
-from pgidocgen.util import is_method_owner
+from pgidocgen.util import is_method_owner, is_fundamental
 
 
 class TUtil(unittest.TestCase):
@@ -51,3 +51,10 @@ class TUtil(unittest.TestCase):
         self.assertTrue(is_method_owner(Gtk.Viewport, "get_vadjustment"))
         self.assertTrue(is_method_owner(Gtk.AccelGroup, "connect"))
         self.assertFalse(is_method_owner(Gtk.AboutDialog, "get_focus_on_map"))
+
+    def test_class_checks(self):
+        from pgi.repository import GObject
+
+        self.assertTrue(is_fundamental(GObject.Object))
+        self.assertTrue(is_fundamental(GObject.ParamSpec))
+        self.assertFalse(is_fundamental(object))

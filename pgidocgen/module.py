@@ -200,9 +200,7 @@ class ModuleGenerator(util.Generator):
                                 gen.add_method(obj, attr_obj, code)
                 else:
                     # classes not subclassing from any gobject base class
-
-                    if util.is_paramspec(obj):
-                        # param specs are special, treat it as a GObject
+                    if util.is_fundamental(obj):
                         code = repo.parse_class(name, obj)
                         if code:
                             class_gen.add_class(obj, code)

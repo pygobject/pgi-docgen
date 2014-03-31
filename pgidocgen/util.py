@@ -98,12 +98,13 @@ def is_method_owner(cls, method_name):
     return True
 
 
-def is_paramspec(obj):
+def is_fundamental(obj):
+    """True for classed and non-classed fundamentals"""
+
     if not inspect.isclass(obj):
         return False
 
-    from gi.repository import GObject
-    return issubclass(obj, GObject.ParamSpec)
+    return hasattr(obj, "__gtype__")
 
 
 def is_iface(obj):
