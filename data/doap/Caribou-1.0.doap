@@ -6,9 +6,9 @@
 
   <name xml:lang="en">caribou</name>
   <shortdesc xml:lang="en">Text entry and UI navigation application</shortdesc>
-  <homepage rdf:resource="http://live.gnome.org/Caribou" />
+  <homepage rdf:resource="https://wiki.gnome.org/Projects/Caribou" />
   <mailing-list rdf:resource="http://mail.gnome.org/mailman/listinfo/gok-list" />
-  <bug-database rdf:resource="http://bugzilla.gnome.org/browse.cgi?product=caribou" />
+  <bug-database rdf:resource="https://bugzilla.gnome.org/browse.cgi?product=caribou" />
   <category rdf:resource="http://api.gnome.org/doap-extensions#desktop" />
 
   <maintainer>

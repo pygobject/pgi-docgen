@@ -8,6 +8,8 @@
   <shortdesc xml:lang="en">Display manager and login screen</shortdesc>
   <homepage rdf:resource="http://wiki.gnome.org/Projects/GDM/" />
   <mailing-list rdf:resource="http://mail.gnome.org/mailman/listinfo/gdm-list" />
+  <download-page rdf:resource="http://download.gnome.org/sources/gdm/" />
+  <bug-database rdf:resource="https://bugzilla.gnome.org/browse.cgi?product=gdm" />
   <category rdf:resource="http://api.gnome.org/doap-extensions#desktop" />
 
   <maintainer>

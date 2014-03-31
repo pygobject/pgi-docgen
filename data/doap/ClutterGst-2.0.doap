@@ -14,11 +14,11 @@
   <description xml:lang="en">Clutter-Gst is an integration library for using
     GStreamer with Clutter.</description>
 
-	<homepage rdf:resource="http://clutter-project.org" />
+	<homepage rdf:resource="https://wiki.gnome.org/Projects/Clutter" />
 	<license rdf:resource="http://usefulinc.com/doap/licenses/lgpl" />
-  <bug-database rdf:resource="http://bugzilla.o-hand.com/enter_bug.cgi?product=Clutter"/>
-  <download-page rdf:resource="http://clutter-project.org/sources" />
-  <mailing-list rdf:resource="mailto:clutter+subscribe@o-hand.com" />
+  <bug-database rdf:resource="https://bugzilla.gnome.org/enter_bug.cgi?product=clutter-gst"/>
+  <download-page rdf:resource="http://download.gnome.org/sources/clutter-gst/" />
+  <mailing-list rdf:resource="mailto:clutter-list@gnome.org" />
 
   <programming-language>C</programming-language>
 
