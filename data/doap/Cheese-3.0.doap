@@ -16,7 +16,7 @@
   looking for people with nice ideas and patches ;)</description>
   <homepage rdf:resource="https://wiki.gnome.org/Apps/Cheese" />
   <download-page rdf:resource="https://download.gnome.org/sources/cheese/" />
-  <mailing-list rdf:resource="http://mail.gnome.org/mailman/listinfo/cheese-list" />
+  <mailing-list rdf:resource="https://mail.gnome.org/mailman/listinfo/cheese-list" />
   <bug-database rdf:resource="https://bugzilla.gnome.org/browse.cgi?product=cheese" />
   <category rdf:resource="http://api.gnome.org/doap-extensions#desktop" />
   <repository>
@@ -30,16 +30,10 @@
 
   <maintainer>
     <foaf:Person>
-      <foaf:name>daniel g. siegel</foaf:name>
-      <foaf:mbox rdf:resource="mailto:dgsiegel@gnome.org" />
-      <gnome:userid>dgsiegel</gnome:userid>
-    </foaf:Person>
-  </maintainer>
-  <maintainer>
-    <foaf:Person>
-      <foaf:name>Filippo Argiolas</foaf:name>
-      <foaf:mbox rdf:resource="mailto:filippo.argiolas@gmail.com" />
-      <gnome:userid>fargiolas</gnome:userid>
+      <foaf:name>David King</foaf:name>
+      <foaf:mbox rdf:resource="mailto:amigadave@amigadave.com" />
+      <foaf:seeAlso rdf:resource="http://amigadave.com/foaf.rdf#david" />
+      <gnome:userid>davidk</gnome:userid>
     </foaf:Person>
   </maintainer>
   <maintainer>
@@ -47,14 +41,6 @@
       <foaf:name>Luciana Fujii Pontello</foaf:name>
       <foaf:mbox rdf:resource="mailto:luciana@fujii.eti.br" />
       <gnome:userid>lufujii</gnome:userid>
-    </foaf:Person>
-  </maintainer>
-  <maintainer>
-    <foaf:Person>
-      <foaf:name>David King</foaf:name>
-      <foaf:mbox rdf:resource="mailto:amigadave@amigadave.com" />
-      <foaf:seeAlso rdf:resource="http://amigadave.com/foaf.rdf#david" />
-      <gnome:userid>davidk</gnome:userid>
     </foaf:Person>
   </maintainer>
 </Project>

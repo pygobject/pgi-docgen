@@ -11,7 +11,7 @@
   -->
   <mailing-list rdf:resource="http://mail.gnome.org/mailman/listinfo/desktop-devel-list" />
   <download-page rdf:resource="http://download.gnome.org/sources/gsettings-desktop-schemas/" />
-  <bug-database rdf:resource="http://bugzilla.gnome.org/browse.cgi?product=gsettings-desktop-schemas" />
+  <bug-database rdf:resource="https://bugzilla.gnome.org/browse.cgi?product=gsettings-desktop-schemas" />
 
   <!-- DOAP category: This is used to categorize repositories in cgit.
        Pulse has taken its best guess at the correct category.  You may
