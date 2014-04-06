@@ -41,6 +41,6 @@ python ./pgi-docgen.py -f _docs Atk-1.0 Cogl-1.0 CoglPango-1.0 DBus-1.0 \
     Peas-1.0 PeasGtk-1.0 Polkit-1.0 UPowerGlib-1.0 SecretUnstable-0 \
     PolkitAgent-1.0 Rest-0.7 RestExtras-0.7 Rsvg-2.0 UMockdev-1.0 \
     SocialWebClient-0.25 SoupGNOME-2.4 SpiceClientGLib-2.0 GOffice-0.10 \
-    SpiceClientGtk-3.0 SugarGestures-1.0 TelepathyGLib-0.12 Wnck-3.0 \
+    SpiceClientGtk-3.0 SugarGestures-1.0 TelepathyGLib-0.12 Wnck-3.0 GES-1.0 \
     TelepathyLogger-0.2 TotemPlParser-1.0 Xkl-1.0 Zpj-0.0 Zeitgeist-2.0 \
     && ./pgi-docgen-build.py _docs/_build _docs

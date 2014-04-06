@@ -152,6 +152,8 @@ LIBS = {
         ['TrackerMiner-0.16', 'TrackerExtract-0.16', 'Tracker-0.16'],
     'https://git.gnome.org/browse/vte/plain/vte.doap':
         ['Vte-2.90'],
+    'http://cgit.freedesktop.org/gstreamer/gst-editing-services/plain/gst-editing-services.doap':
+        ['GES-1.0'],
 }
 
 
