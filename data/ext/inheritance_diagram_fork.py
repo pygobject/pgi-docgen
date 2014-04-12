@@ -370,6 +370,12 @@ def html_visit_inheritance_diagram(self, node):
         elif child.get('refid') is not None:
             urls[child['reftitle']] = '#' + child.get('refid')
 
+    # PGI-DOCGEN:
+    # reftitle is useless for intersphinx nodes, extract from the url
+    # see https://bitbucket.org/birkenfeld/sphinx/issue/865
+    for key, value in urls.items():
+        urls[value.split("#")[-1]] = value
+
     dotcode = graph.generate_dot(name, urls, env=self.builder.env)
     dotcode = tred(dotcode)
     render_dot_html(self, node, dotcode, [], 'inheritance', 'inheritance',
