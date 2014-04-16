@@ -55,7 +55,7 @@ class Namespace(object):
         return _parse_private(_get_dom(self.path), self.namespace)
 
     def parse_docs(self):
-         return _parse_docs(_get_dom(self.path))
+        return _parse_docs(_get_dom(self.path))
 
     def get_types(self):
         return self._types
@@ -331,7 +331,17 @@ def _parse_docs(dom):
             doc_elm = get_child_by_tag(e, "doc")
             docs = (doc_elm and doc_elm.firstChild.nodeValue) or ""
             version = e.getAttribute("version")
+
+            # old gir had the deprecation text in the attribute, new
+            # gir in the <doc-deprecated> tag
             deprecated = e.getAttribute("deprecated")
+            if deprecated in "01":
+                deprecated = ""
+
+            dep_elm = get_child_by_tag(e, "doc-deprecated")
+            dep_elm_string = (dep_elm and dep_elm.firstChild.nodeValue) or ""
+            deprecated = dep_elm_string or deprecated
+
             deprecated_version = e.getAttribute("deprecated-version")
 
             def get_name(elm):

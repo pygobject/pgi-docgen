@@ -8,11 +8,15 @@
 
 import os
 import requests
+from multiprocessing import Pool
+
+import pgi
+pgi.require_version("Gtk", "3.0")
 
 from pgi.repository import Gtk
 
 
-DESTINATION = os.path.join("data", "clsimages")
+DESTINATION = os.path.join("data", "clsimages", "Gtk-3.0")
 
 GTK_MAPPING = {
     "Gtk.Button": "button",
@@ -69,7 +73,7 @@ GTK_MAPPING = {
     "Gtk.Stack": "stack",
     "Gtk.StackSwitcher": "stackswitcher",
     "Gtk.ListBox": "list-box",
-    #"Gtk.FlowBox": "flow-box",
+    "Gtk.FlowBox": "flow-box",
 }
 
 GTK_URL = ("https://git.gnome.org/browse/gtk+/plain/docs/"
@@ -77,16 +81,34 @@ GTK_URL = ("https://git.gnome.org/browse/gtk+/plain/docs/"
 
 MAPPING = dict([(k, GTK_URL  % v) for k, v in GTK_MAPPING.items()])
 
+def fetch(args):
+    key, url = args
+    print key
+    resp = requests.get(url)
+    return key, resp.content
+
 
 def main(dest, mapping):
     # make sure there are no typos in the mapping
     for key in mapping.keys():
         assert hasattr(Gtk, key.split(".")[-1]), key
 
-    for key, url in mapping.items():
-        print key
-        resp = requests.get(url)
-        data = resp.content
+    missing = []
+    for name in dir(Gtk):
+        value = getattr(Gtk, name)
+        try:
+            if issubclass(value, Gtk.Widget):
+                key = "Gtk." + name
+                if key not in GTK_MAPPING:
+                    missing.append(key)
+        except TypeError:
+            pass
+
+    print "Following widget sublasses are missing an image:"
+    print missing
+
+    pool = Pool(20)
+    for key, data in pool.imap_unordered(fetch, mapping.items()):
         dest_path = os.path.join(dest, key + ".png")
         with open(dest_path, "wb") as h:
             h.write(data)

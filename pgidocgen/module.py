@@ -8,6 +8,7 @@
 import os
 import types
 import inspect
+import shutil
 
 from .klass import ClassGenerator
 from .flags import FlagsGenerator
@@ -20,6 +21,7 @@ from .union import UnionGenerator
 from .callback import CallbackGenerator
 from .doap import get_project_summary
 from . import util
+from .namespace import get_namespace
 
 
 def _import_dependency(fobj, namespace, version):
@@ -39,6 +41,11 @@ def _import_dependency(fobj, namespace, version):
 
 class ModuleGenerator(util.Generator):
 
+    THEME_DIR = "theme"
+    CLSIMG_DIR = "clsimages"
+    EXT_DIR = "ext"
+    CONF_IN = "conf.in.py"
+
     def __init__(self):
         self._modules = []
 
@@ -50,27 +57,55 @@ class ModuleGenerator(util.Generator):
         return names
 
     def add_module(self, namespace, version):
-
-        # XXX: we bind all attributes here so the class hierarchy is created
-        # and cls.__subclasses__() works in each ModuleGenerator
-        # even across namespaces
-        mod = util.import_namespace(namespace, version)
-        for key in dir(mod):
-            getattr(mod, key, None)
-
         self._modules.append((namespace, version))
 
     def is_empty(self):
         return not bool(self._modules)
 
-    def write(self, dir_, *args):
-        for namespace, version in self._modules:
-            nick = "%s_%s" % (namespace, version)
-            sub_dir = os.path.join(dir_, nick)
-            self._write(sub_dir, namespace, version)
+    def write(self, dir_, target_):
+        try:
+            os.mkdir(dir_)
+        except OSError:
+            pass
 
-    def _write(self, sub_dir, namespace, version):
+        def get_to_write(dir_, namespace, version):
+            """Returns a list of modules to write.
+
+            Traverses the dependencies and stops if a module
+            build directory is found, skipping it and all its deps.
+            """
+
+            mods = []
+            nick = "%s-%s" % (namespace, version)
+            sub_dir = os.path.join(dir_, nick)
+            if os.path.exists(sub_dir):
+                print "skipping %s, already created" % nick
+                return mods
+            mods.append((namespace, version))
+
+            ns = get_namespace(namespace, version)
+            for dep in ns.get_dependencies():
+                mods.extend(get_to_write(dir_, *dep))
+
+            return mods
+
+        mods = []
+        for namespace, version in self._modules:
+            mods.extend(get_to_write(dir_, namespace, version))
+        mods = set(mods)
+
+        for namespace, version in mods:
+            nick = "%s-%s" % (namespace, version)
+            sub_dir = os.path.join(dir_, nick)
+            self._write(sub_dir, target_, namespace, version)
+
+    def _write(self, sub_dir, target_, namespace, version):
+        if os.path.exists(sub_dir):
+            print "skipping %s-%s, already exists" % (namespace, version)
+            return
+
         os.mkdir(sub_dir)
+        dir_ = sub_dir
         module_path = os.path.join(sub_dir, namespace + ".py")
         module = open(module_path, "wb")
 
@@ -90,7 +125,7 @@ class ModuleGenerator(util.Generator):
         for dep in repo.get_dependencies():
             _import_dependency(module, *dep)
 
-        class_gen = ClassGenerator()
+        class_gen = ClassGenerator(namespace, version)
         flags_gen = FlagsGenerator()
         enums_gen = EnumGenerator()
         func_gen = FunctionGenerator()
@@ -243,3 +278,31 @@ class ModuleGenerator(util.Generator):
         # make sure the generated code is valid python
         with open(module.name, "rb") as h:
             exec h.read() in {}
+
+        conf_path = os.path.join(dir_, "_pgi_docgen_conf.py")
+        deps = ["-".join(d) for d in repo.get_all_dependencies()]
+        with open(conf_path, "wb") as conf:
+            conf.write("""
+DEPS = %r
+TARGET = %r
+""" % (deps, os.path.abspath(target_)))
+
+        # make sure the generated config
+        with open(conf_path, "rb") as h:
+            exec h.read() in {}
+
+        # copy the theme, conf.py
+        dest_conf = os.path.join(dir_, "conf.py")
+        shutil.copy(os.path.join("data", self.CONF_IN), dest_conf)
+
+        theme_dest = os.path.join(dir_, "_" + self.THEME_DIR)
+        shutil.copytree(os.path.join("data", self.THEME_DIR), theme_dest)
+
+        ext_dest = os.path.join(dir_, "_" + self.EXT_DIR)
+        shutil.copytree(os.path.join("data", self.EXT_DIR), ext_dest)
+
+        module_id = "%s-%s" % (namespace, version)
+        clsimg_src = os.path.join("data", self.CLSIMG_DIR, module_id)
+        if os.path.exists(clsimg_src):
+            clsimg_dest = os.path.join(dir_, "_" + self.CLSIMG_DIR)
+            shutil.copytree(clsimg_src, clsimg_dest)

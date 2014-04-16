@@ -15,7 +15,7 @@ from .util import get_csv_line
 class ClassGenerator(util.Generator, FieldsMixin):
     """For GObjects an GInterfaces"""
 
-    def __init__(self):
+    def __init__(self, namespace, version):
         self._classes = {}  # cls -> code
         self._ifaces = {}
         self._methods = {}  # cls -> code
@@ -23,6 +23,9 @@ class ClassGenerator(util.Generator, FieldsMixin):
         self._props = {}  # cls -> [prop]
         self._sigs = {}  # cls -> [sig]
         self._py_class = set()
+
+        self.namespace = namespace
+        self.version = version
 
     def add_class(self, obj, code, py_class=False):
         if isinstance(code, unicode):
@@ -170,29 +173,17 @@ class ClassGenerator(util.Generator, FieldsMixin):
 .. inheritance-diagram:: %s
 """ % cls_name)
 
-            # subclasses
-            subclasses = cls.__subclasses__()
-            if subclasses:
-                if is_interface:
-                    h.write("\n:Implementations:\n")
-                else:
-                    h.write("\n:Subclasses:\n")
-                refs = []
-                for sub in subclasses:
-                    sub_name = sub.__module__ + "." + sub.__name__
-                    refs.append(":class:`%s`" % sub_name)
-                refs = sorted(set(refs))
-                h.write("    " + ", ".join(refs))
-                h.write("\n\n")
-
             # IMAGE
-            if os.path.exists("data/clsimages/%s.png" % cls_name):
+            image_path = os.path.join(
+                "data", "clsimages", "%s-%s" % (self.namespace, self.version),
+                "%s.png" % cls_name)
+            if os.path.exists(image_path):
                 h.write("""
 
 Example
 -------
 
-.. image:: ../../../clsimages/%s.png
+.. image:: ../_clsimages/%s.png
 
 """ % cls_name)
 

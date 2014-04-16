@@ -20,31 +20,32 @@ else:
     pgi.install_as_gi()
     pgi.set_backend("ctypes,null")
 
-from pgidocgen.main import MainGenerator
-from pgidocgen.namespace import get_namespace
+from pgidocgen.module import ModuleGenerator
 from pgidocgen.util import get_gir_files
 
 
 def main(argv):
     parser = argparse.ArgumentParser(
         description='Create a sphinx environ')
-    parser.add_argument('-f', '--force', action='store_true',
-                        help="Remove the target path if it exists")
-    parser.add_argument('-d', '--dependencies', action='store_true',
-                        help="Build all dependencies recursively")
-    parser.add_argument('target', help='path to where the result should be')
-    parser.add_argument('namespaces', nargs='+',
-                        help='A list of namespaces including versions '
-                             '(e.g. "Gtk-3.0 GLib-2.0")')
+    parser.add_argument('source',
+                        help='path to where the resulting source should be')
+    parser.add_argument('target',
+                        help='path to where the resulting build should be')
+    parser.add_argument('namespace',
+                        help='namespace including version e.g. Gtk-3.0')
 
     try:
         args = parser.parse_args(argv[1:])
     except SystemExit:
         raise SystemExit(1)
 
-    if not is_pgi and args.namespaces:
+    if not is_pgi:
         print "Can't build API docs without pgi"
         print "Get it here: https://github.com/lazka/pgi"
+        raise SystemExit(1)
+
+    if not args.namespace:
+        print "No namespace given"
         raise SystemExit(1)
 
     # this catches the "pip install pgi" case
@@ -55,38 +56,15 @@ def main(argv):
 
     girs = get_gir_files()
 
-    filtered = {}
-    for name in args.namespaces:
-        if name not in girs:
-            print "GIR file for %s not found, aborting." % name
-            raise SystemExit(1)
-        if name in filtered:
-            print "Passed multiple times: %r" % name
-        filtered[name] = girs[name]
+    if args.namespace not in girs:
+        print "GIR file for %s not found, aborting." % args.namespace
+        raise SystemExit(1)
 
-    dest_dir = args.target
-    if os.path.exists(dest_dir):
-        if args.force:
-            shutil.rmtree(dest_dir)
-        else:
-            print "Target already exists (pass -f to ignore): %s" % dest_dir
-            raise SystemExit(1)
-
-    to_build = [tuple(n.split("-")) for n in filtered]
-    if args.dependencies:
-        print "Dependencies will be build"
-        for mod in to_build[:]:
-            to_build.extend(get_namespace(*mod).get_all_dependencies())
-        to_build = set(to_build)
-
-    gen = MainGenerator()
-    for namespace, version in to_build:
-        print "Create docs: Namespace=%s, Version=%s" % (namespace, version)
-        if namespace == "cairo":
-            print "cairo gets referenced to external docs, skipping"
-            continue
-        gen.add_module(namespace, version)
-    gen.write(dest_dir)
+    gen = ModuleGenerator()
+    namespace, version = args.namespace.split("-", 1)
+    print "Create docs: Namespace=%s, Version=%s" % (namespace, version)
+    gen.add_module(namespace, version)
+    gen.write(args.source, args.target)
 
 
 if __name__ == "__main__":

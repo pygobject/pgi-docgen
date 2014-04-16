@@ -135,8 +135,8 @@ def is_struct(obj):
     if not inspect.isclass(obj):
         return False
 
-    from gi.repository import Gtk
-    struct_base = Gtk.AccelKey.__mro__[-2]  # FIXME
+    from gi.repository import GLib
+    struct_base = GLib.Data.__mro__[-2]  # FIXME
     return issubclass(obj, struct_base)
 
 

@@ -9,4 +9,13 @@
 # Example usage: "./build.sh Atk-1.0"
 # Result can be found in "_docs/_build"
 
-python ./pgi-docgen.py -f _docs "$@" && ./pgi-docgen-build.py _docs/_build _docs
+set -e
+
+for mod in "$@"
+do
+    echo "#####################################"
+    echo "# $mod"
+    python ./pgi-docgen.py _docs _docs/_build "$mod" 
+done
+
+python ./pgi-docgen-build.py _docs

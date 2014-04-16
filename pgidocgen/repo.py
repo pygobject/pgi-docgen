@@ -14,7 +14,6 @@ from .namespace import get_namespace
 from . import util
 from .util import unindent, gtype_to_rest
 
-from .gtkstock import parse_stock_icon
 from .funcsig import FuncSignature, py_type_to_class_ref, get_type_name
 from .parser import docstring_to_rest
 
@@ -205,6 +204,9 @@ class Repository(object):
     def get_dependencies(self):
         return self._ns.get_dependencies()
 
+    def get_all_dependencies(self):
+        return self._ns.get_all_dependencies()
+
     def is_private(self, name):
         """is_private('Gtk.ViewportPrivate')"""
 
@@ -224,11 +226,6 @@ class Repository(object):
             return
 
         docs = self.lookup_attr_docs(name)
-
-        # Add images for stock icon constants
-        if name.startswith("Gtk.STOCK_"):
-            docs += parse_stock_icon(name)
-
         docs += self.lookup_attr_meta(name)
 
         # sphinx gets confused by empty docstrings
