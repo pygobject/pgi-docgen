@@ -8,7 +8,7 @@
 
 # this is the default build that gets published online
 
-# Example usage: "./build_all.sh"
+# Example usage: "./build-all.sh"
 # Result can be found in "_docs/_build"
 
 ./build.sh Atk-1.0 Cogl-1.0 CoglPango-1.0 DBus-1.0 \

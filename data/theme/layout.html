@@ -34,6 +34,12 @@
 @font-face {font-family: 'Lato'; font-weight: 700; src: url({{ pathto('_static/fonts/lato-bold.woff', 1) }});}
 @font-face {font-family: 'Roboto Slab'; font-weight: 400; src: url({{ pathto('_static/fonts/lato.woff', 1) }});}
 @font-face {font-family: 'Roboto Slab'; font-weight: 700; src: url({{ pathto('_static/fonts/lato-bold.woff', 1) }});}
+
+{% if embedded %}
+.wy-nav-content-wrap {
+    margin-left: 0 !important;
+}
+{% endif %}
 </style>
 
   {# OPENSEARCH #}
@@ -93,6 +99,7 @@
   <div class="wy-grid-for-nav">
 
     {# SIDE NAV, TOGGLES ON MOBILE #}
+    {% if not embedded %}
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-nav-search">
         <a href="{{ pathto(master_doc) }}" class="fa fa-home"> {{ project }}</a>
@@ -110,15 +117,17 @@
       </div>
       &nbsp;
     </nav>
+    {% endif %}
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
+      {% if not embedded %}
       {# MOBILE NAV, TRIGGLES SIDE NAV ON TOGGLE #}
       <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
         <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
         <a href="{{ pathto(master_doc) }}">{{ project }}</a>
       </nav>
-
+      {% endif %}
 
       {# PAGE CONTENT #}
       <div class="wy-nav-content">

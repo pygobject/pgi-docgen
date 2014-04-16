@@ -15,13 +15,17 @@ positional arguments:
   source      path to the sphinx environ base dir
 """
 
+import os
+import glob
 import argparse
 import os
 import subprocess
 import multiprocessing
+import shutil
 
 
 OPTIPNG = "optipng"
+DEVHELP_PREFIX = "pygobject-"
 
 
 def has_optipng():
@@ -52,12 +56,18 @@ def png_optimize_dir(dir_, pool_size=6):
         print "%s(%d/%d): %r" % (OPTIPNG, i, len(paths), name)
 
 
-def do_build(path, build_path):
+def do_build(path, build_path, devhelp=False):
     sphinx_args = [path, build_path]
     jobs = os.environ.get("JOBS", "")
     if jobs:
         sphinx_args.insert(0, "-j" + jobs)
+    if devhelp:
+        sphinx_args = ["-b", "devhelpfork"] + sphinx_args
     subprocess.check_call(["sphinx-build"] + sphinx_args)
+
+    # we don't rebuild, remove all caches
+    shutil.rmtree(os.path.join(build_path, ".doctrees"))
+    os.remove(os.path.join(build_path, ".buildinfo"))
 
     if has_optipng():
         png_dirs = [
@@ -78,6 +88,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description='Build the sphinx environ created with pgi-docgen')
     parser.add_argument('source', help='path to the sphinx environ base dir')
+    parser.add_argument('--devhelp', action='store_true')
     args = parser.parse_args()
 
     to_build = {}
@@ -112,8 +123,9 @@ if __name__ == "__main__":
     except OSError:
         pass
 
-    with open(os.path.join(target_path, "index.html"), "wb") as h:
-        h.write("""\
+    if not args.devhelp:
+        with open(os.path.join(target_path, "index.html"), "wb") as h:
+            h.write("""\
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -123,10 +135,11 @@ if __name__ == "__main__":
   <body>
   <ul>""")
 
-        for entry in sorted(to_build.keys()):
-            h.write("<li><a href='%s/index.html'>%s</a></li>\n" % (entry, entry))
+            for entry in sorted(to_build.keys()):
+                h.write("<li><a href='%s/index.html'>%s</a></li>\n" % (
+                    entry, entry))
 
-        h.write("""\
+            h.write("""\
   </ul>
   </body>
 </html>
@@ -151,6 +164,25 @@ if __name__ == "__main__":
                     print "#" * 80
                     print "# %s: %d of %d" % (
                         entry, len(done), num_to_build)
-                    do_build(path, build_path)
+                    do_build(path, build_path, devhelp=args.devhelp)
 
         assert did_build, (to_build,)
+
+    # for devhelp to pick things up the dir name has to match the
+    # devhelp file name (without the extension), also the
+    # directory name needs to be prefixed to not clash with
+    # other devhelp entries
+    if args.devhelp:
+        for entry in done:
+            path = os.path.join(target_path, entry)
+            target = os.path.join(target_path, DEVHELP_PREFIX + entry)
+            if os.path.exists(target):
+                print "%r exists, skipping" % target
+                continue
+
+            shutil.copytree(path, target)
+            os.remove(os.path.join(target, "objects.inv"))
+            dh = glob.glob(os.path.join(target, "*.devhelp.gz"))[0]
+            dh_name = os.path.join(
+                os.path.dirname(dh), os.path.basename(target) + ".devhelp.gz")
+            os.rename(dh, dh_name)

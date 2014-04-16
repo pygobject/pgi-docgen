@@ -18,6 +18,7 @@ extensions = [
     'sphinx.ext.intersphinx',
     '_ext.inheritance_diagram_fork',
     '_ext.autosummary_fork',
+    '_ext.devhelp_fork',
     '_ext.toctree',
 ]
 source_suffix = '.rst'
