@@ -107,6 +107,9 @@
       </div>
 
       <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          <ul>
+          <li><a href="{{ pathto(master_doc) }}/../../index.html"><i class="fa fa-arrow-circle-left"></i> API Index</a></li>
+          </ul>
         {% set toctree = pruned_toctree(maxdepth=1, collapse=True, titles_only=True) %}
         {% if toctree %}
             {{ toctree }}
