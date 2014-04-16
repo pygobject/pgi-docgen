@@ -56,6 +56,7 @@ def png_optimize_dir(dir_, pool_size=6):
     for i, path in enumerate(pool.imap_unordered(_do_optimize, paths), 1):
         name = os.path.basename(path)
         print "%s(%d/%d): %r" % (OPTIPNG, i, len(paths), name)
+    pool.close()
 
 
 def do_build(path, build_path, devhelp=False):
