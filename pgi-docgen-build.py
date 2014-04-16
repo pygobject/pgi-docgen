@@ -169,20 +169,12 @@ if __name__ == "__main__":
         assert did_build, (to_build,)
 
     # for devhelp to pick things up the dir name has to match the
-    # devhelp file name (without the extension), also the
-    # directory name needs to be prefixed to not clash with
-    # other devhelp entries
+    # devhelp file name (without the extension)
     if args.devhelp:
         for entry in done:
             path = os.path.join(target_path, entry)
-            target = os.path.join(target_path, DEVHELP_PREFIX + entry)
-            if os.path.exists(target):
-                print "%r exists, skipping" % target
-                continue
-
-            shutil.copytree(path, target)
-            os.remove(os.path.join(target, "objects.inv"))
-            dh = glob.glob(os.path.join(target, "*.devhelp.gz"))[0]
+            os.remove(os.path.join(path, "objects.inv"))
+            dh = glob.glob(os.path.join(path, "*.devhelp.gz"))[0]
             dh_name = os.path.join(
-                os.path.dirname(dh), os.path.basename(target) + ".devhelp.gz")
+                os.path.dirname(dh), entry + ".devhelp.gz")
             os.rename(dh, dh_name)
