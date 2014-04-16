@@ -23,6 +23,8 @@ import subprocess
 import multiprocessing
 import shutil
 
+from jinja2 import Template
+
 
 OPTIPNG = "optipng"
 DEVHELP_PREFIX = "pygobject-"
@@ -124,26 +126,17 @@ if __name__ == "__main__":
         pass
 
     if not args.devhelp:
+        with open(os.path.join("data", "index.html"), "rb") as h:
+            template = Template(h.read())
+
         with open(os.path.join(target_path, "index.html"), "wb") as h:
-            h.write("""\
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <title>Python GI API Reference</title>
-  </head>
-  <body>
-  <ul>""")
+            h.write(template.render(entries=to_build.keys()))
 
-            for entry in sorted(to_build.keys()):
-                h.write("<li><a href='%s/index.html'>%s</a></li>\n" % (
-                    entry, entry))
-
-            h.write("""\
-  </ul>
-  </body>
-</html>
-""")
+        static_target = os.path.join(target_path, "_static")
+        if not os.path.exists(static_target):
+            shutil.copytree(
+                os.path.join("data", "theme", "static"),
+                static_target)
 
     # build bottom up
     done = set()

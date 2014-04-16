@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Python GI API Reference</title>
+
+    <style>
+    @font-face {font-family: 'Lato'; font-weight: 400; src: url(_static/fonts/lato.woff);}
+    @font-face {font-family: 'Lato'; font-weight: 700; src: url(_static/fonts/lato-bold.woff);}
+    @font-face {font-family: 'Roboto Slab'; font-weight: 400; src: url(_static/fonts/lato.woff);}
+    @font-face {font-family: 'Roboto Slab'; font-weight: 700; src: url(_static/fonts/lato-bold.woff);}
+    </style>
+
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+    <link rel="stylesheet" href="_static/css/pgi.css" type="text/css" />
+
+    <script src="_static/js/modernizr.min.js"></script>
+</head>
+<body>
+
+    <div class="wy-side-nav-search">
+        <a href="#">Python GI API Reference</a>
+        <div class="wy-menu wy-menu-vertical">
+
+        <ul>
+        {% for e in entries %}
+            <li><a href='{{ e }}/index.html'>{{ e }}</a></li>
+        {% endfor %}
+        </ul>
+
+        </div>
+    </div>
+
+</body>
+</html>
