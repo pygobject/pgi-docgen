@@ -9,16 +9,19 @@
     @font-face {font-family: 'Lato'; font-weight: 700; src: url(_static/fonts/lato-bold.woff);}
     @font-face {font-family: 'Roboto Slab'; font-weight: 400; src: url(_static/fonts/lato.woff);}
     @font-face {font-family: 'Roboto Slab'; font-weight: 700; src: url(_static/fonts/lato-bold.woff);}
-
+    
     #search-field {
         max-width: 250px;
         margin:auto;
     }
     body {
-        background-color: #75507B !important;
+        background-color: #404040 !important;
     }
     html {
            overflow-y: scroll;
+    }
+    .wy-menu {
+        background-color: #404040 !important;
     }
     </style>
 
@@ -33,35 +36,33 @@
     <div class="wy-side-nav-search">
         <a href="#" class="fa fa-home">Python GI API Reference</a>
 
-<div role="search">
-<input name="q" id="search-field" placeholder="Search docs" type="text" autocomplete="off">
-</div>
-<br>
-        <div class="wy-menu wy-menu-vertical">
+        <div role="search">
+        <input name="q" id="search-field" placeholder="Filter" type="text" autocomplete="off">
+        </div>
+    </div>
 
+    <div class="wy-menu wy-menu-vertical" style="text-align:center">
         <ul id="module-list">
         {% for e in entries %}
             <li><a href='{{ e }}/index.html'>{{ e }}</a></li>
         {% endfor %}
         </ul>
-
-        </div>
     </div>
 
     <script src="_static/js/jquery.js"></script>
 
-<script type="text/javascript">
-jQuery(function () {
-    $('#search-field').focus();
-    $('#search-field').keyup(function(){
-       var valThis = $(this).val().toLowerCase();
-        $('#module-list>li').each(function(){
-         var text = $(this).text().toLowerCase();
-            (text.indexOf(valThis) == 0) ? $(this).show() : $(this).hide();
-       });
+    <script type="text/javascript">
+    jQuery(function () {
+        $('#search-field').focus();
+        $('#search-field').keyup(function(){
+           var valThis = $(this).val().toLowerCase();
+            $('#module-list>li').each(function(){
+             var text = $(this).text().toLowerCase();
+                (text.indexOf(valThis) == 0) ? $(this).show() : $(this).hide();
+           });
+        });
     });
-});
-</script>
+    </script>
 
 </body>
 </html>
