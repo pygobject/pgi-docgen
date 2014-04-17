@@ -365,16 +365,9 @@ def html_visit_inheritance_diagram(self, node):
     # Create a mapping from fully-qualified class names to URLs.
     urls = {}
     for child in node:
-        if child.get('refuri') is not None:
-            urls[child['reftitle']] = child.get('refuri')
-        elif child.get('refid') is not None:
-            urls[child['reftitle']] = '#' + child.get('refid')
-
-    # PGI-DOCGEN:
-    # reftitle is useless for intersphinx nodes, extract from the url
-    # see https://bitbucket.org/birkenfeld/sphinx/issue/865
-    for key, value in urls.items():
-        urls[value.split("#")[-1]] = value
+        url = child.get('refuri') or '#' + child['refid']
+        fullname = child.get('refid') or child['refuri'].rsplit('#', 1)[-1]
+        urls[fullname] = url
 
     dotcode = graph.generate_dot(name, urls, env=self.builder.env)
     dotcode = tred(dotcode)
