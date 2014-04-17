@@ -131,7 +131,7 @@ if __name__ == "__main__":
             template = Template(h.read())
 
         with open(os.path.join(target_path, "index.html"), "wb") as h:
-            h.write(template.render(entries=to_build.keys()))
+            h.write(template.render(entries=sorted(to_build.keys())))
 
         static_target = os.path.join(target_path, "_static")
         if not os.path.exists(static_target):
