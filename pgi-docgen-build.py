@@ -66,6 +66,8 @@ def do_build(path, build_path, devhelp=False):
         sphinx_args.insert(0, "-j" + jobs)
     if devhelp:
         sphinx_args = ["-b", "devhelpfork"] + sphinx_args
+    else:
+        sphinx_args = ["-b", "html"] + sphinx_args
     subprocess.check_call(["sphinx-build"] + sphinx_args)
 
     # we don't rebuild, remove all caches

@@ -29,14 +29,16 @@ release = mversion
 exclude_patterns = ['_build', 'README.rst']
 
 intersphinx_mapping = {
-    'python': ('http://docs.python.org/2.7', None),
-    'cairo10': ('http://cairographics.org/documentation/pycairo/2/', None),
+    "python": ('http://docs.python.org/2.7',
+               "../_intersphinx/python.inv"),
 }
 
 for dep_name in DEPS:
     intersph_name = dep_name.replace("-", "").replace(".", "")
-    if intersph_name in intersphinx_mapping:
-        # cairo
+    if dep_name == "cairo-1.0":
+        intersphinx_mapping[intersph_name] = (
+            "http://cairographics.org/documentation/pycairo/2/",
+            "../_intersphinx/cairo.inv")
         continue
 
     dep = os.path.relpath(os.path.join(TARGET, dep_name))

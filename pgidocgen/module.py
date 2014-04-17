@@ -9,6 +9,7 @@ import os
 import types
 import inspect
 import shutil
+from urllib2 import urlopen, URLError, HTTPError
 
 from .klass import ClassGenerator
 from .flags import FlagsGenerator
@@ -290,6 +291,33 @@ TARGET = %r
         # make sure the generated config
         with open(conf_path, "rb") as h:
             exec h.read() in {}
+
+        # download external objects.inv for intersphinx and cache them in
+        # SOURCE/_intersphinx
+        extern_intersphinx = {
+            "python": "http://docs.python.org/2.7",
+            "cairo": "http://cairographics.org/documentation/pycairo/2",
+        }
+
+        isph_path = os.path.join(os.path.dirname(sub_dir), "_intersphinx")
+        try:
+            os.mkdir(isph_path)
+        except OSError:
+            pass
+
+        for name, url in extern_intersphinx.items():
+            inv_path = os.path.join(isph_path, name + ".inv")
+            if os.path.exists(inv_path):
+                continue
+
+            try:
+                inv_url = url + "/objects.inv"
+                print "..loading %r" % inv_url
+                h = urlopen(inv_url)
+                with open(inv_path, "wb") as f:
+                    f.write(h.read())
+            except (HTTPError, URLError) as e:
+                print "ERROR: %r" % e
 
         # copy the theme, conf.py
         dest_conf = os.path.join(dir_, "conf.py")

@@ -88,7 +88,7 @@ class Namespace(object):
             loaded.append(key)
             to_load.extend(sub_ns.get_dependencies())
 
-        return loaded
+        return list(set(loaded))
 
     def __repr__(self):
         return "%s(%s, %s)" % (
