@@ -12,7 +12,7 @@ from gi.repository import GObject
 
 from .namespace import get_namespace
 from . import util
-from .util import unindent, gtype_to_rest
+from .util import unindent, gtype_to_rest, escape_identifier
 
 from .funcsig import FuncSignature, py_type_to_class_ref, get_type_name
 from .parser import docstring_to_rest
@@ -281,7 +281,8 @@ class %s(%s):
 
         result = []
         for attr, sig in util.iter_public_attr(obj.signals):
-            doc_key = obj.__module__ + "." + obj.__name__ + "." + sig.name
+            doc_key = obj.__module__ + "." + obj.__name__ + "." + \
+                escape_identifier(sig.name)
 
             try:
                 fsig = FuncSignature.from_string(attr, sig.__doc__)

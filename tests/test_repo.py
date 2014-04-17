@@ -74,3 +74,10 @@ class TRepository(unittest.TestCase):
         repo = Repository("Atk", "1.0")
         docs = repo.lookup_attr_meta("Atk.Hyperlink.is_selected_link")
         self.assertTrue(".. deprecated::" in docs)
+
+    def test_webkit2(self):
+        from gi.repository import WebKit2
+
+        repo = Repository("Atk", "1.0")
+        # contains signal named "print", which needs special handling
+        repo.parse_signals(WebKit2.WebView)
