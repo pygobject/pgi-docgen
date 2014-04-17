@@ -49,6 +49,15 @@ class Namespace(object):
             name = include.getAttribute("name")
             version = include.getAttribute("version")
             deps.append((name, version))
+
+        # these are not always included, but we need them
+        # for base types
+        if namespace != "GLib":
+            if ("GLib", "2.0") not in deps:
+                deps.append(("GLib", "2.0"))
+            if ("GObject", "2.0") not in deps and namespace != "GObject":
+                deps.append(("GObject", "2.0"))
+
         self._dependencies = deps
 
     def parse_private(self):
