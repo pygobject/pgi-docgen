@@ -16,18 +16,27 @@ positional arguments:
 """
 
 import os
+import sys
+import signal
 import glob
 import argparse
-import os
 import subprocess
+from multiprocessing.pool import ThreadPool
 import multiprocessing
+import threading
 import shutil
 
 from jinja2 import Template
 
 
 OPTIPNG = "optipng"
-DEVHELP_PREFIX = "pygobject-"
+
+
+def get_cpu_count():
+    try:
+        return multiprocessing.cpu_count()
+    except NotImplementedError:
+        return 2
 
 
 def has_optipng():
@@ -38,37 +47,36 @@ def has_optipng():
     return True
 
 
-def _do_optimize(path):
-    subprocess.check_output([OPTIPNG, path])
-    return path
-
-
 def png_optimize_dir(dir_, pool_size=6):
     """Optimizes all pngs in dir_ (non-recursive)"""
 
     if not os.path.exists(dir_):
         return
 
+    print "optipng: %r" % dir_
     pngs = [e for e in os.listdir(dir_) if e.lower().endswith(".png")]
     paths = [os.path.join(dir_, f) for f in pngs]
 
-    pool = multiprocessing.Pool(pool_size)
-    for i, path in enumerate(pool.imap_unordered(_do_optimize, paths), 1):
-        name = os.path.basename(path)
-        print "%s(%d/%d): %r" % (OPTIPNG, i, len(paths), name)
+    def _do_optimize(path):
+        subprocess.check_output([OPTIPNG, path])
+
+    pool = ThreadPool(pool_size)
+    pool.map(_do_optimize, paths)
     pool.close()
+    pool.join()
 
 
-def do_build(path, build_path, devhelp=False):
+def do_build(entry, path, build_path, devhelp):
+    print "Build started for %s" % entry
+
     sphinx_args = [path, build_path]
-    jobs = os.environ.get("JOBS", "")
-    if jobs:
-        sphinx_args.insert(0, "-j" + jobs)
+
     if devhelp:
         sphinx_args = ["-b", "devhelpfork"] + sphinx_args
     else:
         sphinx_args = ["-b", "html"] + sphinx_args
-    subprocess.check_call(["sphinx-build"] + sphinx_args)
+
+    subprocess.check_call(["sphinx-build", "-a", "-E"] + sphinx_args)
 
     # we don't rebuild, remove all caches
     shutil.rmtree(os.path.join(build_path, ".doctrees"))
@@ -85,16 +93,16 @@ def do_build(path, build_path, devhelp=False):
     else:
         print "optipng missing, skipping compression"
 
-    print "Done. See file://%s/index.html" % os.path.abspath(build_path)
+    return entry
 
 
-if __name__ == "__main__":
+def main(argv):
 
     parser = argparse.ArgumentParser(
         description='Build the sphinx environ created with pgi-docgen')
     parser.add_argument('source', help='path to the sphinx environ base dir')
     parser.add_argument('--devhelp', action='store_true')
-    args = parser.parse_args()
+    args = parser.parse_args(argv[1:])
 
     to_build = {}
 
@@ -144,25 +152,49 @@ if __name__ == "__main__":
     # build bottom up
     done = set()
     num_to_build = len(to_build)
-    while to_build:
-        did_build = False
+    pool = ThreadPool(int(get_cpu_count() * 1.5))
+    event = threading.Event()
+
+    def job_cb(entry=None):
+        if entry is not None:
+            done.add(entry)
+            print "%s finished: %d/%d done" % (
+                entry, len(done), num_to_build)
+
+        for entry, (path, build_path) in get_new_jobs():
+            print "Queue build for %s" % entry
+            pool.apply_async(
+                do_build,
+                [entry, path, build_path, args.devhelp],
+                callback=job_cb)
+
+        if len(done) == num_to_build:
+            print "All done"
+            event.set()
+
+    def get_new_jobs():
+        jobs = []
+
         for entry, (path, build_path, deps) in to_build.items():
             deps.difference_update(done)
             deps.difference_update(to_ignore)
+
+        for entry, (path, build_path, deps) in to_build.items():
             if not deps:
-                did_build = True
-                done.add(entry)
                 del to_build[entry]
+                jobs.append([entry, (path, build_path)])
 
-                if os.path.exists(build_path):
-                    print "%r exists, skipping" % build_path
-                else:
-                    print "#" * 80
-                    print "# %s: %d of %d" % (
-                        entry, len(done), num_to_build)
-                    do_build(path, build_path, devhelp=args.devhelp)
+        return jobs
 
-        assert did_build, (to_build,)
+    for entry, (path, build_path, deps) in to_build.items():
+        if os.path.exists(build_path):
+            del to_build[entry]
+            done.add(entry)
+
+    job_cb()
+    event.wait()
+    pool.close()
+    pool.join()
 
     # for devhelp to pick things up the dir name has to match the
     # devhelp file name (without the extension)
@@ -174,3 +206,7 @@ if __name__ == "__main__":
             dh_name = os.path.join(
                 os.path.dirname(dh), entry + ".devhelp.gz")
             os.rename(dh, dh_name)
+
+
+if __name__ == "__main__":
+    main(sys.argv)

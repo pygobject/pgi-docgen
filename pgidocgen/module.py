@@ -80,7 +80,6 @@ class ModuleGenerator(util.Generator):
             nick = "%s-%s" % (namespace, version)
             sub_dir = os.path.join(dir_, nick)
             if os.path.exists(sub_dir):
-                print "skipping %s, already created" % nick
                 return mods
             mods.append((namespace, version))
 
