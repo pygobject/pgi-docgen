@@ -38,7 +38,7 @@
     LibvirtGConfig-1.0 LibvirtGLib-1.0 LibvirtGObject-1.0 TrackerExtract-0.16 \
     LunarDate-2.0 Mx-1.0 Nautilus-3.0 Nemo-3.0 NetworkManager-1.0 \
     PackageKitGlib-1.0 PackageKitPlugin-1.0 PanelApplet-4.0 WebKit-3.0 \
-    Peas-1.0 PeasGtk-1.0 Polkit-1.0 UPowerGlib-1.0 \
+    Peas-1.0 PeasGtk-1.0 Polkit-1.0 UPowerGlib-1.0 Cogl-2.0 WebKit2-3.0\
     PolkitAgent-1.0 Rest-0.7 RestExtras-0.7 Rsvg-2.0 UMockdev-1.0 \
     SocialWebClient-0.25 SoupGNOME-2.4 SpiceClientGLib-2.0 GOffice-0.10 \
     SpiceClientGtk-3.0 SugarGestures-1.0 TelepathyGLib-0.12 Wnck-3.0 GES-1.0 \
