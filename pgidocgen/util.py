@@ -182,8 +182,8 @@ def is_base(cls):
     return False
 
 
-def indent(text):
-    return "\n".join(["    " + l for l in text.splitlines()])
+def indent(text, count=4):
+    return "\n".join([(" " * count) + l for l in text.splitlines()])
 
 
 def unindent(text, ignore_first_line=False):

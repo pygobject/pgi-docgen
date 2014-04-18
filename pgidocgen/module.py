@@ -21,6 +21,7 @@ from .structures import StructGenerator
 from .union import UnionGenerator
 from .callback import CallbackGenerator
 from .doap import get_project_summary
+from .hierarchy import HierarchyGenerator
 from . import util
 from .namespace import get_namespace
 
@@ -133,6 +134,7 @@ class ModuleGenerator(util.Generator):
         union_gen = UnionGenerator()
         const_gen = ConstantsGenerator()
         cb_gen = CallbackGenerator()
+        hier_gen = HierarchyGenerator()
 
         for key in dir(mod):
             if key.startswith("_"):
@@ -160,6 +162,7 @@ class ModuleGenerator(util.Generator):
                         func_gen.add_function(name, code)
             elif inspect.isclass(obj):
                 if util.is_iface(obj) or util.is_object(obj):
+                    hier_gen.add_class(obj)
 
                     code = repo.parse_class(name, obj)
                     if util.is_object(obj):
@@ -234,6 +237,7 @@ class ModuleGenerator(util.Generator):
                             if code:
                                 gen.add_method(obj, attr_obj, code)
                 else:
+                    hier_gen.add_class(obj)
                     # classes not subclassing from any gobject base class
                     if util.is_fundamental(obj):
                         code = repo.parse_class(name, obj)
@@ -264,7 +268,7 @@ class ModuleGenerator(util.Generator):
 
 """)
 
-            gens = [func_gen, cb_gen, class_gen, struct_gen,
+            gens = [func_gen, cb_gen, class_gen, hier_gen, struct_gen,
                     union_gen, flags_gen, enums_gen, const_gen]
             for gen in gens:
                 if gen.is_empty():
