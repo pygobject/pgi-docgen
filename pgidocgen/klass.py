@@ -168,6 +168,27 @@ class ClassGenerator(util.Generator, FieldsMixin):
 .. inheritance-diagram:: %s
 """ % cls_name)
 
+            # SUBCLASSES
+            subclasses = []
+            for sub in cls.__subclasses__():
+                # don't include things we happened to import
+                if sub not in self._classes and sub not in self._ifaces:
+                    continue
+                subclasses.append(sub)
+
+            if subclasses:
+                if is_interface:
+                    h.write("\n:Implementations:\n")
+                else:
+                    h.write("\n:Subclasses:\n")
+                refs = []
+                for sub in subclasses:
+                    sub_name = sub.__module__ + "." + sub.__name__
+                    refs.append(":class:`%s`" % sub_name)
+                refs = sorted(set(refs))
+                h.write("    " + ", ".join(refs))
+                h.write("\n\n")
+
             # IMAGE
             image_path = os.path.join(
                 "data", "clsimages", "%s-%s" % (
