@@ -91,10 +91,10 @@ class ClassGenerator(util.Generator, FieldsMixin):
 
     def get_names(self):
         names = []
-        if self._classes:
-            names.append("classes/index.rst")
         if self._ifaces:
             names.append("interfaces/index.rst")
+        if self._classes:
+            names.append("classes/index.rst")
         return names
 
     def is_empty(self):
