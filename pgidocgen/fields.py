@@ -15,19 +15,21 @@ class FieldsMixin(object):
     def add_fields(self, cls_obj, fields):
         assert cls_obj not in self._fields
 
-        if fields:
-            self._fields[cls_obj] = fields
+        self._fields[cls_obj] = fields
 
-    def has_fields(self, cls):
-        return cls in self._fields
-
-    def write_field_table(self, cls, h):
+    def write_field_table(self, cls, h, inherit_list=None):
+        cls_name = cls.__module__ + "." + cls.__name__
 
         h.write("""
+
+.. _%s.fields:
+
 Fields
 ------
 
-""")
+""" % cls_name)
+
+        h.write(inherit_list or "")
 
         lines = []
         for field in self._fields.get(cls, []):
@@ -36,9 +38,10 @@ Fields
             lines.append("    %s" % prop)
         lines = "\n".join(lines)
 
-        if not lines:
+        if not lines and not inherit_list:
             h.write("None\n")
-        else:
+
+        if lines:
             h.write('''
 .. csv-table::
     :header: "Name", "Type", "Access", "Description"

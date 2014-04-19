@@ -53,6 +53,8 @@ class ClassGenerator(util.Generator, FieldsMixin):
             cfunc = self.repo.get_property_count
         elif ref_suffix == "sigs":
             cfunc = self.repo.get_signal_count
+        elif ref_suffix == "fields":
+            cfunc = self.repo.get_field_count
         else:
             assert 0
 
@@ -318,8 +320,8 @@ Signals
 
             # fields aren't common with GObjects, so only print the
             # header when some are there
-            if self.has_fields(cls):
-                self.write_field_table(cls, h)
+            fields_inherited = self._get_inheritance_list(cls, "fields")
+            self.write_field_table(cls, h, fields_inherited)
 
             h.write("""
 Class Details

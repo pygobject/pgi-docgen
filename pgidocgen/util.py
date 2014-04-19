@@ -98,6 +98,10 @@ def is_method_owner(cls, method_name):
     return True
 
 
+def is_field_owner(cls, field_name):
+    return is_method_owner(cls, field_name)
+
+
 def is_fundamental(obj):
     """True for classed and non-classed fundamentals"""
 

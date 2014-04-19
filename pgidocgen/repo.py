@@ -340,6 +340,8 @@ class %s(%s):
         for attr, field_info in util.iter_public_attr(obj):
             if not util.is_field(field_info):
                 continue
+            if not util.is_field_owner(obj, attr):
+                continue
 
             py_type = field_info.py_type
             type_name = get_type_name(py_type)
