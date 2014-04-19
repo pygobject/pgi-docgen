@@ -217,7 +217,10 @@ class ModuleGenerator(util.Generator):
                             if code:
                                 gen.add_method(obj, attr_obj, code)
                 else:
-                    hier_gen.add_class(obj)
+                    # don't include GError
+                    if not issubclass(obj, BaseException):
+                        hier_gen.add_class(obj)
+
                     # classes not subclassing from any gobject base class
                     if util.is_fundamental(obj):
                         code = repo.parse_class(name, obj)
