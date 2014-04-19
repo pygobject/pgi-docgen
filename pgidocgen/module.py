@@ -162,10 +162,9 @@ class ModuleGenerator(util.Generator):
                         func_gen.add_function(name, code)
             elif inspect.isclass(obj):
                 if util.is_iface(obj) or util.is_object(obj):
-                    hier_gen.add_class(obj)
-
                     code = repo.parse_class(name, obj)
                     if util.is_object(obj):
+                        hier_gen.add_class(obj)
                         class_gen.add_class(obj, code)
                     else:
                         class_gen.add_interface(obj, code)
