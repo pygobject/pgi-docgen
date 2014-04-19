@@ -53,7 +53,7 @@
            var valThis = $(this).val().toLowerCase();
             $('#module-list>li').each(function(){
              var text = $(this).text().toLowerCase();
-                (text.indexOf(valThis) == 0) ? $(this).show() : $(this).hide();
+                (text.indexOf(valThis) !== -1) ? $(this).show() : $(this).hide();
            });
         });
     });
