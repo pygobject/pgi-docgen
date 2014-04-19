@@ -29,18 +29,13 @@
   {% endif %}
 
   {# CSS #}
-<style>
-@font-face {font-family: 'Lato'; font-weight: 400; src: url({{ pathto('_static/fonts/lato.woff', 1) }});}
-@font-face {font-family: 'Lato'; font-weight: 700; src: url({{ pathto('_static/fonts/lato-bold.woff', 1) }});}
-@font-face {font-family: 'Roboto Slab'; font-weight: 400; src: url({{ pathto('_static/fonts/lato.woff', 1) }});}
-@font-face {font-family: 'Roboto Slab'; font-weight: 700; src: url({{ pathto('_static/fonts/lato-bold.woff', 1) }});}
-
-{% if embedded %}
-.wy-nav-content-wrap {
-    margin-left: 0 !important;
-}
-{% endif %}
-</style>
+  {% if embedded %}
+    <style>
+    .wy-nav-content-wrap {
+        margin-left: 0 !important;
+    }
+    </style>
+  {% endif %}
 
   {# OPENSEARCH #}
   {% if not embedded %}
@@ -108,7 +103,7 @@
 
       <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           <ul>
-          <li><a href="{{ pathto(master_doc).replace('#', 'index.html') }}/../../index.html"><i class="fa fa-arrow-circle-left"></i> API Index</a></li>
+          <li><a href="{{ url_root }}/../../index.html"><i class="fa fa-arrow-circle-left"></i> API Index</a></li>
           </ul>
         {% set toctree = pruned_toctree(maxdepth=1, collapse=True, titles_only=True) %}
         {% if toctree %}

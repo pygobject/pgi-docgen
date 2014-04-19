@@ -58,3 +58,19 @@ tt.descname, tt.descclassname {
 .rst-content table.field-list td {
     padding-top: 8px;
 }
+
+@font-face {
+    font-family: 'Lato'; font-weight: 400; src: url('../fonts/lato.woff');
+}
+
+@font-face {
+    font-family: 'Lato'; font-weight: 700; src: url('../fonts/lato-bold.woff');
+}
+
+@font-face {
+    font-family: 'Roboto Slab'; font-weight: 400; src: url('../fonts/lato.woff');
+}
+
+@font-face {
+    font-family: 'Roboto Slab'; font-weight: 700; src: url('../fonts/lato-bold.woff');
+}
