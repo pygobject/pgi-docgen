@@ -15,17 +15,15 @@ from .util import get_csv_line
 class ClassGenerator(util.Generator, FieldsMixin):
     """For GObjects an GInterfaces"""
 
-    def __init__(self, namespace, version):
+    def __init__(self, repo):
         self._classes = {}  # cls -> code
         self._ifaces = {}
-        self._methods = {}  # cls -> code
-        self._vfuncs = {}
+        self._methods = {}  # cls -> [methods]
         self._props = {}  # cls -> [prop]
         self._sigs = {}  # cls -> [sig]
         self._py_class = set()
 
-        self.namespace = namespace
-        self.version = version
+        self.repo = repo
 
     def add_class(self, obj, code, py_class=False):
         if isinstance(code, unicode):
@@ -41,31 +39,28 @@ class ClassGenerator(util.Generator, FieldsMixin):
 
         self._ifaces[obj] = code
 
-    def add_method(self, cls_obj, obj, code):
-        if isinstance(code, unicode):
-            code = code.encode("utf-8")
+    def add_methods(self, cls_obj, methods):
+        assert cls_obj not in self._methods
 
-        if cls_obj in self._methods:
-            self._methods[cls_obj].append((obj, code))
+        self._methods[cls_obj] = methods
+
+    def _get_inheritance_list(self, cls, ref_suffix):
+        if ref_suffix == "methods":
+            cfunc = self.repo.get_method_count
+        elif ref_suffix == "vfuncs":
+            cfunc = self.repo.get_vfunc_count
+        elif ref_suffix == "props":
+            cfunc = self.repo.get_property_count
+        elif ref_suffix == "sigs":
+            cfunc = self.repo.get_signal_count
         else:
-            self._methods[cls_obj] = [(obj, code)]
+            assert 0
 
-    def get_method_count(self, cls):
-        return len(self._methods.get(cls, []))
-
-    def add_vfunc(self, cls_obj, obj, code):
-        if isinstance(code, unicode):
-            code = code.encode("utf-8")
-
-        if cls_obj in self._vfuncs:
-            self._vfuncs[cls_obj].append((obj, code))
-        else:
-            self._vfuncs[cls_obj] = [(obj, code)]
-
-    def _get_inheritance_list(self, cls, type_, ref_suffix):
         bases = []
-        for base in self.get_mro(cls)[1:]:
-            num = len(type_.get(base, []))
+        for base in util.fake_mro(cls):
+            if base is object or base is cls:
+                continue
+            num = cfunc(base)
             if num:
                 name = base.__module__ + "." + base.__name__
                 bases.append(
@@ -77,6 +72,8 @@ class ClassGenerator(util.Generator, FieldsMixin):
 :Inherited: %s
 
 """ % ", ".join(bases)
+        else:
+            return
 
     def add_properties(self, cls, props):
         assert cls not in self._props
@@ -134,19 +131,15 @@ class ClassGenerator(util.Generator, FieldsMixin):
         for cls in classes:
             module_fileobj.write(classes[cls])
 
-            # sort static methods first, then by name
-            def sort_func(e):
-                return util.is_normalmethod(e[0]), e[0].__name__
+            methods = self._methods.get(cls, [])
 
-            methods = self._methods.get(cls, [])[:]
-            methods.sort(key=sort_func)
+            def method_sort_key(m):
+                return not m.is_vfunc, not m.is_static, m.name
 
-            vfuncs = self._vfuncs.get(cls, [])[:]
-            vfuncs.sort(key=sort_func)
-
-            methods.extend(vfuncs)
-
-            for obj, code in methods:
+            for method in sorted(methods, key=method_sort_key):
+                code = method.code
+                if not isinstance(code, bytes):
+                    code = code.encode("utf-8")
                 module_fileobj.write(util.indent(code) + "\n")
 
         # create a new file for each class
@@ -175,7 +168,8 @@ class ClassGenerator(util.Generator, FieldsMixin):
 
             # IMAGE
             image_path = os.path.join(
-                "data", "clsimages", "%s-%s" % (self.namespace, self.version),
+                "data", "clsimages", "%s-%s" % (
+                    self.repo.namespace, self.repo.version),
                 "%s.png" % cls_name)
             if os.path.exists(image_path):
                 h.write("""
@@ -198,11 +192,11 @@ Methods
 
 """ % cls_name)
 
-            methods_inherited = self._get_inheritance_list(
-                cls, self._methods, "methods")
+            methods_inherited = self._get_inheritance_list(cls, "methods")
             h.write(methods_inherited or "")
 
             methods = self._methods.get(cls, [])
+            methods = [m for m in methods if not m.is_vfunc]
 
             if not methods and not methods_inherited:
                 h.write("None\n\n")
@@ -211,11 +205,11 @@ Methods
                 h.write(".. autosummary::\n\n")
 
             # sort static methods first, then by name
-            def sort_func(e):
-                return util.is_normalmethod(e[0]), e[0].__name__
-            methods.sort(key=sort_func)
-            for obj, code in methods:
-                h.write("    " + cls_name + "." + obj.__name__ + "\n")
+            def sort_func(m):
+                return not m.is_static, m.name
+
+            for method in sorted(methods, key=sort_func):
+                h.write("    " + cls_name + "." + method.name + "\n")
 
             # VFUNC
 
@@ -228,11 +222,11 @@ Virtual Methods
 
 """ % cls_name)
 
-            vfun_inherited = self._get_inheritance_list(
-                cls, self._vfuncs, "vfuncs")
+            vfun_inherited = self._get_inheritance_list(cls, "vfuncs")
             h.write(vfun_inherited or "")
 
-            methods = self._vfuncs.get(cls, [])
+            methods = self._methods.get(cls, [])
+            methods = [m for m in methods if m.is_vfunc]
 
             if not methods and not vfun_inherited:
                 h.write("None\n\n")
@@ -241,40 +235,40 @@ Virtual Methods
                 h.write(".. autosummary::\n\n")
 
             # sort static methods first, then by name
-            def sort_func(e):
-                return util.is_normalmethod(e[0]), e[0].__name__
-            methods.sort(key=sort_func)
-            for obj, code in methods:
-                h.write("    " + cls_name + "." + obj.__name__ + "\n")
+            def sort_func(m):
+                return not m.is_static, m.name
+
+            for method in sorted(methods, key=sort_func):
+                h.write("    " + cls_name + "." + method.name + "\n")
 
             # PROPERTIES
 
-            h.write("""
+            if util.is_object(cls) or util.is_iface(cls):
+                h.write("""
 .. _%s.props:
 
 Properties
 ----------
 """ % cls_name)
 
-            prop_inherited = self._get_inheritance_list(
-                cls, self._props, "props")
-            h.write(prop_inherited or "")
+                prop_inherited = self._get_inheritance_list(cls, "props")
+                h.write(prop_inherited or "")
 
-            # sort props by name
-            if cls in self._props:
-                self._props[cls].sort(key=lambda p: p.name)
+                # sort props by name
+                if cls in self._props:
+                    self._props[cls].sort(key=lambda p: p.name)
 
-            lines = []
-            for p in self._props.get(cls, []):
-                fstr = p.flags_string
-                rst_target = cls_name + ".props." + p.attr_name
-                name = ":py:data:`%s<%s>`" % (p.name, rst_target)
-                line = get_csv_line([name, p.type_desc, fstr, p.short_desc])
-                lines.append("    %s" % line)
-            lines = "\n".join(lines)
+                lines = []
+                for p in self._props.get(cls, []):
+                    fstr = p.flags_string
+                    rst_target = cls_name + ".props." + p.attr_name
+                    name = ":py:data:`%s<%s>`" % (p.name, rst_target)
+                    line = get_csv_line([name, p.type_desc, fstr, p.short_desc])
+                    lines.append("    %s" % line)
+                lines = "\n".join(lines)
 
-            if lines:
-                h.write('''
+                if lines:
+                    h.write('''
 .. csv-table::
     :header: "Name", "Type", "Flags", "Short Description"
     :widths: 1, 1, 1, 100
@@ -282,35 +276,34 @@ Properties
 %s
     ''' % lines)
 
-            if not lines and not prop_inherited:
-                h.write("None\n\n")
+                if not lines and not prop_inherited:
+                    h.write("None\n\n")
 
-            # SIGNALS
+                # SIGNALS
 
-            h.write("""
+                h.write("""
 .. _%s.sigs:
 
 Signals
 -------
 """ % cls_name)
 
-            sig_inherited = self._get_inheritance_list(
-                cls, self._sigs, "sigs")
-            h.write(sig_inherited or "")
+                sig_inherited = self._get_inheritance_list(cls, "sigs")
+                h.write(sig_inherited or "")
 
-            if cls in self._sigs:
-                self._sigs[cls].sort(key=lambda s: s.name)
+                if cls in self._sigs:
+                    self._sigs[cls].sort(key=lambda s: s.name)
 
-            lines = []
-            for sig in self._sigs.get(cls, []):
-                rst_target = cls_name + ".signals." + sig.name
-                name_ref = ":ref:`%s<%s>`" % (sig.name, rst_target)
-                line = get_csv_line([name_ref, sig.short_desc])
-                lines.append("    %s" % line)
-            lines = "\n".join(lines)
+                lines = []
+                for sig in self._sigs.get(cls, []):
+                    rst_target = cls_name + ".signals." + sig.name
+                    name_ref = ":ref:`%s<%s>`" % (sig.name, rst_target)
+                    line = get_csv_line([name_ref, sig.short_desc])
+                    lines.append("    %s" % line)
+                lines = "\n".join(lines)
 
-            if lines:
-                h.write('''
+                if lines:
+                    h.write('''
 .. csv-table::
     :header: "Name", "Short Description"
     :widths: 30, 70
@@ -318,8 +311,8 @@ Signals
 %s
 ''' % lines)
 
-            if not lines and not sig_inherited:
-                h.write("None\n\n")
+                if not lines and not sig_inherited:
+                    h.write("None\n\n")
 
             # FIELDS
 

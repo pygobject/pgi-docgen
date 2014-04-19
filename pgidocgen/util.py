@@ -92,7 +92,7 @@ def is_method_owner(cls, method_name):
     if ovr and method_name in ovr.__dict__:
         return True
 
-    for base in merge_in_overrides(cls):
+    for base in fake_bases(cls):
         if getattr(base, method_name, None) == obj:
             return False
     return True
@@ -175,7 +175,7 @@ def is_base(cls):
         return True
 
     # skip any overrides
-    base = merge_in_overrides(cls)[0]
+    base = fake_bases(cls)[0]
     if base.__module__.split(".")[0] in ("pgi", "gi"):
         return True
 
@@ -229,12 +229,12 @@ def escape_rest(text):
     return text
 
 
-def merge_in_overrides(obj):
+def fake_bases(obj):
     # hide overrides by merging the bases in
     possible_bases = []
     for base in obj.__bases__:
         if base.__name__ == obj.__name__ and base.__module__ == obj.__module__:
-            for upper_base in merge_in_overrides(base):
+            for upper_base in fake_bases(base):
                 possible_bases.append(upper_base)
         else:
             possible_bases.append(base)
@@ -243,6 +243,24 @@ def merge_in_overrides(obj):
     mro_bases = []
     for base in obj.__mro__:
         if base in possible_bases:
+            mro_bases.append(base)
+    return mro_bases
+
+
+def fake_mro(obj):
+
+    def get_mro(obj):
+        mro = [obj]
+        for base in fake_bases(obj):
+            mro.extend(get_mro(base))
+        return mro
+
+    possible_mro = get_mro(obj)
+
+    # preserve the real mro
+    mro_bases = []
+    for base in obj.__mro__:
+        if base in possible_mro:
             mro_bases.append(base)
     return mro_bases
 

@@ -14,7 +14,7 @@ def get_hierarchy(type_seq):
 
     def first_mro(obj):
         l = [obj]
-        bases = util.merge_in_overrides(obj)
+        bases = util.fake_bases(obj)
         if bases[0] is not object:
             l.extend(first_mro(bases[0]))
         return l

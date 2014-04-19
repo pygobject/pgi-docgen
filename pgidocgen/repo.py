@@ -88,6 +88,27 @@ class Field(object):
         return "/".join(flags)
 
 
+class Method(object):
+
+    def __init__(self, name, is_static, is_vfunc, code):
+        self.name = name
+        self.is_static = is_static
+        self.code = code
+        self.is_vfunc = is_vfunc
+
+
+
+def cache_calls(func):
+    _cache = {}
+    def wrap(*args):
+        if len(_cache) > 100:
+            _cache.clear()
+        if args not in _cache:
+            _cache[args] = func(*args)
+        return _cache[args]
+    return wrap
+
+
 class Repository(object):
     """Takes gi objects and gives documented code"""
 
@@ -249,7 +270,7 @@ r'''
     def parse_class(self, name, obj):
         names = []
         # prefix with the module if it's an external class
-        for base in util.merge_in_overrides(obj):
+        for base in util.fake_bases(obj):
             base_name = base.__name__
             if base_name != "object":
                 base_name = base.__module__ + "." + base_name
@@ -271,6 +292,7 @@ class %s(%s):
 
 """ % (name.split(".")[-1], bases, docs.encode("utf-8"), name)
 
+    @cache_calls
     def parse_signals(self, obj):
         assert util.is_object(obj) or util.is_iface(obj)
 
@@ -307,6 +329,10 @@ class %s(%s):
 
         return result
 
+    def get_signal_count(self, obj):
+        return len(self.parse_signals(obj))
+
+    @cache_calls
     def parse_fields(self, obj):
         current_rst_target = obj.__module__ + "." + obj.__name__
 
@@ -330,6 +356,10 @@ class %s(%s):
 
         return fields
 
+    def get_field_count(self, obj):
+        return len(self.parse_fields(obj))
+
+    @cache_calls
     def parse_properties(self, obj):
         assert util.is_object(obj) or util.is_iface(obj)
 
@@ -366,6 +396,9 @@ class %s(%s):
                                   writable, construct, short_desc, desc))
 
         return props
+
+    def get_property_count(self, obj):
+        return len(self.parse_properties(obj))
 
     def parse_flags(self, name, obj):
         from gi.repository import GObject
@@ -428,6 +461,35 @@ class %s(%s):
             code += "setattr(%s, '%s', %s)\n" % (name, v, "%s._%s" % (name, v))
 
         return code
+
+    @cache_calls
+    def parse_methods(self, obj):
+        name = obj.__module__ + "." + obj.__name__
+
+        methods = []
+        for attr, attr_obj in util.iter_public_attr(obj):
+            # can fail for the base class
+            try:
+                if not util.is_method_owner(obj, attr):
+                    continue
+            except NotImplementedError:
+                continue
+
+            if callable(attr_obj):
+                func_key = name + "." + attr
+                code = self.parse_function(func_key, obj, attr_obj)
+                code = code or ""
+                is_vfunc = util.is_virtualmethod(attr_obj)
+                is_static = not util.is_normalmethod(attr_obj)
+                methods.append(Method(attr, is_static, is_vfunc, code))
+
+        return methods
+
+    def get_method_count(self, obj):
+        return len([m for m in self.parse_methods(obj) if not m.is_vfunc])
+
+    def get_vfunc_count(self, obj):
+        return len([m for m in self.parse_methods(obj) if m.is_vfunc])
 
     def parse_function(self, name, owner, obj):
         """Returns python code for the object"""

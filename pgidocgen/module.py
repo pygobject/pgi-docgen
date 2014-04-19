@@ -126,7 +126,7 @@ class ModuleGenerator(util.Generator):
         for dep in repo.get_dependencies():
             _import_dependency(module, *dep)
 
-        class_gen = ClassGenerator(namespace, version)
+        class_gen = ClassGenerator(repo)
         flags_gen = FlagsGenerator()
         enums_gen = EnumGenerator()
         func_gen = FunctionGenerator()
@@ -178,27 +178,8 @@ class ModuleGenerator(util.Generator):
                     fields = repo.parse_fields(obj)
                     class_gen.add_fields(obj, fields)
 
-                    for attr, attr_obj in util.iter_public_attr(obj):
-                        # can fail for the base class
-                        try:
-                            if not util.is_method_owner(obj, attr):
-                                continue
-                        except NotImplementedError:
-                            continue
-
-                        if callable(attr_obj):
-                            if not util.is_virtualmethod(attr_obj):
-                                func_key = name + "." + attr
-                                code = repo.parse_function(
-                                    func_key, obj, attr_obj)
-                                if code:
-                                    class_gen.add_method(obj, attr_obj, code)
-                            else:
-                                func_key = name + "." + attr
-                                code = repo.parse_function(
-                                    func_key, obj, attr_obj)
-                                if code:
-                                    class_gen.add_vfunc(obj, attr_obj, code)
+                    methods = repo.parse_methods(obj)
+                    class_gen.add_methods(obj, methods)
 
                 elif util.is_flags(obj):
                     code = repo.parse_flags(name, obj)
