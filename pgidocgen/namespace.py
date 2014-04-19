@@ -356,7 +356,8 @@ def _parse_docs(dom):
             def get_name(elm):
                 n = elm.getAttribute("name") or elm.getAttribute("glib:name")
                 if elm.tagName == "virtual-method":
-                    n = "do_" + n
+                    # pgi/pygobject escape before prefixing
+                    n = "do_" + util.escape_identifier(n)
                 return n
 
             l = []
