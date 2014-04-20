@@ -28,6 +28,18 @@ class TRepository(unittest.TestCase):
         self.assertTrue(repo.is_private("Pango.RendererPrivate"))
         self.assertFalse(repo.is_private("Pango.AttrIterator"))
 
+    def test_glib_shadowed(self):
+        repo = Repository("GLib", "2.0")
+
+        # GLib.io_add_watch points to g_io_add_watch_full and should
+        # also use its docs
+
+        self.assertTrue(
+            repo.lookup_parameter_docs("GLib.io_add_watch.priority"))
+
+        self.assertTrue(
+            "priority" in repo.lookup_attr_docs("GLib.io_add_watch"))
+
     def test_gio(self):
         repo = Repository("Gio", "2.0")
 

@@ -354,7 +354,13 @@ def _parse_docs(dom):
             deprecated_version = e.getAttribute("deprecated-version")
 
             def get_name(elm):
-                n = elm.getAttribute("name") or elm.getAttribute("glib:name")
+                # if this entry shadows another one use its name
+                shadows = elm.getAttribute("shadows")
+                if shadows:
+                    n = shadows
+                else:
+                    n = elm.getAttribute("name") or \
+                        elm.getAttribute("glib:name")
                 if elm.tagName == "virtual-method":
                     # pgi/pygobject escape before prefixing
                     n = "do_" + util.escape_identifier(n)
@@ -364,7 +370,12 @@ def _parse_docs(dom):
             tags = []
             current = e
             l.append(get_name(current))
+            skip = False
             while current.tagName != "namespace":
+                # this gets shadowed by another entry, bail out
+                if current.getAttribute("shadowed-by"):
+                    skip = True
+                    break
                 tags.append(current.tagName)
                 current = current.parentNode
                 # Tracker-0.16 includes <constant> outside of <namespace>
@@ -372,6 +383,9 @@ def _parse_docs(dom):
                     break
                 name = get_name(current)
                 l.insert(0, name)
+
+            if skip:
+                continue
 
             path_seen.add(tuple(tags))
 
