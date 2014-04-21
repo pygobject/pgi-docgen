@@ -117,41 +117,7 @@ class Repository(object):
         self.version = version
 
         self._ns = ns = get_namespace(namespace, version)
-
-        # Gtk.foo_bar.arg1 -> "some doc"
-        self._parameters = {}
-
-        self._sig_parameters = {}
-
-        # Gtk.foo_bar -> "some doc"
-        # Gtk.Foo.foo_bar -> "some doc"
-        self._returns = {}
-
-        self._sreturns = {}
-
-        # Gtk.foo_bar -> "some doc"
-        # Gtk.Foo.foo_bar -> "some doc"
-        # Gtk.FooBar -> "some doc"
-        self._all = {}
-
-        # Gtk.Foo.some-signal -> "some doc"
-        self._signals = {}
-
-        # Gtk.Foo.some-prop -> "some doc"
-        self._properties = {}
-
-        self._fields = {}
-
-        a, pa, r, s, pr, fi, sp, sr = ns.parse_docs()
-        self._all.update(a)
-        self._parameters.update(pa)
-        self._returns.update(r)
-        self._signals.update(s)
-        self._properties.update(pr)
-        self._fields.update(fi)
-        self._sig_parameters.update(sp)
-        self._sreturns.update(sr)
-
+        self._docs = ns.parse_docs()
         self._private = ns.parse_private()
 
         # merge all type mappings
@@ -162,9 +128,24 @@ class Repository(object):
         self._types.update(ns.get_types())
 
     def lookup_attr_docs(self, *args, **kwargs):
-        return self._lookup_docs(self._all, *args, **kwargs)
+        docs = self._lookup_docs("all", *args, **kwargs)
+        shadowed = self._lookup_docs("all_shadowed", *args, **kwargs)
+        if shadowed and shadowed != docs:
+            docs += """
+
+.. note::
+
+    This function is an alternative implementation for bindings. The following
+    text is the documentation of the original, replaced function, which might
+    include additional information:
+
+%s
+""" % util.indent(util.indent(shadowed))
+        return docs
 
     def _lookup_meta(self, source, name):
+        source = self._docs[source]
+
         docs = u""
         if name in source:
             version, dep_version, dep = source[name][1:]
@@ -177,32 +158,34 @@ class Repository(object):
         return docs
 
     def _lookup_docs(self, source, name, current=None):
+        source = self._docs[source]
         if name in source:
             docs = source[name][0]
             return self._fix_docs(docs, current)
         return u""
 
     def lookup_attr_meta(self, name):
-        return self._lookup_meta(self._all, name)
+        return self._lookup_meta("all", name)
 
     def lookup_field_docs(self, *args, **kwargs):
-        return self._lookup_docs(self._fields, *args, **kwargs)
+        return self._lookup_docs("fields", *args, **kwargs)
 
     def lookup_return_docs(self, *args, **kwargs):
         if kwargs.pop("signal", False):
-            return self._lookup_docs(self._sreturns, *args, **kwargs)
+            return self._lookup_docs("signal-returns", *args, **kwargs)
         else:
-            return self._lookup_docs(self._returns, *args, **kwargs)
+            return self._lookup_docs("returns", *args, **kwargs)
 
     def lookup_parameter_docs(self, *args, **kwargs):
         if kwargs.pop("signal", False):
-            return self._lookup_docs(self._sig_parameters, *args, **kwargs)
+            return self._lookup_docs("signal-parameters", *args, **kwargs)
         else:
-            return self._lookup_docs(self._parameters, *args, **kwargs)
+            return self._lookup_docs("parameters", *args, **kwargs)
 
     def lookup_signal_docs(self, name, short=False, current=None):
-        if name in self._signals:
-            docs = self._signals[name][0]
+        source = self._docs["signals"]
+        if name in source:
+            docs = source[name][0]
             if short:
                 parts = re.split("\.[\s$]", docs, 1, re.MULTILINE)
                 if len(parts) > 1:
@@ -214,13 +197,13 @@ class Repository(object):
         return u""
 
     def lookup_signal_meta(self, name):
-        return self._lookup_meta(self._signals, name)
+        return self._lookup_meta("signals", name)
 
     def lookup_prop_docs(self, *args, **kwargs):
-        return self._lookup_docs(self._properties, *args, **kwargs)
+        return self._lookup_docs("properties", *args, **kwargs)
 
     def lookup_prop_meta(self, name):
-        return self._lookup_meta(self._properties, name)
+        return self._lookup_meta("properties", name)
 
     def get_dependencies(self):
         return self._ns.get_dependencies()

@@ -40,6 +40,10 @@ class TRepository(unittest.TestCase):
         self.assertTrue(
             "priority" in repo.lookup_attr_docs("GLib.io_add_watch"))
 
+        # we include a note containing the shadowed docs
+        self.assertTrue(
+            ".. note::" in repo.lookup_attr_docs("GLib.io_add_watch"))
+
     def test_gio(self):
         repo = Repository("Gio", "2.0")
 

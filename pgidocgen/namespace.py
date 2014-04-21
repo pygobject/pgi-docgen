@@ -279,6 +279,7 @@ def _parse_docs(dom):
     """Parse docs"""
 
     all_ = {}
+    all_shadowed = {}
     parameters = {}
     sparas = {}
     returns = {}
@@ -286,6 +287,18 @@ def _parse_docs(dom):
     signals = {}
     properties = {}
     fields = {}
+
+    all_docs = {
+        "all": all_,
+        "all_shadowed": all_shadowed,
+        "parameters": parameters,
+        "signal-parameters": sparas,
+        "returns": returns,
+        "signal-returns": sreturns,
+        "signals": signals,
+        "properties": properties,
+        "fields": fields,
+    }
 
     tag_names = [
         [("glib:signal",), signals],
@@ -370,12 +383,11 @@ def _parse_docs(dom):
             tags = []
             current = e
             l.append(get_name(current))
-            skip = False
+            shadowed = False
             while current.tagName != "namespace":
                 # this gets shadowed by another entry, bail out
                 if current.getAttribute("shadowed-by"):
-                    skip = True
-                    break
+                    shadowed = True
                 tags.append(current.tagName)
                 current = current.parentNode
                 # Tracker-0.16 includes <constant> outside of <namespace>
@@ -384,8 +396,17 @@ def _parse_docs(dom):
                 name = get_name(current)
                 l.insert(0, name)
 
-            if skip:
-                continue
+            # for shadowed function docs we save docs anyway since we
+            # can include them in the function docs for the replacement.
+            # This can be helpful since some replacements just reference
+            # the shadowed function, which we don't include.
+            if result is all_shadowed:
+                result = all_
+            if shadowed:
+                if result is all_:
+                    result = all_shadowed
+                else:
+                    continue
 
             path_seen.add(tuple(tags))
 
@@ -414,5 +435,4 @@ def _parse_docs(dom):
 
     assert not (path_seen - path_done)
 
-    return (all_, parameters, returns, signals, properties, fields, sparas,
-            sreturns)
+    return all_docs
