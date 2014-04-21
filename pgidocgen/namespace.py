@@ -212,11 +212,15 @@ def _parse_types(dom, namespace):
 
     # cairo_t -> cairo.Context
     for t in dom.getElementsByTagName("record"):
+        if t.getAttribute("glib:is-gtype-struct-for"):
+            continue
         c_name = t.getAttribute("c:type")
         # Gee-0.8 HazardPointer
         if not c_name:
             continue
         type_name = t.getAttribute("name")
+        if type_name.startswith("_"):
+            continue
         add(c_name, namespace + "." + type_name)
 
     # G_TIME_SPAN_MINUTE -> GLib.TIME_SPAN_MINUTE

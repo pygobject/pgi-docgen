@@ -22,6 +22,7 @@ from .union import UnionGenerator
 from .callback import CallbackGenerator
 from .doap import get_project_summary
 from .hierarchy import HierarchyGenerator
+from .mapping import MappingGenerator
 from . import util
 from .namespace import get_namespace
 
@@ -135,6 +136,7 @@ class ModuleGenerator(util.Generator):
         const_gen = ConstantsGenerator()
         cb_gen = CallbackGenerator()
         hier_gen = HierarchyGenerator()
+        map_gen = MappingGenerator(repo)
 
         for key in dir(mod):
             if key.startswith("_"):
@@ -252,7 +254,7 @@ class ModuleGenerator(util.Generator):
 """)
 
             gens = [func_gen, cb_gen, class_gen, hier_gen, struct_gen,
-                    union_gen, flags_gen, enums_gen, const_gen]
+                    union_gen, flags_gen, enums_gen, const_gen, map_gen]
             for gen in gens:
                 if gen.is_empty():
                     continue
