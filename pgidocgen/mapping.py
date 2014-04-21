@@ -42,14 +42,15 @@ Symbol Mapping
 
         i = 0
         lines = []
-        for key, value in sorted(self.repo._types.items()):
+        items = self.repo._types.iteritems()
+        for key, value in sorted(items, key=lambda x: x[0].lower()):
             if not value.startswith(self.repo.namespace + "."):
                 continue
             if self.repo.is_private(value):
                 continue
 
             i += 1
-            if not i % 100:
+            if not i % 80:
                 write_table(handle, lines)
                 lines = []
 
