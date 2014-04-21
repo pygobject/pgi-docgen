@@ -7,8 +7,6 @@
 # version 2.1 of the License, or (at your option) any later version.
 
 import sys
-import os
-import shutil
 import argparse
 
 try:
@@ -33,6 +31,7 @@ def main(argv):
                         help='path to where the resulting build should be')
     parser.add_argument('namespace',
                         help='namespace including version e.g. Gtk-3.0')
+    parser.add_argument('--devhelp', action='store_true')
 
     try:
         args = parser.parse_args(argv[1:])
@@ -64,7 +63,7 @@ def main(argv):
     namespace, version = args.namespace.split("-", 1)
     print "Create docs: Namespace=%s, Version=%s" % (namespace, version)
     gen.add_module(namespace, version)
-    gen.write(args.source, args.target)
+    gen.write(args.source, args.target, args.devhelp)
 
 
 if __name__ == "__main__":

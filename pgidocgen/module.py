@@ -64,7 +64,7 @@ class ModuleGenerator(util.Generator):
     def is_empty(self):
         return not bool(self._modules)
 
-    def write(self, dir_, target_):
+    def write(self, dir_, target_, devhelp=False):
         try:
             os.mkdir(dir_)
         except OSError:
@@ -98,9 +98,9 @@ class ModuleGenerator(util.Generator):
         for namespace, version in mods:
             nick = "%s-%s" % (namespace, version)
             sub_dir = os.path.join(dir_, nick)
-            self._write(sub_dir, target_, namespace, version)
+            self._write(sub_dir, target_, namespace, version, devhelp)
 
-    def _write(self, sub_dir, target_, namespace, version):
+    def _write(self, sub_dir, target_, namespace, version, devhelp):
         if os.path.exists(sub_dir):
             print "skipping %s-%s, already exists" % (namespace, version)
             return
@@ -272,7 +272,8 @@ class ModuleGenerator(util.Generator):
             conf.write("""
 DEPS = %r
 TARGET = %r
-""" % (deps, os.path.abspath(target_)))
+DEVHELP_PREFIX = %r
+""" % (deps, os.path.abspath(target_), devhelp and "python-" or ""))
 
         # make sure the generated config
         with open(conf_path, "rb") as h:

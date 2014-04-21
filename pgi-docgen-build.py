@@ -17,7 +17,6 @@ positional arguments:
 
 import os
 import sys
-import signal
 import glob
 import argparse
 import subprocess
@@ -25,6 +24,7 @@ from multiprocessing.pool import ThreadPool
 import multiprocessing
 import threading
 import shutil
+import tarfile
 
 from jinja2 import Template
 
@@ -66,12 +66,12 @@ def png_optimize_dir(dir_, pool_size=6):
     pool.join()
 
 
-def do_build(entry, path, build_path, devhelp):
-    print "Build started for %s" % entry
+def do_build(package):
+    print "Build started for %s" % package.name
 
-    sphinx_args = [path, build_path]
+    sphinx_args = [package.path, package.build_path]
 
-    if devhelp:
+    if package.devhelp:
         sphinx_args = ["-b", "devhelpfork"] + sphinx_args
     else:
         sphinx_args = ["-b", "html"] + sphinx_args
@@ -79,13 +79,13 @@ def do_build(entry, path, build_path, devhelp):
     subprocess.check_call(["sphinx-build", "-a", "-E"] + sphinx_args)
 
     # we don't rebuild, remove all caches
-    shutil.rmtree(os.path.join(build_path, ".doctrees"))
-    os.remove(os.path.join(build_path, ".buildinfo"))
+    shutil.rmtree(os.path.join(package.build_path, ".doctrees"))
+    os.remove(os.path.join(package.build_path, ".buildinfo"))
 
     if has_optipng():
         png_dirs = [
-            os.path.join(build_path, "_static"),
-            os.path.join(build_path, "_images")
+            os.path.join(package.build_path, "_static"),
+            os.path.join(package.build_path, "_images")
         ]
 
         for dir_ in png_dirs:
@@ -93,7 +93,28 @@ def do_build(entry, path, build_path, devhelp):
     else:
         print "optipng missing, skipping compression"
 
-    return entry
+    return package
+
+
+class Package(object):
+
+    def __init__(self, name, path, build_path, deps, devhelp=False):
+        self.name = name
+        self.path = path
+        self.build_path = build_path
+        self.deps = deps
+        self.devhelp = devhelp
+
+    def can_build(self, done_deps):
+        return not (self.deps - set([p.name for p in done_deps]))
+
+    def __repr__(self):
+        return "<%s name=%s>" % (type(self).__name__, self.name)
+
+
+def make_tarfile(output_filename, source_dir):
+    with tarfile.open(output_filename, "w:gz") as tar:
+        tar.add(source_dir, arcname=os.path.basename(source_dir))
 
 
 def main(argv):
@@ -101,7 +122,6 @@ def main(argv):
     parser = argparse.ArgumentParser(
         description='Build the sphinx environ created with pgi-docgen')
     parser.add_argument('source', help='path to the sphinx environ base dir')
-    parser.add_argument('--devhelp', action='store_true')
     args = parser.parse_args(argv[1:])
 
     to_build = {}
@@ -118,25 +138,30 @@ def main(argv):
             exec h.read() in exec_env
         target_path = exec_env["TARGET"]
         deps = set(exec_env["DEPS"])
-        build_path = os.path.join(target_path, entry)
+        devhelp = exec_env["DEVHELP_PREFIX"]
+        build_path = os.path.join(target_path, devhelp + entry)
 
-        to_build[entry] = (path, build_path, deps)
+        package = Package(entry, path, build_path, deps, bool(devhelp))
+        to_build[package.name] = package
 
     if not to_build:
         raise SystemExit("Nothing to build")
 
-    to_ignore = set(["cairo-1.0"])
+    devhelp = package.devhelp
 
     # don't build cairo-1.0, we reference the external one
-    for ignore in to_ignore:
-        to_build.pop(ignore, None)
+    to_ignore = set([])
+    for ignore in ["cairo-1.0"]:
+        p = to_build.pop(ignore, None)
+        if p:
+            to_ignore.add(p)
 
     try:
         os.mkdir(target_path)
     except OSError:
         pass
 
-    if not args.devhelp:
+    if not devhelp:
         with open(os.path.join("data", "index.html"), "rb") as h:
             template = Template(h.read())
 
@@ -155,18 +180,15 @@ def main(argv):
     pool = ThreadPool(int(get_cpu_count() * 1.5))
     event = threading.Event()
 
-    def job_cb(entry=None):
-        if entry is not None:
-            done.add(entry)
+    def job_cb(package=None):
+        if package is not None:
+            done.add(package)
             print "%s finished: %d/%d done" % (
-                entry, len(done), num_to_build)
+                package.name, len(done), num_to_build)
 
-        for entry, (path, build_path) in get_new_jobs():
-            print "Queue build for %s" % entry
-            pool.apply_async(
-                do_build,
-                [entry, path, build_path, args.devhelp],
-                callback=job_cb)
+        for package in get_new_jobs():
+            print "Queue build for %s" % package.name
+            pool.apply_async(do_build, [package], callback=job_cb)
 
         if len(done) == num_to_build:
             print "All done"
@@ -175,21 +197,18 @@ def main(argv):
     def get_new_jobs():
         jobs = []
 
-        for entry, (path, build_path, deps) in to_build.items():
-            deps.difference_update(done)
-            deps.difference_update(to_ignore)
-
-        for entry, (path, build_path, deps) in to_build.items():
-            if not deps:
-                del to_build[entry]
-                jobs.append([entry, (path, build_path)])
+        done_deps = done | to_ignore
+        for name, package in to_build.items():
+            if package.can_build(done_deps):
+                del to_build[name]
+                jobs.append(package)
 
         return jobs
 
-    for entry, (path, build_path, deps) in to_build.items():
-        if os.path.exists(build_path):
-            del to_build[entry]
-            done.add(entry)
+    for name, package in to_build.items():
+        if os.path.exists(package.build_path):
+            del to_build[name]
+            done.add(package)
 
     job_cb()
     event.wait()
@@ -198,14 +217,19 @@ def main(argv):
 
     # for devhelp to pick things up the dir name has to match the
     # devhelp file name (without the extension)
-    if args.devhelp:
-        for entry in done:
-            path = os.path.join(target_path, entry)
+    if devhelp:
+        for package in done:
+            path = package.build_path
             os.remove(os.path.join(path, "objects.inv"))
             dh = glob.glob(os.path.join(path, "*.devhelp.gz"))[0]
             dh_name = os.path.join(
-                os.path.dirname(dh), entry + ".devhelp.gz")
+                os.path.dirname(dh), os.path.basename(path) + ".devhelp.gz")
             os.rename(dh, dh_name)
+            tar_path = os.path.join(
+                os.path.dirname(path),
+                "devhelp-" + os.path.basename(path)  + ".tar.gz")
+            make_tarfile(tar_path, path)
+            shutil.rmtree(path)
 
 
 if __name__ == "__main__":

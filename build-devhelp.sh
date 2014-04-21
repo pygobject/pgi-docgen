@@ -15,7 +15,7 @@ for mod in "$@"
 do
     echo "#####################################"
     echo "# $mod"
-    python ./pgi-docgen.py _devhelp _devhelp/_build "$mod" 
+    python ./pgi-docgen.py --devhelp _devhelp _devhelp/_build "$mod"
 done
 
-python ./pgi-docgen-build.py --devhelp _devhelp
+python ./pgi-docgen-build.py _devhelp
