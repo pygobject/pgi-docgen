@@ -24,6 +24,10 @@
     margin: 0;
 }
 
+.wy-nav-content-wrap {
+    margin-left: 0;
+}
+
 .wy-side-nav-search, .wy-nav-top {
     background-color: #75507b;
 }

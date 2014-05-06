@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Python GI API Reference</title>
+
+    <style>
+    #search-field {
+        max-width: 250px;
+    }
+
+    li {
+        text-align: left;
+        white-space: nowrap;
+    }
+
+    li small {
+        color: #888;
+    }
+
+    body {
+        background-color: #404040 !important;
+    }
+
+    html {
+        overflow-y: scroll;
+    }
+
+    .wy-menu {
+        background-color: #404040 !important;
+    }
+
+    .wy-side-nav-search {
+        position: fixed;
+        width: 100%
+    }
+
+    #search-results {
+        padding-top: 100px;
+    }
+    </style>
+
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+    <link rel="stylesheet" href="_static/css/pgi.css" type="text/css" />
+
+    <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+<body>
+
+    <div class="wy-side-nav-search">
+        <a href="main.html" target="Content" class="fa fa-home">Python GI API Reference</a>
+
+        <div role="search">
+        <input name="q" id="search-field" placeholder="Search" type="text" autocomplete="off">
+        </div>
+    </div>
+
+    <div class="wy-menu wy-menu-vertical" style="text-align:center">
+        <ul id="search-results">
+        </ul>
+    </div>
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'1.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  false
+        };
+    </script>
+
+    <script src="jquery.js"></script>
+    <script type="text/javascript" src="pgi-searchtools.js"></script>
+    <script type="text/javascript" id="searchindexloader"></script>
+
+    <script type="text/javascript">
+    jQuery(function() { Search.loadIndex("searchindex.js"); });
+    </script>
+
+
+    <script type="text/javascript">
+
+    var delay = (function(){
+      var timer = 0;
+      return function(callback, ms){
+        clearTimeout (timer);
+        timer = setTimeout(callback, ms);
+      };
+    })();
+
+    jQuery(function () {
+        $('#search-field').focus();
+        $('#search-field').keyup(function(){
+            var val = $(this).val()
+            delay(function(){
+                Search.performSearch(val);
+            }, 200);
+        });
+    });
+    </script>
+
+</body>
+</html>

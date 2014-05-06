@@ -162,11 +162,18 @@ def main(argv):
         pass
 
     if not devhelp:
-        with open(os.path.join("data", "index.html"), "rb") as h:
-            template = Template(h.read())
+        index_path = os.path.join("data", "index")
+        for entry in os.listdir(index_path):
+            src = os.path.join(index_path, entry)
+            dst = os.path.join(target_path, entry)
+            shutil.copyfile(src, dst)
 
-        with open(os.path.join(target_path, "index.html"), "wb") as h:
-            h.write(template.render(entries=sorted(to_build.keys())))
+        with open(os.path.join(index_path, "main.html"), "rb") as h:
+            template = Template(h.read().decode("utf-8"))
+
+        with open(os.path.join(target_path, "main.html"), "wb") as h:
+            h.write(template.render(
+                entries=sorted(to_build.keys())).encode("utf-8"))
 
         static_target = os.path.join(target_path, "_static")
         if not os.path.exists(static_target):
@@ -214,6 +221,10 @@ def main(argv):
     event.wait()
     pool.close()
     pool.join()
+
+    if not devhelp:
+        from pgidocgen.mergeindex import merge
+        merge(target_path, include_terms=False)
 
     # for devhelp to pick things up the dir name has to match the
     # devhelp file name (without the extension)
