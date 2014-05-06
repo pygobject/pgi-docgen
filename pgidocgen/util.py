@@ -33,26 +33,6 @@ def iter_public_attr(obj):
         yield attr, attr_obj
 
 
-def import_namespace(namespace, version):
-    namespace = str(namespace)
-
-    import gi
-    try:
-        gi.require_version(namespace, version)
-    except ValueError as e:
-        raise ImportError(e)
-    module = __import__("gi.repository", fromlist=[namespace])
-    module = getattr(module, namespace)
-
-    # this needs to be synced with module._import_dependency
-    if namespace in ("Clutter", "ClutterGst", "Gst", "Grl"):
-        module.init([])
-    elif namespace in ("Gsf", "IBus"):
-        module.init()
-
-    return module
-
-
 def escape_identifier(text, reg=_KWD_RE):
     """Escape C identifiers so they can be used as attributes/arguments"""
 

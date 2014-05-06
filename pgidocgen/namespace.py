@@ -60,6 +60,39 @@ class Namespace(object):
 
         self._dependencies = deps
 
+    def import_module(self):
+        """Imports the module and initializes all dependencies.
+
+        Can raise ImportError.
+        """
+
+        import gi
+
+        try:
+            gi.require_version(self.namespace, self.version)
+        except ValueError as e:
+            raise ImportError(e)
+
+        # This is all needed because some modules depending on GStreamer
+        # segfaults if Gst.init() isn't called before introspecting them
+        to_load = list(reversed(self.get_all_dependencies()))
+        to_load += [(self.namespace, self.version)]
+
+        for (namespace, version) in to_load:
+            module = __import__("gi.repository", fromlist=[str(namespace)])
+            try:
+                module = getattr(module, namespace)
+            except AttributeError:
+                raise ImportError
+
+            # this needs to be synced with module._import_dependency
+            if namespace in ("Clutter", "ClutterGst", "Gst", "Grl"):
+                module.init([])
+            elif namespace in ("Gsf", "IBus"):
+                module.init()
+
+        return module
+
     def parse_private(self):
         return _parse_private(_get_dom(self.path), self.namespace)
 

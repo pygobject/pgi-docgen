@@ -35,7 +35,7 @@ def _import_dependency(fobj, namespace, version):
     fobj.write("pgi.require_version('%s', '%s')\n" % (namespace, version))
     fobj.write("from pgi.repository import %s\n" % namespace)
 
-    # this needs to be synced with util.import_namespace
+    # this needs to be synced with Namespace.import_module
     if namespace in ("Clutter", "ClutterGst", "Gst", "Grl"):
         fobj.write("%s.init([])\n" % namespace)
     elif namespace in ("Gsf", "IBus"):
@@ -121,8 +121,8 @@ class ModuleGenerator(util.Generator):
         _import_dependency(module, "GLib", "2.0")
         _import_dependency(module, "Atk", "1.0")
 
-        mod = util.import_namespace(namespace, version)
         repo = Repository(namespace, version)
+        mod = repo.import_module()
 
         for dep in repo.get_dependencies():
             _import_dependency(module, *dep)
