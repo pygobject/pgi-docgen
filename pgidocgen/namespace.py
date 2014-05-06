@@ -68,17 +68,17 @@ class Namespace(object):
 
         import gi
 
-        try:
-            gi.require_version(self.namespace, self.version)
-        except ValueError as e:
-            raise ImportError(e)
-
         # This is all needed because some modules depending on GStreamer
         # segfaults if Gst.init() isn't called before introspecting them
         to_load = list(reversed(self.get_all_dependencies()))
         to_load += [(self.namespace, self.version)]
 
         for (namespace, version) in to_load:
+            try:
+                gi.require_version(namespace, version)
+            except ValueError as e:
+                raise ImportError(e, version)
+
             module = __import__("gi.repository", fromlist=[str(namespace)])
             try:
                 module = getattr(module, namespace)
