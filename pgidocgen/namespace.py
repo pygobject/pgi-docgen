@@ -5,19 +5,41 @@
 # License as published by the Free Software Foundation; either
 # version 2.1 of the License, or (at your option) any later version.
 
+import os
 import gc
 import re
+import shelve
 from xml.dom import minidom
 
 from . import util
 
 
-def get_namespace(namespace, version, _ns_cache={}):
-    key = namespace, version
-    if not key in _ns_cache:
-        ns = Namespace(namespace, version)
-        _ns_cache[key] = ns
-    return _ns_cache[key]
+# Enable caching during building multiples modules if PGI_CACHE is set
+# Not enabled by default since it would need versioning and
+# only caches by gir name and not the source path...
+SHELVE_CACHE = "PGI_CACHE" in os.environ
+
+
+def get_namespace(namespace, version, _cache={}):
+    key = str(namespace + "." + version)
+    if key in _cache:
+        return _cache[key]
+
+    if SHELVE_CACHE:
+        d = shelve.open("_nscache", protocol=2)
+        if key in d:
+            res = d[key]
+            d.close()
+            return res
+
+    ns = Namespace(namespace, version)
+
+    if SHELVE_CACHE:
+        d[key] = ns
+        d.close()
+
+    _cache[key] = ns
+    return ns
 
 
 def _get_dom(path, _cache={}):
