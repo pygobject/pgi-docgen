@@ -26,8 +26,6 @@ import threading
 import shutil
 import tarfile
 
-from jinja2 import Template
-
 
 OPTIPNG = "optipng"
 
@@ -167,13 +165,6 @@ def main(argv):
             src = os.path.join(index_path, entry)
             dst = os.path.join(target_path, entry)
             shutil.copyfile(src, dst)
-
-        with open(os.path.join(index_path, "main.html"), "rb") as h:
-            template = Template(h.read().decode("utf-8"))
-
-        with open(os.path.join(target_path, "main.html"), "wb") as h:
-            h.write(template.render(
-                entries=sorted(to_build.keys())).encode("utf-8"))
 
         static_target = os.path.join(target_path, "_static")
         if not os.path.exists(static_target):

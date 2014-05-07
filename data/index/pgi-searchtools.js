@@ -16,6 +16,7 @@
 var Search = {
 
   _index : null,
+  _modules : null,
   _queued_query : null,
   _active_query : null,
 
@@ -32,6 +33,7 @@ var Search = {
   setIndex : function(index) {
     var q;
     this._index = index;
+    this._modules = Search.getModules();
     if ((q = this._queued_query) !== null) {
       this._queued_query = null;
       Search.query(q);
@@ -62,14 +64,47 @@ var Search = {
       this.deferQuery(query);
   },
 
+  getModules : function() {
+    var results = [];
+    var filenames = this._index.filenames;
+    var titles = this._index.titles;
+    var map = new Object();
+
+    for(var i in filenames) {
+        var fn = filenames[i];
+        var name = fn.split("/")[0].replace("-", " ")
+        map[name] = fn;
+    }
+
+    for(var name in map) {
+        var path = map[name].split("/")[0] + "/index";
+        results.push([path, name, '', 0]);
+    }
+
+    return results;
+  },
+
   /**
    * execute search (requires search index to be loaded)
    */
   query : function(query) {
     var parts = query.split(/\s+/);
+    // filter out empty ones
+    parts = parts.filter(function(e){return e}); 
 
-    // array of [filename, title, anchor, score]
-    var results = this.getResult(parts);
+    var max_entries = 300;
+    var show_first = 30;
+    var results = [];
+
+    if(!parts.length) {
+        results = this._modules.slice(0);
+        // XXX: show all entries
+        max_entries = 99999;
+        show_first = max_entries;
+    } else {
+        // array of [filename, title, anchor, score]
+        results = this.getResult(parts);
+    }
 
     // now sort the results by score (in opposite order of appearance, since the
     // display function below uses pop() to retrieve items) and then
@@ -88,9 +123,6 @@ var Search = {
         return (left > right) ? -1 : ((left < right) ? 1 : 0);
       }
     });
-
-    var max_entries = 300;
-    var show_first = 30;
 
     if (results.length > max_entries)
         results = results.slice(results.length - max_entries, results.length);
@@ -128,11 +160,25 @@ var Search = {
     var objnames = this._index.objnames;
     var titles = this._index.titles;
 
-    parts = parts.filter(function(e){return e}); 
-    if(!parts.length)
-        return [];
-
     var results = [];
+
+    if(!parts.length) {
+        return []
+        h = new Object();
+
+        for(var i in filenames) {
+            var fn = filenames[i];
+            var name = fn.split("/")[0].replace("-", " ")
+            h[name] = fn;
+        }
+
+        for(var name in h) {
+            var path = h[name].split("/")[0] + "/index";
+            results.push([path, name, '#', 1]);
+        }
+
+        return results;
+    }
 
     var do_score = function (text, part) {
         // returns -1 if not found, or a score >= 0
@@ -215,8 +261,9 @@ var Search = {
             else if (anchor == '-')
                 anchor = objnames[match[1]][1] + '-' + fullname;
             var type_name = objnames[match[1]][1]
+            var filename = filenames[match[0]];
             results.push([
-                filenames[match[0]],
+                filename,
                 fullname + " <small>(" + type_name + ")</small>",
                 '#' + anchor, all_score]);
         }
