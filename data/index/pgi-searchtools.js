@@ -91,7 +91,9 @@ var Search = {
 
     var max_entries = 300;
     var show_first = 30;
-    results = results.slice(results.length - max_entries, results.length);
+
+    if (results.length > max_entries)
+        results = results.slice(results.length - max_entries, results.length);
 
     function displayNextItem(query, entry_index) {
       if (query !== Search._active_query || !results.length)
