@@ -9,14 +9,7 @@
 import sys
 import argparse
 
-try:
-    import pgi
-except ImportError:
-    is_pgi = False
-else:
-    is_pgi = True
-    pgi.install_as_gi()
-    pgi.set_backend("ctypes,null")
+import pgi
 
 from pgidocgen.module import ModuleGenerator
 from pgidocgen.util import get_gir_files
@@ -36,11 +29,6 @@ def main(argv):
     try:
         args = parser.parse_args(argv[1:])
     except SystemExit:
-        raise SystemExit(1)
-
-    if not is_pgi:
-        print "Can't build API docs without pgi"
-        print "Get it here: https://github.com/lazka/pgi"
         raise SystemExit(1)
 
     if not args.namespace:

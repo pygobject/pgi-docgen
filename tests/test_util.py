@@ -9,7 +9,7 @@ import os
 import unittest
 
 from pgidocgen.util import is_staticmethod, is_classmethod, is_normalmethod
-from pgidocgen.util import is_method_owner, is_fundamental
+from pgidocgen.util import is_method_owner, is_fundamental, is_object
 
 
 class TUtil(unittest.TestCase):
@@ -58,3 +58,8 @@ class TUtil(unittest.TestCase):
         self.assertTrue(is_fundamental(GObject.Object))
         self.assertTrue(is_fundamental(GObject.ParamSpec))
         self.assertFalse(is_fundamental(object))
+
+    def test_is_object(self):
+        from pgi.repository import Gtk
+
+        self.assertTrue(is_object(Gtk.Button))

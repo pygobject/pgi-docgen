@@ -280,7 +280,7 @@ class %s(%s):
 
     @cache_calls
     def parse_signals(self, obj):
-        if not util.is_object(obj) or util.is_iface(obj):
+        if not (util.is_object(obj) or util.is_iface(obj)):
             return []
 
         current_rst_target = obj.__module__ + "." + obj.__name__
@@ -350,7 +350,7 @@ class %s(%s):
 
     @cache_calls
     def parse_properties(self, obj):
-        if not util.is_object(obj) or util.is_iface(obj):
+        if not (util.is_object(obj) or util.is_iface(obj)):
             return []
 
         current_rst_target = obj.__module__ + "." + obj.__name__

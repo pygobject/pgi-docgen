@@ -97,3 +97,10 @@ class TRepository(unittest.TestCase):
         repo = Repository("Atk", "1.0")
         # contains signal named "print", which needs special handling
         repo.parse_signals(WebKit2.WebView)
+
+    def test_props(self):
+        from pgi.repository import Gtk
+
+        repo = Repository("Gtk", "3.0")
+        self.assertTrue(repo.parse_properties(Gtk.Button))
+        self.assertTrue(repo.parse_signals(Gtk.Button))
