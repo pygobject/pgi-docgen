@@ -273,11 +273,8 @@ var Search = {
                 is_sig_prop = true
             }
 
-            // move properties and signals down a bit and include the class
+            // take class name from fullname and add to typename
             if(is_sig_prop) {
-                all_score -= parts.length;
-
-                // take class name from fullname and add to typename
                 var start = fullname.indexOf("(");
                 var cls = fullname.slice(start + 1, fullname.length - 1);
                 type_name = cls + " " + type_name;
