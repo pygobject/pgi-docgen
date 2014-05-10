@@ -134,7 +134,7 @@ var Search = {
       var item = results.pop();
       var listItem = $('<li style="display:none"></li>');
       listItem.append($('<a/>').attr('href',
-        item[0] + DOCUMENTATION_OPTIONS.FILE_SUFFIX +
+        item[0] + ".html" +
         item[2]).attr('target', 'Content').html(item[1]));
       Search.output.append(listItem);
 
@@ -262,6 +262,11 @@ var Search = {
                 anchor = objnames[match[1]][1] + '-' + fullname;
             var type_name = objnames[match[1]][1]
             var filename = filenames[match[0]];
+
+            // move properties and signals down
+            if(fullname.indexOf("(") != -1)
+                all_score -= parts.length;
+
             results.push([
                 filename,
                 fullname + " <small>(" + type_name + ")</small>",

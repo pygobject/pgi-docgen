@@ -6,7 +6,7 @@
     .local-toc {
         position:fixed;
         right: 1em;
-        bottom: 1em;
+        bottom: 50px;
         display: block;
     }
 
@@ -77,4 +77,30 @@ tt.descname, tt.descclassname {
 
 @font-face {
     font-family: 'Roboto Slab'; font-weight: 700; src: url('../fonts/lato-bold.woff');
+}
+
+
+table.navigation#top
+{
+position: fixed;
+background: #e2e2e2;
+border-top: solid 1px #babdb6;
+border-spacing: 5px;
+margin-top: 0;
+margin-bottom: 0;
+bottom: 0;
+left: 0;
+z-index: 10;
+font-size: 0.8em;
+}
+
+table.navigation#top td
+{
+padding: 6px;
+height: 100%;
+}
+
+table.navigation#top img
+{
+  margin: 6px 0;
 }

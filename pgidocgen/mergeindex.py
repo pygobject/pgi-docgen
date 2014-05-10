@@ -125,6 +125,7 @@ class SearchIndexMerger(object):
                     objtype_index = get_obj_index(ns, objtype_index)
                     new_v = [fn_index, objtype_index, prio, shortanchor]
                     # FIXME: there are clashes, last thing wins for now
+                    # .. try to find out why..
                     new_attributes[attr] = new_v
 
         done["objects"] = new_objects
@@ -132,6 +133,44 @@ class SearchIndexMerger(object):
         assert not (set(first.keys()) ^ set(done.keys()))
 
         return done
+
+
+def fixup_props_signals(index):
+    """Move things around so that signals and properties
+    better match devhelp output.
+    """
+
+    objects = index["objects"]
+
+    if "" not in objects:
+        objects[""] = {}
+
+    sig_index = len(index["objnames"]) + 1
+    index["objnames"][str(sig_index)] = ["gobject", "signal", "GObject Signal"]
+    index["objtypes"][str(sig_index)] = "gobject:signal"
+
+    prop_index = len(index["objnames"]) + 1
+    index["objnames"][str(prop_index)] = [
+        "gobject", "property", "GObject Property"]
+    index["objtypes"][str(prop_index)] = "gobject:property"
+
+    for attr_key, attributes in objects.items():
+        if attr_key.endswith(".props"):
+            ns = attr_key.rsplit(".", 1)[0]
+            for k, v in attributes.iteritems():
+                v[1] = prop_index
+                v[3] = attr_key + "." + k
+                k = "%s (%s)" % (k.replace("_", "-"), ns)
+                objects[""][k] = v
+            del objects[attr_key]
+        elif attr_key.endswith(".signals"):
+            ns = attr_key.rsplit(".", 1)[0]
+            for k, v in attributes.iteritems():
+                v[1] = sig_index
+                v[3] = attr_key + "." + k
+                k = "%s (%s)" % (k.replace("_", "-"), ns)
+                objects[""][k] = v
+            del objects[attr_key]
 
 
 def merge(path, include_terms=True):
@@ -149,11 +188,12 @@ def merge(path, include_terms=True):
         with open(index_path, "rb") as h:
             data = h.read()
             mod = js_index.loads(data)
+            fixup_props_signals(mod)
+            if not include_terms:
+                mod["terms"].clear()
+                mod["titleterms"].clear()
             merger.add_index(namespace, mod)
     
     with open(os.path.join(path, "searchindex.js"), "wb") as h:
         output = merger.merge()
-        if not include_terms:
-            del output["terms"]
-            del output["titleterms"]
         h.write(js_index.dumps(output))

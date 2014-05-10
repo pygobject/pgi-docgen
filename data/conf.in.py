@@ -53,6 +53,7 @@ html_theme_path = ['.']
 html_theme = '_theme'
 html_copy_source = False
 html_show_sourcelink = False
+html_short_title = project = '%s %s' % (mname, mversion)
 
 inheritance_node_attrs = dict(shape='box', fontsize=7,
                               color='gray70', style='rounded')

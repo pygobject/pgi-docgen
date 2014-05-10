@@ -17,16 +17,19 @@ from . import util
 # Enable caching during building multiples modules if PGI_CACHE is set
 # Not enabled by default since it would need versioning and
 # only caches by gir name and not the source path...
-SHELVE_CACHE = "PGI_CACHE" in os.environ
+SHELVE_CACHE = os.environ.get("PGI_CACHE", None)
 
 
 def get_namespace(namespace, version, _cache={}):
     key = str(namespace + "." + version)
     if key in _cache:
         return _cache[key]
-
     if SHELVE_CACHE:
-        d = shelve.open("_nscache", protocol=2)
+        if os.path.getsize(SHELVE_CACHE) == 0:
+            # created by tempfile, replace here
+            os.remove(SHELVE_CACHE)
+
+        d = shelve.open(SHELVE_CACHE, protocol=2)
         if key in d:
             res = d[key]
             d.close()

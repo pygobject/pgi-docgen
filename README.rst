@@ -37,10 +37,6 @@ How do I get started?
     # Warning: This can take about an hour.
     ./build_all.sh
 
-    # To speed things up a bit set the JOBS env var.
-    # Only do this if you have enough RAM (~4 GB)
-    JOBS=4 ./build_all.sh
-
 The resulting docs can be found in ``_docs/_build``
 
 

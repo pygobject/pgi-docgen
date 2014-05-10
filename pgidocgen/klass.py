@@ -372,6 +372,7 @@ Class Details
 
             for sig in self._sigs.get(cls, []):
                 rst_label = cls_name + ".signals." + sig.name
+                func_name = cls_name + ".signals." + sig.sig
                 data = """
 
 .. _%s:
@@ -383,7 +384,7 @@ Class Details
 
 %s
 
-""" % (rst_label, sig.sig, sig.name, sig.flags_string, util.indent(sig.desc))
+""" % (rst_label, func_name, sig.name, sig.flags_string, util.indent(sig.desc))
 
                 h.write(data.encode("utf-8"))
 

@@ -1,16 +1,35 @@
-<div role="navigation" aria-label="breadcrumbs navigation">
+<table class="navigation" id="top" summary="Navigation header" cellpadding="2" cellspacing="10" width="100%"><tbody><tr valign="middle">
+<td class="shortcuts" align="left" width="100%">
   <ul class="wy-breadcrumbs">
-    <li><a href="{{ pathto(master_doc) }}">API</a> &raquo;</li>
+    <li><a href="{{ pathto(master_doc) }}">{{ shorttitle }}</a> &raquo;</li>
       {% for doc in parents %}
           <li><a href="{{ doc.link|e }}">{{ doc.title }}</a> &raquo;</li>
       {% endfor %}
     <li>{{ title }}</li>
-      <li class="wy-breadcrumbs-aside">
-        <a href="https://github.com/lazka/pgi-docgen/issues/new?title=BUG: {{ pagename }}" class="icon icon-github"> Report a Bug</a>
-      </li>
   </ul>
-  <hr/>
-</div>
+</td>
+<td><a accesskey="h" href="{{ pathto('index') }}"><img src="{{ pathto('_static/img/home.png', 1) }}" alt="Home" border="0" height="16" width="16"></a></td>
+
+{% if parents %}
+<td><a accesskey="u" href="{{ parents[-1].link|e }}"><img src="{{ pathto('_static/img/up.png', 1) }}" alt="Up" border="0" height="16" width="16"></a></td>
+{% else %}
+<td><img src="{{ pathto('_static/img/up-insensitive.png', 1) }}" alt="Up" border="0" height="16" width="16"></td>
+{% endif %}
+
+{% if prev %}
+<td><a accesskey="p" href="{{ prev.link|e }}"><img src="{{ pathto('_static/img/left.png', 1) }}" alt="Prev" border="0" height="16" width="16"></a></td>
+{% else %}
+<td><img src="{{ pathto('_static/img/left-insensitive.png', 1) }}" alt="Prev" border="0" height="16" width="16"></td>
+{% endif %}
+
+{% if next %}
+<td><a accesskey="n" href="{{ next.link|e }}"><img src="{{ pathto('_static/img/right.png', 1) }}" alt="Next" border="0" height="16" width="16"></a></td>
+{% else %}
+<td><img src="{{ pathto('_static/img/right-insensitive.png', 1) }}" alt="Prev" border="0" height="16" width="16"></td>
+{% endif %}
+
+</tr></tbody>
+</table>
 
 <div class="local-toc">
     {{ toc }}
