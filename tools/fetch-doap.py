@@ -7,26 +7,37 @@
 # version 2.1 of the License, or (at your option) any later version.
 
 import os
+from multiprocessing import Pool
+
+import requests
+
+from pgidocgen.util import get_gir_files
 
 
 LIBS = {
     'https://git.gnome.org/browse/librest/plain/librest.doap':
         ['RestExtras-0.7', 'Rest-0.7'],
     'https://git.gnome.org/browse/gtk+/plain/gtk+.doap':
-        ['Gtk-3.0', 'GdkX11-3.0', 'Gdk-3.0'],
+        ['Gtk-3.0', 'GdkX11-3.0', 'Gdk-3.0', 'Gdk-2.0', 'GdkX11-2.0',
+         'Gtk-2.0'],
     'http://cgit.freedesktop.org/gstreamer/gstreamer/plain/gstreamer.doap':
         ['GstController-1.0', 'GstNet-1.0', 'Gst-1.0', 'GstCheck-1.0',
-         'GstBase-1.0'],
+         'GstBase-1.0', 'Gst-0.10', 'GstBase-0.10', 'GstCheck-0.10',
+         'GstController-0.10', 'GstNet-0.10'],
     'http://cgit.freedesktop.org/gstreamer/gst-plugins-base/plain/gst-plugins-base.doap':
         ['GstRtsp-1.0', 'GstPbutils-1.0', 'GstApp-1.0', 'GstRtp-1.0',
          'GstAllocators-1.0', 'GstFft-1.0', 'GstVideo-1.0', 'GstAudio-1.0',
-         'GstRiff-1.0', 'GstSdp-1.0', 'GstTag-1.0'],
+         'GstRiff-1.0', 'GstSdp-1.0', 'GstTag-1.0', 'GstAudio-0.10',
+         'GstApp-0.10',  'GstFft-0.10', 'GstInterfaces-0.10',
+         'GstPbutils-0.10', 'GstRiff-0.10', 'GstRtp-0.10', 'GstRtsp-0.10',
+         'GstRtspServer-0.10', 'GstSdp-0.10', 'GstTag-0.10',
+         'GstNetbuffer-0.10', 'GstVideo-0.10'],
     'https://git.gnome.org/browse/glib/plain/glib.doap':
         ['GLib-2.0', 'GObject-2.0', 'Gio-2.0'],
     'https://git.gnome.org/browse/atk/plain/atk.doap':
         ['Atk-1.0'],
     'https://git.gnome.org/browse/cogl/plain/cogl.doap':
-        ['Cogl-1.0', 'CoglPango-1.0'],
+        ['Cogl-1.0', 'CoglPango-1.0', 'Cogl-2.0', 'CoglPango-2.0'],
     'https://git.gnome.org/browse/gupnp-av/plain/gupnp-av.doap':
         ['GUPnPAV-1.0'],
     'https://git.gnome.org/browse/cheese/plain/cheese.doap':
@@ -66,8 +77,10 @@ LIBS = {
         ['GData-0.0'],
     'https://git.gnome.org/browse/grilo/plain/grilo.doap':
         ['GrlNet-0.2', 'Grl-0.2'],
+    'https://git.gnome.org/browse/grilo-plugins/plain/grilo-plugins.doap':
+        ['GrlPls-0.2'],
     'https://git.gnome.org/browse/gexiv2/plain/gexiv2.doap':
-        ['GExiv2-0.4'],
+        ['GExiv2-0.4', 'GExiv2-0.10'],
     'https://git.gnome.org/browse/folks/plain/folks.doap':
         ['Folks-0.6'],
     'https://git.gnome.org/browse/at-spi2-core/plain/at-spi2-core.doap':
@@ -77,7 +90,7 @@ LIBS = {
     'https://git.gnome.org/browse/clutter/plain/clutter.doap':
         ['ClutterGdk-1.0', 'Clutter-1.0', 'ClutterX11-1.0', 'Cally-1.0'],
     'https://git.gnome.org/browse/clutter-gst/plain/clutter-gst.doap':
-        ['ClutterGst-2.0'],
+        ['ClutterGst-2.0', 'ClutterGst-1.0'],
     'https://git.gnome.org/browse/clutter-gtk/plain/clutter-gtk.doap':
         ['GtkClutter-1.0'],
     'https://git.gnome.org/browse/evince/plain/evince.doap':
@@ -153,16 +166,31 @@ LIBS = {
     'https://git.gnome.org/browse/vte/plain/vte.doap':
         ['Vte-2.90'],
     'http://cgit.freedesktop.org/gstreamer/gst-editing-services/plain/gst-editing-services.doap':
-        ['GES-1.0'],
+        ['GES-1.0', 'GES-0.10'],
+    'https://git.gnome.org/browse/brasero/plain/brasero.doap':
+        ['BraseroBurn-3.1', 'BraseroMedia-3.1'],
+    'https://git.gnome.org/browse/goffice/plain/goffice.doap':
+        ['GOffice-0.10'],
 }
 
 
-if __name__ == '__main__':
-    import requests
+def fetch(args):
+    url, data = args
+    print url
+    resp = requests.get(url)
+    return resp.content, data
 
-    for url, ns_list in LIBS.items():
-        print url
-        r = requests.get(url)
+
+if __name__ == '__main__':
+    ns_list = set(get_gir_files().keys())
+    for values in LIBS.values():
+        ns_list -= set(values)
+
+    print "Missing:"
+    print sorted(ns_list)
+
+    pool = Pool(20)
+    for content, ns_list in pool.imap_unordered(fetch, LIBS.items()):
         for ns in ns_list:
             with open(os.path.join('data', 'doap', ns) + ".doap", 'wb') as h:
-                h.write(r.content)
+                h.write(content)

@@ -1,0 +1,33 @@
+<Project xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+         xmlns:foaf="http://xmlns.com/foaf/0.1/"
+         xmlns:gnome="http://api.gnome.org/doap-extensions#"
+         xmlns="http://usefulinc.com/ns/doap#">
+
+  <name xml:lang="en">grilo-plugins</name>
+  <shortdesc xml:lang="en">A collection of plugins for the Grilo framework.</shortdesc>
+
+  <homepage
+  rdf:resource="https://wiki.gnome.org/Projects/Grilo" />
+  <mailing-list
+  rdf:resource="http://mail.gnome.org/mailman/listinfo/grilo-list" />
+  <download-page
+  rdf:resource="http://download.gnome.org/sources/grilo-plugins/"/>
+  <bug-database
+  rdf:resource="https://bugzilla.gnome.org/browse.cgi?product=grilo&amp;component=plugins" />
+
+  <maintainer>
+    <foaf:Person>
+      <foaf:name>Iago Toral Quiroga</foaf:name>
+      <foaf:mbox rdf:resource="mailto:itoral@igalia.com" />
+      <gnome:userid>itoral</gnome:userid>
+    </foaf:Person>
+  </maintainer>
+  <maintainer>
+    <foaf:Person>
+      <foaf:name>Juan A. Suarez Romero</foaf:name>
+      <foaf:mbox rdf:resource="mailto:jasuarez@igalia.com" />
+      <gnome:userid>jasuarez</gnome:userid>
+    </foaf:Person>
+  </maintainer>
+</Project>

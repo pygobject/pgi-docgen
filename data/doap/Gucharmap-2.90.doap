@@ -7,13 +7,13 @@
   <name xml:lang="en">Character Map</name>
   <shortdesc xml:lang="en">Character map, based on the Unicode Character Database</shortdesc>
   <homepage
-  rdf:resource="http://live.gnome.org/Gucharmap" />
+  rdf:resource="https://wiki.gnome.org/Apps/Gucharmap" />
   <mailing-list
   rdf:resource="http://mail.gnome.org/mailman/listinfo/desktop-devel-list" />
   <download-page
-  rdf:resource="http://download.gnome.org/sources/gucharmap/"/>
+  rdf:resource="http://download.gnome.org/sources/gucharmap/" />
   <bug-database
-  rdf:resource="http://bugzilla.gnome.org/browse.cgi?product=gucharmap"/>
+  rdf:resource="https://bugzilla.gnome.org/browse.cgi?product=gucharmap" />
   <category rdf:resource="http://api.gnome.org/doap-extensions#desktop" />
 
   <maintainer>

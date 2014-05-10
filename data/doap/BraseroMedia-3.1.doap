@@ -1,0 +1,41 @@
+<Project xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+         xmlns:foaf="http://xmlns.com/foaf/0.1/"
+         xmlns:gnome="http://api.gnome.org/doap-extensions#"
+         xmlns="http://usefulinc.com/ns/doap#">
+
+
+  <name xml:lang="en">brasero</name>
+  
+  <shortdesc xml:lang="en">
+  CD/DVD mastering tool
+  </shortdesc>
+  
+  <homepage rdf:resource="https://wiki.gnome.org/Apps/Brasero" />
+  <mailing-list rdf:resource="http://mail.gnome.org/mailman/listinfo/brasero-list" />
+  <download-page rdf:resource="http://download.gnome.org/sources/brasero/" />
+  <bug-database rdf:resource="http://bugzilla.gnome.org/browse.cgi?product=brasero" />
+  <category rdf:resource="http://api.gnome.org/doap-extensions#desktop" />
+
+  <maintainer>
+    <foaf:Person>
+      <foaf:name>Philippe Rouquier</foaf:name>
+      <foaf:mbox rdf:resource="mailto:bonfire-app@wanadoo.fr" />
+      <gnome:userid>philippr</gnome:userid>
+    </foaf:Person>
+  </maintainer>
+  <maintainer>
+    <foaf:Person>
+      <foaf:name>Luis Medinas</foaf:name>
+      <foaf:mbox rdf:resource="mailto:lmedinas@gnome.org" />
+      <gnome:userid>lmedinas</gnome:userid>
+    </foaf:Person>
+  </maintainer>
+  <maintainer>
+    <foaf:Person>
+      <foaf:name>Joshua Lock</foaf:name>
+      <foaf:mbox rdf:resource="mailto:joshuagl@src.gnome.org" />
+      <gnome:userid>joshuagl</gnome:userid>
+    </foaf:Person>
+  </maintainer>
+</Project>

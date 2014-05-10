@@ -8,11 +8,11 @@
   <shortdesc xml:lang="en">HTTP client/server library for GNOME</shortdesc>
   <description>libsoup is an HTTP client/server library for GNOME. It uses GObjects and the glib main loop, to integrate well with GNOME applications.</description>
 
-  <homepage rdf:resource="http://live.gnome.org/LibSoup" />
-  <download-page rdf:resource="http://download.gnome.org/sources/libsoup/"/>
-  <bug-database rdf:resource="http://bugzilla.gnome.org/browse.cgi?product=libsoup"/>
-  <mailing-list rdf:resource="http://mail.gnome.org/mailman/listinfo/libsoup-list"/>
-  <category rdf:resource="http://api.gnome.org/doap-extensions#platform"/>
+  <homepage rdf:resource="https://wiki.gnome.org/Projects/libsoup" />
+  <mailing-list rdf:resource="http://mail.gnome.org/mailman/listinfo/libsoup-list" />
+  <download-page rdf:resource="http://download.gnome.org/sources/libsoup/" />
+  <bug-database rdf:resource="https://bugzilla.gnome.org/browse.cgi?product=libsoup" />
+  <category rdf:resource="http://api.gnome.org/doap-extensions#platform" />
 
   <maintainer>
     <foaf:Person>

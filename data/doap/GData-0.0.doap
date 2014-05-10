@@ -5,6 +5,7 @@
 	<homepage rdf:resource="https://wiki.gnome.org/Projects/libgdata"/>
 	<license rdf:resource="http://usefulinc.com/doap/licenses/lgpl"/>
 	<download-page rdf:resource="http://download.gnome.org/sources/libgdata/"/>
+	<bug-database rdf:resource="https://bugzilla.gnome.org/browse.cgi?product=libgdata"/>
 	<maintainer>
 		<foaf:Person>
 			<foaf:name>Philip Withnall</foaf:name>
