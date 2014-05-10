@@ -263,9 +263,26 @@ var Search = {
             var type_name = objnames[match[1]][1]
             var filename = filenames[match[0]];
 
-            // move properties and signals down
-            if(fullname.indexOf("(") != -1)
+            // prefix properties and signals
+            var is_sig_prop = false;
+            if(type_name == "property") {
+                fullname = ":" + fullname;
+                is_sig_prop = true;
+            } else if(type_name == "signal") {
+                fullname = "::" + fullname;
+                is_sig_prop = true
+            }
+
+            // move properties and signals down a bit and include the class
+            if(is_sig_prop) {
                 all_score -= parts.length;
+
+                // take class name from fullname and add to typename
+                var start = fullname.indexOf("(");
+                var cls = fullname.slice(start + 1, fullname.length - 1);
+                type_name = cls + " " + type_name;
+                fullname = fullname.slice(0, start);
+            }
 
             results.push([
                 filename,
