@@ -217,6 +217,28 @@ def main(argv):
         from pgidocgen.mergeindex import merge
         merge(target_path, include_terms=False)
 
+    # add symlinks for the old layout
+    if not devhelp:
+        old_api = os.path.join(target_path, "api")
+        try:
+            os.mkdir(old_api)
+        except OSError:
+            pass
+
+        for entry in os.listdir(target_path):
+            if entry.startswith("_"):
+                continue
+            dir_ = os.path.join(target_path, entry)
+            if not os.path.isdir(dir_):
+                continue
+
+            try:
+                os.symlink(os.path.join("..", entry),
+                           os.path.join(old_api, entry.replace("-", "_")))
+            except Exception:
+                # unix only
+                pass
+
     # for devhelp to pick things up the dir name has to match the
     # devhelp file name (without the extension)
     if devhelp:
