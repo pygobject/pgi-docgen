@@ -1,12 +1,15 @@
 <html>
 <head>
 
+<title>Python GI API Reference</title>
+
 <script>
 
 var main_page = "main.html";
 
-function onLoad() {
-    // takes the hash at the start and loads the path into the content frame
+
+function applyHash() {
+    // takes the current hash loads the path into the content frame
 
     var hash = window.location.hash;
     var elm = document.getElementById('Content');
@@ -24,16 +27,31 @@ function getHashForLocation(elm) {
     var this_path = window.location.pathname;
     var last_slash = this_path.lastIndexOf("/");
     var path = elm.pathname + elm.hash;
-    return "#" + path.slice(last_slash + 1, path.length);
+    var end = path.length;
+    if(path[end - 1] == "/")
+        end--;
+    return "#" + path.slice(last_slash + 1, end);
+}
+
+
+function endsWith(str, suffix) {
+    return str.indexOf(suffix, str.length - suffix.length) !== -1;
 }
 
 
 function setTopHash(hash) {
     var main_hash = "#" + main_page;
+
+    var index_suffix = "index.html";
+    if(window.location.protocol != "file:" && endsWith(hash, index_suffix)) {
+        hash = hash.slice(0, hash.length - index_suffix.length - 1);
+    }
+
     if(hash == main_hash) {
         // 'space' clears it somehow..
         hash = " ";
     }
+
 
     if(history.pushState) {
         window.history.replaceState(null, window.document.title, hash);
@@ -42,14 +60,20 @@ function setTopHash(hash) {
     }
 }
 
+
+window.onhashchange = applyHash
+
+
 function frameOnLoad() {
     // if the location of the frame changes, push hash to the frameset
 
     function onContentHashChange() {
         var elm = document.getElementById('Content');
+        var subwin = elm.contentWindow;
         // don't set top hash on the first call
-        if(elm.contentWindow.location.href != "about:blank") {
-            setTopHash(getHashForLocation(elm.contentWindow.location));
+        if(subwin.location.href != "about:blank") {
+            window.document.title = subwin.document.title;
+            setTopHash(getHashForLocation(subwin.location));
         }
     }
 
@@ -63,7 +87,7 @@ function frameOnLoad() {
 </script>
 
 </head>
-<frameset cols="300px,*" frameborder="1" bordercolor="#E2E2E2" BORDER="5" onload="onLoad();">
+<frameset cols="300px,*" frameborder="1" bordercolor="#E2E2E2" BORDER="5" onload="applyHash();">
   <frame src="sidebar.html">
   <frame id="Content" name="Content" onload="frameOnLoad();">
 </frameset>
