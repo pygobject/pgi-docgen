@@ -401,11 +401,13 @@ Class Details
 
     :Name: ``%s``
     :Type: %s
+    :Default Value: %s
     :Flags: %s
 
 %s
 
-""" % (rest_target, p.name, p.type_desc, p.flags_string, util.indent(p.desc))
+""" % (rest_target, p.name, p.type_desc, p.value_desc, p.flags_string,
+       util.indent(p.desc))
 
                 h.write(data.encode("utf-8"))
 

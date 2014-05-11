@@ -327,6 +327,35 @@ def gtype_to_rest(gtype):
     return ":obj:`%s`" % name
 
 
+def instance_to_rest(inst):
+    """Reference some python instance.
+
+    For flags/enums try to get the predefined instance.
+    """
+
+    if inst is None or inst is True or inst is False:
+        return ":obj:`%s`" % inst
+
+    cls = type(inst)
+    if is_enum(cls):
+        for k, v in cls.__dict__.items():
+            if isinstance(v, cls) and v == inst:
+                return  ":obj:`%s`" % (
+                    cls.__module__ + "." + cls.__name__ + "." + k)
+    elif is_flags(cls):
+        bits = []
+        for k, v in cls.__dict__.items():
+            if isinstance(v, cls) and (v & inst or (v == 0 and v == inst)):
+                bits.append(":obj:`%s`" % (
+                    cls.__module__ + "." + cls.__name__ + "." + k))
+        if bits:
+            return " | ".join(bits)
+        else:
+            inst = int(inst)
+
+    return "``%s``" % repr(inst)
+
+
 class Generator(object):
     """Abstract base class"""
 

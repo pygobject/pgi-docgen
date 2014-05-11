@@ -21,10 +21,11 @@ from .parser import docstring_to_rest
 class Property(object):
 
     def __init__(self, name, attr_name, type_desc, readable, writable,
-                 construct, short_desc, desc):
+                 construct, short_desc, desc, value_desc):
         self.name = name
         self.attr_name = attr_name
         self.type_desc = type_desc
+        self.value_desc = value_desc
 
         self.readable = readable
         self.writable = writable
@@ -368,6 +369,7 @@ class %s(%s):
         props = []
         for attr_name, spec in specs:
             name = spec.name
+            value_desc = util.instance_to_rest(spec.default_value)
             type_desc = gtype_to_rest(spec.value_type)
             readable = spec.flags & GObject.ParamFlags.READABLE
             writable = spec.flags & GObject.ParamFlags.WRITABLE
@@ -383,7 +385,8 @@ class %s(%s):
             desc += self.lookup_prop_meta(doc_key)
 
             props.append(Property(name, attr_name, type_desc, readable,
-                                  writable, construct, short_desc, desc))
+                                  writable, construct, short_desc, desc,
+                                  value_desc))
 
         return props
 

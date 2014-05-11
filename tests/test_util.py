@@ -10,6 +10,7 @@ import unittest
 
 from pgidocgen.util import is_staticmethod, is_classmethod, is_normalmethod
 from pgidocgen.util import is_method_owner, is_fundamental, is_object
+from pgidocgen.util import instance_to_rest
 
 
 class TUtil(unittest.TestCase):
@@ -63,3 +64,34 @@ class TUtil(unittest.TestCase):
         from pgi.repository import Gtk
 
         self.assertTrue(is_object(Gtk.Button))
+
+    def test_instance_to_rest(self):
+        from pgi.repository import Gtk
+
+        v = instance_to_rest(Gtk.AccelFlags.LOCKED)
+        self.assertEqual(v,
+            ":obj:`Gtk.AccelFlags.LOCKED` | :obj:`Gtk.AccelFlags.MASK`")
+
+        v = instance_to_rest(42)
+        self.assertEqual(v, "``42``")
+
+        v = instance_to_rest(None)
+        self.assertEqual(v, ":obj:`None`")
+
+        v = instance_to_rest(Gtk.Widget.props.no_show_all.default_value)
+        self.assertEqual(v, ":obj:`False`")
+
+        v = instance_to_rest(Gtk.ImageType(int(Gtk.ImageType.EMPTY)))
+        self.assertEqual(v, ":obj:`Gtk.ImageType.EMPTY`")
+
+        v = Gtk.AboutDialog.props.program_name.default_value
+        v = instance_to_rest(v)
+        self.assertEqual(v, ":obj:`None`")
+
+        v = Gtk.IMContext.props.input_hints.default_value
+        v = instance_to_rest(v)
+        self.assertEqual(v, ":obj:`Gtk.InputHints.NONE`")
+
+        v = Gtk.CellRendererAccel.props.accel_mods.default_value
+        v = instance_to_rest(v)
+        self.assertEqual(v, "``0``")
