@@ -15,6 +15,10 @@ function applyHash() {
     var elm = document.getElementById('Content');
 
     if(hash) {
+        // needed for webkit
+        if(!endsWith(hash, ".html") && !endsWith(hash, "/"))
+            hash += "/";
+
         elm.src = hash.substring(1);
     } else {
         elm.src = main_page;
