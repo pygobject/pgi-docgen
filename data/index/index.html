@@ -3,6 +3,8 @@
 
 <script>
 
+var main_page = "main.html";
+
 function onLoad() {
     // takes the hash at the start and loads the path into the content frame
 
@@ -12,7 +14,7 @@ function onLoad() {
     if(hash) {
         elm.src = hash.substring(1);
     } else {
-        elm.src = "main.html";
+        elm.src = main_page;
     }
 }
 
@@ -27,6 +29,12 @@ function getHashForLocation(elm) {
 
 
 function setTopHash(hash) {
+    var main_hash = "#" + main_page;
+    if(hash == main_hash) {
+        // 'space' clears it somehow..
+        hash = " ";
+    }
+
     if(history.pushState) {
         window.history.replaceState(null, window.document.title, hash);
     } else {
