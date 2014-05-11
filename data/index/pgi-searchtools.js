@@ -93,7 +93,7 @@ var Search = {
     parts = parts.filter(function(e){return e}); 
 
     var max_entries = 300;
-    var show_first = 30;
+    var show_first = 20;
     var results = [];
 
     if(!parts.length) {
@@ -139,12 +139,14 @@ var Search = {
       Search.output.append(listItem);
 
       // show the first 30 immediately, then delay updates
-      var timeout = 5;
-      if (entry_index < show_first)
-        var timeout = 0;
-      listItem.slideDown(timeout, function() {
+      if (entry_index < show_first) {
+        listItem.show();
         displayNextItem(query, entry_index + 1);
-      });
+      } else {
+        listItem.slideDown(5, function() {
+          displayNextItem(query, entry_index + 1);
+        });
+      }
     }
 
     $('#search-results').empty();
