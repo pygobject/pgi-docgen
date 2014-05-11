@@ -226,16 +226,21 @@ def main(argv):
             pass
 
         for entry in os.listdir(target_path):
-            if entry.startswith("_"):
+            if entry.startswith("_") or not "-" in entry:
                 continue
             dir_ = os.path.join(target_path, entry)
             if not os.path.isdir(dir_):
                 continue
 
+            source = os.path.join("..", entry)
             try:
-                os.symlink(os.path.join("..", entry),
-                           os.path.join(old_api, entry.replace("-", "_")))
-            except Exception:
+                # we need both names since the new modules
+                # use relative urls with the new names
+                target = os.path.join(old_api, entry.replace("-", "_"))
+                os.symlink(source, target)
+                target = os.path.join(old_api, entry)
+                os.symlink(source, target)
+            except Exception as e:
                 # unix only
                 pass
 
