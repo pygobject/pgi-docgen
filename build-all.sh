@@ -21,7 +21,7 @@
     PangoFT2-1.0 PangoXft-1.0 Soup-2.4 cairo-1.0 fontconfig-2.0 \
     freetype2-2.0 libxml2-2.0 xfixes-4.0 xft-2.0 xlib-2.0 xrandr-1.3 \
     Notify-0.7 Cally-1.0 Clutter-1.0 ClutterGdk-1.0 ClutterX11-1.0 \
-    ClutterGst-2.0 JavaScriptCore-3.0 AccountsService-1.0 \
+    ClutterGst-2.0 JavaScriptCore-3.0 AccountsService-1.0 RB-3.0 \
     Anjuta-3.0 Anthy-9000 AppIndicator3-0.1 Atspi-2.0 Gladeui-2.0 \
     Caribou-1.0 Champlain-0.12 Cheese-3.0 Colord-1.0 ColordGtk-1.0 \
     ColorHug-1.0 CryptUI-0.0 Dbusmenu-0.4 DbusmenuGtk3-0.4 Dee-1.0 \
