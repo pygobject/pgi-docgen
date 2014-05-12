@@ -16,7 +16,7 @@ function applyHash() {
 
     if(hash) {
         // needed for webkit
-        if(!endsWith(hash, ".html") && !endsWith(hash, "/"))
+        if(!endsWith(hash, ".html") && !endsWith(hash, "/") && hash.indexOf("#", 1) < 0)
             hash += "/";
 
         elm.src = hash.substring(1);
