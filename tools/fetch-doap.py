@@ -59,7 +59,7 @@ LIBS = {
     'https://git.gnome.org/browse/gupnp/plain/gupnp.doap':
         ['GUPnP-1.0'],
     'https://git.gnome.org/browse/rhythmbox/plain/rhythmbox.doap':
-        ['MPID-3.0'],
+        ['MPID-3.0', 'RB-3.0'],
     'https://raw.github.com/hughsie/colord/master/colord.doap':
         ['Colord-1.0', 'ColordGtk-1.0'],
     'https://git.gnome.org/browse/gobject-introspection/plain/gobject-introspection.doap':
