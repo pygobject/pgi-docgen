@@ -40,6 +40,30 @@ How do I get started?
 The resulting docs can be found in ``_docs/_build``
 
 
+Intersphinx
+-----------
+
+There are two ways to reference the online API reference from sphinx
+generated documentation:
+
+1) Including the sidebar (needs JavaScript)
+
+   ::
+
+        intersphinx_mapping = {
+            'gtk': ('http://lazka.github.io/pgi-docs/#Gtk-3.0/',
+                    'http://lazka.github.io/pgi-docs/Gtk-3.0/objects.inv'),
+        }
+
+2) Without the sidebar
+
+   ::
+
+        intersphinx_mapping = {
+            'gtk': ('http://lazka.github.io/pgi-docs/Gtk-3.0', None),
+        }
+
+
 License
 -------
 
