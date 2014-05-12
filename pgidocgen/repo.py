@@ -369,7 +369,8 @@ class %s(%s):
         props = []
         for attr_name, spec in specs:
             name = spec.name
-            value_desc = util.instance_to_rest(spec.default_value)
+            value_desc = util.instance_to_rest(
+                spec.value_type.pytype, spec.default_value)
             type_desc = gtype_to_rest(spec.value_type)
             readable = spec.flags & GObject.ParamFlags.READABLE
             writable = spec.flags & GObject.ParamFlags.WRITABLE
