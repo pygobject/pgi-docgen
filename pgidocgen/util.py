@@ -327,7 +327,7 @@ def gtype_to_rest(gtype):
     return ":obj:`%s`" % name
 
 
-def instance_to_rest(inst):
+def instance_to_rest(cls, inst):
     """Reference some python instance.
 
     For flags/enums try to get the predefined instance.
@@ -336,7 +336,6 @@ def instance_to_rest(inst):
     if inst is None or inst is True or inst is False:
         return ":obj:`%s`" % inst
 
-    cls = type(inst)
     if is_enum(cls):
         for k, v in cls.__dict__.items():
             if isinstance(v, cls) and v == inst:

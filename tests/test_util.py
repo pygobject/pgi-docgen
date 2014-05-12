@@ -68,30 +68,31 @@ class TUtil(unittest.TestCase):
     def test_instance_to_rest(self):
         from pgi.repository import Gtk
 
-        v = instance_to_rest(Gtk.AccelFlags.LOCKED)
+        def itr(gprop):
+            return instance_to_rest(gprop.value_type.pytype, gprop.default_value)
+
+        v = instance_to_rest(Gtk.AccelFlags, Gtk.AccelFlags.LOCKED)
         self.assertEqual(v,
             ":obj:`Gtk.AccelFlags.LOCKED` | :obj:`Gtk.AccelFlags.MASK`")
 
-        v = instance_to_rest(42)
+        v = instance_to_rest(int, 42)
         self.assertEqual(v, "``42``")
 
-        v = instance_to_rest(None)
+        v = instance_to_rest(Gtk.Button, None)
         self.assertEqual(v, ":obj:`None`")
 
-        v = instance_to_rest(Gtk.Widget.props.no_show_all.default_value)
+        v = itr(Gtk.Widget.props.no_show_all)
         self.assertEqual(v, ":obj:`False`")
 
-        v = instance_to_rest(Gtk.ImageType(int(Gtk.ImageType.EMPTY)))
+        v = instance_to_rest(
+            Gtk.ImageType, Gtk.ImageType(int(Gtk.ImageType.EMPTY)))
         self.assertEqual(v, ":obj:`Gtk.ImageType.EMPTY`")
 
-        v = Gtk.AboutDialog.props.program_name.default_value
-        v = instance_to_rest(v)
+        v = itr(Gtk.AboutDialog.props.program_name)
         self.assertEqual(v, ":obj:`None`")
 
-        v = Gtk.IMContext.props.input_hints.default_value
-        v = instance_to_rest(v)
+        v = itr(Gtk.IMContext.props.input_hints)
         self.assertEqual(v, ":obj:`Gtk.InputHints.NONE`")
 
-        v = Gtk.CellRendererAccel.props.accel_mods.default_value
-        v = instance_to_rest(v)
+        v = itr(Gtk.CellRendererAccel.props.accel_mods)
         self.assertEqual(v, "``0``")
