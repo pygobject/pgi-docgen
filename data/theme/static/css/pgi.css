@@ -80,27 +80,45 @@ tt.descname, tt.descclassname {
 }
 
 
-table.navigation#top
+table.navigation
 {
-position: fixed;
 background: #e2e2e2;
-border-top: solid 1px #babdb6;
+
 border-spacing: 5px;
 margin-top: 0;
 margin-bottom: 0;
-bottom: 0;
-left: 0;
-z-index: 10;
 font-size: 0.8em;
 }
 
-table.navigation#top td
-{
-padding: 6px;
-height: 100%;
+.fixed-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    z-index: 10;
+    width: 100%;
+    border-top: solid 1px #babdb6;
 }
 
-table.navigation#top img
+.non-fixed-bar {
+    border-bottom: solid 1px #babdb6;
+}
+
+table.navigation td
 {
-  margin: 6px 0;
+padding: 6px 8px;
+height: 100%;
+vertical-align: middle;
+font-size: 1.1em;
+font-weight:bold;
+}
+
+table.navigation .fa
+{
+    font-size: 1.3em;
+    color: #888;
+}
+
+table.navigation a .fa
+{
+    color: #000;
 }

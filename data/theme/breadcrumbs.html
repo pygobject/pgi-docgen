@@ -1,4 +1,4 @@
-<table class="navigation" id="top" summary="Navigation header" cellpadding="2" cellspacing="10" width="100%"><tbody><tr valign="middle">
+<table class="navigation" summary="Navigation header" cellpadding="2" cellspacing="10" width="100%"><tbody><tr valign="middle">
 <td class="shortcuts" align="left" width="100%">
   <ul class="wy-breadcrumbs">
     <li><a href="{{ pathto(master_doc) }}">{{ shorttitle }}</a> &raquo;</li>
@@ -8,24 +8,24 @@
     <li>{{ title }}</li>
   </ul>
 </td>
-<td><a accesskey="h" href="{{ pathto('index') }}"><img src="{{ pathto('_static/img/home.png', 1) }}" alt="Home" border="0" height="16" width="16"></a></td>
+<td><a accesskey="h" href="{{ pathto('index') }}"><i class="fa fa-home"></i></a></td>
 
 {% if parents %}
-<td><a accesskey="u" href="{{ parents[-1].link|e }}"><img src="{{ pathto('_static/img/up.png', 1) }}" alt="Up" border="0" height="16" width="16"></a></td>
+<td><a accesskey="u" href="{{ parents[-1].link|e }}"><i class="fa fa-chevron-up"></i></a></td>
 {% else %}
-<td><img src="{{ pathto('_static/img/up-insensitive.png', 1) }}" alt="Up" border="0" height="16" width="16"></td>
+<td><i class="fa fa-chevron-up"></i></td>
 {% endif %}
 
 {% if prev %}
-<td><a accesskey="p" href="{{ prev.link|e }}"><img src="{{ pathto('_static/img/left.png', 1) }}" alt="Prev" border="0" height="16" width="16"></a></td>
+<td><a accesskey="p" href="{{ prev.link|e }}"><i class="fa fa-chevron-left"></i></a></td>
 {% else %}
-<td><img src="{{ pathto('_static/img/left-insensitive.png', 1) }}" alt="Prev" border="0" height="16" width="16"></td>
+<td><i class="fa fa-chevron-left"></i></td>
 {% endif %}
 
 {% if next %}
-<td><a accesskey="n" href="{{ next.link|e }}"><img src="{{ pathto('_static/img/right.png', 1) }}" alt="Next" border="0" height="16" width="16"></a></td>
+<td><a accesskey="n" href="{{ next.link|e }}"><i class="fa fa-chevron-right"></i></a></td>
 {% else %}
-<td><img src="{{ pathto('_static/img/right-insensitive.png', 1) }}" alt="Prev" border="0" height="16" width="16"></td>
+<td><i class="fa fa-chevron-right"></i></td>
 {% endif %}
 
 </tr></tbody>

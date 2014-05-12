@@ -84,6 +84,14 @@
 
 <body class="wy-body-for-nav" role="document">
 
+<div class="non-fixed-bar">
+{% include "breadcrumbs.html" %}
+</div>
+
+<div class="fixed-bar">
+  {% include "breadcrumbs.html" %}
+</div>
+
   <div class="wy-grid-for-nav">
 
     {# SIDE NAV, TOGGLES ON MOBILE #}
@@ -93,7 +101,6 @@
       {# PAGE CONTENT #}
       <div class="wy-nav-content">
         <div class="rst-content">
-          {% include "breadcrumbs.html" %}
           <div role="main">
             {% block body %}{% endblock %}
           </div>
