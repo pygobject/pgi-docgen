@@ -55,8 +55,9 @@ html_copy_source = False
 html_show_sourcelink = False
 html_short_title = project = '%s %s' % (mname, mversion)
 
-inheritance_node_attrs = dict(shape='box', fontsize=7,
-                              color='gray70', style='rounded')
+inheritance_node_attrs = dict(shape='box', fontsize=8,
+                              color='gray70', style='rounded',
+                              fontname='inherit')
 inheritance_graph_attrs = dict(rankdir="TB", size='""', bgcolor="transparent")
 
 autodoc_member_order = "bysource"

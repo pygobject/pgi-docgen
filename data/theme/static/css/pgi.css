@@ -122,3 +122,7 @@ table.navigation a .fa
 {
     color: #000;
 }
+
+.graphviz svg {
+    max-width: 100%;
+}

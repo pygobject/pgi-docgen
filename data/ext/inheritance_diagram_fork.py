@@ -37,6 +37,7 @@ r"""
 """
 
 import re
+import os
 import sys
 import inspect
 import __builtin__
@@ -48,8 +49,8 @@ except ImportError:
 from docutils import nodes
 from docutils.parsers.rst import directives
 
-from sphinx.ext.graphviz import render_dot_html, render_dot_latex, \
-    render_dot_texinfo
+from sphinx.ext.graphviz import render_dot, render_dot_latex, \
+    render_dot_texinfo, GraphvizError
 from sphinx.util.compat import Directive
 
 
@@ -350,6 +351,35 @@ def tred(dotcode):
 
 def get_graph_hash(node):
     return md5(node['content'] + str(node['parts'])).hexdigest()[-10:]
+
+
+def render_dot_html(self, node, code, options, prefix='graphviz',
+                    imgcls=None, alt=None):
+    try:
+        fname, outfn = render_dot(self, code, options, "svg", prefix)
+    except GraphvizError, exc:
+        self.builder.warn('dot code %r: ' % code + str(exc))
+        raise nodes.SkipNode
+
+    inline = node.get('inline', False)
+    if inline:
+        wrapper = 'span'
+    else:
+        wrapper = 'p'
+
+    self.body.append(self.starttag(node, wrapper, CLASS='graphviz'))
+    if fname is None:
+        self.body.append(self.encode(code))
+    else:
+        # inline the svg
+        with open(outfn, "rb") as h:
+            data = h.read().decode("utf-8")
+            data = data[data.find("<svg"):]
+        os.remove(outfn)
+        self.body.append(data)
+
+    self.body.append('</%s>\n' % wrapper)
+    raise nodes.SkipNode
 
 
 def html_visit_inheritance_diagram(self, node):
