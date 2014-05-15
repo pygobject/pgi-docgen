@@ -110,16 +110,15 @@ def _handle_data(types, current, d):
                     if token:
                         token += " "
 
+                    prop_name = sigprop.replace("_", "-")
+                    prop_attr = sigprop.replace("-", "_")
                     if is_prop:
-                        prop_name = sigprop.replace("_", "-")
-                        prop_attr = sigprop.replace("-", "_")
                         rst_target = obj_rst_id + ".props." + prop_attr
                         token += ":py:data:`:%s<%s>`" % (
                             prop_name, rst_target)
                     else:
-                        prop_name = sigprop.replace("_", "-")
-                        rst_target = obj_rst_id + ".signals." + prop_name
-                        token += ":ref:`::%s<%s>`" % (
+                        rst_target = obj_rst_id + ".signals." + prop_attr
+                        token += ":py:func:`::%s<%s>`" % (
                             prop_name, rst_target)
 
             if fallback:

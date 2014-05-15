@@ -85,10 +85,10 @@ gtk_entry_buffer_get_length (gtk_entry_get_buffer (entry));
             "`icon_set`.",
         ),(
             "Emits the #GtkCellEditable::editing-done signal.",
-            "Emits the :py:obj:`Gtk.CellEditable` :ref:`::editing-done<Gtk.CellEditable.signals.editing-done>` signal.",
+            "Emits the :py:obj:`Gtk.CellEditable` :py:func:`::editing-done<Gtk.CellEditable.signals.editing_done>` signal.",
         ),(
             "Returns the value of the ::columns signal.",
-            "Returns the value of the :ref:`::columns<Gtk.Widget.signals.columns>` signal.",
+            "Returns the value of the :py:func:`::columns<Gtk.Widget.signals.columns>` signal.",
         ),(
             "a filename or %NULL",
             "a filename or :obj:`None`",
@@ -200,7 +200,7 @@ user\\_data\\:
         "\n#POPPLER\\_ANNOT\\_TEXT\\_ICON\\_NOTE\n\n",
 ),(
         "this is some ::signal-foo blah",
-        "this is some :ref:`::signal-foo<Gtk.Widget.signals.signal-foo>` blah",
+        "this is some :py:func:`::signal-foo<Gtk.Widget.signals.signal_foo>` blah",
 ),(
         "unless it has handled or blocked `SIGPIPE'.",
         "unless it has handled or blocked \\`SIGPIPE'.",

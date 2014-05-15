@@ -52,7 +52,7 @@ class ClassGenerator(util.Generator, FieldsMixin):
             cfunc = self.repo.get_vfunc_count
         elif ref_suffix == "props":
             cfunc = self.repo.get_property_count
-        elif ref_suffix == "sigs":
+        elif ref_suffix == "signals":
             cfunc = self.repo.get_signal_count
         elif ref_suffix == "fields":
             cfunc = self.repo.get_field_count
@@ -360,13 +360,13 @@ Properties
                 # SIGNALS
 
                 h.write("""
-.. _%s.sigs:
+.. _%s.signals:
 
 Signals
 -------
 """ % cls_name)
 
-                sig_inherited = self._get_inheritance_list(cls, "sigs")
+                sig_inherited = self._get_inheritance_list(cls, "signals")
                 h.write(sig_inherited or "")
 
                 if cls in self._sigs:
@@ -374,8 +374,8 @@ Signals
 
                 lines = []
                 for sig in self._sigs.get(cls, []):
-                    rst_target = cls_name + ".signals." + sig.name
-                    name_ref = ":ref:`%s<%s>`" % (sig.name, rst_target)
+                    rst_target = cls_name + ".signals." + sig.attr_name
+                    name_ref = ":py:func:`%s<%s>`" % (sig.name, rst_target)
                     line = get_csv_line([name_ref, sig.short_desc])
                     lines.append("    %s" % line)
                 lines = "\n".join(lines)
@@ -426,11 +426,8 @@ Class Details
                 h.write(util.make_rest_title("Signal Details", "-"))
 
             for sig in self._sigs.get(cls, []):
-                rst_label = cls_name + ".signals." + sig.name
                 func_name = cls_name + ".signals." + sig.sig
                 data = """
-
-.. _%s:
 
 .. py:function:: %s
 
@@ -439,7 +436,7 @@ Class Details
 
 %s
 
-""" % (rst_label, func_name, sig.name, sig.flags_string, util.indent(sig.desc))
+""" % (func_name, sig.name, sig.flags_string, util.indent(sig.desc))
 
                 h.write(data.encode("utf-8"))
 

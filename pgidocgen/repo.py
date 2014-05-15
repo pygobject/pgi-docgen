@@ -48,11 +48,12 @@ class Property(object):
 
 class Signal(object):
 
-    def __init__(self, name, sig, flags, desc, short_desc):
+    def __init__(self, name, attr_name, sig, flags, desc, short_desc):
         self.flags = flags
         self.desc = desc
         self.short_desc = short_desc
         self.name = name
+        self.attr_name = attr_name
         self.sig = sig
 
     @property
@@ -64,7 +65,7 @@ class Signal(object):
                 continue
             flag = getattr(GObject.SignalFlags, key)
             if self.flags & flag:
-                d = ":data:`%s <GObject.SignalFlags.%s>`" % (key, key)
+                d = ":obj:`%s <GObject.SignalFlags.%s>`" % (key, key)
                 descs.append(d)
 
         return ", ".join(descs)
@@ -313,7 +314,8 @@ class %s(%s):
             short_desc = self.lookup_signal_docs(
                 doc_key, short=True, current=current_rst_target)
 
-            result.append(Signal(sig.name, ssig, sig.flags, desc, short_desc))
+            result.append(
+                Signal(sig.name, attr, ssig, sig.flags, desc, short_desc))
 
         return result
 
