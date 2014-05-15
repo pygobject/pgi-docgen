@@ -10,7 +10,7 @@ import unittest
 
 from pgidocgen.util import is_staticmethod, is_classmethod, is_normalmethod
 from pgidocgen.util import is_method_owner, is_fundamental, is_object
-from pgidocgen.util import instance_to_rest
+from pgidocgen.util import instance_to_rest, get_child_properties
 
 
 class TUtil(unittest.TestCase):
@@ -96,3 +96,12 @@ class TUtil(unittest.TestCase):
 
         v = itr(Gtk.CellRendererAccel.props.accel_mods)
         self.assertEqual(v, "``0``")
+
+    def test_child_properties(self):
+        from pgi.repository import Gtk
+
+        self.assertEqual(len(get_child_properties(Gtk.Paned)), 2)
+        self.assertFalse(get_child_properties(Gtk.Bin))
+        self.assertEqual(len(get_child_properties(Gtk.ActionBar)), 2)
+        self.assertEqual(len(get_child_properties(Gtk.Box)), 5)
+        self.assertFalse(get_child_properties(Gtk.Statusbar))

@@ -20,6 +20,7 @@ class ClassGenerator(util.Generator, FieldsMixin):
         self._ifaces = {}
         self._methods = {}  # cls -> [methods]
         self._props = {}  # cls -> [prop]
+        self._child_props = {}  # cls -> [prop]
         self._sigs = {}  # cls -> [sig]
         self._py_class = set()
 
@@ -55,6 +56,8 @@ class ClassGenerator(util.Generator, FieldsMixin):
             cfunc = self.repo.get_signal_count
         elif ref_suffix == "fields":
             cfunc = self.repo.get_field_count
+        elif ref_suffix == "child-props":
+            cfunc = self.repo.get_child_property_count
         else:
             assert 0
 
@@ -82,6 +85,12 @@ class ClassGenerator(util.Generator, FieldsMixin):
 
         if props:
             self._props[cls] = props
+
+    def add_child_properties(self, cls, props):
+        assert cls not in self._child_props
+
+        if props:
+            self._child_props[cls] = props
 
     def add_signals(self, cls, sigs):
         assert cls not in self._sigs
@@ -112,6 +121,50 @@ class ClassGenerator(util.Generator, FieldsMixin):
         if self._classes:
             self._write(module_fileobj, os.path.join(dir_, "classes"),
                         self._classes, False)
+
+    def write_child_properties(self, cls, h):
+        prop_inherited = self._get_inheritance_list(cls, "child-props")
+        has_props = cls in self._child_props
+        cls_name = cls.__module__ + "." + cls.__name__
+
+        # they are only interesting for Gtk, so don't write anything
+        # if the class hasn't got any
+        if not prop_inherited and not has_props:
+            return
+
+        h.write("""
+.. _%s.child-props:
+
+Child Properties
+----------------
+""" % cls_name)
+
+        h.write(prop_inherited or "")
+
+        if not has_props:
+            return
+
+        self._child_props[cls].sort(key=lambda p: p.name)
+
+        lines = []
+        for p in self._child_props.get(cls, []):
+            fstr = p.flags_string
+            name = "``%s``" % p.name
+            line = get_csv_line(
+                [name, p.type_desc, fstr, p.short_desc])
+            lines.append("    %s" % line)
+        lines = "\n".join(lines)
+
+        if lines:
+            h.write('''
+.. csv-table::
+    :header: "Name", "Type", "Flags", "Short Description"
+    :widths: 1, 1, 1, 100
+
+%s
+    ''' % lines)
+        else:
+            h.write("None\n\n")
 
     def _write(self, module_fileobj, sub_dir, classes, is_interface):
         os.mkdir(sub_dir)
@@ -301,6 +354,8 @@ Properties
 
                 if not lines and not prop_inherited:
                     h.write("None\n\n")
+
+                self.write_child_properties(cls, h)
 
                 # SIGNALS
 

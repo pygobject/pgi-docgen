@@ -17,6 +17,31 @@ import cStringIO
 _KWD_RE = re.compile("^(%s)$" % "|".join(keyword.kwlist))
 
 
+def get_child_properties(cls):
+    """Returns a list of GParamSpecs or an empty list"""
+
+    from pgi.repository import Gtk
+
+    if not issubclass(cls, Gtk.Container):
+        return []
+
+    def get_props(cls):
+        class_struct = cls._get_class_struct(Gtk.ContainerClass)
+        return class_struct.list_child_properties()
+
+    # only get properties the base classes don't have
+    all_props = get_props(cls)
+    names = dict((p.name, p) for p in all_props)
+
+    for base in fake_mro(cls)[1:]:
+        if not issubclass(base, Gtk.Container):
+            break
+        for p in get_props(base):
+            names.pop(p.name, None)
+
+    return names.values()
+
+
 def iter_public_attr(obj):
     for attr in sorted(dir(obj)):
         if attr.startswith("_"):

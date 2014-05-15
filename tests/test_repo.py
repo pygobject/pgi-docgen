@@ -104,3 +104,10 @@ class TRepository(unittest.TestCase):
         repo = Repository("Gtk", "3.0")
         self.assertTrue(repo.parse_properties(Gtk.Button))
         self.assertTrue(repo.parse_signals(Gtk.Button))
+
+    def test_child_props(self):
+        from pgi.repository import Gtk
+
+        repo = Repository("Gtk", "3.0")
+        repo.parse_child_properties(Gtk.Paned)
+        repo.parse_child_properties(Gtk.ActionBar)

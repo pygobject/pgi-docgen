@@ -350,6 +350,41 @@ class %s(%s):
         return len(self.parse_fields(obj))
 
     @cache_calls
+    def parse_child_properties(self, obj):
+        # fast path..
+        if obj.__module__ != "Gtk":
+            return []
+
+        if not (util.is_object(obj) or util.is_iface(obj)):
+            return []
+
+        current_rst_target = obj.__module__ + "." + obj.__name__
+
+        props = []
+        # WARNING: the ParamSpecs classes here aren't the same as for
+        # properties, they come from the GIR not pgi internals..
+        for spec in util.get_child_properties(obj):
+            attr_name = ""
+            name = spec.get_name()
+            value_desc = ""
+            type_desc = gtype_to_rest(spec.value_type)
+            readable = spec.flags & GObject.ParamFlags.READABLE
+            writable = spec.flags & GObject.ParamFlags.WRITABLE
+            construct = spec.flags & GObject.ParamFlags.CONSTRUCT
+            if spec.get_blurb() is not None:
+                short_desc = self._fix_docs(
+                    spec.get_blurb(), current=current_rst_target)
+            else:
+                short_desc = ""
+            desc = u""
+
+            props.append(Property(name, attr_name, type_desc, readable,
+                      writable, construct, short_desc, desc,
+                      value_desc))
+
+        return props
+
+    @cache_calls
     def parse_properties(self, obj):
         if not (util.is_object(obj) or util.is_iface(obj)):
             return []
@@ -393,6 +428,9 @@ class %s(%s):
 
     def get_property_count(self, obj):
         return len(self.parse_properties(obj))
+
+    def get_child_property_count(self, obj):
+        return len(self.parse_child_properties(obj))
 
     def parse_flags(self, name, obj):
         from gi.repository import GObject
