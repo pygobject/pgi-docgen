@@ -87,7 +87,8 @@ def share_static(main):
             continue
         if not os.path.exists(shared):
             shutil.move(static, shared)
-        shutil.rmtree(static)
+        else:
+            shutil.rmtree(static)
         rel_target = os.path.relpath(shared, os.path.dirname(static))
         os.symlink(rel_target, static)
 
