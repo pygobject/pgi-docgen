@@ -75,7 +75,7 @@ class TUtil(unittest.TestCase):
         self.assertEqual(v,
             ":obj:`Gtk.AccelFlags.LOCKED` | :obj:`Gtk.AccelFlags.MASK`")
 
-        v = instance_to_rest(int, 42)
+        v = instance_to_rest(int, 42L)
         self.assertEqual(v, "``42``")
 
         v = instance_to_rest(Gtk.Button, None)

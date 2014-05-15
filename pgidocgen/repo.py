@@ -366,7 +366,11 @@ class %s(%s):
         for spec in util.get_child_properties(obj):
             attr_name = ""
             name = spec.get_name()
-            value_desc = ""
+            default_value = spec.get_default_value()
+            if isinstance(default_value, GObject.Value):
+                default_value = default_value.get_value()
+            value_desc = util.instance_to_rest(
+                spec.value_type.pytype, default_value)
             type_desc = gtype_to_rest(spec.value_type)
             readable = spec.flags & GObject.ParamFlags.READABLE
             writable = spec.flags & GObject.ParamFlags.WRITABLE

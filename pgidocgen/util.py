@@ -358,6 +358,10 @@ def instance_to_rest(cls, inst):
     For flags/enums try to get the predefined instance.
     """
 
+    # get rid of 'L' suffixes with repr()
+    if isinstance(inst, long):
+        inst = int(inst)
+
     if inst is None or inst is True or inst is False:
         return ":obj:`%s`" % inst
 

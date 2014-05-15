@@ -148,18 +148,18 @@ Child Properties
 
         lines = []
         for p in self._child_props.get(cls, []):
-            fstr = p.flags_string
             name = "``%s``" % p.name
             line = get_csv_line(
-                [name, p.type_desc, fstr, p.short_desc])
+                [name, p.type_desc, p.value_desc,
+                 p.flags_string, p.short_desc])
             lines.append("    %s" % line)
         lines = "\n".join(lines)
 
         if lines:
             h.write('''
 .. csv-table::
-    :header: "Name", "Type", "Flags", "Short Description"
-    :widths: 1, 1, 1, 100
+    :header: "Name", "Type", "Default", "Flags", "Short Description"
+    :widths: 1, 1, 1, 1, 100
 
 %s
     ''' % lines)
