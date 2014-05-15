@@ -64,6 +64,34 @@ def png_optimize_dir(dir_, pool_size=6):
     pool.join()
 
 
+def share_static(main):
+    """Makes the sphinx _static folder shared by symlinking it.
+
+    Can be run multiple times to dedup newly added modules.
+    """
+
+    roots = []
+    for entry in os.listdir(main):
+        if entry.startswith(("_", ".")) or not "-" in entry:
+            continue
+        path = os.path.join(main, entry)
+        if not os.path.isdir(path):
+            continue
+        roots.append(path)
+
+    shared = os.path.join(main, "_shared_static")
+
+    for root in roots:
+        static = os.path.join(root, "_static")
+        if os.path.islink(static):
+            continue
+        if not os.path.exists(shared):
+            shutil.move(static, shared)
+        shutil.rmtree(static)
+        rel_target = os.path.relpath(shared, os.path.dirname(static))
+        os.symlink(rel_target, static)
+
+
 def do_build(package):
     print "Build started for %s" % package.name
 
@@ -213,6 +241,9 @@ def main(argv):
     pool.close()
     pool.join()
 
+    print "#" * 37
+    print "Creating index + search..."
+
     if not devhelp:
         from pgidocgen.mergeindex import merge
         merge(target_path, include_terms=False)
@@ -243,6 +274,9 @@ def main(argv):
             except Exception as e:
                 # unix only
                 pass
+
+    if not devhelp and os.name != "nt":
+        share_static(target_path)
 
     # for devhelp to pick things up the dir name has to match the
     # devhelp file name (without the extension)
