@@ -240,6 +240,9 @@ def _parse_types(dom, namespace):
     for t in dom.getElementsByTagName("member"):
         c_name = t.getAttribute("c:identifier")
         assert c_name
+        # only match constants
+        if c_name != c_name.upper() or "_" not in c_name:
+            continue
         class_name = t.parentNode.getAttribute("name")
         field_name = t.getAttribute("name").upper()
         local_name = namespace + "." + class_name + "." + field_name

@@ -88,10 +88,11 @@ class TNamespace(unittest.TestCase):
 
         self.assertEqual(types["pango_break"], "Pango.break_")
 
-    def test_tracker(self):
-        ns = Namespace("Tracker", "0.16")
-        ns.get_types()
+    def test_ges(self):
+        ns = Namespace("GES", "1.0")
         ns.parse_docs()
+        types = ns.get_types()
+        self.assertTrue("position" not in types)
 
     def test_deps(self):
         ns = Namespace("DBus", "1.0")
