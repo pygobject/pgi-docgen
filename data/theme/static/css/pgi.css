@@ -2,6 +2,14 @@
     display: none;
 }
 
+.rst-content tt {
+    font-size: 1em;
+}
+
+p {
+    font-size: 1em;
+}
+
 @media screen and (min-width: 768px){
     .local-toc {
         position:fixed;
