@@ -11,7 +11,7 @@ VENV="_venv"
 if [ -d "$VENV" ]; then
     . "$VENV"/bin/activate
 else
-    virtualenv _venv
+    virtualenv --system-site-packages -p python2 _venv
     . "$VENV"/bin/activate
     pip install git+https://github.com/lazka/pgi.git
     pip install sphinx
