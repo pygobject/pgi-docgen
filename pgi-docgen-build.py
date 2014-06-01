@@ -247,7 +247,7 @@ def main(argv):
 
     if not devhelp:
         from pgidocgen.mergeindex import merge
-        merge(target_path, include_terms=False)
+        merge(target_path, include_terms=False, exclude_old=True)
 
     # add symlinks for the old layout
     if not devhelp:

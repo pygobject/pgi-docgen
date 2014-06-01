@@ -21,9 +21,12 @@ class SearchIndexMerger(object):
 
     def __init__(self):
         self._indices = {}
+        self._modules = []
 
     def add_index(self, namespace, index):
-        self._indices[namespace] = index
+        if index is not None:
+            self._indices[namespace] = index
+        self._modules.append(namespace)
 
     def merge(self):
 
@@ -31,6 +34,9 @@ class SearchIndexMerger(object):
             raise ValueError
 
         done = {}
+
+        # not sphinx..
+        done["modules"] = sorted(self._modules)
 
         # ENVVERSION (const)
         first = self._indices[self._indices.keys()[0]]
@@ -125,12 +131,12 @@ class SearchIndexMerger(object):
                     objtype_index = get_obj_index(ns, objtype_index)
                     new_v = [fn_index, objtype_index, prio, shortanchor]
                     # FIXME: there are clashes, last thing wins for now
-                    # .. try to find out why..
+                    # .. because of multiple versions
                     new_attributes[attr] = new_v
 
         done["objects"] = new_objects
 
-        assert not (set(first.keys()) ^ set(done.keys()))
+        assert (set(first.keys()) ^ set(done.keys())) == set(["modules"])
 
         return done
 
@@ -173,10 +179,12 @@ def fixup_props_signals(index):
             del objects[attr_key]
 
 
-def merge(path, include_terms=True):
+def merge(path, include_terms=False, exclude_old=True):
     """Merge searchindex files in subdirectories of `path` and
     create a searchindex files under `path`
     """
+
+    groups = {}
 
     merger = SearchIndexMerger()
     for entry in os.listdir(path):
@@ -184,16 +192,33 @@ def merge(path, include_terms=True):
         if not os.path.exists(index_path):
             continue
 
-        namespace = os.path.basename(os.path.dirname(index_path))
+        namespace, version = os.path.basename(
+            os.path.dirname(index_path)).split("-")
         with open(index_path, "rb") as h:
             data = h.read()
             mod = js_index.loads(data)
+            groups.setdefault(namespace, []).append((version, mod))
+
+    def sort_version_key(version):
+        return tuple(map(int, version.split(".")))
+
+    for namespace, entries in sorted(groups.items()):
+        # newest first, for name clashes
+        entries.sort(key=lambda x: sort_version_key(x[0]), reverse=True)
+        if exclude_old:
+            entries
+
+        for i, (version, mod) in enumerate(entries):
+            key = namespace + "-" + version
+            if exclude_old and i > 0:
+                merger.add_index(key, None)
+                continue
             fixup_props_signals(mod)
             if not include_terms:
                 mod["terms"].clear()
                 mod["titleterms"].clear()
-            merger.add_index(namespace, mod)
-    
+            merger.add_index(key, mod)
+
     with open(os.path.join(path, "searchindex.js"), "wb") as h:
         output = merger.merge()
         h.write(js_index.dumps(output))

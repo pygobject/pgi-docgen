@@ -66,19 +66,11 @@ var Search = {
 
   getModules : function() {
     var results = [];
-    var filenames = this._index.filenames;
-    var titles = this._index.titles;
-    var map = new Object();
+    var modules = this._index.modules;
 
-    for(var i in filenames) {
-        var fn = filenames[i];
-        var name = fn.split("/")[0].replace("-", " ")
-        map[name] = fn;
-    }
-
-    for(var name in map) {
-        var path = map[name].split("/")[0] + "/index";
-        results.push([path, name, '', 0]);
+    for(var i in modules) {
+        var name = modules[i];
+        results.push([name + "/index", name, "", 0]);
     }
 
     return results;
