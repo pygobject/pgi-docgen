@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Project xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+         xmlns:foaf="http://xmlns.com/foaf/0.1/"
+         xmlns:gnome="http://api.gnome.org/doap-extensions#"
+         xmlns="http://usefulinc.com/ns/doap#">
+
+  <name xml:lang="en">Folks</name>
+  <shortdesc xml:lang="en">People aggregation library</shortdesc>
+  <description>Folks is a contact aggregation library. It retrieves contacts
+  from various sources (including Telepathy IM accounts, libsocialweb web
+  service contacts, and local contact stores) and compiles them into
+  fully-fledged people objects. The ultimate goal is to provide the platform
+  with easy access to all of the user's contacts.</description>
+  <homepage rdf:resource="https://wiki.gnome.org/Projects/Folks" />
+  <download-page rdf:resource="http://download.gnome.org/sources/folks/" />
+  <bug-database
+    rdf:resource="https://bugzilla.gnome.org/browse.cgi?product=folks" />
+  <mailing-list rdf:resource="http://lists.freedesktop.org/mailman/listinfo/telepathy" />
+
+  <maintainer>
+    <foaf:Person>
+      <foaf:name>Travis Reitter</foaf:name>
+      <foaf:mbox rdf:resource="mailto:travis.reitter@collabora.co.uk" />
+      <gnome:userid>treitter</gnome:userid>
+    </foaf:Person>
+  </maintainer>
+  <maintainer>
+    <foaf:Person>
+      <foaf:name>Philip Withnall</foaf:name>
+      <foaf:mbox rdf:resource="mailto:philip.withnall@collabora.co.uk" />
+      <gnome:userid>pwithnall</gnome:userid>
+    </foaf:Person>
+  </maintainer>
+  <maintainer>
+    <foaf:Person>
+      <foaf:name>Raul Gutierrez Segales</foaf:name>
+      <foaf:mbox rdf:resource="mailto:rgs@collabora.co.uk" />
+      <gnome:userid>raulgs</gnome:userid>
+    </foaf:Person>
+  </maintainer>
+  <maintainer>
+    <foaf:Person>
+      <foaf:name>Jeremy Whiting</foaf:name>
+      <foaf:mbox rdf:resource="mailto:jpwhiting@kde.org" />
+      <gnome:userid>jpwhiting</gnome:userid>
+    </foaf:Person>
+  </maintainer>
+</Project>

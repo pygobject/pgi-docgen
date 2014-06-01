@@ -1,0 +1,27 @@
+<Project xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+	 xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+	 xmlns:foaf="http://xmlns.com/foaf/0.1/"
+	 xmlns:gnome="http://api.gnome.org/doap-extensions#"
+	 xmlns="http://usefulinc.com/ns/doap#">
+	<name xml:lang="en">totem</name>
+	<shortdesc xml:lang="en">Movie player for the GNOME desktop based on GStreamer</shortdesc>
+	<homepage rdf:resource="https://wiki.gnome.org/Apps/Videos" />
+	<mailing-list rdf:resource="http://mail.gnome.org/mailman/listinfo/gnome-multimedia" />
+	<download-page rdf:resource="http://download.gnome.org/sources/totem/" />
+	<bug-database rdf:resource="https://bugzilla.gnome.org/browse.cgi?product=totem" />
+	<category rdf:resource="http://api.gnome.org/doap-extensions#desktop" />
+	<maintainer>
+		<foaf:Person>
+			<foaf:name>Bastien Nocera</foaf:name>
+			<foaf:mbox rdf:resource="mailto:hadess@hadess.net" />
+			<gnome:userid>hadess</gnome:userid>
+		</foaf:Person>
+	</maintainer>
+	<maintainer>
+		<foaf:Person>
+			<foaf:name>Tim-Philipp Müller</foaf:name>
+			<foaf:mbox rdf:resource="mailto:tim@centricular.net" />
+			<gnome:userid>tpm</gnome:userid>
+		</foaf:Person>
+	</maintainer>
+</Project>

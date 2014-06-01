@@ -82,7 +82,7 @@ LIBS = {
     'https://git.gnome.org/browse/gexiv2/plain/gexiv2.doap':
         ['GExiv2-0.4', 'GExiv2-0.10'],
     'https://git.gnome.org/browse/folks/plain/folks.doap':
-        ['Folks-0.6'],
+        ['Folks-0.6', 'FolksEds-0.6', 'FolksTelepathy-0.6'],
     'https://git.gnome.org/browse/at-spi2-core/plain/at-spi2-core.doap':
         ['Atspi-2.0'],
     'https://git.gnome.org/browse/caribou/plain/caribou.doap':
@@ -162,7 +162,8 @@ LIBS = {
     'https://git.gnome.org/browse/totem-pl-parser/plain/totem-pl-parser.doap':
         ['TotemPlParser-1.0'],
     'https://git.gnome.org/browse/tracker/plain/tracker.doap':
-        ['TrackerMiner-0.16', 'TrackerExtract-0.16', 'Tracker-0.16'],
+        ['TrackerMiner-0.16', 'TrackerExtract-0.16', 'Tracker-0.16',
+         'TrackerMiner-1.0', 'Tracker-1.0', 'TrackerControl-1.0'],
     'https://git.gnome.org/browse/vte/plain/vte.doap':
         ['Vte-2.90'],
     'http://cgit.freedesktop.org/gstreamer/gst-editing-services/plain/gst-editing-services.doap':
@@ -171,6 +172,12 @@ LIBS = {
         ['BraseroBurn-3.1', 'BraseroMedia-3.1'],
     'https://git.gnome.org/browse/goffice/plain/goffice.doap':
         ['GOffice-0.10'],
+    'https://git.gnome.org/browse/glade/plain/glade.doap':
+        ['Gladeui-2.0'],
+    'https://git.gnome.org/browse/totem/plain/totem.doap':
+        ['Totem-1.0'],
+    'https://git.gnome.org/browse/libgtop/plain/libgtop.doap':
+        ['GTop-2.0'],
 }
 
 
