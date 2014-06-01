@@ -11,11 +11,15 @@
 
 set -e
 
+export PGI_CACHE=$(mktemp)
+
 for mod in "$@"
 do
     echo "#####################################"
     echo "# $mod"
     python ./pgi-docgen.py --devhelp _devhelp _devhelp/_build "$mod"
 done
+
+rm -f "$PGI_CACHE"
 
 python ./pgi-docgen-build.py _devhelp
