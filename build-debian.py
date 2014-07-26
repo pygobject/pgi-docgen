@@ -55,6 +55,9 @@ BLACKLIST = [
     "SugarExt-1.0",
     "Urfkill-0.5",
     "win32-1.0",
+    "Meta-3.0",
+    "Meta-Muffin.0",
+    "libisocodes-1.2.1",
 
     # criticals.. better skip
     "Gwibber-0.1",
@@ -78,6 +81,7 @@ BLACKLIST = [
     "BraseroBurn-3.1",
     "Listaller-0.5",
     "v_sim-3.7",
+    "FolksDummy-0.6",
 ]
 
 BUILD = ['AccountsService-1.0', 'Anjuta-3.0', 'Anthy-9000', 
@@ -108,19 +112,21 @@ BUILD = ['AccountsService-1.0', 'Anjuta-3.0', 'Anthy-9000',
 'PackageKitPlugin-1.0', 'PanelApplet-4.0', 'Pango-1.0', 'PangoCairo-1.0', 
 'PangoFT2-1.0', 'PangoXft-1.0', 'Peas-1.0', 'PeasGtk-1.0', 'Polkit-1.0', 
 'PolkitAgent-1.0', 'Poppler-0.18', 'RB-3.0', 'Rest-0.7', 'RestExtras-0.7', 
-'Rsvg-2.0', 'Secret-1', 'SocialWebClient-0.25', 'Soup-2.4', 'SoupGNOME-2.4', 
+'Rsvg-2.0', 'Secret-1', 'Soup-2.4', 'SoupGNOME-2.4', 
 'SpiceClientGLib-2.0', 'SpiceClientGtk-3.0', 'SugarGestures-1.0', 
 'TelepathyGLib-0.12', 'TelepathyLogger-0.2', 'TotemPlParser-1.0', 
 'Tracker-1.0', 'TrackerControl-1.0', 'TrackerMiner-1.0', 'UDisks-2.0', 
 'UMockdev-1.0', 'UPowerGlib-1.0', 'Vte-2.90', 'WebKit-3.0', 'WebKit2-3.0', 
 'Wnck-3.0', 'Xkl-1.0', 'Zeitgeist-2.0', 'Zpj-0.0', 'cairo-1.0', 
 'fontconfig-2.0', 'freetype2-2.0', 'libxml2-2.0', 'xfixes-4.0', 'xft-2.0', 
-'xlib-2.0', 'xrandr-1.3', "Appstream-0.6", "CoglPango-2.0", "GFBGraph-0.2", 
+'xlib-2.0', 'xrandr-1.3', "Appstream-0.7", "CoglPango-2.0", "GFBGraph-0.2", 
 "Grl-0.1", "GrlNet-0.1", "GrlPls-0.2", "Guestfs-1.0", "HarfBuzz-0.0", 
 "InputPad-1.0", "JavaScriptCore-1.0", "Keybinder-3.0", "LightDM-1", 
 "MateMenu-2.0", "MediaArt-1.0", "Midgard-10.05", "OsmGpsMap-1.0", "Totem-1.0", 
 "Tracker-0.14", "TrackerExtract-0.14", "TrackerMiner-0.14", "Uhm-0.0", 
-"libisocodes-1.2", ]
+"CDesktopEnums-3.0", "CMenu-3.0", "CinnamonDesktop-3.0",
+"ModemManager-1.0"
+]
 
 
 def print_missing():
@@ -135,22 +141,20 @@ def print_missing():
     missing = set(BUILD) - set(girs.keys())
     if missing:
         print "Missing girs: %r" % missing
-        raise SystemExit(1)
 
-    if "check" not in sys.argv[1:]:
-        return
-
-    blacklist = set(BLACKLIST)
-    missing = set()
     bl_depend = set()
-    for key, path in girs.items():
-        if key not in BUILD and key not in BLACKLIST:
-            ns = get_namespace(*key.split("-"))
-            deps = set(["-".join(d) for d in ns.get_all_dependencies()])
-            if deps & blacklist:
-                bl_depend.add(key)
-                continue
-            missing.add(key)
+
+    if "check" in sys.argv[1:]:
+        blacklist = set(BLACKLIST)
+        missing = set()
+        for key, path in girs.items():
+            if key not in BUILD and key not in BLACKLIST:
+                ns = get_namespace(*key.split("-"))
+                deps = set(["-".join(d) for d in ns.get_all_dependencies()])
+                if deps & blacklist:
+                    bl_depend.add(key)
+                    continue
+                missing.add(key)
 
     if bl_depend:
         print "Depending on blacklisted modules:"
@@ -163,7 +167,9 @@ def print_missing():
         print "..none missing."
     for key in sorted(missing):
         print "\"%s\"," % key
-    raise SystemExit
+
+    if missing or bl_depend:
+        raise SystemExit(1)
 
 
 if __name__ == "__main__":
