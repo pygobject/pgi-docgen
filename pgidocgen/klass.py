@@ -9,7 +9,7 @@ import os
 
 from . import util
 from .fields import FieldsMixin
-from .util import get_csv_line
+from .util import get_csv_line, fake_subclasses
 
 
 class ClassGenerator(util.Generator, FieldsMixin):
@@ -223,7 +223,7 @@ Child Properties
 
             # SUBCLASSES
             subclasses = []
-            for sub in cls.__subclasses__():
+            for sub in fake_subclasses(cls):
                 # don't include things we happened to import
                 if sub not in self._classes and sub not in self._ifaces:
                     continue

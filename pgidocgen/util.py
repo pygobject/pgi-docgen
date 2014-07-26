@@ -238,6 +238,20 @@ def escape_rest(text):
     return text
 
 
+def fake_subclasses(cls):
+    """Gives a list of subclasses, replacing classes by their overrides"""
+
+    subs = []
+    for sub in cls.__subclasses__():
+        for subsub in fake_subclasses(sub):
+            if get_overridden_class(subsub) is sub:
+                subs.append(subsub)
+                break
+        else:
+            subs.append(sub)
+    return subs
+
+
 def fake_bases(obj):
     # hide overrides by merging the bases in
     possible_bases = []
