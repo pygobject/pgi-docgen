@@ -9,7 +9,7 @@
   <description>Library tasked with managing, extracting and handling media art caches</description>
   <homepage rdf:resource="https://github.com/curlybeast/libmediaart" />
   <mailing-list rdf:resource="http://mail.gnome.org/mailman/listinfo/tracker-list" />
-  <category rdf:resource="http://api.gnome.org/doap-extensions#platform" />
+  <category rdf:resource="http://api.gnome.org/doap-extensions#core" />
   <bug-database
 rdf:resource="https://bugzilla.gnome.org/buglist.cgi?product=libmediaart"/>
 

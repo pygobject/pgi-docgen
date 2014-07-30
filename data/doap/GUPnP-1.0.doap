@@ -6,6 +6,7 @@
 
   <name xml:lang="en">GUPnP</name>
   <shortdesc xml:lang="en">Core UPnP API built on top of gssdp.</shortdesc>
+  <category rdf:resource="http://api.gnome.org/doap-extensions#core" />
   <description>GUPnP is an object-oriented open source framework for creating UPnP devices and
 control points, written in C using GObject and libsoup. The GUPnP API is
 intended to be easy to use, efficient and flexible.

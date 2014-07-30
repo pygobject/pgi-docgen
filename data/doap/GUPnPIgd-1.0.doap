@@ -6,6 +6,7 @@
 
   <name xml:lang="en">GUPnP IGD</name>
   <shortdesc xml:lang="en">A library to handle UPnP Internet Gateway Device port mappings</shortdesc>
+  <category rdf:resource="http://api.gnome.org/doap-extensions#core" />
   <description>GUPnP is an object-oriented open source framework for creating UPnP devices and
 control points, written in C using GObject and libsoup. The GUPnP API is
 intended to be easy to use, efficient and flexible.
@@ -39,7 +40,7 @@ This is a library to handle UPnP IGD port mapping.</description>
     <foaf:Person>
       <foaf:name>Olivier Crête</foaf:name>
       <foaf:mbox rdf:resource="mailto:olivier.crete@ocrete.ca" />
-      <gnome:userid>tester</gnome:userid>
+      <gnome:userid>Tester</gnome:userid>
     </foaf:Person>
   </maintainer>
 </Project>

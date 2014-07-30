@@ -9,6 +9,7 @@
 	<mailing-list rdf:resource="http://lists.usefulinc.com/mailman/listinfo/gnome-bluetooth" />
 	<download-page rdf:resource="http://download.gnome.org/sources/gnome-bluetooth/" />
 	<bug-database rdf:resource="https://bugzilla.gnome.org/browse.cgi?product=gnome-bluetooth" />
+	<category rdf:resource="http://api.gnome.org/doap-extensions#core" />
 	<maintainer>
 		<foaf:Person>
 			<foaf:name>Bastien Nocera</foaf:name>

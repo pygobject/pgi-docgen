@@ -9,7 +9,7 @@
 	<mailing-list rdf:resource="http://mail.gnome.org/mailman/listinfo/gnome-multimedia" />
 	<download-page rdf:resource="http://download.gnome.org/sources/totem-pl-parser/" />
 	<bug-database rdf:resource="https://bugzilla.gnome.org/browse.cgi?product=totem-pl-parser" />
-	<category rdf:resource="http://api.gnome.org/doap-extensions#desktop" />
+	<category rdf:resource="http://api.gnome.org/doap-extensions#core" />
 	<maintainer>
 		<foaf:Person>
 			<foaf:name>Bastien Nocera</foaf:name>

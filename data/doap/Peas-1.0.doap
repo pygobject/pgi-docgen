@@ -6,6 +6,7 @@
 
   <name xml:lang="en">libpeas</name>
   <shortdesc xml:lang="en">A GObject plugins library</shortdesc>
+  <category rdf:resource="http://api.gnome.org/doap-extensions#core" />
   <description>libpeas is a GObject-based plugins engine, and is targeted
   at giving every application the chance to assume its own extensibility.</description>
   <homepage rdf:resource="https://wiki.gnome.org/Projects/Libpeas" />

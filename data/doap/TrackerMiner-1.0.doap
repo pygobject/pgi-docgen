@@ -18,7 +18,7 @@ mixing contacts with files, locations, activities and etc.).</description>
   <mailing-list rdf:resource="http://mail.gnome.org/mailman/listinfo/tracker-list" />
   <download-page rdf:resource="http://download.gnome.org/sources/tracker/" />
   <bug-database rdf:resource="https://bugzilla.gnome.org/browse.cgi?product=tracker" />
-  <category rdf:resource="http://api.gnome.org/doap-extensions#platform" />
+  <category rdf:resource="http://api.gnome.org/doap-extensions#core" />
 
   <maintainer>
     <foaf:Person>

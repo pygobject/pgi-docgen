@@ -9,7 +9,7 @@
   <homepage rdf:resource="https://wiki.gnome.org/Projects/Caribou" />
   <mailing-list rdf:resource="http://mail.gnome.org/mailman/listinfo/gok-list" />
   <bug-database rdf:resource="https://bugzilla.gnome.org/browse.cgi?product=caribou" />
-  <category rdf:resource="http://api.gnome.org/doap-extensions#desktop" />
+  <category rdf:resource="http://api.gnome.org/doap-extensions#core" />
 
   <maintainer>
     <foaf:Person>

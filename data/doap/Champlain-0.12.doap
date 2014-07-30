@@ -6,6 +6,7 @@
 
   <name xml:lang="en">libchamplain</name>
   <shortdesc xml:lang="en">A map widget</shortdesc>
+  <category rdf:resource="http://api.gnome.org/doap-extensions#core" />
   <homepage rdf:resource="https://wiki.gnome.org/Projects/libchamplain" />
   <mailing-list rdf:resource="http://mail.gnome.org/mailman/listinfo/libchamplain-list" />
 

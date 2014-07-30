@@ -15,7 +15,7 @@
   <mailing-list rdf:resource="http://mail.gnome.org/mailman/listinfo/brasero-list" />
   <download-page rdf:resource="http://download.gnome.org/sources/brasero/" />
   <bug-database rdf:resource="http://bugzilla.gnome.org/browse.cgi?product=brasero" />
-  <category rdf:resource="http://api.gnome.org/doap-extensions#desktop" />
+  <category rdf:resource="http://api.gnome.org/doap-extensions#apps" />
 
   <maintainer>
     <foaf:Person>

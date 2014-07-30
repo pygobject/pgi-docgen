@@ -13,22 +13,7 @@
   <download-page rdf:resource="http://download.gnome.org/sources/gsettings-desktop-schemas/" />
   <bug-database rdf:resource="https://bugzilla.gnome.org/browse.cgi?product=gsettings-desktop-schemas" />
 
-  <!-- DOAP category: This is used to categorize repositories in cgit.
-       Pulse has taken its best guess at the correct category.  You may
-       want to replace the rdf:resource attribute with one of the following:
-         http://api.gnome.org/doap-extensions#admin
-         http://api.gnome.org/doap-extensions#bindings
-         http://api.gnome.org/doap-extensions#deprecated
-         http://api.gnome.org/doap-extensions#desktop
-         http://api.gnome.org/doap-extensions#development
-         http://api.gnome.org/doap-extensions#infrastructure
-         http://api.gnome.org/doap-extensions#platform
-         http://api.gnome.org/doap-extensions#productivity
-       NOTE: There is an "Other" categorization on cgit, but we do not have a
-       DOAP category for it.  If your module does not belong to one of these
-       groups, then do not include a category property in your DOAP file.
-  -->
-  <category rdf:resource="http://api.gnome.org/doap-extensions#desktop" />
+  <category rdf:resource="http://api.gnome.org/doap-extensions#core" />
 
   <maintainer>
     <foaf:Person>

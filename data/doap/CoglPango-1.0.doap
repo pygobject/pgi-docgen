@@ -7,6 +7,7 @@
 
   <name>Cogl</name>
   <shortname>cogl</shortname>
+  <category rdf:resource="http://api.gnome.org/doap-extensions#core" />
 
   <shortdesc xml:lang="en">A hardware accelerated 3D graphics API</shortdesc>
 

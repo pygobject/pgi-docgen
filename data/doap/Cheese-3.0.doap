@@ -18,7 +18,7 @@
   <download-page rdf:resource="https://download.gnome.org/sources/cheese/" />
   <mailing-list rdf:resource="https://mail.gnome.org/mailman/listinfo/cheese-list" />
   <bug-database rdf:resource="https://bugzilla.gnome.org/browse.cgi?product=cheese" />
-  <category rdf:resource="http://api.gnome.org/doap-extensions#desktop" />
+  <category rdf:resource="http://api.gnome.org/doap-extensions#apps" />
   <repository>
     <GitRepository>
       <location rdf:resource="git://git.gnome.org/cheese" />

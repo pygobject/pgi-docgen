@@ -11,7 +11,7 @@
 	<mailing-list rdf:resource="http://mail.gnome.org/mailman/listinfo/gnome-keyring-list" />
 	<download-page rdf:resource="http://download.gnome.org/sources/gnome-keyring/"/>
 	<bug-database rdf:resource="https://bugzilla.gnome.org/browse.cgi?product=gnome-keyring"/>
-	<category rdf:resource="http://api.gnome.org/doap-extensions#desktop" />
+	<category rdf:resource="http://api.gnome.org/doap-extensions#core" />
 	
 	<maintainer>
 		<foaf:Person>

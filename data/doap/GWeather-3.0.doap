@@ -10,7 +10,7 @@
   <homepage rdf:resource="https://wiki.gnome.org/Projects/LibGWeather" />
   <download-page rdf:resource="http://download.gnome.org/sources/libgweather/"/>
   <bug-database rdf:resource="http://bugzilla.gnome.org/browse.cgi?product=libgweather"/>
-  <category rdf:resource="http://api.gnome.org/doap-extensions#desktop" />
+  <category rdf:resource="http://api.gnome.org/doap-extensions#core" />
   <programming-language>C</programming-language>
 
   <maintainer>

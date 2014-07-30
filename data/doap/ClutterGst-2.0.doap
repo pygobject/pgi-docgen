@@ -8,6 +8,7 @@
 	<name>Clutter-Gst</name>
   <shortname>clutter-gst</shortname>
 	<created>2006-11-29</created>
+  <category rdf:resource="http://api.gnome.org/doap-extensions#core" />
 
   <shortdesc xml:lang="en">A GStreamer integration library for Clutter</shortdesc>
 
@@ -89,8 +90,18 @@
 
   <release>
     <Version>
+      <name>2.99.4 Release</name>
+      <created>2014-06-26</created>
+      <branch>master</branch>
+      <revision>2.99.4</revision>
+      <file-release rdf:resource="http://download.gnome.org/sources/clutter-gst/2.99/clutter-gst-2.99.4.tar.xz" />
+    </Version>
+  </release>
+
+  <release>
+    <Version>
       <name>2.99.2 Release</name>
-      <created>2014-06-109</created>
+      <created>2014-06-09</created>
       <branch>master</branch>
       <revision>2.99.2</revision>
       <file-release rdf:resource="http://download.gnome.org/sources/clutter-gst/2.99/clutter-gst-2.99.2.tar.xz" />

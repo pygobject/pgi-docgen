@@ -6,6 +6,7 @@
 
   <name xml:lang="en">grilo</name>
   <shortdesc xml:lang="en">Grilo is a framework that provides access to various sources of  multimedia content, using a pluggable system.</shortdesc>
+  <category rdf:resource="http://api.gnome.org/doap-extensions#core" />
 
   <homepage
   rdf:resource="https://wiki.gnome.org/Projects/Grilo" />

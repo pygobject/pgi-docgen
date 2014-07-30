@@ -8,7 +8,7 @@
   <shortdesc xml:lang="en">LibGTop2</shortdesc>
   <download-page rdf:resource="http://download.gnome.org/sources/libgtop/" />
   <bug-database rdf:resource="http://bugzilla.gnome.org/browse.cgi?product=libgtop" />
-  <category rdf:resource="http://api.gnome.org/doap-extensions#desktop" />
+  <category rdf:resource="http://api.gnome.org/doap-extensions#core" />
 
   <maintainer>
     <foaf:Person>

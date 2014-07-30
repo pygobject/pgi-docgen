@@ -6,6 +6,7 @@
 
   <name xml:lang="en">grilo-plugins</name>
   <shortdesc xml:lang="en">A collection of plugins for the Grilo framework.</shortdesc>
+  <category rdf:resource="http://api.gnome.org/doap-extensions#core" />
 
   <homepage
   rdf:resource="https://wiki.gnome.org/Projects/Grilo" />

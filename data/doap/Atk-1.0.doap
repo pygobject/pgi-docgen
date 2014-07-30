@@ -9,6 +9,7 @@
   <shortdesc xml:lang="en">The interface definitions of accessibility infrastructure.</shortdesc>
   <homepage rdf:resource="http://developer.gnome.org/atk"/>
   <mailing-list rdf:resource="http://mail.gnome.org/mailman/listinfo/gnome-accessibility-devel"/>
+  <category rdf:resource="http://api.gnome.org/doap-extensions#core" />
 
   <maintainer>
     <foaf:Person>

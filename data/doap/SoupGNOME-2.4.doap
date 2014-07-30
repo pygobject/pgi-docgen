@@ -12,7 +12,7 @@
   <mailing-list rdf:resource="http://mail.gnome.org/mailman/listinfo/libsoup-list" />
   <download-page rdf:resource="http://download.gnome.org/sources/libsoup/" />
   <bug-database rdf:resource="https://bugzilla.gnome.org/browse.cgi?product=libsoup" />
-  <category rdf:resource="http://api.gnome.org/doap-extensions#platform" />
+  <category rdf:resource="http://api.gnome.org/doap-extensions#core" />
 
   <maintainer>
     <foaf:Person>
