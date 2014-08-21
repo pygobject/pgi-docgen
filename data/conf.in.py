@@ -20,10 +20,10 @@ extensions = [
     '_ext.autosummary_fork',
     '_ext.devhelp_fork',
     '_ext.toctree',
+    '_ext.current_path',
 ]
 source_suffix = '.rst'
 master_doc = 'index'
-project = '%s %s - Python API' % (mname, mversion)
 version = mversion
 release = mversion
 exclude_patterns = ['_build', 'README.rst']

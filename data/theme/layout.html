@@ -115,4 +115,25 @@
   {%- block footer %} {% endblock %}
 
 </body>
+
+  {% if not embedded %}
+  <script>
+      function inIframe() {
+            try {
+                return window.self !== window.top;
+            } catch (e) {
+                return true;
+            }
+      }
+
+    if(!inIframe()) {
+        var icons = document.getElementsByClassName('open-sidebar');
+
+        for (var i = 0; i < icons.length; i ++) {
+            icons[i].style.display = 'table-cell';
+        }
+    }
+  </script>
+  {%- endif %}
+
 </html>
