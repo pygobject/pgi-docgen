@@ -155,6 +155,11 @@ class ModuleGenerator(util.Generator):
             name = "%s.%s" % (namespace, key)
 
             if isinstance(obj, types.FunctionType):
+
+                if obj.__module__.split(".")[-1] != namespace:
+                    print "Skipping %s: originated from other namespace" % key
+                    continue
+
                 if hasattr(obj, "_is_callback"):
                     code = repo.parse_function(name, None, obj)
                     cb_gen.add_callback(obj, code)
