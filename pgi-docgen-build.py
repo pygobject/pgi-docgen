@@ -139,11 +139,6 @@ class Package(object):
         return "<%s name=%s>" % (type(self).__name__, self.name)
 
 
-def make_tarfile(output_filename, source_dir):
-    with tarfile.open(output_filename, "w:gz") as tar:
-        tar.add(source_dir, arcname=os.path.basename(source_dir))
-
-
 def main(argv):
 
     parser = argparse.ArgumentParser(
@@ -292,8 +287,6 @@ def main(argv):
             tar_path = os.path.join(
                 os.path.dirname(path),
                 "devhelp-" + os.path.basename(path)  + ".tar.gz")
-            make_tarfile(tar_path, path)
-            shutil.rmtree(path)
 
 
 if __name__ == "__main__":
