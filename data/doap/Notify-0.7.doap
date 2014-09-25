@@ -6,6 +6,7 @@
   <name xml:lang="en">Desktop notification library</name>
   <shortname>libnotify</shortname>
   <category rdf:resource="http://api.gnome.org/doap-extensions#core" />
+  <programming-language>C</programming-language>
   <shortdesc xml:lang="en">libnotify is a library for sending desktop notifications</shortdesc>
   <maintainer>
     <foaf:Person>

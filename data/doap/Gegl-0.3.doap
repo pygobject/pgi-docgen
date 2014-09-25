@@ -5,9 +5,37 @@
          xmlns="http://usefulinc.com/ns/doap#">
 
   <name xml:lang="en">GEGL</name>
-  <shortdesc xml:lang="en">GEGL (GObject Extendable Graphics Library) is a graph based image processing framework.</shortdesc>
+
+  <shortdesc xml:lang="en">
+    GEGL (Generic Graphics Library) is a graph based image processing framework.
+  </shortdesc>
+  <shortdesc xml:lang="de">
+    GEGL (Generic Graphics Library) ist ein graph-basiertes Framework für die
+    Bildverarbeitung.
+  </shortdesc>
+
+  <description xml:lang="en">
+    GEGL (Generic Graphics Library) is a graph based image processing framework.
+  </description>
+  <description xml:lang="de">
+    GEGL (Generic Graphics Library) ist ein graph-basiertes Framework für die
+    Bildverarbeitung.
+  </description>
+
   <homepage rdf:resource="http://www.gegl.org" />
-  <mailing-list rdf:resource="https://lists.xcf.berkeley.edu/mailman/listinfo/gegl-developer" />
+
+  <mailing-list
+    rdf:resource="https://mail.gnome.org/mailman/listinfo/gegl-developer-list"
+  />
+
+  <download-page rdf:resource="http://www.gegl.org/#_download" />
+
+  <bug-database
+    rdf:resource="https://bugzilla.gnome.org/browse.cgi?product=GEGL"
+  />
+
+  <programming-language>C</programming-language>
+  <programming-language>OpenCL</programming-language>
 
   <maintainer>
     <foaf:Person>
@@ -15,4 +43,7 @@
       <gnome:userid>ok</gnome:userid>
     </foaf:Person>
   </maintainer>
+
+<!-- TODO: generate MAINTAINERS from this file -->
+
 </Project>

@@ -6,6 +6,12 @@
          xmlns="http://usefulinc.com/ns/doap#">
   <name xml:lang="en">gtksourceview</name>
   <shortdesc xml:lang="en">Source code editing widget</shortdesc>
+  <description>GtkSourceView is a portable library that extends
+GtkTextView, the standard GTK+ framework for multiline text editing.
+GtkSourceView adds support for configurable syntax highlighting,
+unlimited undo/redo, search and replace, a completion framework,
+printing, file loading and saving, and other features typical of a
+source code editor.</description>
 
   <homepage rdf:resource="https://wiki.gnome.org/Projects/GtkSourceView" />
   <mailing-list rdf:resource="http://mail.gnome.org/mailman/listinfo/gnome-devtools" />

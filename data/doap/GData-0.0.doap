@@ -1,12 +1,13 @@
 <Project xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" xmlns:foaf="http://xmlns.com/foaf/0.1/" xmlns:gnome="http://api.gnome.org/doap-extensions#" xmlns="http://usefulinc.com/ns/doap#">
 	<name xml:lang="en">libgdata</name>
 	<shortdesc xml:lang="en">GLib-based library for accessing online service APIs using the GData protocol</shortdesc>
-	<category rdf:resource="http://api.gnome.org/doap-extensions#core" />
 	<description xml:lang="en">libgdata is a GLib-based library for accessing online service APIs using the GData protocol — most notably, Google's services. It provides APIs to access the common Google services, and has full asynchronous support.</description>
 	<homepage rdf:resource="https://wiki.gnome.org/Projects/libgdata"/>
 	<license rdf:resource="http://usefulinc.com/doap/licenses/lgpl"/>
 	<download-page rdf:resource="http://download.gnome.org/sources/libgdata/"/>
 	<bug-database rdf:resource="https://bugzilla.gnome.org/browse.cgi?product=libgdata"/>
+	<category rdf:resource="http://api.gnome.org/doap-extensions#core" />
+	<programming-language>C</programming-language>
 	<maintainer>
 		<foaf:Person>
 			<foaf:name>Philip Withnall</foaf:name>

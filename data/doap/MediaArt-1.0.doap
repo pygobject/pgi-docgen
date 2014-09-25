@@ -10,6 +10,7 @@
   <homepage rdf:resource="https://github.com/curlybeast/libmediaart" />
   <mailing-list rdf:resource="http://mail.gnome.org/mailman/listinfo/tracker-list" />
   <category rdf:resource="http://api.gnome.org/doap-extensions#core" />
+  <programming-language>C</programming-language>
   <bug-database
 rdf:resource="https://bugzilla.gnome.org/buglist.cgi?product=libmediaart"/>
 

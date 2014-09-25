@@ -18,6 +18,7 @@
   <download-page rdf:resource="http://download.gnome.org/sources/anjuta/" />
   <bug-database rdf:resource="http://bugzilla.gnome.org/browse.cgi?product=anjuta" />
   <category rdf:resource="http://api.gnome.org/doap-extensions#apps" />
+  <programming-language>C</programming-language>
 
   <maintainer>
     <foaf:Person>

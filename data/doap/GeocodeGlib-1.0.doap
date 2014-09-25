@@ -6,6 +6,7 @@
 	<name xml:lang="en">geocode-glib</name>
 	<shortdesc xml:lang="en">Geocode Helper library</shortdesc>
 	<category rdf:resource="http://api.gnome.org/doap-extensions#core" />
+	<programming-language>C</programming-language>
 	<homepage rdf:resource="http://git.gnome.org/browse/geocode-glib" />
 	<maintainer>
 		<foaf:Person>

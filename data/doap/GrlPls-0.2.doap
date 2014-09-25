@@ -5,8 +5,10 @@
          xmlns="http://usefulinc.com/ns/doap#">
 
   <name xml:lang="en">grilo-plugins</name>
-  <shortdesc xml:lang="en">A collection of plugins for the Grilo framework.</shortdesc>
+  <shortdesc xml:lang="en">A collection of plugins for the Grilo framework</shortdesc>
   <category rdf:resource="http://api.gnome.org/doap-extensions#core" />
+  <programming-language>C</programming-language>
+  <programming-language>Lua</programming-language>
 
   <homepage
   rdf:resource="https://wiki.gnome.org/Projects/Grilo" />

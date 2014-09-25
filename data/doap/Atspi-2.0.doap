@@ -5,10 +5,11 @@
          xmlns="http://usefulinc.com/ns/doap#">
 
   <name xml:lang="en">at-spi2-core</name>
-  <shortdesc xml:lang="en">D-Bus accessibility specifications and registration daemon.</shortdesc>
+  <shortdesc xml:lang="en">D-Bus accessibility specifications and registration daemon</shortdesc>
   <homepage rdf:resource="http://www.linuxfoundation.org/en/Accessibility/ATK/AT-SPI/AT-SPI_on_D-Bus"/>
   <mailing-list rdf:resource="https://lists.linux-foundation.org/mailman/listinfo/accessibility-atspi"/>
   <category rdf:resource="http://api.gnome.org/doap-extensions#core" />
+  <programming-language>C</programming-language>
 
   <maintainer>
     <foaf:Person>

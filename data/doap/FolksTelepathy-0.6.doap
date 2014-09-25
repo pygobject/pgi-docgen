@@ -18,6 +18,7 @@
   <bug-database
     rdf:resource="https://bugzilla.gnome.org/browse.cgi?product=folks" />
   <mailing-list rdf:resource="http://lists.freedesktop.org/mailman/listinfo/telepathy" />
+  <programming-language>Vala</programming-language>
 
   <maintainer>
     <foaf:Person>

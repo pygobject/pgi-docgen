@@ -10,6 +10,7 @@
   <description>librest is a helper library for RESTful services. It uses libsoup to provide HTTP communication.</description>
   <download-page rdf:resource="http://download.gnome.org/sources/rest/" />
   <bug-database  rdf:resource="https://bugzilla.gnome.org/browse.cgi?product=librest" />
+  <programming-language>C</programming-language>
 
   <maintainer>
     <foaf:Person>

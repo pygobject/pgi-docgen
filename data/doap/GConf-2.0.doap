@@ -6,6 +6,7 @@
 
   <name xml:lang="en">GConf</name>
   <shortdesc xml:lang="en">Process-transparent configuration system (deprecated)</shortdesc>
+  <category rdf:resource="http://api.gnome.org/doap-extensions#deprecated" />
 
   <bug-database  rdf:resource="https://bugzilla.gnome.org/browse.cgi?product=GConf" />
   <description xml:lang="en">
