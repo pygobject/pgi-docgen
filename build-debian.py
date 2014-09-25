@@ -109,7 +109,7 @@ BUILD = ['AccountsService-1.0', 'Anjuta-3.0', 'Anthy-9000',
 'LangTag-0.5', 'Libosinfo-1.0', 'LibvirtGConfig-1.0', 'LibvirtGLib-1.0', 
 'LibvirtGObject-1.0', 'LunarDate-2.0', 'MPID-3.0', 'Mx-1.0', 'Nautilus-3.0', 
 'Nemo-3.0', 'NetworkManager-1.0', 'Notify-0.7', 'PackageKitGlib-1.0', 
-'PackageKitPlugin-1.0', 'PanelApplet-4.0', 'Pango-1.0', 'PangoCairo-1.0', 
+'PanelApplet-4.0', 'Pango-1.0', 'PangoCairo-1.0', 
 'PangoFT2-1.0', 'PangoXft-1.0', 'Peas-1.0', 'PeasGtk-1.0', 'Polkit-1.0', 
 'PolkitAgent-1.0', 'Poppler-0.18', 'RB-3.0', 'Rest-0.7', 'RestExtras-0.7', 
 'Rsvg-2.0', 'Secret-1', 'Soup-2.4', 'SoupGNOME-2.4', 
@@ -125,7 +125,7 @@ BUILD = ['AccountsService-1.0', 'Anjuta-3.0', 'Anthy-9000',
 "MateMenu-2.0", "MediaArt-1.0", "Midgard-10.05", "OsmGpsMap-1.0", "Totem-1.0", 
 "Tracker-0.14", "TrackerExtract-0.14", "TrackerMiner-0.14", "Uhm-0.0", 
 "CDesktopEnums-3.0", "CMenu-3.0", "CinnamonDesktop-3.0",
-"ModemManager-1.0"
+"ModemManager-1.0", "Evd-0.1"
 ]
 
 
