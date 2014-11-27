@@ -30,13 +30,6 @@ source code editor.</description>
   </maintainer>
   <maintainer>
     <foaf:Person>
-      <foaf:name>Paolo Maggi</foaf:name>
-      <foaf:mbox rdf:resource="mailto:paolo@gnome.org" />
-      <gnome:userid>paolo</gnome:userid>
-    </foaf:Person>
-  </maintainer>
-  <maintainer>
-    <foaf:Person>
       <foaf:name>Sébastien Wilmet</foaf:name>
       <foaf:mbox rdf:resource="mailto:swilmet@gnome.org" />
       <gnome:userid>swilmet</gnome:userid>

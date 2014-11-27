@@ -4,20 +4,15 @@
          xmlns:gnome="http://api.gnome.org/doap-extensions#"
          xmlns="http://usefulinc.com/ns/doap#">
 
-  <name xml:lang="en">Panel</name>
+  <name xml:lang="en">GNOME Panel</name>
   <shortdesc xml:lang="en">Launch other applications and provide various utilities to manage windows, show the time, etc.</shortdesc>
   <homepage rdf:resource="https://wiki.gnome.org/Projects/GnomePanel" />
-  <mailing-list rdf:resource="http://mail.gnome.org/mailman/listinfo/desktop-devel-list" />
+  <mailing-list rdf:resource="http://mail.gnome.org/mailman/listinfo/gnome-flashback-list" />
   <download-page rdf:resource="http://download.gnome.org/sources/gnome-panel/" />
   <bug-database rdf:resource="https://bugzilla.gnome.org/browse.cgi?product=gnome-panel" />
 
-  <maintainer>
-    <foaf:Person>
-      <foaf:name>Jonathan Carter</foaf:name>
-      <foaf:mbox rdf:resource="mailto:jonathan@ubuntu.com" />
-      <gnome:userid>jcarter</gnome:userid>
-    </foaf:Person>
-  </maintainer>
+  <programming-language>C</programming-language>
+
   <maintainer>
     <foaf:Person>
       <foaf:name>Josselin Mouette</foaf:name>
@@ -30,6 +25,13 @@
       <foaf:name>Philipp Kaluza</foaf:name>
       <foaf:mbox_sha1sum>7faa9deab8273280bfc99d2c8231d32c7e7f8824</foaf:mbox_sha1sum>
       <gnome:userid>phk</gnome:userid>
+    </foaf:Person>
+  </maintainer>
+  <maintainer>
+    <foaf:Person>
+      <foaf:name>Alberts Muktupāvels</foaf:name>
+      <foaf:mbox rdf:resource="mailto:alberts.muktupavels@gmail.com" />
+      <gnome:userid>muktupavels</gnome:userid>
     </foaf:Person>
   </maintainer>
 </Project>
