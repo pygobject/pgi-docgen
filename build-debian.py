@@ -84,7 +84,7 @@ BLACKLIST = [
     "FolksDummy-0.6",
 ]
 
-BUILD = ['AccountsService-1.0', 'Anjuta-3.0', 'Anthy-9000', 
+BUILD = ['AccountsService-1.0', 'Anjuta-3.0',
 'AppIndicator3-0.1', 'Atk-1.0', 'Atspi-2.0', 'Cally-1.0', 'Caribou-1.0', 
 'Champlain-0.12', 'Cheese-3.0', 'Clinica-0.3', 'Clutter-1.0', 
 'ClutterGdk-1.0', 'ClutterGst-2.0', 'ClutterX11-1.0', 'Cogl-1.0', 'Cogl-2.0', 
@@ -119,13 +119,16 @@ BUILD = ['AccountsService-1.0', 'Anjuta-3.0', 'Anthy-9000',
 'UMockdev-1.0', 'UPowerGlib-1.0', 'Vte-2.90', 'WebKit-3.0', 'WebKit2-3.0', 
 'Wnck-3.0', 'Xkl-1.0', 'Zeitgeist-2.0', 'Zpj-0.0', 'cairo-1.0', 
 'fontconfig-2.0', 'freetype2-2.0', 'libxml2-2.0', 'xfixes-4.0', 'xft-2.0', 
-'xlib-2.0', 'xrandr-1.3', "Appstream-0.7", "CoglPango-2.0", "GFBGraph-0.2", 
-"Grl-0.1", "GrlNet-0.1", "GrlPls-0.2", "Guestfs-1.0", "HarfBuzz-0.0", 
+'xlib-2.0', 'xrandr-1.3', "CoglPango-2.0", "GFBGraph-0.2", 
+"GrlPls-0.2", "Guestfs-1.0", "HarfBuzz-0.0", 
 "InputPad-1.0", "Keybinder-3.0", "LightDM-1", 
 "MateMenu-2.0", "MediaArt-1.0", "Midgard-10.05", "OsmGpsMap-1.0", "Totem-1.0", 
-"Tracker-0.14", "TrackerExtract-0.14", "TrackerMiner-0.14", "Uhm-0.0", 
-"CDesktopEnums-3.0", "CMenu-3.0", "CinnamonDesktop-3.0",
-"ModemManager-1.0", "Evd-0.1"
+ "Uhm-0.0", "AppStream-0.7",
+"CDesktopEnums-3.0", "CMenu-3.0", "CinnamonDesktop-3.0", "ModemManager-1.0", 
+"Evd-0.1", "Cattle-1.0", "GCab-1.0", 
+"GPaste-1.0", "GVnc-1.0", "GVncPulse-1.0", "Ggit-1.0", "GtkVnc-2.0", 
+"JavaScriptCore-4.0", "SocialWebClient-0.25", 
+"WebKit2-4.0", "WebKit2WebExtension-4.0",
 ]
 
 
