@@ -12,6 +12,10 @@ echo "This repository was created automatically using https://github.com/lazka/p
 echo "It contains devhelp packages for PyGObject\n\n" >> README.rst
 echo "1) git clone https://github.com/lazka/pgi-docs-devhelp.git ~/.local/share/devhelp/books\n" >> README.rst
 echo "2) devhelp\n" >> README.rst
+echo "To update:\n" >> README.rst
+echo "1) cd ~/.local/share/devhelp/books\n" >> README.rst
+echo "2) git fetch --all\n" >> README.rst
+echo "3) git reset --hard origin/master\n" >> README.rst
 rm -rf .?*
 git init
 git add .
