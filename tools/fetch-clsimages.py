@@ -7,6 +7,7 @@
 # version 2.1 of the License, or (at your option) any later version.
 
 import os
+import re
 import requests
 from multiprocessing import Pool
 
@@ -74,6 +75,14 @@ GTK_MAPPING = {
     "Gtk.StackSwitcher": "stackswitcher",
     "Gtk.ListBox": "list-box",
     "Gtk.FlowBox": "flow-box",
+    "Gtk.ActionBar": "action-bar",
+    "Gtk.ComboBoxText": "combo-box-text",
+    "Gtk.PlacesSidebar": "placessidebar",
+    "Gtk.SearchBar": "search-bar",
+    "Gtk.Frame": "frame",
+    "Gtk.Sidebar": "sidebar",
+    "Gtk.GLArea": "glarea",
+    "Gtk.LockButton": "lockbutton",
 }
 
 GTK_URL = ("https://git.gnome.org/browse/gtk+/plain/docs/"
@@ -91,7 +100,8 @@ def fetch(args):
 def main(dest, mapping):
     # make sure there are no typos in the mapping
     for key in mapping.keys():
-        assert hasattr(Gtk, key.split(".")[-1]), key
+        if not hasattr(Gtk, key.split(".")[-1]):
+            print key, "missing..."
 
     missing = []
     for name in dir(Gtk):
@@ -106,6 +116,18 @@ def main(dest, mapping):
 
     print "Following widget sublasses are missing an image:"
     print missing
+
+    resp = requests.get("http://git.gnome.org/browse/gtk+/plain/docs/reference/gtk/images/")
+    mapped_images = GTK_MAPPING.values()
+    not_mapped = []
+    for image in set(re.findall("([^>/]+?)\.png", resp.text)):
+        if image not in mapped_images:
+            not_mapped.append(image)
+    not_mapped.sort()
+
+    print "Following images on the server aren't linked to a widget"
+    print "http://git.gnome.org/browse/gtk+/plain/docs/reference/gtk/images/"
+    print not_mapped
 
     pool = Pool(20)
     for key, data in pool.imap_unordered(fetch, mapping.items()):
