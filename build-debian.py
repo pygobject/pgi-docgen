@@ -58,6 +58,7 @@ BLACKLIST = [
     "Meta-3.0",
     "Meta-Muffin.0",
     "libisocodes-1.2.1",
+    "JavaScriptCore-1.0",
 
     # criticals.. better skip
     "Gwibber-0.1",
@@ -123,7 +124,7 @@ BUILD = ['AccountsService-1.0', 'Anjuta-3.0',
 "GrlPls-0.2", "Guestfs-1.0", "HarfBuzz-0.0", 
 "InputPad-1.0", "Keybinder-3.0", "LightDM-1", 
 "MateMenu-2.0", "MediaArt-1.0", "Midgard-10.05", "OsmGpsMap-1.0", "Totem-1.0", 
- "Uhm-0.0", "AppStream-0.7",
+ "Uhm-0.0", "AppStream-0.7", "AppStreamGlib-1.0",
 "CDesktopEnums-3.0", "CMenu-3.0", "CinnamonDesktop-3.0", "ModemManager-1.0", 
 "Evd-0.1", "Cattle-1.0", "GCab-1.0", 
 "GPaste-1.0", "GVnc-1.0", "GVncPulse-1.0", "Ggit-1.0", "GtkVnc-2.0", 
