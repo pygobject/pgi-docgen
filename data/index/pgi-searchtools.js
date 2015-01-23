@@ -179,32 +179,18 @@ var Search = {
 
         var lower_text = text.toLowerCase();
         var lower_part = part.toLowerCase();
-        var score = 0;
 
-        // it's in there
-        if(lower_text.indexOf(lower_part) < 0)
+        // it's not in there
+        if(lower_text.indexOf(lower_part) == -1)
             return -1;
 
-        // it's also in there without lower casing
-        if(text.indexOf(part) != -1)
-            score++;
+        // prefer more matching text
+        var lower_count = lower_text.split(lower_part).length - 1;
+        score = (lower_count * part.length) / text.length;
 
-        // it's at the beginning
-        if(lower_text.indexOf(lower_part) == 0)
-            score++;
-
-        // it matches a part completely
-        if (lower_text.length == lower_part.length)
-            score++;
-        else if(lower_text.indexOf("." + lower_part + ".") != -1)
-            score++;
-        else {
-            var lastIndex = lower_text.length - (lower_part + 1);
-            if(lower_text.indexOf(lower_part + ".") == 0)
-                score++;
-            else if(lower_text.indexOf("." + lower_part) == lastIndex)
-                score++;
-        }
+        // prefer when it starts a part (either beginning or afer a ".")
+        if(("." + lower_text).indexOf("." + lower_part) != -1)
+            score *= 2;
 
         return score;
     };
