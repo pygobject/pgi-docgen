@@ -179,9 +179,11 @@ class ModuleGenerator(util.Generator):
                     props = repo.parse_properties(obj)
                     class_gen.add_properties(obj, props)
 
-                    if namespace == "Gtk":
-                        props = repo.parse_child_properties(obj)
-                        class_gen.add_child_properties(obj, props)
+                    props = repo.parse_child_properties(obj)
+                    class_gen.add_child_properties(obj, props)
+
+                    props = repo.parse_style_properties(obj)
+                    class_gen.add_style_properties(obj, props)
 
                     sigs = repo.parse_signals(obj)
                     class_gen.add_signals(obj, sigs)

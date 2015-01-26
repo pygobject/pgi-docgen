@@ -42,6 +42,31 @@ def get_child_properties(cls):
     return names.values()
 
 
+def get_style_properties(cls):
+    """Returns a list of GParamSpecs or an empty list"""
+
+    from pgi.repository import Gtk
+
+    if not issubclass(cls, Gtk.Widget):
+        return []
+
+    def get_props(cls):
+        class_struct = cls._get_class_struct(Gtk.WidgetClass)
+        return class_struct.list_style_properties()
+
+    # only get properties the base classes don't have
+    all_props = get_props(cls)
+    names = dict((p.name, p) for p in all_props)
+
+    for base in fake_mro(cls)[1:]:
+        if not issubclass(base, Gtk.Widget):
+            break
+        for p in get_props(base):
+            names.pop(p.name, None)
+
+    return names.values()
+
+
 def iter_public_attr(obj):
     for attr in sorted(dir(obj)):
         if attr.startswith("_"):

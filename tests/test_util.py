@@ -11,7 +11,7 @@ import unittest
 from pgidocgen.util import is_staticmethod, is_classmethod, is_normalmethod
 from pgidocgen.util import is_method_owner, is_fundamental, is_object
 from pgidocgen.util import instance_to_rest, get_child_properties
-from pgidocgen.util import fake_subclasses
+from pgidocgen.util import fake_subclasses, get_style_properties
 
 
 class TUtil(unittest.TestCase):
@@ -106,6 +106,13 @@ class TUtil(unittest.TestCase):
         self.assertEqual(len(get_child_properties(Gtk.ActionBar)), 2)
         self.assertEqual(len(get_child_properties(Gtk.Box)), 5)
         self.assertFalse(get_child_properties(Gtk.Statusbar))
+
+    def test_style_properties(self):
+        from pgi.repository import Gtk
+
+        self.assertEqual(len(get_style_properties(Gtk.Paned)), 1)
+        self.assertEqual(len(get_style_properties(Gtk.Widget)), 17)
+        self.assertEqual(len(get_style_properties(Gtk.TreeView)), 11)
 
     def test_fake_subclasses(self):
         from pgi.repository import Gtk
