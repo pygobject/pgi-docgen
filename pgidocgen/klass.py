@@ -189,7 +189,7 @@ Child Properties
             methods = self._methods.get(cls, [])
 
             def method_sort_key(m):
-                return not m.is_vfunc, not m.is_static, m.name
+                return m.is_vfunc, not m.is_static, m.name
 
             for method in sorted(methods, key=method_sort_key):
                 code = method.code
