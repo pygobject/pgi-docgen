@@ -1,71 +1,27 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <title>500 Internal server error - Gitorious</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="/dist/bootstrap/css/bootstrap.min.css?1383058286" rel="stylesheet" type="text/css">
-    <link href="/dist/bootstrap/css/bootstrap-responsive.min.css?1383058286" rel="stylesheet" type="text/css">
-    <link href="/dist/css/gitorious3.min.css?1383058286" rel="stylesheet" type="text/css">
-  </head>
-  <body>
-    <div class="gts-masthead navbar">
-      <div class="navbar-inner">
-        <div class="container">
-          <a class="gts-logo" href="/"><img src="/dist/images/gitorious2013.png" alt="Gitorious" title="Gitorious"></a>
-        </div>
-      </div>
-    </div>
-    <div class="container gts-body">
-      <br>
-      <h1>Sorry, something went wrong</h1>
-      <p>
-        Gitorious encountered an server error. We are automatically notified
-        of errors and will look into it. If the error persists beyond what's
-        reasonable, <a href="/contact">let us know</a>.
-      </p>
-    </div>
-    <div class="footer">
-      <div class="container">
-        <p class="pull-right gts-powered-by">
-          <a href="http://getgitorious.com">
-            <img alt="Powered by Gitorious" src="/dist/images/powered-by.png" title="Powered by Gitorious">
-          </a>
-        </p>
-        <p>
-          Gitorious is free software licensed under the
-          <a href="http://www.gnu.org/licenses/agpl-3.0.html">GNU Affero General Public License (AGPL)</a>
-          unless noted otherwise.
-        </p>
-        <div class="row">
-          <div class="span2">
-            <ul>
-              <li><a href="/about">About Gitorious</a></li>
-              <li><a href="http://groups.google.com/group/gitorious">Discussion group</a></li>
-            </ul>
-          </div>
-          <div class="span2">
-            <ul>
-              <li><a href="http://blog.gitorious.org">Blog</a></li>
-              <li><a href="http://en.gitorious.org/tos">Terms of Service</a></li>
-            </ul>
-          </div>
-          <div class="span2">
-            <ul>
-              <li><a href="http://en.gitorious.org/privacy_policy">Privacy Policy</a></li>
-            </ul>
-          </div>
-        </div>
-        <p class="gts-com-plug">
-          <a href="http://gitorious.com">Professional Gitorious services</a> -
-          Git hosting at your company, custom features, support and more.
-          <a href="http://gitorious.com">gitorious.com</a>.
-        </p>
-      </div>
-    </div>
-    <script data-gts-env-analytics-account="UA-52238-3"
-            data-gts-env-analytics-domain-name=".gitorious.org">
-    </script>
-    <script src="/dist/js/gitorious3.min.js?1371717365"></script>
-  </body>
-</html>
+<Project xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+         xmlns:foaf="http://xmlns.com/foaf/0.1/"
+         xmlns="http://usefulinc.com/ns/doap#">
+
+  <name xml:lang="en">PackageKit</name>
+  <shortdesc xml:lang="en">PackageKit package manager framework</shortdesc>
+  <description xml:lang="en">
+    PackageKit is a D-Bus abstraction layer that allows the session user to
+    manage packages in a secure way using a cross-distro, cross-architecture API.
+  </description>
+
+  <homepage rdf:resource="http://www.packagekit.org/" />
+  <mailing-list rdf:resource="http://lists.freedesktop.org/mailman/listinfo/packagekit/" />
+
+  <maintainer>
+    <foaf:Person>
+      <foaf:name>Richard Hughes</foaf:name>
+      <foaf:homepage rdf:resource="http://www.hughsie.com/" />
+    </foaf:Person>
+  </maintainer>
+
+  <license rdf:resource="http://www.gnu.org/licenses/gpl-2.0.txt" />
+  <bug-database rdf:resource="http://bugzilla.freedesktop.org/" />
+  <screenshots rdf:resource="http://www.packagekit.org/pk-screenshots.html#gnome" />
+
+</Project>

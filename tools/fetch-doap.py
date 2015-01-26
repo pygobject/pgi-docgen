@@ -155,7 +155,7 @@ LIBS = {
         ['Wnck-3.0'],
     'https://git.gnome.org/browse/libzapojit/plain/libzapojit.doap':
         ['Zpj-0.0'],
-    'https://gitorious.org/packagekit/packagekit/raw/PackageKit.doap':
+    'https://raw.githubusercontent.com/hughsie/PackageKit/master/PackageKit.doap':
         ['PackageKitGlib-1.0', 'PackageKitPlugin-1.0'],
     'https://git.gnome.org/browse/pango/plain/pango.doap':
         ['PangoCairo-1.0', 'PangoXft-1.0', 'PangoFT2-1.0', 'Pango-1.0'],
@@ -189,6 +189,8 @@ def fetch(args):
     url, data = args
     print url
     resp = requests.get(url)
+    if resp.status_code != requests.codes.ok:
+        raise Exception(url)
     return resp.content, data
 
 

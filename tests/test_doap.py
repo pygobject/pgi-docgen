@@ -18,4 +18,4 @@ class TDoap(unittest.TestCase):
 
         for entry in os.listdir(os.path.join("data", "doap")):
             name, version = entry.rsplit(".", 1)[0].split("-")
-            self.assertTrue(get_project_summary(".", name, version))
+            self.assertTrue(get_project_summary(".", name, version), msg=name)
