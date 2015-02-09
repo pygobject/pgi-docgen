@@ -67,7 +67,7 @@
     <div class="wy-side-nav-search">
         <a href="main.html" target="Content" class="fa fa-home">Python GI API Reference</a>
 
-        <div role="search">
+        <div role="search" id="search-box" style="display:none">
         <table>
         <tr>
         <td width="100%">
@@ -84,7 +84,9 @@
 
     <div class="wy-menu wy-menu-vertical" style="text-align:center">
         <ul id="search-results">
-            <li><a>Loading...</a></li>
+            {% for url, name in results %}
+                <li><a href="{{ url }}" target="Content">{{ name }}</a></li>
+            {% endfor %}
         </ul>
     </div>
 
@@ -108,6 +110,8 @@
     })();
 
     jQuery(function () {
+        $('#search-box').show();
+
         $('#settings-button').click(function(){
             $(this).toggleClass("down");
             alert("not implemented..");

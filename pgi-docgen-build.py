@@ -26,6 +26,8 @@ import threading
 import shutil
 import tarfile
 
+import jinja2
+
 
 OPTIPNG = "optipng"
 
@@ -183,19 +185,6 @@ def main(argv):
     except OSError:
         pass
 
-    if not devhelp:
-        index_path = os.path.join("data", "index")
-        for entry in os.listdir(index_path):
-            src = os.path.join(index_path, entry)
-            dst = os.path.join(target_path, entry)
-            shutil.copyfile(src, dst)
-
-        static_target = os.path.join(target_path, "_static")
-        if not os.path.exists(static_target):
-            shutil.copytree(
-                os.path.join("data", "theme", "static"),
-                static_target)
-
     # build bottom up
     done = set()
     num_to_build = len(to_build)
@@ -243,6 +232,26 @@ def main(argv):
     if not devhelp:
         from pgidocgen.mergeindex import merge
         merge(target_path, include_terms=False, exclude_old=True)
+
+        index_path = os.path.join("data", "index")
+        for entry in os.listdir(index_path):
+            src = os.path.join(index_path, entry)
+            dst = os.path.join(target_path, entry)
+            shutil.copyfile(src, dst)
+
+        done_sorted = sorted(done, key=lambda d: d.name.lower())
+        results = [(d.name + "/index.html", d.name) for d in done_sorted]
+        with open(os.path.join(index_path, "sidebar.html"), "rb") as h:
+            data = h.read()
+        with open(os.path.join(target_path, "sidebar.html"), "wb") as t:
+            env = jinja2.Environment().from_string(data)
+            t.write(env.render(results=results))
+
+        static_target = os.path.join(target_path, "_static")
+        if not os.path.exists(static_target):
+            shutil.copytree(
+                os.path.join("data", "theme", "static"),
+                static_target)
 
     # add symlinks for the old layout
     if not devhelp:

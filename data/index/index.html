@@ -1,28 +1,35 @@
 <html>
 <head>
-
+<meta charset="UTF-8">
 <title>Python GI API Reference</title>
 
 <script>
 
 var main_page = "main.html";
 
-
 function applyHash() {
     // takes the current hash loads the path into the content frame
 
     var hash = window.location.hash;
     var elm = document.getElementById('Content');
+    var new_src;
 
     if(hash) {
         // needed for webkit
         if(!endsWith(hash, ".html") && !endsWith(hash, "/") && hash.indexOf("#", 1) < 0)
             hash += "/";
 
-        elm.src = hash.substring(1);
+        new_src = hash.substring(1);
     } else {
-        elm.src = main_page;
+        new_src= main_page;
     }
+
+    // create a dummy element so we can compare the URLs; prevents
+    // flashing on chrome when the same url is set twice on start
+    var dummy = document.createElement("a");
+    dummy.href = new_src;
+    if(dummy.href != elm.src)
+        elm.src = new_src;
 }
 
 
@@ -46,6 +53,8 @@ function endsWith(str, suffix) {
 function setTopHash(hash) {
     var main_hash = "#" + main_page;
 
+    // we can skip adding index.html when online since the http server
+    // will forward us there anyway
     var index_suffix = "index.html";
     if(window.location.protocol != "file:" && endsWith(hash, index_suffix)) {
         hash = hash.slice(0, hash.length - index_suffix.length - 1);
@@ -66,6 +75,13 @@ function setTopHash(hash) {
 
 
 window.onhashchange = applyHash
+
+function onFrameReady() {
+    applyHash();
+
+}
+
+document.onreadystatechange = onFrameReady;
 
 
 function frameOnLoad() {
@@ -91,8 +107,8 @@ function frameOnLoad() {
 </script>
 
 </head>
-<frameset cols="300px,*" frameborder="1" bordercolor="#E2E2E2" BORDER="5" onload="applyHash();">
-  <frame src="sidebar.html">
-  <frame id="Content" name="Content" onload="frameOnLoad();">
-</frameset>
+    <frameset cols="300px,*" frameborder="1" bordercolor="#E2E2E2" BORDER="5" onload="applyHash();">
+        <frame src="sidebar.html">
+        <frame src="main.html" id="Content" name="Content" onload="frameOnLoad();">
+    </frameset>
 </html>
