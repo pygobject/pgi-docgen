@@ -158,12 +158,15 @@ class FuncSignature(object):
             assert full_name.split(".")[-1] == self.name
 
         docs = []
-        for key, value in self.args:
+        for i, (key, value) in enumerate(self.args):
             # strip * from *args
             key = key.lstrip("*")
             param_key = full_name + "." + key
-            text = doc_repo.lookup_parameter_docs(
-                param_key, current=current, signal=signal)
+            if signal and i == 0:
+                text = "The object which received the signal"
+            else:
+                text = doc_repo.lookup_parameter_docs(
+                    param_key, current=current, signal=signal)
             key = escape_rest(key)
             docs.append(":param %s:\n%s\n" % (key, indent(text)))
             docs.append(":type %s: %s" % (key, arg_to_class_ref(value)))
