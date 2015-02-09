@@ -20,4 +20,4 @@ touch  .nojekyll
 git add .
 git commit -m "update"
 git remote add origin https://github.com/lazka/pgi-docs.git
-git push --force
+git push --force --set-upstream origin gh-pages
