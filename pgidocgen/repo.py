@@ -12,7 +12,7 @@ from gi.repository import GObject
 
 from .namespace import get_namespace
 from . import util
-from .util import unindent, gtype_to_rest, escape_identifier
+from .util import unindent, escape_identifier
 
 from .funcsig import FuncSignature, py_type_to_class_ref, get_type_name
 from .parser import docstring_to_rest
@@ -373,7 +373,7 @@ class %s(%s):
                 default_value = default_value.get_value()
             value_desc = util.instance_to_rest(
                 spec.value_type.pytype, default_value)
-            type_desc = gtype_to_rest(spec.value_type)
+            type_desc = py_type_to_class_ref(spec.value_type.pytype)
             readable = spec.flags & GObject.ParamFlags.READABLE
             writable = spec.flags & GObject.ParamFlags.WRITABLE
             construct = spec.flags & GObject.ParamFlags.CONSTRUCT
@@ -412,7 +412,7 @@ class %s(%s):
                 default_value = default_value.get_value()
             value_desc = util.instance_to_rest(
                 spec.value_type.pytype, default_value)
-            type_desc = gtype_to_rest(spec.value_type)
+            type_desc = py_type_to_class_ref(spec.value_type.pytype)
             readable = spec.flags & GObject.ParamFlags.READABLE
             writable = spec.flags & GObject.ParamFlags.WRITABLE
             construct = spec.flags & GObject.ParamFlags.CONSTRUCT
@@ -451,7 +451,7 @@ class %s(%s):
             name = spec.name
             value_desc = util.instance_to_rest(
                 spec.value_type.pytype, spec.default_value)
-            type_desc = gtype_to_rest(spec.value_type)
+            type_desc = py_type_to_class_ref(spec.value_type.pytype)
             readable = spec.flags & GObject.ParamFlags.READABLE
             writable = spec.flags & GObject.ParamFlags.WRITABLE
             construct = spec.flags & GObject.ParamFlags.CONSTRUCT

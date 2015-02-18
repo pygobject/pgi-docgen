@@ -105,6 +105,14 @@ class TRepository(unittest.TestCase):
         self.assertTrue(repo.parse_properties(Gtk.Button))
         self.assertTrue(repo.parse_signals(Gtk.Button))
 
+    def test_props_gstrv(self):
+        from pgi.repository import GUdev
+
+        repo = Repository("GUdev", "1.0")
+        GUdev.Client.props.subsystems
+        self.assertEqual(repo.parse_properties(GUdev.Client)[0].type_desc,
+                         "[:obj:`str`]")
+
     def test_child_props(self):
         from pgi.repository import Gtk
 
