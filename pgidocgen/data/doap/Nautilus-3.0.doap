@@ -6,6 +6,7 @@
 
   <name xml:lang="en">Nautilus</name>
   <shortdesc xml:lang="en">Default file manager for GNOME</shortdesc>
+  <description>Default file manager for GNOME</description>
   <homepage rdf:resource="https://wiki.gnome.org/Apps/Nautilus" />
   <mailing-list rdf:resource="http://mail.gnome.org/mailman/listinfo/nautilus-list" />
   <download-page rdf:resource="http://download.gnome.org/sources/nautilus/" />
@@ -46,6 +47,13 @@
       <foaf:name>Cosimo Cecchi</foaf:name>
       <foaf:mbox rdf:resource="mailto:cosimoc@gnome.org" />
       <gnome:userid>cosimoc</gnome:userid>
+    </foaf:Person>
+  </maintainer>
+  <maintainer>
+    <foaf:Person>
+      <foaf:name>Carlos Soriano Sanchez</foaf:name>
+      <foaf:mbox rdf:resource="mailto:csoriano@gnome.org" />
+      <gnome:userid>csoriano</gnome:userid>
     </foaf:Person>
   </maintainer>
 </Project>
