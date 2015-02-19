@@ -28,6 +28,9 @@ import tarfile
 
 import jinja2
 
+from pgidocgen.mergeindex import merge
+from pgidocgen import BASEDIR
+
 
 OPTIPNG = "optipng"
 
@@ -230,10 +233,9 @@ def main(argv):
     print "Creating index + search..."
 
     if not devhelp:
-        from pgidocgen.mergeindex import merge
         merge(target_path, include_terms=False, exclude_old=True)
 
-        index_path = os.path.join("data", "index")
+        index_path = os.path.join(BASEDIR, "data", "index")
         for entry in os.listdir(index_path):
             src = os.path.join(index_path, entry)
             dst = os.path.join(target_path, entry)
@@ -250,7 +252,7 @@ def main(argv):
         static_target = os.path.join(target_path, "_static")
         if not os.path.exists(static_target):
             shutil.copytree(
-                os.path.join("data", "theme", "static"),
+                os.path.join(BASEDIR, "data", "theme", "static"),
                 static_target)
 
     # add symlinks for the old layout

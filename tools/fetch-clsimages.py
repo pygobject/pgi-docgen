@@ -15,9 +15,10 @@ import pgi
 pgi.require_version("Gtk", "3.0")
 
 from pgi.repository import Gtk
+from pgidocgen import BASEDIR
 
 
-DESTINATION = os.path.join("data", "clsimages", "Gtk-3.0")
+DESTINATION = os.path.join(BASEDIR, "data", "clsimages", "Gtk-3.0")
 
 GTK_MAPPING = {
     "Gtk.Button": "button",

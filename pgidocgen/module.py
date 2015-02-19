@@ -23,7 +23,7 @@ from .callback import CallbackGenerator
 from .doap import get_project_summary
 from .hierarchy import HierarchyGenerator
 from .mapping import MappingGenerator
-from . import util
+from . import util, BASEDIR
 from .namespace import get_namespace
 
 
@@ -321,16 +321,17 @@ DEVHELP_PREFIX = %r
 
         # copy the theme, conf.py
         dest_conf = os.path.join(dir_, "conf.py")
-        shutil.copy(os.path.join("data", self.CONF_IN), dest_conf)
+        shutil.copy(os.path.join(BASEDIR, "data", self.CONF_IN), dest_conf)
 
         theme_dest = os.path.join(dir_, "_" + self.THEME_DIR)
-        shutil.copytree(os.path.join("data", self.THEME_DIR), theme_dest)
+        shutil.copytree(
+            os.path.join(BASEDIR, "data", self.THEME_DIR), theme_dest)
 
         ext_dest = os.path.join(dir_, "_" + self.EXT_DIR)
-        shutil.copytree(os.path.join("data", self.EXT_DIR), ext_dest)
+        shutil.copytree(os.path.join(BASEDIR, "data", self.EXT_DIR), ext_dest)
 
         module_id = "%s-%s" % (namespace, version)
-        clsimg_src = os.path.join("data", self.CLSIMG_DIR, module_id)
+        clsimg_src = os.path.join(BASEDIR, "data", self.CLSIMG_DIR, module_id)
         if os.path.exists(clsimg_src):
             clsimg_dest = os.path.join(dir_, "_" + self.CLSIMG_DIR)
             shutil.copytree(clsimg_src, clsimg_dest)

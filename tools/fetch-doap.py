@@ -12,6 +12,7 @@ from multiprocessing import Pool
 import requests
 
 from pgidocgen.util import get_gir_files
+from pgidocgen import BASEDIR
 
 
 LIBS = {
@@ -205,5 +206,6 @@ if __name__ == '__main__':
     pool = Pool(20)
     for content, ns_list in pool.imap_unordered(fetch, LIBS.items()):
         for ns in ns_list:
-            with open(os.path.join('data', 'doap', ns) + ".doap", 'wb') as h:
+            path = os.path.join(BASEDIR, 'data', 'doap', ns) + ".doap"
+            with open(path, 'wb') as h:
                 h.write(content)
