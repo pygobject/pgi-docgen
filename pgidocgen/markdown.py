@@ -25,6 +25,8 @@ def _md_tag(tag):
                 l.append("<listitem>%s</listitem>" % _md_text(sub))
         l.append("</itemizedlist>")
         return l
+    elif tag.name == "code":
+        return ["<literal>%s</literal>" % _md_text(tag)]
     elif tag.name == "h1":
         text = _md_text(tag)
         return ["<title>%s</title>" % text]

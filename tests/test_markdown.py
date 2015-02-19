@@ -28,6 +28,8 @@ documentation ...
 
 ### afaf ###
 
+Here is some `inline code`
+
 Documentation:
 
 - list item 1
@@ -52,6 +54,11 @@ documentation ...
 <subtitle>adsad</subtitle>
 
 <subtitle>afaf</subtitle>
+
+<para>
+Here is some 
+<literal>inline code</literal>
+</para>
 
 <para>
 Documentation:
@@ -81,6 +88,11 @@ adsad
 afaf
 
 
+Here is some 
+``inline code``
+
+
+
 Documentation\:
 
 
@@ -96,5 +108,6 @@ Even more docs.
 """
 
         docbook = markdown2docbook(md_example)
-        self.assertEqual(docbook, expected)
-        self.assertEqual(docstring_to_rest({}, "Foo.Bar", docbook), rst_expected)
+        self.assertEqual(docbook, expected, msg=docbook)
+        rest = docstring_to_rest({}, "Foo.Bar", docbook)
+        self.assertEqual(rest, rst_expected, msg=rest)
