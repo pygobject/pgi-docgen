@@ -9,6 +9,7 @@ import os
 import unittest
 
 from pgidocgen.doap import get_project_summary
+from pgidocgen import BASEDIR
 
 
 class TDoap(unittest.TestCase):
@@ -16,6 +17,6 @@ class TDoap(unittest.TestCase):
     def test_doap(self):
         self.assertFalse(get_project_summary(".", "Nope", "99.0"))
 
-        for entry in os.listdir(os.path.join("data", "doap")):
+        for entry in os.listdir(os.path.join(BASEDIR, "data", "doap")):
             name, version = entry.rsplit(".", 1)[0].split("-")
             self.assertTrue(get_project_summary(".", name, version), msg=name)

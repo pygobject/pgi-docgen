@@ -1,0 +1,9 @@
+include pgidocgen/*.py
+include MANIFEST.in
+include *.py
+include *.sh
+include tests/*.py
+include tools/*.py
+include tools/*.sh
+include README.rst
+recursive-include pgidocgen/data *
