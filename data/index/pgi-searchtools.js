@@ -253,12 +253,11 @@ var Search = {
                 is_sig_prop = true
             }
 
-            // take class name from fullname and add to typename
+            // Move the type name to the front
             if(is_sig_prop) {
                 var start = fullname.indexOf("(");
                 var cls = fullname.slice(start + 1, fullname.length - 1);
-                type_name = cls + " " + type_name;
-                fullname = fullname.slice(0, start);
+                fullname = cls + fullname.slice(0, start);
             }
 
             results.push([
