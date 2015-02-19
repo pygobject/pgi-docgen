@@ -8,7 +8,8 @@
 
 import unittest
 
-from pgidocgen.markdown import markdown2rest
+from pgidocgen.markdown import markdown2docbook
+from pgidocgen.repo import docstring_to_rest
 
 
 class TMarkdown(unittest.TestCase):
@@ -36,28 +37,64 @@ Even more docs.\
 """
 
         expected = """\
+<para>
 identifier:
+</para>
+
+<para>
+documentation ...
+</para>
+
+<title>Height-for-width Geometry Management</title>
+
+<title>A level-one header with a  <ulink url="/url">link</ulink>  and  <emphasis>emphasis</emphasis></title>
+
+<subtitle>adsad</subtitle>
+
+<subtitle>afaf</subtitle>
+
+<para>
+Documentation:
+</para>
+
+<itemizedlist>
+<listitem>list item 1</listitem>
+<listitem>list item 2  <ulink url="/url">link</ulink></listitem>
+</itemizedlist>
+
+<para>
+Even more docs.
+</para>\
+"""
+
+        rst_expected = """
+identifier\:
+
+
 
 documentation ...
 
+
 Height-for-width Geometry Management
-====================================
-
-A level-one header with a  `link </url>`__  and  *emphasis*
-===========================================================
-
+A level-one header with alinkandemphasis
 adsad
------
-
 afaf
-^^^^
 
-Documentation:
+
+Documentation\:
+
+
+
 
 * list item 1
-* list item 2  `link </url>`__
+* list item 2link
 
-Even more docs.\
+
+
+
+Even more docs.
 """
 
-        self.assertEqual(markdown2rest(md_example), expected)
+        docbook = markdown2docbook(md_example)
+        self.assertEqual(docbook, expected)
+        self.assertEqual(docstring_to_rest({}, "Foo.Bar", docbook), rst_expected)

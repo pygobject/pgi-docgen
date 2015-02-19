@@ -15,26 +15,27 @@ def _md_tag(tag):
     if not isinstance(tag, Tag):
         return [tag.string.strip("\n")]
     if tag.name == "p":
-        return _md_list(tag)
+        return ["<para>"] + _md_list(tag) + ["</para>"]
     elif tag.name == "a":
-        return ["`%s <%s>`__" % (_md_text(tag), tag["href"])]
+        return ['<ulink url="%s">%s</ulink>' % (tag["href"], _md_text(tag))]
     elif tag.name == "ul":
-        l = []
+        l = ["<itemizedlist>"]
         for sub in tag:
             if isinstance(sub, Tag):
-                l.append("* %s" % _md_text(sub))
+                l.append("<listitem>%s</listitem>" % _md_text(sub))
+        l.append("</itemizedlist>")
         return l
     elif tag.name == "h1":
         text = _md_text(tag)
-        return [text, "=" * len(text)]
+        return ["<title>%s</title>" % text]
     elif tag.name == "h2":
         text = _md_text(tag)
-        return [text, "-" * len(text)]
+        return ["<subtitle>%s</subtitle>" % text]
     elif tag.name == "h3":
         text = _md_text(tag)
-        return [text, "^" * len(text)]
+        return ["<subtitle>%s</subtitle>" % text]
     elif tag.name == "em":
-        return ["*%s*" % _md_text(tag)]
+        return ["<emphasis>%s</emphasis>" % _md_text(tag)]
     return [_md_text(tag)]
 
 
@@ -49,7 +50,7 @@ def _md_list(soup):
     return out
 
 
-def markdown2rest(md):
+def markdown2docbook(md):
     html = markdown.markdown(md, extensions=['attr_list'])
     soup = BeautifulSoup(html)
     return "\n".join(_md_list(soup))
