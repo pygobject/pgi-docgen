@@ -20,9 +20,8 @@ def get_type_name(type_):
     """
 
     if type_ is None:
-        raise TypeError
-
-    if isinstance(type_, basestring):
+        return ""
+    elif isinstance(type_, basestring):
         return type_
     elif isinstance(type_, list):
         assert len(type_) == 1
