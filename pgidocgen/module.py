@@ -27,6 +27,26 @@ from . import util, BASEDIR
 from .namespace import get_namespace
 
 
+_template = util.get_template("""\
+{{ "=" * title|length }}
+{{ title }}
+{{ "=" * title|length }}
+
+{{ project_summary }}
+
+API
+---
+
+.. toctree::
+    :maxdepth: 1
+
+    {% for name in names %}
+    {{ name }}
+    {% endfor %}
+
+""")
+
+
 def _import_dependency(fobj, namespace, version):
     """Import the module in the generated code"""
 
@@ -251,27 +271,20 @@ class ModuleGenerator(util.Generator):
         with open(os.path.join(sub_dir, "index.rst"),  "wb") as h:
 
             title = "%s %s" % (namespace, version)
-            h.write(util.make_rest_title(title) + "\n\n")
-
-            summary = get_project_summary(".", namespace, version)
-            h.write(summary.encode("utf-8") + "\n\n")
-
-            h.write(util.make_rest_title("API", "-") + "\n")
-
-            h.write("""
-.. toctree::
-    :maxdepth: 1
-
-""")
-
+            project_summary = get_project_summary(".", namespace, version)
+            names = []
             gens = [func_gen, cb_gen, class_gen, hier_gen, struct_gen,
                     union_gen, flags_gen, enums_gen, const_gen, map_gen]
             for gen in gens:
                 if gen.is_empty():
                     continue
                 for name in gen.get_names():
-                    h.write("    %s\n" % name)
+                    names.append(name)
                 gen.write(sub_dir, module)
+
+            text = _template.render(
+                title=title, project_summary=project_summary, names=names)
+            h.write(text.encode("utf-8"))
 
         module.close()
 

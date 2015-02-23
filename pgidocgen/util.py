@@ -13,6 +13,18 @@ import keyword
 import csv
 import cStringIO
 
+import jinja2
+
+
+_RST_ENV = jinja2.Environment(
+    trim_blocks=True, lstrip_blocks=True, undefined=jinja2.StrictUndefined)
+
+
+def get_template(source):
+    """Returns a jinja2 rst template"""
+
+    return _RST_ENV.from_string(source)
+
 
 _KWD_RE = re.compile("^(%s)$" % "|".join(keyword.kwlist))
 
@@ -378,7 +390,7 @@ def get_csv_line(values):
     h = cStringIO.StringIO()
     w = csv.writer(h, CSVDialect)
     w.writerow(encoded)
-    return h.getvalue().rstrip()
+    return h.getvalue().rstrip().decode("utf-8")
 
 
 def instance_to_rest(cls, inst):

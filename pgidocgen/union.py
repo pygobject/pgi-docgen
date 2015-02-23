@@ -11,7 +11,59 @@ from . import util
 from .fields import FieldsMixin
 
 
+_main_template = util.get_template("""\
+======
+Unions
+======
+
+.. toctree::
+    :maxdepth: 1
+
+{% for name in names %}
+    {{ name }}
+{% endfor %}
+
+""")
+
+
+_sub_template = util.get_template("""\
+{{ "=" * cls_name|length }}
+{{ cls_name }}
+{{ "=" * cls_name|length }}
+
+{{ field_table }}
+
+
+Methods
+-------
+
+{% if method_names %}
+.. autosummary::
+
+    {% for name in method_names %}
+        {{ name }}
+    {% endfor %}
+
+{% else %}
+None
+
+{% endif %}
+
+Details
+-------
+
+.. autoclass:: {{ cls_name }}
+    {% if not is_base %}
+    :show-inheritance:
+    {% endif %}
+    :members:
+    :undoc-members:
+
+""")
+
+
 class UnionGenerator(util.Generator, FieldsMixin):
+
     def __init__(self):
         self._unions = {}
         self._methods = {}
@@ -39,13 +91,9 @@ class UnionGenerator(util.Generator, FieldsMixin):
     def write(self, dir_, module_fileobj):
         sub_dir = os.path.join(dir_, "unions")
         path = os.path.join(sub_dir, "index.rst")
-
         os.mkdir(sub_dir)
 
-        unions = self._unions.keys()
-
-        def indent(c):
-            return "\n".join(["    %s" % l for l in c.splitlines()])
+        unions = sorted(self._unions.keys(), key=lambda x: x.__name__)
 
         # write the code
         for cls in unions:
@@ -56,68 +104,42 @@ class UnionGenerator(util.Generator, FieldsMixin):
             methods.sort(key=sort_func)
 
             for obj, code in methods:
-                module_fileobj.write(indent(code) + "\n")
+                module_fileobj.write(util.indent(code) + "\n")
 
-        index_handle = open(path, "wb")
-        index_handle.write(util.make_rest_title("Unions") + "\n\n")
+        # write rest
+        with open(path, "wb") as h:
+            names = [cls.__name__ for cls in unions]
+            text = _main_template.render(names=names)
+            h.write(text.encode("utf-8"))
 
-        # add classes to the index toctree
-        index_handle.write(".. toctree::\n    :maxdepth: 1\n\n")
-        for cls in sorted(unions, key=lambda x: x.__name__):
-            index_handle.write("""\
-    %s
-""" % cls.__name__)
+        for cls in self._unions:
+            methods = [m[0] for m in self._methods.get(cls, [])]
+            self._write_union(sub_dir, cls, methods)
 
-        for cls in unions:
-            h = open(os.path.join(sub_dir, cls.__name__) + ".rst", "wb")
-            name = cls.__module__ + "." + cls.__name__
-            title = name
-            h.write(util.make_rest_title(title, "=") + "\n")
+    def _write_union(self, sub_dir, cls, methods):
+        rst_path = os.path.join(sub_dir, cls.__name__) + ".rst"
 
-            # Fields
-            self.write_field_table(cls, h)
+        with open(rst_path, "wb") as h:
 
-            h.write("""
-Methods
--------
+            def get_name(cls):
+                return cls.__module__ + "." + cls.__name__
 
-""")
+            cls_name = get_name(cls)
+            field_table = self.get_field_table(cls)
 
-            methods = self._methods.get(cls, [])
-            if not methods:
-                h.write("None\n\n")
-            else:
-                h.write(".. autosummary::\n\n")
+            def get_method_name(cls, obj):
+                return get_name(cls) + "." + obj.__name__
 
             # sort static methods first, then by name
             def sort_func(e):
-                return util.is_normalmethod(e[0]), e[0].__name__
+                return util.is_normalmethod(e), e.__name__
+
             methods.sort(key=sort_func)
-            for obj, code in methods:
-                h.write("    " + cls.__module__ + "." + cls.__name__ +
-                        "." + obj.__name__ + "\n")
+            method_names = [get_method_name(cls, obj) for obj in methods]
+            is_base = util.is_base(cls)
 
-            # Details
-            h.write("""
-Details
--------
+            text = _sub_template.render(
+                method_names=method_names, is_base=is_base,
+                field_table=field_table, cls_name=cls_name)
 
-""")
-
-            if util.is_base(cls):
-                h.write("""
-.. autoclass:: %s
-    :members:
-    :undoc-members:
-""" % name)
-            else:
-                h.write("""
-.. autoclass:: %s
-    :show-inheritance:
-    :members:
-    :undoc-members:
-""" % name)
-
-            h.close()
-
-        index_handle.close()
+            h.write(text.encode("utf-8"))

@@ -10,7 +10,30 @@ import os
 from . import util
 
 
+_template = util.get_template("""\
+=========
+Hierarchy
+=========
+
+{% for name, children in names recursive %}
+{{ ""|indent(loop.depth0 * 2, true) }}* :class:`{{ name }}`
+{% if children %}
+
+{{ loop(children) }}
+{% endif %}
+{% endfor %}
+
+{% if not names %}
+None
+{% endif %}
+
+""")
+
+
 def get_hierarchy(type_seq):
+    """Returns for a sequence of classes a recursive dict including
+    all their sub classes.
+    """
 
     def first_mro(obj):
         l = [obj]
@@ -29,30 +52,24 @@ def get_hierarchy(type_seq):
     return tree
 
 
-def to_rest_listing(hier):
+def to_names(hierarchy):
 
-    def get_reference(obj):
-        return ":class:`%s`" % (obj.__module__ + "." + obj.__name__)
+    def get_name(cls):
+        return cls.__module__ + "." + cls.__name__
 
-    lines = []
-    for cls, children in sorted(hier.items(), key=repr):
-        lines.append("* " + get_reference(cls))
-        subs = to_rest_listing(children)
-        if subs:
-            lines.append("")
-            lines.append(util.indent(subs, 2))
-            lines.append("")
-
-    return "\n".join(lines)
+    return sorted(
+            [(get_name(k), to_names(v)) for (k, v) in hierarchy.iteritems()])
 
 
 class HierarchyGenerator(util.Generator):
+
+    _FILENAME = "hierarchy"
 
     def __init__(self):
         self._classes = set()
 
     def get_names(self):
-        return ["hierarchy"]
+        return [self._FILENAME]
 
     def is_empty(self):
         return not bool(self._classes)
@@ -62,13 +79,10 @@ class HierarchyGenerator(util.Generator):
         self._classes.add(class_obj)
 
     def write(self, dir_, module_fileobj):
-        path = os.path.join(dir_, "hierarchy.rst")
+        path = os.path.join(dir_, "%s.rst" % self._FILENAME)
         hierarchy = get_hierarchy(self._classes)
+        names = to_names(hierarchy)
 
-        with open(path, "wb") as handle:
-            handle.write("""
-Hierarchy
-=========
-
-%s
-""" % to_rest_listing(hierarchy))
+        with open(path, "wb") as h:
+            text = _template.render(names=names)
+            h.write(text.encode("utf-8"))

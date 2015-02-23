@@ -10,7 +10,39 @@ import os
 from . import util
 
 
+_template = util.get_template(u"""\
+=========
+Callbacks
+=========
+
+{% if func_names %}
+.. autosummary::
+
+    {% for name in func_names %}
+    {{ name }}
+    {% endfor %}
+{% else %}
+None
+{% endif %}
+
+
+Details
+-------
+
+{% if func_names %}
+    {% for name in func_names %}
+.. autofunction:: {{ name }}
+
+    {% endfor %}
+{% else %}
+None
+{% endif %}
+""")
+
+
 class CallbackGenerator(util.Generator):
+
+    _FILENAME = "callbacks"
 
     def __init__(self):
         self._callbacks = {}
@@ -22,50 +54,25 @@ class CallbackGenerator(util.Generator):
         self._callbacks[obj] = code
 
     def get_names(self):
-        return ["callbacks"]
+        return [self._FILENAME]
 
     def is_empty(self):
         return not bool(self._callbacks)
 
     def write(self, dir_, module_fileobj):
-        path = os.path.join(dir_, "callbacks.rst")
-
-        funcs = self._callbacks.keys()
-        funcs.sort(key=lambda x: x.__name__)
-
-        handle = open(path, "wb")
-        handle.write("""\
-=========
-Callbacks
-=========
-
-""")
+        path = os.path.join(dir_, "%s.rst" % self._FILENAME)
 
         def get_name(func):
             return func.__module__ + "." + func.__name__
 
-        if not funcs:
-            handle.write("None\n\n")
-        else:
-            handle.write(".. autosummary::\n\n")
+        funcs = self._callbacks.keys()
+        funcs.sort(key=lambda x: x.__name__)
+        func_names = [get_name(f) for f in funcs]
 
-        for f in funcs:
-            handle.write("    " + get_name(f) + "\n")
-
-        handle.write("""
-Details
--------
-
-""")
-
-        for f in funcs:
-            handle.write("""
-.. autofunction:: %s
-
-""" % get_name(f))
+        with open(path, "wb") as h:
+            text = _template.render(func_names=func_names)
+            h.write(text.encode("utf-8"))
 
         for f in funcs:
             code = self._callbacks[f]
             module_fileobj.write(code + "\n")
-
-        handle.close()

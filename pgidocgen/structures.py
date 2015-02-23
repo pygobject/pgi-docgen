@@ -11,6 +11,56 @@ from . import util
 from .fields import FieldsMixin
 
 
+_main_template = util.get_template("""\
+==========
+Structures
+==========
+
+.. toctree::
+    :maxdepth: 1
+
+{% for name in names %}
+    {{ name }}
+{% endfor %}
+
+""")
+
+_sub_template = util.get_template("""\
+{{ "=" * cls_name|length }}
+{{ cls_name }}
+{{ "=" * cls_name|length }}
+
+{{ field_table }}
+
+
+Methods
+-------
+
+{% if method_names %}
+.. autosummary::
+
+    {% for name in method_names %}
+        {{ name }}
+    {% endfor %}
+
+{% else %}
+None
+
+{% endif %}
+
+Details
+-------
+
+.. autoclass:: {{ cls_name }}
+    {% if not is_base %}
+    :show-inheritance:
+    {% endif %}
+    :members:
+    :undoc-members:
+
+""")
+
+
 class StructGenerator(util.Generator, FieldsMixin):
 
     def __init__(self):
@@ -58,67 +108,40 @@ class StructGenerator(util.Generator, FieldsMixin):
             for obj, code in methods:
                 module_fileobj.write(indent(code) + "\n")
 
-        path = os.path.join(sub_dir, "index.rst")
-        index_handle = open(path, "wb")
-        index_handle.write(util.make_rest_title("Structures") + "\n\n")
+        structs = sorted(structs, key=lambda x: x.__name__)
 
-        # add classes to the index toctree
-        index_handle.write(".. toctree::\n    :maxdepth: 1\n\n")
-        for cls in sorted(structs, key=lambda x: x.__name__):
-            index_handle.write("""\
-    %s
-""" % cls.__name__)
+        path = os.path.join(sub_dir, "index.rst")
+        with open(path, "wb") as h:
+            struct_names = [s.__name__ for s in structs]
+            text = _main_template.render(names=struct_names)
+            h.write(text.encode("utf-8"))
 
         for cls in structs:
-            h = open(os.path.join(sub_dir, cls.__name__) + ".rst", "wb")
-            name = cls.__module__ + "." + cls.__name__
-            title = name
-            h.write(util.make_rest_title(title, "=") + "\n")
+            self._write_struct(sub_dir, cls)
 
-            # Fields
-            self.write_field_table(cls, h)
+    def _write_struct(self, sub_dir, cls):
+        rst_path = os.path.join(sub_dir, cls.__name__) + ".rst"
 
-            h.write("""
-Methods
--------
+        def get_name(cls):
+            return cls.__module__ + "." + cls.__name__
 
-""")
+        def get_method_name(cls, obj):
+            return get_name(cls) + "." + obj.__name__
 
-            methods = self._methods.get(cls, [])
-            if not methods:
-                h.write("None\n\n")
-            else:
-                h.write(".. autosummary::\n\n")
+        with open(rst_path, "wb") as h:
+            cls_name = get_name(cls)
+            is_base = util.is_base(cls)
+            field_table = self.get_field_table(cls)
 
+            methods = [e[0] for e in self._methods.get(cls, [])]
             # sort static methods first, then by name
             def sort_func(e):
-                return util.is_normalmethod(e[0]), e[0].__name__
+                return util.is_normalmethod(e), e.__name__
             methods.sort(key=sort_func)
-            for obj, code in methods:
-                h.write("    " + cls.__module__ + "." + cls.__name__ +
-                        "." + obj.__name__ + "\n")
 
-            # Details
-            h.write("""
-Details
--------
+            method_names = [get_method_name(cls, m) for m in methods]
 
-""")
-
-            if util.is_base(cls):
-                h.write("""
-.. autoclass:: %s
-    :members:
-    :undoc-members:
-""" % name)
-            else:
-                h.write("""
-.. autoclass:: %s
-    :show-inheritance:
-    :members:
-    :undoc-members:
-""" % name)
-
-            h.close()
-
-        index_handle.close()
+            text = _sub_template.render(
+                cls_name=cls_name, field_table=field_table,
+                method_names=method_names, is_base=is_base)
+            h.write(text.encode("utf-8"))

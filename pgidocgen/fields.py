@@ -8,6 +8,33 @@
 from . import util
 
 
+_template = util.get_template("""\
+
+.. _{{ cls_name }}.fields:
+
+Fields
+------
+
+{% if inherit_list %}
+{{ inherit_list }}
+{% endif %}
+
+{% if lines %}
+.. csv-table::
+    :header: "Name", "Type", "Access", "Description"
+    :widths: 20, 1, 1, 100
+
+    {% for line in lines %}
+    {{ line }}
+    {% endfor %}
+
+{% elif not inherit_list %}
+None
+
+{% endif %}
+""")
+
+
 class FieldsMixin(object):
 
     _fields = {}
@@ -17,35 +44,19 @@ class FieldsMixin(object):
 
         self._fields[cls_obj] = fields
 
-    def write_field_table(self, cls, h, inherit_list=None):
+    def get_field_table(self, cls, inherit_list=None):
         cls_name = cls.__module__ + "." + cls.__name__
-
-        h.write("""
-
-.. _%s.fields:
-
-Fields
-------
-
-""" % cls_name)
-
-        h.write(inherit_list or "")
 
         lines = []
         for field in self._fields.get(cls, []):
             prop = util.get_csv_line([
                 field.name, field.type_desc, field.flags_string, field.desc])
-            lines.append("    %s" % prop)
-        lines = "\n".join(lines)
+            lines.append( prop)
+        inherit_list = inherit_list or ""
 
-        if not lines and not inherit_list:
-            h.write("None\n")
+        text = _template.render(inherit_list=inherit_list, lines=lines,
+                                cls_name=cls_name)
+        return text
 
-        if lines:
-            h.write('''
-.. csv-table::
-    :header: "Name", "Type", "Access", "Description"
-    :widths: 20, 1, 1, 100
-
-%s
-''' % lines)
+    def write_field_table(self, cls, h, inherit_list=None):
+        h.write(self.get_field_table(cls, inherit_list).encode("utf-8"))

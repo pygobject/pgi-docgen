@@ -9,6 +9,41 @@ import os
 
 from . import util
 
+_template = util.get_template("""\
+=====
+Flags
+=====
+
+{% if entries %}
+    {% for name, is_base in entries %}
+* :class:`{{ name }}`
+    {% endfor %}
+
+{% else %}
+None
+
+{% endif %}
+
+Details
+-------
+
+{% if entries %}
+    {% for name, is_base in entries %}
+.. autoclass:: {{ name }}
+    {% if not is_base %}
+    :show-inheritance:
+    {% endif %}
+    :members:
+    :undoc-members:
+    :private-members:
+
+    {% endfor %}
+{% else %}
+None
+
+{% endif %}
+""")
+
 
 class FlagsGenerator(util.Generator):
 
@@ -32,48 +67,15 @@ class FlagsGenerator(util.Generator):
         classes = self._flags.keys()
         classes.sort(key=lambda x: x.__name__)
 
-        handle = open(path, "wb")
+        def get_name(cls):
+            return cls.__module__ + "." + cls.__name__
 
-        handle.write("""
-=====
-Flags
-=====
+        entries = [(get_name(cls), util.is_base(cls)) for cls in classes]
 
-""")
-
-        if not classes:
-            handle.write("None\n\n")
-
-        for cls in classes:
-            handle.write("* :class:`" + cls.__module__ + "." + cls.__name__ + "`\n")
-
-        handle.write("""
-Details
--------
-
-""")
-
-        for cls in classes:
-            if util.is_base(cls):
-                handle.write("""
-.. autoclass:: %s
-    :members:
-    :undoc-members:
-    :private-members:
-
-""" % (cls.__module__ + "." + cls.__name__))
-            else:
-                handle.write("""
-.. autoclass:: %s
-    :show-inheritance:
-    :members:
-    :undoc-members:
-    :private-members:
-
-""" % (cls.__module__ + "." + cls.__name__))
+        with open(path, "wb") as h:
+            text = _template.render(entries=entries)
+            h.write(text.encode("utf-8"))
 
         for cls in classes:
             code = self._flags[cls]
             module_fileobj.write(code + "\n")
-
-        handle.close()

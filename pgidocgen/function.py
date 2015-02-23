@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Copyright 2013 Christoph Reiter
 #
 # This library is free software; you can redistribute it and/or
@@ -8,6 +9,38 @@
 import os
 
 from . import util
+
+
+_template = util.get_template("""\
+=========
+Functions
+=========
+
+{% if names %}
+.. autosummary::
+
+    {% for name in names %}
+    {{ name }}
+    {% endfor %}
+
+{% else %}
+None
+
+{% endif %}
+
+Details
+-------
+
+{% if names %}
+    {% for name in names %}
+.. autofunction:: {{ name }}
+
+    {% endfor %}
+{% else %}
+None
+
+{% endif %}
+""")
 
 
 class FunctionGenerator(util.Generator):
@@ -29,23 +62,11 @@ class FunctionGenerator(util.Generator):
 
     def write(self, dir_, module_fileobj):
         path = os.path.join(dir_, "functions.rst")
-        handle = open(path, "wb")
-        handle.write("""
-Functions
-=========
-""")
+        func_names, func_codes = zip(*sorted(self._funcs.items()))
 
-        handle.write(".. autosummary::\n\n")
-        for name, code in sorted(self._funcs.items()):
-            handle.write("    %s\n" % name)
+        with open(path, "wb") as h:
+            text = _template.render(names=func_names)
+            h.write(text.encode("utf-8"))
 
-        handle.write("""
-Details
--------
-""")
-
-        for name, code in sorted(self._funcs.items()):
+        for code in func_codes:
             module_fileobj.write(code)
-            handle.write(".. autofunction:: %s\n\n" % name)
-
-        handle.close()

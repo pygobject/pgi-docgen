@@ -8,7 +8,37 @@
 
 import os
 
-from .util import Generator
+from .util import Generator, get_template
+
+
+_template = get_template("""\
+=========
+Constants
+=========
+
+{% if names %}
+    {% for name in names %}
+* :obj:`{{ name }}`
+    {% endfor %}
+
+{% else %}
+None
+
+{% endif %}
+
+Details
+-------
+
+{% if names %}
+    {% for name in names %}
+.. autodata:: {{ name }}
+
+    {% endfor %}
+{% else %}
+None
+
+{% endif %}
+""")
 
 
 class ConstantsGenerator(Generator):
@@ -34,35 +64,10 @@ class ConstantsGenerator(Generator):
         names = self._consts.keys()
         names.sort()
 
-        handle = open(path, "wb")
-        handle.write("""\
-=========
-Constants
-=========
-
-""")
-
-        for name in names:
-            handle.write("* :obj:`" + name + "`\n")
-
-        if not names:
-            handle.write("None\n")
-        handle.write("\n")
-
-        handle.write("""\
-Details
--------
-
-""")
-
-        for name in names:
-            handle.write("""
-.. autodata:: %s
-
-""" % name)
+        with open(path, "wb") as h:
+            text = _template.render(names=names)
+            h.write(text.encode("utf-8"))
 
         for name in names:
             code = self._consts[name]
             module_fileobj.write(code + "\n")
-
-        handle.close()
