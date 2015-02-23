@@ -353,10 +353,6 @@ class %s(%s):
 
     @cache_calls
     def parse_child_properties(self, obj):
-        # fast path..
-        if obj.__module__ != "Gtk":
-            return []
-
         if not (util.is_object(obj) or util.is_iface(obj)):
             return []
 
@@ -392,10 +388,6 @@ class %s(%s):
 
     @cache_calls
     def parse_style_properties(self, obj):
-        # fast path..
-        if obj.__module__ != "Gtk":
-            return []
-
         if not (util.is_object(obj) or util.is_iface(obj)):
             return []
 
