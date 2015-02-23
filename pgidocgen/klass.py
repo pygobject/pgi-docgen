@@ -7,7 +7,7 @@
 
 import os
 
-from . import util
+from . import util, BASEDIR
 from .fields import FieldsMixin
 from .util import get_csv_line, fake_subclasses, get_template
 
@@ -448,7 +448,7 @@ class ClassGenerator(util.Generator, FieldsMixin):
 
             # IMAGE
             image_path = os.path.join(
-                "data", "clsimages", "%s-%s" % (
+                BASEDIR, "data", "clsimages", "%s-%s" % (
                     self.repo.namespace, self.repo.version),
                 "%s.png" % cls_name)
             has_image = os.path.exists(image_path)
