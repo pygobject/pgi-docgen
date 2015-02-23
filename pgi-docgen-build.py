@@ -255,33 +255,6 @@ def main(argv):
                 os.path.join(BASEDIR, "data", "theme", "static"),
                 static_target)
 
-    # add symlinks for the old layout
-    if not devhelp:
-        old_api = os.path.join(target_path, "api")
-        try:
-            os.mkdir(old_api)
-        except OSError:
-            pass
-
-        for entry in os.listdir(target_path):
-            if entry.startswith("_") or not "-" in entry:
-                continue
-            dir_ = os.path.join(target_path, entry)
-            if not os.path.isdir(dir_):
-                continue
-
-            source = os.path.join("..", entry)
-            try:
-                # we need both names since the new modules
-                # use relative urls with the new names
-                target = os.path.join(old_api, entry.replace("-", "_"))
-                os.symlink(source, target)
-                target = os.path.join(old_api, entry)
-                os.symlink(source, target)
-            except Exception as e:
-                # unix only
-                pass
-
     if not devhelp and os.name != "nt":
         share_static(target_path)
 
