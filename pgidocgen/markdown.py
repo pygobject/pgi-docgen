@@ -13,7 +13,7 @@ from BeautifulSoup import BeautifulSoup, Tag
 
 def _md_tag(tag):
     if not isinstance(tag, Tag):
-        return [tag.string.strip("\n")]
+        return [tag.string]
     if tag.name == "p":
         return ["<para>"] + _md_list(tag) + ["</para>"]
     elif tag.name == "a":
@@ -23,6 +23,8 @@ def _md_tag(tag):
         for sub in tag:
             if isinstance(sub, Tag):
                 l.append("<listitem>%s</listitem>" % _md_text(sub))
+            else:
+                l.append(sub.string)
         l.append("</itemizedlist>")
         return l
     elif tag.name == "code":
@@ -42,7 +44,7 @@ def _md_tag(tag):
 
 
 def _md_text(tag):
-    return " ".join(filter(None, _md_list(tag)))
+    return "".join(_md_list(tag))
 
 
 def _md_list(soup):
@@ -55,4 +57,4 @@ def _md_list(soup):
 def markdown2docbook(md):
     html = markdown.markdown(md, extensions=['attr_list'])
     soup = BeautifulSoup(html)
-    return "\n".join(_md_list(soup))
+    return "".join(_md_list(soup))

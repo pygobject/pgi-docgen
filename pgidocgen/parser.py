@@ -166,12 +166,12 @@ def _handle_xml(types, current, out, item):
             for item in item.contents:
                 if not isinstance(item, Tag):
                     continue
-
-                lines.append("* " + " ".join(_handle_data(
-                             types, current, item.getText()
-                             ).splitlines()))
+                other_out = []
+                _handle_xml(types, current, other_out, item)
+                lines.append("* " + "".join(other_out))
             out.append("\n\n" + "\n".join(lines) + "\n\n")
-
+        elif item.name == "ulink":
+            out.append("`%s <%s>`__" % (item.getText(), item.get("url", "")))
         elif item.name == "programlisting":
             text = item.getText()
             if not text.count("\n"):
@@ -242,10 +242,6 @@ def docstring_to_rest(types, current, docstring):
 
     docstring = re.sub("\|\[(.*?)\]\|", to_programlisting,
                        docstring, flags=re.MULTILINE | re.DOTALL)
-
-    # We don't care about para
-    docstring = re.sub("<para>", "", docstring)
-    docstring = re.sub("</para>", "", docstring)
 
     soup = BeautifulStoneSoup(docstring,
                               convertEntities=BeautifulStoneSoup.HTML_ENTITIES)
