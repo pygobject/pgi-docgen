@@ -138,7 +138,8 @@ def print_missing():
     or the blacklist
     """
 
-    print "Searching for missing modules.."
+    print "Building %d modules.." % len(BUILD)
+    print "Check if all girs are present..."
 
     girs = get_gir_files()
 
@@ -148,31 +149,33 @@ def print_missing():
 
     bl_depend = set()
 
-    if "check" in sys.argv[1:]:
-        blacklist = set(BLACKLIST)
-        missing = set()
-        for key, path in girs.items():
-            if key not in BUILD and key not in BLACKLIST:
-                ns = get_namespace(*key.split("-"))
-                deps = set(["-".join(d) for d in ns.get_all_dependencies()])
-                if deps & blacklist:
-                    bl_depend.add(key)
-                    continue
-                missing.add(key)
+    if "--no-check" in sys.argv[1:]:
+        return
+
+    print "Check if there are unknown girs..."
+    blacklist = set(BLACKLIST)
+    unlisted = set()
+    for key, path in girs.items():
+        if key not in BUILD and key not in BLACKLIST:
+            ns = get_namespace(*key.split("-"))
+            deps = set(["-".join(d) for d in ns.get_all_dependencies()])
+            if deps & blacklist:
+                bl_depend.add(key)
+                continue
+            unlisted.add(key)
 
     if bl_depend:
-        print "Depending on blacklisted modules:"
+        print "Depending on blacklisted modules; add them to the black list:"
         for key in bl_depend:
             print "\"%s\"," % key
 
-    if missing:
-        print "..missing:"
-    else:
-        print "..none missing."
-    for key in sorted(missing):
-        print "\"%s\"," % key
+    if unlisted:
+        print ("The following girs are available but not in the build list; "
+               "please add or black list them:")
+        for key in sorted(unlisted):
+            print "\"%s\"," % key
 
-    if missing or bl_depend:
+    if unlisted or bl_depend:
         raise SystemExit(1)
 
 
