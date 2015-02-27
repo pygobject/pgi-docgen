@@ -21,4 +21,4 @@ git init
 git add .
 git commit -m "update"
 git remote add origin https://github.com/lazka/pgi-docs-devhelp.git
-git push --force
+git push --set-upstream origin master --force
