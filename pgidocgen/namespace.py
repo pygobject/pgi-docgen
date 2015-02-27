@@ -14,10 +14,10 @@ from xml.dom import minidom
 from . import util
 
 
-# Enable caching during building multiples modules if PGI_CACHE is set
+# Enable caching during building multiples modules if PGIDOCGEN_CACHE is set
 # Not enabled by default since it would need versioning and
 # only caches by gir name and not the source path...
-SHELVE_CACHE = os.environ.get("PGI_CACHE", None)
+SHELVE_CACHE = os.environ.get("PGIDOCGEN_CACHE", None)
 
 
 def get_namespace(namespace, version, _cache={}):

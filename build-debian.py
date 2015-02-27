@@ -181,11 +181,5 @@ def print_missing():
 
 if __name__ == "__main__":
     print_missing()
-
-    if "--devhelp" in sys.argv[1:]:
-        build_cmd = "./build-devhelp.sh"
-    else:
-        build_cmd = "./build.sh"
-
-    status = subprocess.call([build_cmd] + BUILD)
+    status = subprocess.call(["./build.sh"] + BUILD)
     raise SystemExit(status)
