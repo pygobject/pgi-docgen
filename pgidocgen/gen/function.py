@@ -8,10 +8,10 @@
 
 import os
 
-from . import util
+from . import genutil
 
 
-_template = util.get_template("""\
+_template = genutil.get_template("""\
 =========
 Functions
 =========
@@ -43,7 +43,7 @@ None
 """)
 
 
-class FunctionGenerator(util.Generator):
+class FunctionGenerator(genutil.Generator):
 
     def __init__(self):
         self._funcs = {}

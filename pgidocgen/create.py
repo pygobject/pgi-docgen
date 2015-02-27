@@ -9,7 +9,7 @@ import argparse
 
 import pgi
 
-from .module import ModuleGenerator
+from .gen import ModuleGenerator
 from .util import get_gir_files
 
 

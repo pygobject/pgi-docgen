@@ -7,10 +7,12 @@
 
 import os
 
-from . import util
+from . import genutil
+
+from .. import util
 
 
-_template = util.get_template("""\
+_template = genutil.get_template("""\
 =========
 Hierarchy
 =========
@@ -61,7 +63,7 @@ def to_names(hierarchy):
             [(get_name(k), to_names(v)) for (k, v) in hierarchy.iteritems()])
 
 
-class HierarchyGenerator(util.Generator):
+class HierarchyGenerator(genutil.Generator):
 
     _FILENAME = "hierarchy"
 

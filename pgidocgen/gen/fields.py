@@ -5,10 +5,12 @@
 # License as published by the Free Software Foundation; either
 # version 2.1 of the License, or (at your option) any later version.
 
-from . import util
+from . import genutil
+
+from .. import util
 
 
-_template = util.get_template("""\
+_template = genutil.get_template("""\
 
 .. _{{ cls_name }}.fields:
 

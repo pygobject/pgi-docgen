@@ -7,11 +7,14 @@
 
 import os
 
-from . import util, BASEDIR
 from .fields import FieldsMixin
-from .util import get_csv_line, fake_subclasses, get_template
+from . import genutil
 
-_main_template = get_template("""\
+from .. import util, BASEDIR
+from ..util import get_csv_line, fake_subclasses
+
+
+_main_template = genutil.get_template("""\
 {% if is_interface %}
 ==========
 Interfaces
@@ -32,7 +35,7 @@ Classes
 """)
 
 
-_sub_template = get_template("""\
+_sub_template = genutil.get_template("""\
 {{ "=" * cls_name|length }}
 {{ cls_name }}
 {{ "=" * cls_name|length }}
@@ -254,7 +257,7 @@ Property Details
 """)
 
 
-_pysub_template = get_template("""\
+_pysub_template = genutil.get_template("""\
 {{ "=" * cls_name|length }}
 {{ cls_name }}
 {{ "=" * cls_name|length }}
@@ -266,7 +269,7 @@ _pysub_template = get_template("""\
 """)
 
 
-class ClassGenerator(util.Generator, FieldsMixin):
+class ClassGenerator(genutil.Generator, FieldsMixin):
     """For GObjects an GInterfaces"""
 
     def __init__(self, repo):

@@ -7,10 +7,12 @@
 
 import os
 
-from . import util
+from . import genutil
+
+from .. import util
 
 
-_template = util.get_template("""\
+_template = genutil.get_template("""\
 ==============
 Symbol Mapping
 ==============
@@ -29,7 +31,7 @@ Symbol Mapping
 """)
 
 
-class MappingGenerator(util.Generator):
+class MappingGenerator(genutil.Generator):
 
     def __init__(self, repo):
         self.repo = repo

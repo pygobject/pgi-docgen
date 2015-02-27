@@ -13,18 +13,6 @@ import keyword
 import csv
 import cStringIO
 
-import jinja2
-
-
-_RST_ENV = jinja2.Environment(
-    trim_blocks=True, lstrip_blocks=True, undefined=jinja2.StrictUndefined)
-
-
-def get_template(source):
-    """Returns a jinja2 rst template"""
-
-    return _RST_ENV.from_string(source)
-
 
 _KWD_RE = re.compile("^(%s)$" % "|".join(keyword.kwlist))
 
@@ -423,24 +411,3 @@ def instance_to_rest(cls, inst):
             inst = int(inst)
 
     return "``%s``" % repr(inst)
-
-
-class Generator(object):
-    """Abstract base class"""
-
-    def is_empty(self):
-        """If there is any content to create"""
-
-        raise NotImplementedError
-
-    def write(self, dir_, module_fileobj=None):
-        """Create and write everything"""
-
-        raise NotImplementedError
-
-    def get_names(self):
-        """A list of names that can be references in
-        an rst file (toctree e.g.)
-        """
-
-        raise NotImplementedError

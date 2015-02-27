@@ -38,6 +38,7 @@ setup(name='pgidocgen',
       scripts=['pgi-docgen.py', 'pgi-docgen-build.py'],
       packages=[
           'pgidocgen',
+          'pgidocgen.gen',
       ],
       package_data={'pgidocgen': ['data/*', 'data/*/*', 'data/*/*/*']},
       license='LGPL-2.1+',

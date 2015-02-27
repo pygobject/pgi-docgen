@@ -7,10 +7,10 @@
 
 import os
 
-from . import util
+from . import genutil
 
 
-_template = util.get_template(u"""\
+_template = genutil.get_template(u"""\
 =========
 Callbacks
 =========
@@ -40,7 +40,7 @@ None
 """)
 
 
-class CallbackGenerator(util.Generator):
+class CallbackGenerator(genutil.Generator):
 
     _FILENAME = "callbacks"
 

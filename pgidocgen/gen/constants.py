@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Copyright 2013 Christoph Reiter
 #
 # This library is free software; you can redistribute it and/or
@@ -7,17 +8,17 @@
 
 import os
 
-from . import util
+from . import genutil
 
 
-_template = util.get_template("""\
-=====
-Enums
-=====
+_template = genutil.get_template("""\
+=========
+Constants
+=========
 
 {% if names %}
     {% for name in names %}
-* :class:`{{ name }}`
+* :obj:`{{ name }}`
     {% endfor %}
 
 {% else %}
@@ -30,11 +31,7 @@ Details
 
 {% if names %}
     {% for name in names %}
-.. autoclass:: {{ name }}
-    :show-inheritance:
-    :members:
-    :undoc-members:
-    :private-members:
+.. autodata:: {{ name }}
 
     {% endfor %}
 {% else %}
@@ -44,37 +41,33 @@ None
 """)
 
 
-class EnumGenerator(util.Generator):
+class ConstantsGenerator(genutil.Generator):
 
     def __init__(self):
-        self._enums = {}
+        self._consts = {}
 
-    def add_enum(self, obj, code):
+    def add_constant(self, name, code):
         if isinstance(code, unicode):
             code = code.encode("utf-8")
 
-        self._enums[obj] = code
+        self._consts[name] = code
 
     def get_names(self):
-        return ["enums"]
+        return ["constants"]
 
     def is_empty(self):
-        return not bool(self._enums)
+        return not bool(self._consts)
 
     def write(self, dir_, module_fileobj):
-        path = os.path.join(dir_, "enums.rst")
-        classes = self._enums.keys()
-        classes.sort(key=lambda x: x.__name__)
+        path = os.path.join(dir_, "constants.rst")
 
-        def get_name(cls):
-            return cls.__module__ + "." + cls.__name__
-
-        names = [get_name(cls) for cls in classes]
+        names = self._consts.keys()
+        names.sort()
 
         with open(path, "wb") as h:
             text = _template.render(names=names)
             h.write(text.encode("utf-8"))
 
-        for cls in classes:
-            code = self._enums[cls]
+        for name in names:
+            code = self._consts[name]
             module_fileobj.write(code + "\n")

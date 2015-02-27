@@ -16,18 +16,20 @@ from .flags import FlagsGenerator
 from .constants import ConstantsGenerator
 from .function import FunctionGenerator
 from .enum import EnumGenerator
-from .repo import Repository
 from .structures import StructGenerator
 from .union import UnionGenerator
 from .callback import CallbackGenerator
-from .doap import get_project_summary
 from .hierarchy import HierarchyGenerator
 from .mapping import MappingGenerator
-from . import util, BASEDIR
-from .namespace import get_namespace
+from . import genutil
+
+from ..doap import get_project_summary
+from ..namespace import get_namespace
+from ..repo import Repository
+from .. import util, BASEDIR
 
 
-_template = util.get_template("""\
+_template = genutil.get_template("""\
 {{ "=" * title|length }}
 {{ title }}
 {{ "=" * title|length }}
@@ -62,7 +64,7 @@ def _import_dependency(fobj, namespace, version):
         fobj.write("%s.init()\n" % namespace)
 
 
-class ModuleGenerator(util.Generator):
+class ModuleGenerator(genutil.Generator):
 
     THEME_DIR = "theme"
     CLSIMG_DIR = "clsimages"

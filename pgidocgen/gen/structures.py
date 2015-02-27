@@ -7,11 +7,13 @@
 
 import os
 
-from . import util
+from . import genutil
 from .fields import FieldsMixin
 
+from .. import util
 
-_main_template = util.get_template("""\
+
+_main_template = genutil.get_template("""\
 ==========
 Structures
 ==========
@@ -25,7 +27,7 @@ Structures
 
 """)
 
-_sub_template = util.get_template("""\
+_sub_template = genutil.get_template("""\
 {{ "=" * cls_name|length }}
 {{ cls_name }}
 {{ "=" * cls_name|length }}
@@ -61,7 +63,7 @@ Details
 """)
 
 
-class StructGenerator(util.Generator, FieldsMixin):
+class StructGenerator(genutil.Generator, FieldsMixin):
 
     def __init__(self):
         self._structs = {}
