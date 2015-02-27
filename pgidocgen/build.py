@@ -6,7 +6,6 @@
 # version 2.1 of the License, or (at your option) any later version.
 
 import os
-import sys
 import glob
 import argparse
 import subprocess
@@ -14,7 +13,6 @@ from multiprocessing.pool import ThreadPool
 import multiprocessing
 import threading
 import shutil
-import tarfile
 
 import jinja2
 
@@ -258,6 +256,3 @@ def main(argv):
             dh_name = os.path.join(
                 os.path.dirname(dh), os.path.basename(path) + ".devhelp.gz")
             os.rename(dh, dh_name)
-            tar_path = os.path.join(
-                os.path.dirname(path),
-                "devhelp-" + os.path.basename(path)  + ".tar.gz")

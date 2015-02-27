@@ -12,7 +12,6 @@ merges them into one, adjusting the paths in the final index accordingly
 """
 
 import os
-import sys
 
 from sphinx.search import js_index
 
