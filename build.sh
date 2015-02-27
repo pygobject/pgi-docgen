@@ -17,9 +17,9 @@ for mod in "$@"
 do
     echo "#####################################"
     echo "# $mod"
-    python ./pgi-docgen.py _docs _docs/_build "$mod" 
+    python ./pgi-docgen.py _docs "$mod"
 done
 
 rm -f "$PGI_CACHE"
 
-python ./pgi-docgen-build.py _docs
+python ./pgi-docgen-build.py _docs _docs/_build

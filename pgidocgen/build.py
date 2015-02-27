@@ -21,6 +21,7 @@ from . import BASEDIR
 
 
 OPTIPNG = "optipng"
+DEVHELP_PREFIX = "python-"
 
 
 def get_cpu_count():
@@ -90,13 +91,20 @@ def do_build(package):
     print "Build started for %s" % package.name
 
     sphinx_args = [package.path, package.build_path]
+    copy_env = os.environ.copy()
 
     if package.devhelp:
         sphinx_args = ["-b", "devhelpfork"] + sphinx_args
+        copy_env["PGIDOCGEN_TARGET_PREFIX"] = DEVHELP_PREFIX
     else:
         sphinx_args = ["-b", "html"] + sphinx_args
+        copy_env["PGIDOCGEN_TARGET_PREFIX"] = ""
 
-    subprocess.check_call(["sphinx-build", "-a", "-E"] + sphinx_args)
+    copy_env["PGIDOCGEN_TARGET_BASE_PATH"] = \
+        os.path.dirname(package.build_path)
+
+    subprocess.check_call(["sphinx-build", "-a", "-E"] + sphinx_args,
+                          env=copy_env)
 
     # we don't rebuild, remove all caches
     shutil.rmtree(os.path.join(package.build_path, ".doctrees"))
@@ -137,9 +145,15 @@ def main(argv):
     parser = argparse.ArgumentParser(
         description='Build the sphinx environ created with pgi-docgen')
     parser.add_argument('source', help='path to the sphinx environ base dir')
+    parser.add_argument('target',
+                        help='path to where the resulting build should be')
+    parser.add_argument('--devhelp', action='store_true')
     args = parser.parse_args(argv[1:])
 
     to_build = {}
+
+    target_path = os.path.abspath(args.target)
+    devhelp = args.devhelp
 
     for entry in os.listdir(args.source):
         if entry.startswith("_"):
@@ -151,18 +165,19 @@ def main(argv):
         with open(conf_path, "rb") as h:
             exec_env = {}
             exec h.read() in exec_env
-        target_path = exec_env["TARGET"]
         deps = set(exec_env["DEPS"])
-        devhelp = exec_env["DEVHELP_PREFIX"]
-        build_path = os.path.join(target_path, devhelp + entry)
+        if devhelp:
+            prefix = DEVHELP_PREFIX
+        else:
+            prefix = ""
 
-        package = Package(entry, path, build_path, deps, bool(devhelp))
+        build_path = os.path.join(target_path, prefix + entry)
+
+        package = Package(entry, path, build_path, deps, devhelp)
         to_build[package.name] = package
 
     if not to_build:
         raise SystemExit("Nothing to build")
-
-    devhelp = package.devhelp
 
     # don't build cairo-1.0, we reference the external one
     to_ignore = set([])
@@ -221,6 +236,7 @@ def main(argv):
     print "Creating index + search..."
 
     if not devhelp:
+        print repr(target_path)
         merge(target_path, include_terms=False, exclude_old=True)
 
         index_path = os.path.join(BASEDIR, "data", "index")

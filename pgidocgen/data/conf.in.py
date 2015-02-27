@@ -8,8 +8,10 @@ sys.path.insert(0, os.getcwd())
 import pgi
 pgi.install_as_gi()
 
-from _pgi_docgen_conf import TARGET, DEPS, DEVHELP_PREFIX
+from _pgi_docgen_conf import DEPS
 
+TARGET = os.environ["PGIDOCGEN_TARGET_BASE_PATH"]
+TARGET_PREFIX = os.environ.get("PGIDOCGEN_TARGET_PREFIX", "")
 
 mname, mversion = os.path.basename(os.getcwd()).split("-", 1)
 
@@ -41,7 +43,7 @@ for dep_name in DEPS:
             "../_intersphinx/cairo.inv")
         continue
 
-    dep_name = DEVHELP_PREFIX + dep_name
+    dep_name = TARGET_PREFIX + dep_name
     dep = os.path.relpath(os.path.join(TARGET, dep_name))
     inv = os.path.join(dep, "objects.inv")
     if not os.path.exists(inv):

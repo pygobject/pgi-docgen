@@ -10,14 +10,6 @@ import sys
 
 from pgidocgen.build import main
 
-"""
-usage: pgi-docgen-build.py [-h] source
-
-Build the sphinx environ created with pgi-docgen
-
-positional arguments:
-  source      path to the sphinx environ base dir
-"""
 
 if __name__ == "__main__":
     sys.exit(main(sys.argv))

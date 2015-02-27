@@ -87,7 +87,7 @@ class ModuleGenerator(genutil.Generator):
     def is_empty(self):
         return not bool(self._modules)
 
-    def write(self, dir_, target_, devhelp=False):
+    def write(self, dir_):
         try:
             os.mkdir(dir_)
         except OSError:
@@ -121,9 +121,9 @@ class ModuleGenerator(genutil.Generator):
         for namespace, version in mods:
             nick = "%s-%s" % (namespace, version)
             sub_dir = os.path.join(dir_, nick)
-            self._write(sub_dir, target_, namespace, version, devhelp)
+            self._write(sub_dir, namespace, version)
 
-    def _write(self, sub_dir, target_, namespace, version, devhelp):
+    def _write(self, sub_dir, namespace, version):
         if os.path.exists(sub_dir):
             print "skipping %s-%s, already exists" % (namespace, version)
             return
@@ -297,11 +297,7 @@ class ModuleGenerator(genutil.Generator):
         conf_path = os.path.join(dir_, "_pgi_docgen_conf.py")
         deps = ["-".join(d) for d in repo.get_all_dependencies()]
         with open(conf_path, "wb") as conf:
-            conf.write("""
-DEPS = %r
-TARGET = %r
-DEVHELP_PREFIX = %r
-""" % (deps, os.path.abspath(target_), devhelp and "python-" or ""))
+            conf.write("DEPS = %r\n" % deps)
 
         # make sure the generated config
         with open(conf_path, "rb") as h:

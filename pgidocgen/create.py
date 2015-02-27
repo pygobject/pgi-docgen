@@ -18,11 +18,8 @@ def main(argv):
         description='Create a sphinx environ')
     parser.add_argument('source',
                         help='path to where the resulting source should be')
-    parser.add_argument('target',
-                        help='path to where the resulting build should be')
     parser.add_argument('namespace',
                         help='namespace including version e.g. Gtk-3.0')
-    parser.add_argument('--devhelp', action='store_true')
 
     try:
         args = parser.parse_args(argv[1:])
@@ -49,4 +46,4 @@ def main(argv):
     namespace, version = args.namespace.split("-", 1)
     print "Create docs: Namespace=%s, Version=%s" % (namespace, version)
     gen.add_module(namespace, version)
-    gen.write(args.source, args.target, args.devhelp)
+    gen.write(args.source)
