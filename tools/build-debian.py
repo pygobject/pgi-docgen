@@ -181,5 +181,6 @@ def print_missing():
 
 if __name__ == "__main__":
     print_missing()
-    status = subprocess.call(["./build.sh"] + BUILD)
-    raise SystemExit(status)
+    subprocess.check_call(["python", "./pgi-docgen.py", "_docs"] + BUILD)
+    subprocess.check_call(
+        ["python", "./pgi-docgen-build.py", "_docs", "_docs/_build"])

@@ -31,11 +31,11 @@ How do I get started?
 ::
 
     # API docs for Gtk/Gst:
-    ./build.sh Gtk-3.0 Gst-1.0
+    ./tools/build.sh Gtk-3.0 Gst-1.0
 
     # Create docs for all (working) packages in Debian Jessie
     # Warning: This can take about an hour.
-    ./build_all.sh
+    ./tools/build-debian.py
 
 The resulting docs can be found in ``_docs/_build``
 
