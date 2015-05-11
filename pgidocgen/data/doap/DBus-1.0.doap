@@ -15,7 +15,7 @@
 
   <homepage rdf:resource="http://live.gnome.org/GObjectIntrospection" />
   <license rdf:resource="http://usefulinc.com/doap/licenses/lgpl" />
-  <bug-database rdf:resource="http://bugzilla.gnome.org/enter_bug.cgi?product=glib&amp;component=introspection"/>
+  <bug-database rdf:resource="http://bugzilla.gnome.org/enter_bug.cgi?product=gobject-introspection"/>
   <mailing-list rdf:resource="mailto:gtk-devel-list@gnome.org" />
 
   <programming-language>C</programming-language>
