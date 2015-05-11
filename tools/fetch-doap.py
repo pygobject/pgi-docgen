@@ -62,12 +62,12 @@ LIBS = {
     'https://git.gnome.org/browse/rhythmbox/plain/rhythmbox.doap':
         ['MPID-3.0', 'RB-3.0'],
     'https://raw.github.com/hughsie/colord/master/colord.doap':
-        ['Colord-1.0', 'ColordGtk-1.0'],
+        ['Colord-1.0', 'ColordGtk-1.0', 'ColorHug-1.0'],
     'https://git.gnome.org/browse/gobject-introspection/plain/gobject-introspection.doap':
         ['DBus-1.0', 'GModule-2.0', 'Gio-2.0', 'xrandr-1.3',
          'GIRepository-2.0', 'GObject-2.0', 'fontconfig-2.0', 'freetype2-2.0',
          'libxml2-2.0', 'GLib-2.0', 'xlib-2.0', 'DBusGLib-1.0', 'cairo-1.0',
-         'xft-2.0', 'GL-1.0', 'xfixes-4.0'],
+         'xft-2.0', 'GL-1.0', 'xfixes-4.0', 'win32-1.0'],
     'https://git.gnome.org/browse/gconf/plain/gconf.doap':
         ['GConf-2.0'],
     'https://git.gnome.org/browse/geocode-glib/plain/geocode-glib.doap':
@@ -183,6 +183,10 @@ LIBS = {
         ['MediaArt-1.0'],
     'https://git.gnome.org/browse/gegl/plain/gegl.doap':
         ['Gegl-0.3'],
+    'https://git.gnome.org/browse/gcab/plain/gcab.doap':
+        ['GCab-1.0'],
+    'http://cgit.freedesktop.org/harfbuzz/plain/harfbuzz.doap':
+        ['HarfBuzz-0.0'],
 }
 
 
