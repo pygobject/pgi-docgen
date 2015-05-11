@@ -129,7 +129,8 @@ BUILD = ['AccountsService-1.0', 'Anjuta-3.0',
 "Evd-0.1", "Cattle-1.0", "GCab-1.0", 
 "GPaste-1.0", "GVnc-1.0", "GVncPulse-1.0", "Ggit-1.0", "GtkVnc-2.0", 
 "JavaScriptCore-4.0", "SocialWebClient-0.25", 
-"WebKit2-4.0", "WebKit2WebExtension-4.0",
+"WebKit2-4.0", "WebKit2WebExtension-4.0", "NM-1.0", "GstGL-1.0",
+"GstInsertBin-1.0", "GstMpegts-1.0",
 ]
 
 

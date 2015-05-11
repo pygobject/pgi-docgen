@@ -33,6 +33,8 @@ LIBS = {
          'GstPbutils-0.10', 'GstRiff-0.10', 'GstRtp-0.10', 'GstRtsp-0.10',
          'GstRtspServer-0.10', 'GstSdp-0.10', 'GstTag-0.10',
          'GstNetbuffer-0.10', 'GstVideo-0.10'],
+    'http://cgit.freedesktop.org/gstreamer/gst-plugins-bad/plain/gst-plugins-bad.doap':
+        ['GstGL-1.0', 'GstInsertBin-1.0', 'GstMpegts-1.0'],
     'https://git.gnome.org/browse/glib/plain/glib.doap':
         ['GLib-2.0', 'GObject-2.0', 'Gio-2.0'],
     'https://git.gnome.org/browse/atk/plain/atk.doap':
