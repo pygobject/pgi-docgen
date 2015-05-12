@@ -293,7 +293,7 @@ def main():
     assert not missing_build, missing_build
 
     os.environ["XDG_DATA_DIRS"] = data_dir
-    subprocess.check_call(["python", "./pgi-docgen.py", "_docs"] + BUILD[-1:])
+    subprocess.check_call(["python", "./pgi-docgen.py", "_docs"] + BUILD)
     subprocess.check_call(
         ["python", "./pgi-docgen-build.py", "_docs", "_docs/_build"])
 
