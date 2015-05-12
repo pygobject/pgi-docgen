@@ -15,8 +15,10 @@ Call these first:
 """
 
 import os
+import sys
 import subprocess
 import shutil
+import argparse
 
 import apt
 import apt_pkg
@@ -213,7 +215,7 @@ def reverse_mapping(d):
 def compare_deb_packages(a, b):
     va = subprocess.check_output(["dpkg", "--field", a, "Version"]).strip()
     vb = subprocess.check_output(["dpkg", "--field", b, "Version"]).strip()
-    return apt_pkg.version_compare(a, b)
+    return apt_pkg.version_compare(va, vb)
 
 
 def fetch_girs(girs, dest):
@@ -269,7 +271,11 @@ def fetch_girs_cached():
     return temp_data
 
 
-def main():
+def main(argv):
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--devhelp', action='store_true')
+    args = parser.parse_args(argv[1:])
+
     print "[don't forget to apt-file update/apt-get update!]"
 
     print "find typelibs.."
@@ -298,10 +304,19 @@ def main():
     assert not missing_build, missing_build
 
     os.environ["XDG_DATA_DIRS"] = data_dir
-    subprocess.check_call(["python", "./pgi-docgen.py", "_docs"] + BUILD)
-    subprocess.check_call(
-        ["python", "./pgi-docgen-build.py", "_docs", "_docs/_build"])
+
+    if args.devhelp:
+        subprocess.check_call(
+            ["python", "./pgi-docgen.py", "_devhelp"] + BUILD)
+        subprocess.check_call(
+            ["python", "./pgi-docgen-build.py", "--devhelp",
+             "_devhelp", "_devhelp/_build"])
+    else:
+        subprocess.check_call(
+            ["python", "./pgi-docgen.py", "_docs"] + BUILD)
+        subprocess.check_call(
+            ["python", "./pgi-docgen-build.py", "_docs", "_docs/_build"])
 
 
 if __name__ == "__main__":
-    main()
+    main(sys.argv)
