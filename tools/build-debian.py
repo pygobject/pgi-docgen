@@ -1,10 +1,25 @@
 #!/usr/bin/python
+# Copyright 2015 Christoph Reiter
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
 
-import sys
+"""
+Call these first:
+
+* apt-file update
+* sudo apt-get update
+
+"""
+
+import os
 import subprocess
+import shutil
 
-from pgidocgen.util import get_gir_files
-from pgidocgen.namespace import get_namespace
+import apt
+import apt_pkg
 
 
 BLACKLIST = [
@@ -38,7 +53,6 @@ BLACKLIST = [
     "Gcr-3",
     "GTop-2.0",
     "BraseroMedia-3.1",
-    "Clinica-0.2",
     "Gnm-1.12",
     "FolksTelepathy-0.6",
     "Folks-0.6",
@@ -49,16 +63,11 @@ BLACKLIST = [
     "Gee-0.8",
     "Gee-1.0",
     "Grip-1.0",
-    "JSCore-1.0",
     "JSCore-3.0",
     "Skk-1.0",
     "SugarExt-1.0",
-    "Urfkill-0.5",
-    "win32-1.0",
-    "Meta-3.0",
     "Meta-Muffin.0",
     "libisocodes-1.2.1",
-    "JavaScriptCore-1.0",
 
     # criticals.. better skip
     "Gwibber-0.1",
@@ -66,7 +75,6 @@ BLACKLIST = [
     "NMGtk-1.0",
 
     # depends on one of the above
-    "GUPnPDLNA-1.0",
     "Ganv-1.0",
     "DbusmenuGtk-0.4",
     "MxGtk-1.0",
@@ -75,7 +83,6 @@ BLACKLIST = [
     "GcrUi-3",
     "Caja-2.0",
     "AppIndicator-0.1",
-    "WebKit-1.0",
     "MatePanelApplet-4.0",
     "ClutterGst-1.0",
     "GwibberGtk-0.1",
@@ -130,58 +137,166 @@ BUILD = ['AccountsService-1.0', 'Anjuta-3.0',
 "GPaste-1.0", "GVnc-1.0", "GVncPulse-1.0", "Ggit-1.0", "GtkVnc-2.0", 
 "JavaScriptCore-4.0", "SocialWebClient-0.25", 
 "WebKit2-4.0", "WebKit2WebExtension-4.0", "NM-1.0", "GstGL-1.0",
-"GstInsertBin-1.0", "GstMpegts-1.0",
+"GstInsertBin-1.0", "GstMpegts-1.0", 'Anthy-9000', 'Vte-2.90',
 ]
 
 
-def print_missing():
-    """print modules that are present but not included in the build list
-    or the blacklist
+def get_typelibs():
+    """Note that this also finds things in stable/experimental, so
+    apt-get downloading these might not give you a typelib file.
     """
 
-    print "Building %d modules.." % len(BUILD)
-    print "Check if all girs are present..."
+    cache = apt.Cache()
+    cache.open(None)
 
-    girs = get_gir_files()
+    typelibs = {}
+    to_install = []
 
-    missing = set(BUILD) - set(girs.keys())
-    if missing:
-        print "Missing girs: %r" % missing
-
-    bl_depend = set()
-
-    if "--no-check" in sys.argv[1:]:
-        return
-
-    print "Check if there are unknown girs..."
-    blacklist = set(BLACKLIST)
-    unlisted = set()
-    for key, path in girs.items():
-        if key not in BUILD and key not in BLACKLIST:
-            ns = get_namespace(*key.split("-"))
-            deps = set(["-".join(d) for d in ns.get_all_dependencies()])
-            if deps & blacklist:
-                bl_depend.add(key)
+    data = subprocess.check_output(["apt-file", "search", ".typelib"])
+    for line in data.strip().splitlines():
+        package, path = line.split(": ", 1)
+        if path.startswith("/usr/lib/x86_64-linux-gnu/girepository-1.0/") or \
+                path.startswith("/usr/lib/girepository-1.0/"):
+            if cache[package].candidate is None:
                 continue
-            unlisted.add(key)
+            if not cache[package].is_installed:
+                to_install.append(package)
+            if not os.path.exists(path):
+                continue
+            name = os.path.splitext(os.path.basename(path))[0]
+            l = typelibs.setdefault(package, [])
+            if name not in l:
+                l.append(name)
 
-    if bl_depend:
-        print "Depending on blacklisted modules; add them to the black list:"
-        for key in bl_depend:
-            print "\"%s\"," % key
+    cache.close()
 
-    if unlisted:
-        print ("The following girs are available but not in the build list; "
-               "please add or black list them:")
-        for key in sorted(unlisted):
-            print "\"%s\"," % key
-
-    if unlisted or bl_depend:
+    if to_install:
+        print "Not all typelibs installed:\n"
+        print "sudo aptitude install " + " ".join(to_install)
         raise SystemExit(1)
+
+    return typelibs
+
+
+def get_girs():
+    """Note that this also finds things in stable/experimental, so
+    apt-get downloading these might not give you a gir file.
+    """
+
+    cache = apt.Cache()
+    cache.open(None)
+
+    girs = {}
+    data = subprocess.check_output(["apt-file", "search", ".gir"])
+    for line in data.strip().splitlines():
+        package, path = line.split(": ", 1)
+        if cache[package].candidate is None:
+            continue
+        if path.startswith("/usr/share/gir-1.0/"):
+            name = os.path.splitext(os.path.basename(path))[0]
+            l = girs.setdefault(package, [])
+            if name not in l:
+                l.append(name)
+    cache.close()
+    return girs
+
+
+def reverse_mapping(d):
+    r = {}
+    for key, values in d.iteritems():
+        for value in values:
+            assert value not in r
+            r[value] = key
+    return r
+
+
+def compare_deb_packages(a, b):
+    va = subprocess.check_output(["dpkg", "--field", a, "Version"]).strip()
+    vb = subprocess.check_output(["dpkg", "--field", b, "Version"]).strip()
+    return apt_pkg.version_compare(a, b)
+
+
+def fetch_girs(girs, dest):
+    dest = os.path.abspath(dest)
+    assert not os.path.exists(dest)
+    os.mkdir(dest)
+
+    tmp_root = os.path.join(dest, "temp_root")
+    tmp_download = os.path.join(dest, "tmp_download")
+    dst = os.path.join(dest, "gir-1.0")
+
+    print "Download packages.."
+    cache = apt.Cache()
+    cache.open(None)
+    os.mkdir(tmp_download)
+    for name in girs:
+        package = cache[name]
+        for version in package.versions:
+            version.fetch_binary(tmp_download)
+    cache.close()
+
+    print "Extracting packages.."
+
+    # sort, so older girs get replaced
+    entries = [os.path.join(tmp_download, e) for e in os.listdir(tmp_download)]
+    entries.sort(cmp=compare_deb_packages)
+
+    os.mkdir(dst)
+    for path in entries:
+        subprocess.check_call(["dpkg" , "-x", path, tmp_root])
+        base_src = os.path.join(tmp_root, "usr", "share", "gir-1.0")
+        if not os.path.isdir(base_src):
+            continue
+        for e in os.listdir(base_src):
+            src = os.path.join(base_src, e)
+            shutil.copy(src, dst)
+        shutil.rmtree(tmp_root)
+
+
+def fetch_girs_cached():
+    temp_data = os.path.join(
+        os.path.dirname(os.path.realpath(__file__)), "_temp_data_dir")
+    if not os.path.exists(temp_data):
+        print "find girs.."
+        girs = get_girs()
+        print "fetch and extract debian packages.."
+        fetch_girs(girs, temp_data)
+    return temp_data
+
+
+def main():
+    print "[don't forget to apt-file update/apt-get update!]"
+
+    print "find typelibs.."
+    typelibs = get_typelibs()
+
+    data_dir = fetch_girs_cached()
+    gir_dir = os.path.join(data_dir, "gir-1.0")
+    gir_list = [os.path.splitext(e)[0] for e in os.listdir(gir_dir)]
+
+    rtypelibs = reverse_mapping(typelibs)
+    print "Missing gir files: %r" % sorted(set(rtypelibs) - set(gir_list))
+    print "Missing typelib files: %r" % sorted(set(gir_list) - set(rtypelibs))
+    can_build = sorted(set(gir_list) & set(rtypelibs))
+    print "%d ready to build" % len(can_build)
+
+    assert not (set(BLACKLIST) & set(BUILD))
+
+    unknown_build = set(BLACKLIST) - set(can_build)
+    assert not unknown_build, unknown_build
+    can_build = set(can_build) - set(BLACKLIST)
+    print "%d ready to build after blacklisting" % len(can_build)
+
+    unknown_build = set(BUILD) - set(can_build)
+    assert not unknown_build, unknown_build
+    missing_build = set(can_build) - set(BUILD)
+    assert not missing_build, missing_build
+
+    os.environ["XDG_DATA_DIRS"] = data_dir
+    subprocess.check_call(["python", "./pgi-docgen.py", "_docs"] + BUILD[-1:])
+    subprocess.check_call(
+        ["python", "./pgi-docgen-build.py", "_docs", "_docs/_build"])
 
 
 if __name__ == "__main__":
-    print_missing()
-    subprocess.check_call(["python", "./pgi-docgen.py", "_docs"] + BUILD)
-    subprocess.check_call(
-        ["python", "./pgi-docgen-build.py", "_docs", "_docs/_build"])
+    main()

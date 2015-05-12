@@ -204,8 +204,6 @@ def merge(path, include_terms=False, exclude_old=True):
     for namespace, entries in sorted(groups.items()):
         # newest first, for name clashes
         entries.sort(key=lambda x: sort_version_key(x[0]), reverse=True)
-        if exclude_old:
-            entries
 
         for i, (version, mod) in enumerate(entries):
             key = namespace + "-" + version

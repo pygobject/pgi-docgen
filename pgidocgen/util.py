@@ -338,10 +338,20 @@ def make_rest_title(text, char="="):
     return text + "\n" + len(text) * char
 
 
+def xdg_get_system_data_dirs():
+    """http://standards.freedesktop.org/basedir-spec/latest/"""
+
+    data_dirs = os.getenv("XDG_DATA_DIRS")
+    if data_dirs:
+        return map(os.path.abspath, data_dirs.split(":"))
+    else:
+        return ("/usr/local/share/", "/usr/share/")
+
+
 def get_gir_dirs():
     from gi.repository import GLib
 
-    dirs = GLib.get_system_data_dirs()
+    dirs = xdg_get_system_data_dirs()
     return [os.path.join(d, "gir-1.0") for d in dirs]
 
 
