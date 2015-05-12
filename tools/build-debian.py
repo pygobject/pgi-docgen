@@ -229,10 +229,15 @@ def fetch_girs(girs, dest):
     cache = apt.Cache()
     cache.open(None)
     os.mkdir(tmp_download)
+    # install anything that is a candidate or older
+    # (is versions really ordered?)
     for name in girs:
         package = cache[name]
+        ok = False
         for version in package.versions:
-            version.fetch_binary(tmp_download)
+            if ok or package.candidate == version:
+                ok = True
+                version.fetch_binary(tmp_download)
     cache.close()
 
     print "Extracting packages.."
