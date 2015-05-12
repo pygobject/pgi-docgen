@@ -99,6 +99,20 @@ function frameOnLoad() {
 
     onContentHashChange();
     var elm = document.getElementById('Content');
+
+    // for all links in the frame which point to other domains we force
+    // them to replace the main window. This also fixes a the problem
+    // when a link points to http and the frameset is https leading to
+    // the browser blocking the action.
+    var links = elm.contentDocument.getElementsByTagName('a')
+    for(var i=0; i < links.length; i++) {
+        var link_path = links[i].host + links[i].pathname;
+        var frameset_path = location.host + location.pathname;
+        if (link_path.indexOf(frameset_path) != 0) {
+            links[i].setAttribute('target', '_parent');
+        }
+    }
+
     elm.contentWindow.onhashchange = function () {
         onContentHashChange();
     }
