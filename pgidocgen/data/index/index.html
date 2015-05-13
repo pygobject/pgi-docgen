@@ -106,7 +106,10 @@ function frameOnLoad() {
     // the browser blocking the action.
     var links = elm.contentDocument.getElementsByTagName('a')
     for(var i=0; i < links.length; i++) {
-        var link_path = links[i].host + links[i].pathname;
+        var link_ = links[i];
+        if(!link_.host || !link_.pathname)
+            continue
+        var link_path = link_.host + link_.pathname;
         var frameset_path = location.host + location.pathname;
         if (link_path.indexOf(frameset_path) != 0) {
             links[i].setAttribute('target', '_parent');
