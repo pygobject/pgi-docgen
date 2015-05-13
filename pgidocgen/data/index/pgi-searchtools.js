@@ -160,7 +160,8 @@ var Search = {
         return []
         h = new Object();
 
-        for(var i in filenames) {
+        var filenamesLength = filenames.length;
+        for(var i=0; i < filenamesLength; i++) {
             var fn = filenames[i];
             var name = fn.split("/")[0].replace("-", " ")
             h[name] = fn;
