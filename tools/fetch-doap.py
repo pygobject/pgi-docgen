@@ -189,6 +189,8 @@ LIBS = {
         ['GCab-1.0'],
     'http://cgit.freedesktop.org/harfbuzz/plain/harfbuzz.doap':
         ['HarfBuzz-0.0'],
+    'https://git.gnome.org/browse/libgudev/plain/libgudev.doap':
+        ['GUdev-1.0'],
 }
 
 
