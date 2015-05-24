@@ -1,0 +1,41 @@
+<Project xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+         xmlns:foaf="http://xmlns.com/foaf/0.1/"
+         xmlns:gnome="http://api.gnome.org/doap-extensions#"
+         xmlns="http://usefulinc.com/ns/doap#">
+
+  <name xml:lang="en">libmediaart</name>
+  <shortdesc xml:lang="en">Library for handling media art</shortdesc>
+  <description>Library tasked with managing, extracting and handling media art caches</description>
+  <homepage rdf:resource="https://github.com/curlybeast/libmediaart" />
+  <mailing-list rdf:resource="http://mail.gnome.org/mailman/listinfo/tracker-list" />
+  <category rdf:resource="http://api.gnome.org/doap-extensions#core" />
+  <programming-language>C</programming-language>
+  <bug-database
+rdf:resource="https://bugzilla.gnome.org/buglist.cgi?product=libmediaart"/>
+
+  <maintainer>
+    <foaf:Person>
+      <foaf:name>Martyn Russell</foaf:name>
+      <foaf:mbox rdf:resource="mailto:martyn@lanedo.com" />
+      <gnome:userid>mr</gnome:userid>
+    </foaf:Person>
+  </maintainer>
+
+  <maintainer>
+    <foaf:Person>
+      <foaf:name>Philip Van Hoof</foaf:name>
+      <foaf:mbox rdf:resource="mailto:pvanhoof@gnome.org" />
+      <gnome:userid>pvanhoof</gnome:userid>
+    </foaf:Person>
+  </maintainer>
+
+  <maintainer>
+    <foaf:Person>
+      <foaf:name>Sam Thursfield</foaf:name>
+      <foaf:mbox rdf:resource="mailto:sam.thursfield@codethink.co.uk" />
+      <gnome:userid>sthursfield</gnome:userid>
+    </foaf:Person>
+  </maintainer>
+
+</Project>

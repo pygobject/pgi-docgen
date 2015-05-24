@@ -182,7 +182,7 @@ LIBS = {
     'https://git.gnome.org/browse/libgtop/plain/libgtop.doap':
         ['GTop-2.0'],
     'https://git.gnome.org/browse/libmediaart/plain/libmediaart.doap':
-        ['MediaArt-1.0'],
+        ['MediaArt-1.0', 'MediaArt-2.0'],
     'https://git.gnome.org/browse/gegl/plain/gegl.doap':
         ['Gegl-0.3'],
     'https://git.gnome.org/browse/gcab/plain/gcab.doap':
