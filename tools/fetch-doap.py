@@ -40,7 +40,8 @@ LIBS = {
     'https://git.gnome.org/browse/atk/plain/atk.doap':
         ['Atk-1.0'],
     'https://git.gnome.org/browse/cogl/plain/cogl.doap':
-        ['Cogl-1.0', 'CoglPango-1.0', 'Cogl-2.0', 'CoglPango-2.0'],
+        ['Cogl-1.0', 'CoglPango-1.0', 'Cogl-2.0', 'CoglPango-2.0',
+         'CoglGst-2.0'],
     'https://git.gnome.org/browse/gupnp-av/plain/gupnp-av.doap':
         ['GUPnPAV-1.0'],
     'https://git.gnome.org/browse/cheese/plain/cheese.doap':
@@ -191,6 +192,8 @@ LIBS = {
         ['HarfBuzz-0.0'],
     'https://git.gnome.org/browse/libgudev/plain/libgudev.doap':
         ['GUdev-1.0'],
+    'https://git.gnome.org/browse/gnome-dictionary/plain/gnome-dictionary.doap':
+        ['Gdict-1.0'],
 }
 
 

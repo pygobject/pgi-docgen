@@ -140,6 +140,7 @@ BUILD = ['AccountsService-1.0', 'Anjuta-3.0',
 "JavaScriptCore-4.0", "SocialWebClient-0.25", 
 "WebKit2-4.0", "WebKit2WebExtension-4.0", "NM-1.0", "GstGL-1.0",
 "GstInsertBin-1.0", "GstMpegts-1.0", 'Anthy-9000', 'Vte-2.90',
+'MediaArt-2.0', 'Gdict-1.0', 'CoglGst-2.0',
 ]
 
 
