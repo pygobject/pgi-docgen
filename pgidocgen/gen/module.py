@@ -145,7 +145,7 @@ class ModuleGenerator(genutil.Generator):
 
         repo = Repository(namespace, version)
         mod = repo.import_module()
-        lib_version = util.get_library_version(mod)
+        lib_version = util.get_project_version(mod)
 
         for dep in repo.get_dependencies():
             _import_dependency(module, *dep)

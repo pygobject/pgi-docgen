@@ -104,11 +104,7 @@ class Namespace(object):
             except ValueError as e:
                 raise ImportError(e, version)
 
-            module = __import__("gi.repository", fromlist=[str(namespace)])
-            try:
-                module = getattr(module, namespace)
-            except AttributeError:
-                raise ImportError
+            module = util.import_namespace(namespace)
 
             # this needs to be synced with module._import_dependency
             if namespace in ("Clutter", "ClutterGst", "Gst", "Grl"):

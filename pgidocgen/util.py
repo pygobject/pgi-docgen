@@ -465,3 +465,37 @@ def get_library_version(mod):
                 func_version = value
 
     return func_version
+
+
+def get_project_version(mod):
+    """Returns the version of the current module or some related module in
+    the same project, or an empty string
+    """
+
+    from . import girdata
+
+    version = get_library_version(mod)
+    if version:
+        return version
+
+    namespace = mod.__name__.rsplit(".")[-1]
+    for related in girdata.get_related_namespaces(namespace):
+        try:
+            rmod = import_namespace(related)
+        except ImportError:
+            continue
+        version = get_library_version(rmod)
+        if version:
+            break
+
+    return version
+
+
+def import_namespace(ns):
+    """Equivalent to 'from gi.repository import <ns>'
+
+    Returns the namespace module.
+    Raises ImportError in case the import fails.
+    """
+
+    return getattr(__import__("gi.repository." + ns).repository, ns)
