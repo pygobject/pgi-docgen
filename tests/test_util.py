@@ -12,6 +12,7 @@ from pgidocgen.util import is_staticmethod, is_classmethod, is_normalmethod
 from pgidocgen.util import is_method_owner, is_fundamental, is_object
 from pgidocgen.util import instance_to_rest, get_child_properties
 from pgidocgen.util import fake_subclasses, get_style_properties
+from pgidocgen.util import get_library_version
 
 
 class TUtil(unittest.TestCase):
@@ -118,3 +119,14 @@ class TUtil(unittest.TestCase):
         from pgi.repository import Gtk
 
         self.assertIs(fake_subclasses(Gtk.Scrollable)[1], Gtk.TreeView)
+
+    def test_get_library_version(self):
+        mods = ["Gtk", "Atk", "Gst", "Poppler", "Anthy", "InputPad",
+                "WebKit2", "GdkPixbuf", "LunarDate", "TotemPlParser", "GVnc"]
+
+        for m in mods:
+            try:
+                m = getattr(__import__("gi.repository." + m).repository, m)
+            except ImportError:
+                continue
+            self.assertTrue(get_library_version(m))

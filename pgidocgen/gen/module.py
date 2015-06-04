@@ -145,6 +145,7 @@ class ModuleGenerator(genutil.Generator):
 
         repo = Repository(namespace, version)
         mod = repo.import_module()
+        lib_version = util.get_library_version(mod)
 
         for dep in repo.get_dependencies():
             _import_dependency(module, *dep)
@@ -273,6 +274,8 @@ class ModuleGenerator(genutil.Generator):
         with open(os.path.join(sub_dir, "index.rst"),  "wb") as h:
 
             title = "%s %s" % (namespace, version)
+            if lib_version:
+                title += " (%s)" % lib_version
             project_summary = get_project_summary(".", namespace, version)
             names = []
             gens = [func_gen, cb_gen, class_gen, hier_gen, struct_gen,

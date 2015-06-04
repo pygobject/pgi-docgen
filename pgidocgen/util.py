@@ -421,3 +421,47 @@ def instance_to_rest(cls, inst):
             inst = int(inst)
 
     return "``%s``" % repr(inst)
+
+
+def get_library_version(mod):
+    """Tries to return a version string of the library version used to create
+    the gir or if not available the version of the library dlopened.
+
+    If no version could be found, returns an empty string.
+    """
+
+    suffix = ""
+    modname = mod.__name__
+    for i, (o, l) in enumerate(reversed(zip(modname, modname.lower()))):
+        if o != l:
+            suffix = modname[-i - 1:].upper()
+            break
+
+    const_version = []
+    for name in ["MAJOR", "MINOR", "MICRO", "NANO"]:
+        for variant in ["VERSION_" + name, name + "_VERSION",
+                        suffix + "_" + name, suffix + "_" + name + "_VERSION",
+                        suffix + "_VERSION_" + name]:
+            if hasattr(mod, variant):
+                value = int(getattr(mod, variant))
+                const_version.append(value)
+
+    if const_version:
+        return ".".join(map(str, const_version))
+
+    func_version = ""
+    for name in ["get_version", "version", "util_get_version",
+                 "util_get_version_string", "get_version_string"]:
+        if hasattr(mod, name):
+            try:
+                value = getattr(mod, name)()
+            except TypeError:
+                continue
+
+            if isinstance(value, (tuple, list)):
+                func_version = ".".join(map(str, value))
+                break
+            elif isinstance(value, str):
+                func_version = value
+
+    return func_version
