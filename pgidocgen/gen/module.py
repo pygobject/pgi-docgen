@@ -276,7 +276,7 @@ class ModuleGenerator(genutil.Generator):
             title = "%s %s" % (namespace, version)
             if lib_version:
                 title += " (%s)" % lib_version
-            project_summary = get_project_summary(".", namespace, version)
+            project_summary = get_project_summary(namespace)
             names = []
             gens = [func_gen, cb_gen, class_gen, hier_gen, struct_gen,
                     union_gen, flags_gen, enums_gen, const_gen, map_gen]

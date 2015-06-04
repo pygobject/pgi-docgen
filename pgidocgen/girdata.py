@@ -10,7 +10,7 @@
 from collections import namedtuple
 
 
-P = namedtuple('Project', ['namespaces', 'doap'])
+Project = P = namedtuple('Project', ['namespaces', 'doap'])
 """A project is roughly something which gets released at the same time and
 has the same release version number. In most cases one git repo.
 The namespaces might not actually be included in the project but the libraries
