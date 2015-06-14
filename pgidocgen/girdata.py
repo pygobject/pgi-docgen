@@ -101,6 +101,7 @@ PROJECTS = [
     P(['GLib', 'GObject', 'Gio', 'GModule'], 'https://git.gnome.org/browse/glib/plain/glib.doap'),
     P(['MediaArt'], 'https://git.gnome.org/browse/libmediaart/plain/libmediaart.doap'),
     P(['HarfBuzz'], 'http://cgit.freedesktop.org/harfbuzz/plain/harfbuzz.doap'),
+    P(['Gom'], 'https://git.gnome.org/browse/gom/plain/gom.doap'),
 ]
 
 

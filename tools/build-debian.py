@@ -69,7 +69,7 @@ BLACKLIST = [
     "Skk-1.0",
     "SugarExt-1.0",
     "Meta-Muffin.0",
-    "libisocodes-1.2.1",
+    "libisocodes-1.2.2",
 
     # criticals.. better skip
     "Gwibber-0.1",
@@ -140,7 +140,8 @@ BUILD = ['AccountsService-1.0', 'Anjuta-3.0',
 "JavaScriptCore-4.0", "SocialWebClient-0.25", 
 "WebKit2-4.0", "WebKit2WebExtension-4.0", "NM-1.0", "GstGL-1.0",
 "GstInsertBin-1.0", "GstMpegts-1.0", 'Anthy-9000', 'Vte-2.90',
-'MediaArt-2.0', 'Gdict-1.0', 'CoglGst-2.0',
+'MediaArt-2.0', 'Gdict-1.0', 'CoglGst-2.0', 'GstRtspServer-1.0',
+'ClutterGst-3.0', 'Gom-1.0',
 ]
 
 
@@ -240,6 +241,7 @@ def fetch_girs(girs, dest):
         for version in package.versions:
             if ok or package.candidate == version:
                 ok = True
+                assert version.uri
                 version.fetch_binary(tmp_download)
     cache.close()
 
