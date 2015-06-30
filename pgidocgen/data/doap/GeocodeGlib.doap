@@ -4,7 +4,10 @@
 	 xmlns:gnome="http://api.gnome.org/doap-extensions#"
 	 xmlns="http://usefulinc.com/ns/doap#">
 	<name xml:lang="en">geocode-glib</name>
-	<shortdesc xml:lang="en">Geocode Helper library</shortdesc>
+	<shortdesc xml:lang="en">Helper library for geocoding services</shortdesc>
+	<description xml:lang="en">geocode-glib is a helper library for
+	of geocoding and reverse-geocoding services offered by OpenStreetMap and
+	Nominatim</description>
 	<category rdf:resource="http://api.gnome.org/doap-extensions#core" />
 	<programming-language>C</programming-language>
 	<homepage rdf:resource="http://git.gnome.org/browse/geocode-glib" />
@@ -13,6 +16,13 @@
 			<foaf:name>Bastien Nocera</foaf:name>
 			<foaf:mbox rdf:resource="mailto:hadess@hadess.net" />
 			<gnome:userid>hadess</gnome:userid>
+		</foaf:Person>
+	</maintainer>
+	<maintainer>
+		<foaf:Person>
+			<foaf:name>Jonas Danielsson</foaf:name>
+			<foaf:mbox rdf:resource="mailto:jonas@threetimestwo.org" />
+			<gnome:userid>jonasdn</gnome:userid>
 		</foaf:Person>
 	</maintainer>
 </Project>
