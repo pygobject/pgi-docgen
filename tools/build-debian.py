@@ -24,6 +24,11 @@ import apt
 import apt_pkg
 
 
+DEB_BLACKLIST = [
+    "gir1.2-panelapplet-4.0",
+    "gir1.2-gpaste-2.0",
+]
+
 BLACKLIST = [
     # old gstreamer
     "GstController-0.10",
@@ -94,54 +99,51 @@ BLACKLIST = [
     "FolksDummy-0.6",
 ]
 
-BUILD = ['AccountsService-1.0', 'Anjuta-3.0',
-'AppIndicator3-0.1', 'Atk-1.0', 'Atspi-2.0', 'Cally-1.0', 'Caribou-1.0', 
-'Champlain-0.12', 'Cheese-3.0', 'Clinica-0.3', 'Clutter-1.0', 
-'ClutterGdk-1.0', 'ClutterGst-2.0', 'ClutterX11-1.0', 'Cogl-1.0', 'Cogl-2.0', 
-'CoglPango-1.0', 'ColorHug-1.0', 'Colord-1.0', 'ColordGtk-1.0', 'CryptUI-0.0', 
-'DBus-1.0', 'DBusGLib-1.0', 'Dbusmenu-0.4', 'DbusmenuGtk3-0.4', 'Dee-1.0', 
-'EBook-1.2', 'EBookContacts-1.2', 'EDataServer-1.2', 'EvinceDocument-3.0', 
-'EvinceView-3.0', 'Farstream-0.2', 'Fcitx-1.0', 'GConf-2.0', 'GData-0.0', 
-'GDesktopEnums-3.0', 'GES-1.0', 'GExiv2-0.10', 'GIRepository-2.0', 'GL-1.0', 
-'GLib-2.0', 'GMenu-3.0', 'GModule-2.0', 'GObject-2.0', 'GOffice-0.10', 
-'GSSDP-1.0', 'GUPnP-1.0', 'GUPnPAV-1.0', 'GUPnPDLNA-2.0', 'GUPnPDLNAGst-2.0', 
-'GUPnPIgd-1.0', 'GUdev-1.0', 'GUsb-1.0', 
-'GWeather-3.0', 'GXPS-0.1', 'Gck-1', 'Gda-5.0', 'Gdk-3.0', 'GdkPixbuf-2.0', 
-'GdkX11-3.0', 'Gdl-3', 'Gdm-1.0', 'GeocodeGlib-1.0', 'Gio-2.0', 'Gkbd-3.0', 
-'Gladeui-2.0', 'GnomeBluetooth-1.0', 'GnomeDesktop-3.0', 'GnomeKeyring-1.0', 
-'Goa-1.0', 'Grl-0.2', 'GrlNet-0.2', 'Gsf-1', 'Gst-1.0', 'GstAllocators-1.0', 
-'GstApp-1.0', 'GstAudio-1.0', 'GstBase-1.0', 'GstCheck-1.0', 
-'GstController-1.0', 'GstFft-1.0', 'GstNet-1.0', 'GstPbutils-1.0', 
-'GstRiff-1.0', 'GstRtp-1.0', 'GstRtsp-1.0', 'GstSdp-1.0', 'GstTag-1.0', 
-'GstVideo-1.0', 'Gtk-3.0', 'GtkChamplain-0.12', 'GtkClutter-1.0', 
-'GtkSource-3.0', 'GtkSpell-3.0', 'Gucharmap-2.90', 'IBus-1.0', 
-'Indicate-0.7', 'Itl-1.0', 'JavaScriptCore-3.0', 'Json-1.0', 'Keybinder-0.0', 
-'LangTag-0.5', 'Libosinfo-1.0', 'LibvirtGConfig-1.0', 'LibvirtGLib-1.0', 
-'LibvirtGObject-1.0', 'LunarDate-2.0', 'MPID-3.0', 'Mx-1.0', 'Nautilus-3.0', 
-'Nemo-3.0', 'NetworkManager-1.0', 'Notify-0.7', 'PackageKitGlib-1.0', 
-'PanelApplet-4.0', 'Pango-1.0', 'PangoCairo-1.0', 
-'PangoFT2-1.0', 'PangoXft-1.0', 'Peas-1.0', 'PeasGtk-1.0', 'Polkit-1.0', 
-'PolkitAgent-1.0', 'Poppler-0.18', 'RB-3.0', 'Rest-0.7', 'RestExtras-0.7', 
-'Rsvg-2.0', 'Secret-1', 'Soup-2.4', 'SoupGNOME-2.4', 
-'SpiceClientGLib-2.0', 'SpiceClientGtk-3.0', 'SugarGestures-1.0', 
-'TelepathyGLib-0.12', 'TelepathyLogger-0.2', 'TotemPlParser-1.0', 
-'Tracker-1.0', 'TrackerControl-1.0', 'TrackerMiner-1.0', 'UDisks-2.0', 
-'UMockdev-1.0', 'UPowerGlib-1.0', 'Vte-2.91', 'WebKit-3.0', 'WebKit2-3.0',
-'Wnck-3.0', 'Xkl-1.0', 'Zeitgeist-2.0', 'Zpj-0.0', 'cairo-1.0', 
-'fontconfig-2.0', 'freetype2-2.0', 'libxml2-2.0', 'xfixes-4.0', 'xft-2.0', 
-'xlib-2.0', 'xrandr-1.3', "CoglPango-2.0", "GFBGraph-0.2", 
-"GrlPls-0.2", "Guestfs-1.0", "HarfBuzz-0.0", 
-"InputPad-1.0", "Keybinder-3.0", "LightDM-1", 
-"MateMenu-2.0", "MediaArt-1.0", "Midgard-10.05", "OsmGpsMap-1.0", "Totem-1.0", 
- "Uhm-0.0", "AppStream-0.7", "AppStreamGlib-1.0",
-"CDesktopEnums-3.0", "CMenu-3.0", "CinnamonDesktop-3.0", "ModemManager-1.0", 
-"Evd-0.1", "Cattle-1.0", "GCab-1.0", 
-"GPaste-1.0", "GVnc-1.0", "GVncPulse-1.0", "Ggit-1.0", "GtkVnc-2.0", 
-"JavaScriptCore-4.0", "SocialWebClient-0.25", 
-"WebKit2-4.0", "WebKit2WebExtension-4.0", "NM-1.0", "GstGL-1.0",
-"GstInsertBin-1.0", "GstMpegts-1.0", 'Anthy-9000', 'Vte-2.90',
+BUILD = ['AccountsService-1.0', 'Anjuta-3.0', 'AppIndicator3-0.1', 'Atk-1.0',
+'Atspi-2.0', 'Cally-1.0', 'Caribou-1.0', 'Champlain-0.12', 'Cheese-3.0',
+'Clinica-0.3', 'Clutter-1.0', 'ClutterGdk-1.0', 'ClutterGst-2.0',
+'ClutterX11-1.0', 'Cogl-1.0', 'Cogl-2.0', 'CoglPango-1.0', 'ColorHug-1.0',
+'Colord-1.0', 'ColordGtk-1.0', 'CryptUI-0.0', 'DBus-1.0', 'DBusGLib-1.0',
+'Dbusmenu-0.4', 'DbusmenuGtk3-0.4', 'Dee-1.0', 'EBook-1.2',
+'EBookContacts-1.2', 'EDataServer-1.2', 'EvinceDocument-3.0',
+'EvinceView-3.0', 'Farstream-0.2', 'Fcitx-1.0', 'GConf-2.0', 'GData-0.0',
+'GDesktopEnums-3.0', 'GES-1.0', 'GExiv2-0.10', 'GIRepository-2.0', 'GL-1.0',
+'GLib-2.0', 'GMenu-3.0', 'GModule-2.0', 'GObject-2.0', 'GOffice-0.10',
+'GSSDP-1.0', 'GUPnP-1.0', 'GUPnPAV-1.0', 'GUPnPDLNA-2.0', 'GUPnPDLNAGst-2.0',
+'GUPnPIgd-1.0', 'GUdev-1.0', 'GUsb-1.0', 'GWeather-3.0', 'GXPS-0.1', 'Gck-1',
+'Gda-5.0', 'Gdk-3.0', 'GdkPixbuf-2.0', 'GdkX11-3.0', 'Gdl-3', 'Gdm-1.0',
+'GeocodeGlib-1.0', 'Gio-2.0', 'Gkbd-3.0', 'Gladeui-2.0', 'GnomeBluetooth-1.0',
+'GnomeDesktop-3.0', 'GnomeKeyring-1.0', 'Goa-1.0', 'Grl-0.2', 'GrlNet-0.2',
+'Gsf-1', 'Gst-1.0', 'GstAllocators-1.0', 'GstApp-1.0', 'GstAudio-1.0',
+'GstBase-1.0', 'GstCheck-1.0', 'GstController-1.0', 'GstFft-1.0',
+'GstNet-1.0', 'GstPbutils-1.0', 'GstRtp-1.0', 'GstRtsp-1.0', 'GstSdp-1.0',
+'GstTag-1.0', 'GstVideo-1.0', 'Gtk-3.0', 'GtkChamplain-0.12',
+'GtkClutter-1.0', 'GtkSource-3.0', 'GtkSpell-3.0', 'Gucharmap-2.90',
+'IBus-1.0', 'Indicate-0.7', 'Itl-1.0', 'JavaScriptCore-3.0', 'Json-1.0',
+'Keybinder-0.0', 'LangTag-0.5', 'Libosinfo-1.0', 'LibvirtGConfig-1.0',
+'LibvirtGLib-1.0', 'LibvirtGObject-1.0', 'LunarDate-2.0', 'MPID-3.0',
+'Mx-1.0', 'Nautilus-3.0', 'Nemo-3.0', 'NetworkManager-1.0', 'Notify-0.7',
+'PackageKitGlib-1.0', 'Pango-1.0', 'PangoCairo-1.0', 'PangoFT2-1.0',
+'PangoXft-1.0', 'Peas-1.0', 'PeasGtk-1.0', 'Polkit-1.0', 'PolkitAgent-1.0',
+'Poppler-0.18', 'RB-3.0', 'Rest-0.7', 'RestExtras-0.7', 'Rsvg-2.0',
+'Secret-1', 'Soup-2.4', 'SoupGNOME-2.4', 'SpiceClientGLib-2.0',
+'SpiceClientGtk-3.0', 'SugarGestures-1.0', 'TelepathyGLib-0.12',
+'TelepathyLogger-0.2', 'TotemPlParser-1.0', 'Tracker-1.0',
+'TrackerControl-1.0', 'TrackerMiner-1.0', 'UDisks-2.0', 'UMockdev-1.0',
+'UPowerGlib-1.0', 'Vte-2.91', 'WebKit-3.0', 'WebKit2-3.0', 'Wnck-3.0',
+'Xkl-1.0', 'Zeitgeist-2.0', 'Zpj-0.0', 'cairo-1.0', 'fontconfig-2.0',
+'freetype2-2.0', 'libxml2-2.0', 'xfixes-4.0', 'xft-2.0', 'xlib-2.0',
+'xrandr-1.3', "CoglPango-2.0", "GFBGraph-0.2", "GrlPls-0.2", "Guestfs-1.0",
+"HarfBuzz-0.0", "InputPad-1.0", "Keybinder-3.0", "LightDM-1", "MateMenu-2.0",
+"MediaArt-1.0", "Midgard-10.05", "OsmGpsMap-1.0", "Totem-1.0", "Uhm-0.0",
+"AppStreamGlib-1.0", "CDesktopEnums-3.0", "CMenu-3.0", "CinnamonDesktop-3.0",
+"ModemManager-1.0", "Evd-0.1", "Cattle-1.0", "GCab-1.0", "GPaste-1.0",
+"GVnc-1.0", "GVncPulse-1.0", "Ggit-1.0", "GtkVnc-2.0", "JavaScriptCore-4.0",
+"SocialWebClient-0.25", "WebKit2-4.0", "WebKit2WebExtension-4.0", "NM-1.0",
+"GstGL-1.0", "GstInsertBin-1.0", "GstMpegts-1.0", 'Anthy-9000', 'Vte-2.90',
 'MediaArt-2.0', 'Gdict-1.0', 'CoglGst-2.0', 'GstRtspServer-1.0',
-'ClutterGst-3.0', 'Gom-1.0',
+'ClutterGst-3.0', 'Gom-1.0', 'Limba-1.0', 'PanelApplet-5.0', 'AppStream-0.8',
+'Abi-3.0',
 ]
 
 
@@ -154,17 +156,19 @@ def get_typelibs():
     cache.open(None)
 
     typelibs = {}
-    to_install = []
+    to_install = set()
 
     data = subprocess.check_output(["apt-file", "search", ".typelib"])
     for line in data.strip().splitlines():
         package, path = line.split(": ", 1)
+        if package in DEB_BLACKLIST:
+            continue
         if path.startswith("/usr/lib/x86_64-linux-gnu/girepository-1.0/") or \
                 path.startswith("/usr/lib/girepository-1.0/"):
             if cache[package].candidate is None:
                 continue
             if not cache[package].is_installed:
-                to_install.append(package)
+                to_install.add(package)
             if not os.path.exists(path):
                 continue
             name = os.path.splitext(os.path.basename(path))[0]
@@ -176,7 +180,7 @@ def get_typelibs():
 
     if to_install:
         print "Not all typelibs installed:\n"
-        print "sudo aptitude install " + " ".join(to_install)
+        print "sudo aptitude install " + " ".join(sorted(to_install))
         raise SystemExit(1)
 
     return typelibs
