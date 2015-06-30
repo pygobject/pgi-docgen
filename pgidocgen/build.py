@@ -110,6 +110,10 @@ def do_build(package):
     shutil.rmtree(os.path.join(package.build_path, ".doctrees"))
     os.remove(os.path.join(package.build_path, ".buildinfo"))
 
+    # remove some pages we don't need
+    os.remove(os.path.join(package.build_path, "genindex.html"))
+    os.remove(os.path.join(package.build_path, "search.html"))
+
     if has_optipng():
         png_dirs = [
             os.path.join(package.build_path, "_static"),
