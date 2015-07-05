@@ -315,6 +315,7 @@ def _parse_types(dom, namespace):
                 types[key] = "GObject." + key
 
         types["GBoxed"] = "GObject.GBoxed"
+        types["GType"] = "GObject.GType"
     elif namespace == "GLib":
         from gi.repository import GLib
 
