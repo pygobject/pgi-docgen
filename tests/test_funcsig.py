@@ -78,10 +78,10 @@ class TFuncSigs(unittest.TestCase):
         self.assertEqual(arg_to_class_ref("int"), ":obj:`int`")
         self.assertEqual(arg_to_class_ref("[int]"), "[:obj:`int`]")
         self.assertEqual(
-            arg_to_class_ref("[Gtk.Window]"), "[:class:`Gtk.Window`]")
+            arg_to_class_ref("[Gtk.Window]"), "[:obj:`Gtk.Window`]")
         self.assertEqual(
             arg_to_class_ref("{Gtk.Window or None: int}"),
-            "{:class:`Gtk.Window` or :obj:`None`: :obj:`int`}")
+            "{:obj:`Gtk.Window` or :obj:`None`: :obj:`int`}")
         self.assertEqual(
             arg_to_class_ref("[str] or None"),
             "[:obj:`str`] or :obj:`None`")

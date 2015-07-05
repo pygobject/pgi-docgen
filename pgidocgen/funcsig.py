@@ -59,12 +59,10 @@ def arg_to_class_ref(text):
             v = arg_to_class_ref(v.strip())
             out.append("{%s: %s}" % (k, v))
         else:
-            if p in ("None", "int", "bool", "str", "float"):
-                out.append(":obj:`%s`" % p)
-            elif p == "bytes":
+            if p == "bytes":
                 out.append(":obj:`%s <str>`" % p)
             elif p:
-                out.append(":class:`%s`" % p)
+                out.append(":obj:`%s`" % p)
 
     return " or ".join(out)
 
