@@ -20,6 +20,9 @@ from . import util
 SHELVE_CACHE = os.environ.get("PGIDOCGEN_CACHE", None)
 
 
+RE_XML_ILLEGAL = "(&#x1c;)"
+
+
 def get_namespace(namespace, version, _cache={}):
     key = str(namespace + "." + version)
     if key in _cache:
@@ -52,7 +55,10 @@ def _get_dom(path, _cache={}):
     _cache.clear()
     # reduce peak memory
     gc.collect()
-    _cache[path] = minidom.parse(path)
+    with open(path, "rb") as h:
+        data = h.read()
+        data = re.sub(RE_XML_ILLEGAL, "?", data)
+        _cache[path] = minidom.parseString(data)
     return _cache[path]
 
 
