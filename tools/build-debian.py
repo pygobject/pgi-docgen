@@ -60,7 +60,6 @@ BLACKLIST = [
     "Gcr-3",
     "GTop-2.0",
     "BraseroMedia-3.1",
-    "Gnm-1.12",
     "FolksTelepathy-0.6",
     "Folks-0.6",
     "FolksEds-0.6",
@@ -143,7 +142,7 @@ BUILD = ['AccountsService-1.0', 'Anjuta-3.0', 'AppIndicator3-0.1', 'Atk-1.0',
 "GstGL-1.0", "GstInsertBin-1.0", "GstMpegts-1.0", 'Anthy-9000', 'Vte-2.90',
 'MediaArt-2.0', 'Gdict-1.0', 'CoglGst-2.0', 'GstRtspServer-1.0',
 'ClutterGst-3.0', 'Gom-1.0', 'Limba-1.0', 'PanelApplet-5.0', 'AppStream-0.8',
-'Abi-3.0',
+'Abi-3.0', "Gnm-1.12",
 ]
 
 
