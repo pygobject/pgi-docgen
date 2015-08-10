@@ -102,6 +102,7 @@ PROJECTS = [
     P(['MediaArt'], 'https://git.gnome.org/browse/libmediaart/plain/libmediaart.doap'),
     P(['HarfBuzz'], 'http://cgit.freedesktop.org/harfbuzz/plain/harfbuzz.doap'),
     P(['Gom'], 'https://git.gnome.org/browse/gom/plain/gom.doap'),
+    P(['Gnm'], 'https://git.gnome.org/browse/gnumeric/plain/gnumeric.doap'),
 ]
 
 
