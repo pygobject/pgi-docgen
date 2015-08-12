@@ -139,8 +139,7 @@ class ModuleGenerator(genutil.Generator):
         _import_dependency(module, namespace, version)
         # glib depends on it as it includes static bindings base classes
         # (FIXME in pgi)
-        if namespace == "GLib":
-            _import_dependency(module, "GObject", "2.0")
+        _import_dependency(module, "GObject", "2.0")
 
         repo = Repository(namespace, version)
         mod = repo.import_module()
