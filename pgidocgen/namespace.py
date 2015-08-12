@@ -81,16 +81,10 @@ class Namespace(object):
             version = include.getAttribute("version")
             deps.append((name, version))
 
-        # Gnm-1.12 is missing Gtk-3.0
-        if self.namespace == "Gnm" and self.version == "1.12":
-            deps.append(("Gtk", "3.0"))
-
         # these are not always included, but we need them
         # for base types
-        if namespace != "GLib":
-            if ("GLib", "2.0") not in deps:
-                deps.append(("GLib", "2.0"))
-            if ("GObject", "2.0") not in deps and namespace != "GObject":
+        if not deps:
+            if self.namespace not in ("GObject", "GLib"):
                 deps.append(("GObject", "2.0"))
 
         self._dependencies = deps
@@ -152,7 +146,7 @@ class Namespace(object):
             loaded.append(key)
             to_load.extend(sub_ns.get_dependencies())
 
-        return list(set(loaded))
+        return loaded
 
     def __repr__(self):
         return "%s(%s, %s)" % (

@@ -97,7 +97,6 @@ class TNamespace(unittest.TestCase):
     def test_deps(self):
         ns = Namespace("DBus", "1.0")
         deps = ns.get_dependencies()
-        self.assertTrue(("GLib", "2.0") in deps)
         self.assertTrue(("GObject", "2.0") in deps)
 
         ns = Namespace("GLib", "2.0")
@@ -107,3 +106,9 @@ class TNamespace(unittest.TestCase):
         ns = Namespace("GObject", "2.0")
         deps = ns.get_dependencies()
         self.assertEqual(deps, [("GLib", "2.0")])
+
+    def test_all_deps(self):
+        ns = Namespace("DBus", "1.0")
+        deps = ns.get_all_dependencies()
+        self.assertTrue(("GObject", "2.0") in deps)
+        self.assertTrue(("GLib", "2.0") in deps)

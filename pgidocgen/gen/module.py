@@ -137,17 +137,16 @@ class ModuleGenerator(genutil.Generator):
         module.write("# -*- coding: utf-8 -*-\n")
         # for references to the real module
         _import_dependency(module, namespace, version)
-        # basic deps
-        _import_dependency(module, "GObject", "2.0")
-        _import_dependency(module, "Gio", "2.0")
-        _import_dependency(module, "GLib", "2.0")
-        _import_dependency(module, "Atk", "1.0")
+        # glib depends on it as it includes static bindings base classes
+        # (FIXME in pgi)
+        if namespace == "GLib":
+            _import_dependency(module, "GObject", "2.0")
 
         repo = Repository(namespace, version)
         mod = repo.import_module()
         lib_version = util.get_project_version(mod)
 
-        for dep in repo.get_dependencies():
+        for dep in repo.get_all_dependencies():
             _import_dependency(module, *dep)
 
         class_gen = ClassGenerator(repo)
@@ -294,8 +293,11 @@ class ModuleGenerator(genutil.Generator):
         module.close()
 
         # make sure the generated code is valid python
-        with open(module.name, "rb") as h:
-            exec h.read() in {}
+        try:
+            with open(module.name, "rb") as h:
+                exec h.read() in {}
+        except Exception as e:
+            raise RuntimeError(module.name, e)
 
         conf_path = os.path.join(dir_, "_pgi_docgen_conf.py")
         deps = ["-".join(d) for d in repo.get_all_dependencies()]
