@@ -57,6 +57,9 @@ html_copy_source = False
 html_show_sourcelink = False
 html_short_title = project = '%s %s' % (mname, mversion)
 html_title = "%s Python API Docs" % html_short_title
+html_context = {
+    "extra_css_files": ["_static/css/pgi.css"],
+}
 
 inheritance_node_attrs = dict(shape='box', fontsize=8.5,
                               color='gray70', style='rounded',

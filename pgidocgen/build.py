@@ -15,6 +15,7 @@ import threading
 import shutil
 
 import jinja2
+import sphinx
 
 from .mergeindex import merge
 from . import BASEDIR
@@ -153,6 +154,9 @@ def main(argv):
                         help='path to where the resulting build should be')
     parser.add_argument('--devhelp', action='store_true')
     args = parser.parse_args(argv[1:])
+
+    if sphinx.version_info < (1, 3):
+        raise SystemExit("Needs sphinx 1.3+")
 
     to_build = {}
 

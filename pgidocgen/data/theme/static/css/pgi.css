@@ -2,10 +2,6 @@
     display: none;
 }
 
-.rst-content tt {
-    font-size: 1em;
-}
-
 p {
     font-size: 1em;
 }
@@ -54,7 +50,12 @@ p {
     white-space: normal;
 }
 
-.rst-content a tt {
+.rst-content code.literal {
+    color: #777;
+    font-weight: normal;
+}
+
+.rst-content a tt, .rst-content code.xref {
     color: #174666;
 }
 
@@ -63,7 +64,12 @@ p {
     font-size: 0.9em;
 }
 
-tt.descname, tt.descclassname {
+code, .rst-content code, .rst-content tt{
+    font-family: monospace;
+    font-size: 1em;
+}
+
+tt.descname, tt.descclassname, code.descname, code.descclassname {
     font-family: "Lato";
 }
 
