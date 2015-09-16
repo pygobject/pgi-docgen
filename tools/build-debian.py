@@ -57,6 +57,9 @@ BLACKLIST = [
     "GdkX11-2.0",
     'MateDesktop-2.0',
     'PolkitGtkMate-1.0',
+    'AtrilView-1.5.0',
+    'AtrilDocument-1.5.0',
+    'Eom-1.0',
 
     # broken
     "Gcr-3",
@@ -78,7 +81,6 @@ BLACKLIST = [
     "libisocodes-1.2.2",
 
     # criticals.. better skip
-    "Gwibber-0.1",
     "NMClient-1.0",
     "NMGtk-1.0",
 
@@ -93,7 +95,6 @@ BLACKLIST = [
     "AppIndicator-0.1",
     "MatePanelApplet-4.0",
     "ClutterGst-1.0",
-    "GwibberGtk-0.1",
     "BraseroBurn-3.1",
     "Listaller-0.5",
     "v_sim-3.7",
@@ -144,7 +145,8 @@ BUILD = ['AccountsService-1.0', 'Anjuta-3.0', 'AppIndicator3-0.1', 'Atk-1.0',
 "GstGL-1.0", "GstInsertBin-1.0", "GstMpegts-1.0", 'Anthy-9000', 'Vte-2.90',
 'MediaArt-2.0', 'Gdict-1.0', 'CoglGst-2.0', 'GstRtspServer-1.0',
 'ClutterGst-3.0', 'Gom-1.0', 'Limba-1.0', 'PanelApplet-5.0', 'AppStream-0.8',
-'Abi-3.0', 'Gnm-1.12', 'Hkl-4.0', 'Libmsi-1.0',
+'Abi-3.0', 'Gnm-1.12', 'Hkl-4.0', 'Libmsi-1.0', 'Vips-8.0', 'GooCanvas-2.0',
+'GSound-1.0', 'Accounts-1.0',
 ]
 
 
@@ -246,8 +248,12 @@ def fetch_girs(girs, dest):
         for version in package.versions:
             if ok or package.candidate == version:
                 ok = True
-                assert version.uri
-                version.fetch_binary(tmp_download)
+                try:
+                    # XXX: This fails in various ways unrelated to the actual
+                    # download action
+                    version.fetch_binary(tmp_download)
+                except Exception as e:
+                    print e
     cache.close()
 
     print "Extracting packages.."
