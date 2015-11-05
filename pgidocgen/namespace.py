@@ -12,6 +12,7 @@ import shelve
 from xml.dom import minidom
 
 from . import util
+from .debug import get_line_numbers
 
 
 # Enable caching during building multiples modules if PGIDOCGEN_CACHE is set
@@ -81,6 +82,18 @@ class Namespace(object):
             version = include.getAttribute("version")
             deps.append((name, version))
 
+        # line number mapping
+        namespace_elm = dom.getElementsByTagName("namespace")[0]
+        shared_library = namespace_elm.getAttribute("shared-library")
+        shared_libraries = shared_library.split(",") if shared_library else []
+
+        self._line_numbers = {}
+        for lib in shared_libraries:
+            for key, value in get_line_numbers(lib).iteritems():
+                if key in self._types:
+                    self._line_numbers[self._types[key]] = value
+        print self._line_numbers
+
         # these are not always included, but we need them
         # for base types
         if not deps:
@@ -88,6 +101,14 @@ class Namespace(object):
                 deps.append(("GObject", "2.0"))
 
         self._dependencies = deps
+
+    def get_line_numbers(self):
+        """Returns a dict mapping C symbols to relative source paths and line
+        numbers. In case no debug symbols are present the returned dict will
+        be empty.
+        """
+
+        return self._line_numbers
 
     def import_module(self):
         """Imports the module and initializes all dependencies.
