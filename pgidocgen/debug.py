@@ -27,29 +27,66 @@ def get_debug_file_directory():
     return "/usr/lib/debug"
 
 
-def get_debug_file(library_path):
-    """Returns the name of the linked debug library or None
-
-    FIXME: this doesn't work with glib/gobject
-    """
+def get_debug_link_file(library_path):
+    """Returns the path of the linked debug library or None"""
 
     library_path = os.path.abspath(library_path)
+    data = read_section(library_path, ".gnu_debuglink")
+    if not data:
+        return None
+    filename = data.split(b"\x00", 1)[0]
+    debug_dir = get_debug_file_directory()
+    orig_path = os.path.dirname(library_path).lstrip(os.path.sep)
+    return os.path.join(debug_dir, orig_path, filename)
+
+
+def read_section(library_path, name):
     try:
-        data = subprocess.check_output(["readelf", "-p", ".gnu_debuglink",
+        data = subprocess.check_output(["readelf", "-x", name,
                                         library_path],
                                         stderr=subprocess.STDOUT)
     except subprocess.CalledProcessError:
-        return None
+        return b""
 
+    def tobin(s):
+        d = b""
+        for i in xrange(0, len(s), 2):
+            d += chr(int(s[i:i + 2], 16))
+        return d
+
+    content = b""
     for line in data.splitlines():
-        line = line.lstrip()
-        if line.startswith("[     0]"):
-            filename = line.split("]", 1)[-1].lstrip()
-            debug_dir = get_debug_file_directory()
-            orig_path = os.path.dirname(library_path).lstrip(os.path.sep)
-            return os.path.join(debug_dir, orig_path, filename)
+        line = line.split()
+        if not line or not line[0].startswith("0x"):
+            continue
+        content += "".join(line[1:-1])
+    return tobin(content)
 
-    return None
+
+def get_debug_build_id_file(library_path):
+    """Returns the path of the linked debug library or None"""
+
+    data = read_section(library_path, ".note.gnu.build-id")
+    if not data:
+        return None
+    index = data.find("GNU")
+    assert index != -1
+    index += 4
+    id_ = "".join(["%02x" % ord(c) for c in data[index:]])
+    debug_dir = get_debug_file_directory()
+    return os.path.join(debug_dir, ".build-id", id_[:2], id_[2:] + ".debug")
+
+
+
+def get_debug_file(library_path):
+    """Returns the path of the linked debug library or None"""
+
+    # See https://sourceware.org/gdb/onlinedocs/gdb/Separate-Debug-Files.html
+
+    path = get_debug_link_file(library_path)
+    if path is None or not os.path.exists(path):
+        return get_debug_build_id_file(library_path)
+    return path
 
 
 def read_line_numbers(library_path):

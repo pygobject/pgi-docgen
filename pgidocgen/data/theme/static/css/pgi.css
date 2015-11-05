@@ -142,3 +142,7 @@ table.navigation a .fa
 .graphviz svg {
     max-width: 100%;
 }
+
+.viewcode-link {
+    color: #999 !important;
+}

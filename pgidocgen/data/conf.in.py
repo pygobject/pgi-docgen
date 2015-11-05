@@ -2,6 +2,7 @@
 
 import os
 import sys
+import json
 
 sys.path.insert(0, os.getcwd())
 
@@ -12,12 +13,15 @@ from _pgi_docgen_conf import DEPS
 
 TARGET = os.environ["PGIDOCGEN_TARGET_BASE_PATH"]
 TARGET_PREFIX = os.environ.get("PGIDOCGEN_TARGET_PREFIX", "")
-
 mname, mversion = os.path.basename(os.getcwd()).split("-", 1)
+
+with open("_source.json", "rb") as h:
+    SOURCE_MAP = json.load(h)
 
 extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.intersphinx',
+    'sphinx.ext.linkcode',
     '_ext.inheritance_diagram_fork',
     '_ext.autosummary_fork',
     '_ext.devhelp_fork',
@@ -68,3 +72,13 @@ inheritance_graph_attrs = dict(rankdir="TB", size='""', bgcolor="transparent")
 
 autodoc_member_order = "bysource"
 autodoc_docstring_signature = False
+
+
+def linkcode_resolve(domain, info):
+    """for sphinx.ext.linkcode"""
+
+    name = info["module"]
+    if name:
+        name += "."
+    name += info["fullname"]
+    return SOURCE_MAP.get(name)

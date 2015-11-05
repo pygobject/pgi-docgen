@@ -9,6 +9,7 @@ import os
 import types
 import inspect
 import shutil
+import json
 from urllib2 import urlopen, URLError, HTTPError
 
 from .klass import ClassGenerator
@@ -25,6 +26,7 @@ from . import genutil
 
 from ..doap import get_project_summary
 from ..namespace import get_namespace
+from ..girdata import get_source_to_url_func
 from ..repo import Repository
 from .. import util, BASEDIR
 
@@ -297,6 +299,17 @@ class ModuleGenerator(genutil.Generator):
                 exec h.read() in {}
         except Exception as e:
             raise RuntimeError(module.name, e)
+
+        # for sphinx.ext.linkcode
+        source_path = os.path.join(dir_, "_source.json")
+        source = repo.get_source()
+        func = get_source_to_url_func(namespace, lib_version)
+        url_map = {}
+        if func and source:
+            for key, value in source.iteritems():
+                url_map[key] = func(value)
+        with open(source_path, "wb") as h:
+            json.dump(url_map, h, indent=4)
 
         conf_path = os.path.join(dir_, "_pgi_docgen_conf.py")
         deps = ["-".join(d) for d in repo.get_all_dependencies()]

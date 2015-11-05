@@ -7,6 +7,7 @@
 
 """Database containing additional optional info about common gir files"""
 
+import re
 from collections import namedtuple
 
 
@@ -106,16 +107,64 @@ PROJECTS = [
 ]
 
 
+def get_project(namespace):
+    for p in PROJECTS:
+        if namespace in p.namespaces:
+            return p
+    raise KeyError
+
+
+def get_tag(namespace, project_version):
+
+    def matches(ns):
+        return namespace == ns or namespace in get_related_namespaces(ns)
+
+    if matches("Atk"):
+        return "ATK_" + project_version.replace(".", "_")
+    elif matches("Gtk") or matches("GLib"):
+        return project_version
+    else:
+        return ""
+
+
+def get_source_to_url_func(namespace, project_version):
+    """Returns a function for mapping the line number paths to web links
+    or None.
+    """
+
+    try:
+        project = get_project(namespace)
+    except KeyError:
+        return
+
+    tag = get_tag(namespace, project_version)
+
+    if "git.gnome.org" not in project.doap or not tag:
+        return None
+
+    match = re.search("/browse/(.*?)/", project.doap)
+    if match is None:
+        return
+    git_name = match.group(1)
+
+    def gnome_func(path):
+        path, line = path.rsplit(":", 1)
+        return "https://git.gnome.org/browse/%s/tree/%s?h=%s#n%s" % (
+            git_name, path, tag, line)
+
+    return gnome_func
+
+
 def get_related_namespaces(ns):
     """Returns a list of related namespaces which are part of the
     same project.
     """
 
-    for p in PROJECTS:
-        if ns in p.namespaces:
-            l = p.namespaces[:]
-            l.remove(ns)
-            break
+    try:
+        p = get_project(ns)
+    except KeyError:
+        return []
     else:
-        l = []
-    return l
+        l = p.namespaces[:]
+        l.remove(ns)
+        return l

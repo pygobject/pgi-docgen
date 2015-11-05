@@ -216,6 +216,9 @@ class Repository(object):
     def import_module(self):
         return self._ns.import_module()
 
+    def get_source(self):
+        return self._ns.get_source()
+
     def is_private(self, name):
         """is_private('Gtk.ViewportPrivate')"""
 
