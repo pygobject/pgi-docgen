@@ -57,7 +57,7 @@ def _handle_data(types, current, d):
         if sub in objects:
             return ":obj:`%s`" % objects[sub]
         elif sub in types:
-            pytype = types[sub]
+            pytype = types[sub][0]
             assert "." in pytype
             return ":py:obj:`%s`" % pytype
         elif token.startswith(("#", "%")):
@@ -66,14 +66,14 @@ def _handle_data(types, current, d):
                 # like "a list of #GtkWindows", we also try "#GtkWindow"
                 sub = token[1:-1]
                 if sub in types:
-                    pytype = types[sub]
+                    pytype = types[sub][0]
                     assert "." in pytype
                     return ":class:`%s <%s>`" % (pytype + "s", pytype)
             else:
                 # also try to add "s", GdkFrameTiming(s)
                 sub = token[1:] + "s"
                 if sub in types:
-                    pytype = types[sub]
+                    pytype = types[sub][0]
                     assert "." in pytype
                     py_no_s = pytype[:-1] if pytype[-1] == "s" else pytype
                     return ":class:`%s <%s>`" % (py_no_s, pytype)
@@ -100,7 +100,10 @@ def _handle_data(types, current, d):
             if len(parts) > 2:
                 obj, sep, sigprop = parts[0], parts[1], "".join(parts[2:])
                 obj_id = obj.lstrip("#")
-                obj_rst_id = types.get(obj_id, current)
+                if obj_id in types:
+                    obj_rst_id = types[obj_id][0]
+                else:
+                    obj_rst_id = current
 
                 if sigprop and obj_rst_id:
                     fallback = False

@@ -9,6 +9,7 @@ import os
 import gc
 import re
 import shelve
+import collections
 from xml.dom import minidom
 
 from . import util
@@ -89,9 +90,10 @@ class Namespace(object):
 
         self._source = {}
         for lib in shared_libraries:
-            for key, value in get_line_numbers(lib).iteritems():
-                if key in self._types:
-                    self._source[self._types[key]] = value
+            for symbol, path in get_line_numbers(lib).iteritems():
+                if symbol in self._types:
+                    for key in self._types[symbol]:
+                        self._source[key] = path
 
         # these are not always included, but we need them
         # for base types
@@ -184,7 +186,7 @@ def get_cairo_types():
             if arg.startswith("_"):
                 continue
             c_name = "_".join(filter(None, ["cairo", prefix, arg]))
-            map_[c_name] = obj.__module__ + "." + obj.__name__ + "." + arg
+            map_[c_name] = [obj.__module__ + "." + obj.__name__ + "." + arg]
             # import ctypes
             # lib = ctypes.CDLL("libcairo.so")
             # assert getattr(lib, c_name)
@@ -204,22 +206,14 @@ def get_cairo_types():
 def _parse_types(dom, namespace):
     """Create a mapping of various C names to python names"""
 
-    types = {}
+    types = collections.defaultdict(set)
 
     def add(c_name, py_name):
-        if c_name in types:
-            old_count = types[c_name].count(".")
-            new_count = py_name.count(".")
-            # prefer static methods over functions
-            if old_count > new_count:
-                return
-
         assert py_name.count("."), py_name
-
         # escape each potential attribute
         py_name = ".".join(
             map(util.escape_identifier,  py_name.split(".")))
-        types[c_name] = py_name
+        types[c_name].add(py_name)
 
     # {key of the to be replaces function: c def of the replacement}
     shadowed = {}
@@ -311,15 +305,24 @@ def _parse_types(dom, namespace):
             name = namespace + "." + t.getAttribute("name")
             add(c_name, name)
 
-    # the keys we want to replace have should exist
-    assert not (set(shadowed.keys()) - set(types.values()))
+    # the keys we want to replace should exist
+    values = []
+    for v in types.values():
+        values.extend(v)
+    assert not (set(shadowed.keys()) - set(values))
 
     # make c defs which are replaced point to the key of the replacement
     # so that: "gdk_threads_add_timeout_full" -> Gdk.threads_add_timeout
-    for c_name, name in types.items():
-        if name in shadowed:
-            replacement = shadowed[name]
-            types[replacement] = name
+    for c_name, names in types.items():
+        for name in list(names):
+            if name in shadowed:
+                names.remove(name)
+                replacement = shadowed[name]
+                types[replacement].clear()
+                types[replacement].add(name)
+        if not names:
+            del types[c_name]
+
 
     if namespace == "GObject":
         # these come from overrides and aren't in the gir
@@ -328,19 +331,24 @@ def _parse_types(dom, namespace):
 
         for key in dir(GObject):
             if key.startswith("TYPE_"):
-                types["G_" + key] = "GObject." + key
+                types["G_" + key].add("GObject." + key)
             elif key.startswith(("G_MAX", "G_MIN")):
-                types[key] = "GObject." + key
+                types[key].add("GObject." + key)
 
-        types["GBoxed"] = "GObject.GBoxed"
-        types["GType"] = "GObject.GType"
+        types["GBoxed"].add("GObject.GBoxed")
+        types["GType"].add("GObject.GType")
     elif namespace == "GLib":
         from gi.repository import GLib
 
         for k in dir(GLib):
             if re.match("MINU?INT\d+", k) or re.match("MAXU?INT\d+", k):
-                types["G_" + k] = "GLib." + k
+                types["G_" + k].add("GLib." + k)
 
+    # convert sets to lists and sort them so the best is first
+    # (prefer methods over funcitons)
+    types = dict(types)
+    for key, values in types.items():
+        types[key] = sorted(values, key=lambda v: -v.count("."))
     return types
 
 

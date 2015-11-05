@@ -47,15 +47,16 @@ class MappingGenerator(genutil.Generator):
 
         lines = []
         items = self.repo._types.iteritems()
-        for key, value in sorted(items, key=lambda x: x[0].lower()):
-            if not value.startswith(self.repo.namespace + "."):
-                continue
-            if self.repo.is_private(value):
-                continue
+        for key, values in sorted(items, key=lambda x: x[0].lower()):
             key = util.escape_rest(key)
-            value = util.escape_rest(value)
-            line = util.get_csv_line([key, ":py:data:`%s`" % value])
-            lines.append(line)
+            for value in values:
+                if not value.startswith(self.repo.namespace + "."):
+                    continue
+                if self.repo.is_private(value):
+                    continue
+                value = util.escape_rest(value)
+                line = util.get_csv_line([key, ":py:data:`%s`" % value])
+                lines.append(line)
 
         with open(path, "wb") as h:
             text = _template.render(lines=lines)
