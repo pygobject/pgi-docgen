@@ -13,7 +13,7 @@ import collections
 from xml.dom import minidom
 
 from . import util
-from .debug import get_line_numbers
+from .debug import get_line_numbers_for_name
 
 
 # Enable caching during building multiples modules if PGIDOCGEN_CACHE is set
@@ -90,7 +90,7 @@ class Namespace(object):
 
         self._source = {}
         for lib in shared_libraries:
-            for symbol, path in get_line_numbers(lib).iteritems():
+            for symbol, path in get_line_numbers_for_name(lib).iteritems():
                 if symbol in self._types:
                     for key in self._types[symbol]:
                         self._source[key] = path

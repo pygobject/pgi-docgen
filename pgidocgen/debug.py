@@ -7,6 +7,7 @@
 
 import os
 import sys
+import bisect
 import subprocess
 
 """
@@ -14,7 +15,7 @@ Provides source paths and line numbers for shared libraries.
 The library has to include debug symbols or a separate debug symbol file has
 to be present (same requirements as for gdb to display line numbers)
 
-Check out get_line_numbers()
+Check out get_line_numbers_for_name()
 """
 
 
@@ -31,7 +32,7 @@ def get_debug_link_file(library_path):
     """Returns the path of the linked debug library or None"""
 
     library_path = os.path.abspath(library_path)
-    data = read_section(library_path, ".gnu_debuglink")
+    data = read_elf_section(library_path, ".gnu_debuglink")
     if not data:
         return None
     filename = data.split(b"\x00", 1)[0]
@@ -40,7 +41,7 @@ def get_debug_link_file(library_path):
     return os.path.join(debug_dir, orig_path, filename)
 
 
-def read_section(library_path, name):
+def read_elf_section(library_path, name):
     try:
         data = subprocess.check_output(["readelf", "-x", name,
                                         library_path],
@@ -66,7 +67,7 @@ def read_section(library_path, name):
 def get_debug_build_id_file(library_path):
     """Returns the path of the linked debug library or None"""
 
-    data = read_section(library_path, ".note.gnu.build-id")
+    data = read_elf_section(library_path, ".note.gnu.build-id")
     if not data:
         return None
     index = data.find("GNU")
@@ -89,28 +90,125 @@ def get_debug_file(library_path):
     return path
 
 
-def read_line_numbers(library_path):
-    """Returns a dict mapping symbols to relative paths:lineno.
-
-    In case the passed library does not contain debug symbols or does
-    not exists an empty dict is returned.
-    """
-
-    symbols = {}
-
+def get_public_symbols(library_path):
     try:
         data = subprocess.check_output(
-            ["nm", "-p", "--line-numbers", library_path],
+            ["objdump", "-t", "-j", ".text", library_path],
             stderr=subprocess.STDOUT)
     except subprocess.CalledProcessError:
         return {}
 
+    symbols = {}
+    for line in data.splitlines():
+        parts = line.split(None, 1)
+        if not parts:
+            continue
+        try:
+            addr = int(parts[0], 16)
+        except ValueError:
+            continue
+        if parts[1][0] not in "ug":
+            continue
+        symbols[addr] = line.split()[-1]
+    return symbols
+
+
+def get_compile_units(library_path):
+    try:
+        data = subprocess.check_output(
+            ["objdump", "--dwarf=info", library_path],
+            stderr=subprocess.STDOUT)
+    except subprocess.CalledProcessError:
+        return {}
+
+    cus = {}
+
+    cu_name = None
+    cu_dir = None
+    cu_low_pc = None
+    type_ = None
     for line in data.splitlines():
         parts = line.split()
-        if len(parts) == 4:
-            type_, symbol, path = parts[1:]
-            if type_ == "T":
-                symbols[symbol] = os.path.normpath(path)
+        if not parts:
+            continue
+        if parts[1] == "Abbrev":
+            type_ = parts[-1].strip("()")
+            cu_name = cu_dir = cu_low_pc = None
+            continue
+
+        if type_ == "DW_TAG_compile_unit":
+            new = True
+            if parts[1] == "DW_AT_name":
+                cu_name = parts[-1]
+            elif parts[1] == "DW_AT_comp_dir":
+                cu_dir = parts[-1]
+            elif parts[1] == "DW_AT_low_pc":
+                cu_low_pc = parts[-1]
+            else:
+                new = False
+
+            if new and cu_name and cu_dir and cu_low_pc:
+                cus[int(cu_low_pc, 16)] = \
+                    os.path.normpath(os.path.join(cu_dir, cu_name))
+
+    return cus
+
+
+def get_lines(library_path):
+    try:
+        data = subprocess.check_output(
+            ["objdump", "--dwarf=decodedline", library_path],
+            stderr=subprocess.STDOUT)
+    except subprocess.CalledProcessError:
+        return {}
+
+    lines = {}
+    for line in data.splitlines():
+        parts = line.split()
+        if len(parts) != 3:
+            continue
+        try:
+            addr = int(parts[-1], 16)
+        except ValueError:
+            continue
+        lines[addr] = str(int(parts[1]) - 1)
+
+    return lines
+
+
+def get_line_numbers_for_file(library_path):
+    """Returns a dict mapping symbols to relative paths:lineno.
+
+    In case the passed library does not contain debug symbols or does
+    not exists an empty dict is returned.
+
+    Requires objdump.
+    """
+
+    cus = get_compile_units(library_path)
+    cu_index = sorted(cus.keys())
+
+    def find_nearest_cu(addr):
+        i = bisect.bisect_right(cu_index, addr)
+        if i:
+            return cus[cu_index[i - 1]]
+        raise ValueError
+
+    lines = get_lines(library_path)
+    line_index = sorted(lines.keys())
+
+    def find_nearest_line(addr):
+        i = bisect.bisect_right(line_index, addr)
+        if i:
+            return lines[line_index[i - 1]]
+        raise ValueError
+
+    public = get_public_symbols(library_path)
+    symbols = {}
+    for addr, symbol in sorted(public.iteritems()):
+        cu, line = find_nearest_cu(addr), find_nearest_line(addr)
+        if symbol not in symbols:
+            symbols[symbol] = "%s:%s" % (cu, line)
 
     if len(symbols) < 2:
         return {}
@@ -119,7 +217,7 @@ def read_line_numbers(library_path):
     assert len(symbols) > 1
     base = symbols.values()[0].split(os.path.sep)
     min_match = len(base)
-    for path in symbols.itervalues():
+    for symbol, path in symbols.iteritems():
         parts = path.split(os.path.sep)
         same = 0
         for a, b in zip(parts, base):
@@ -128,9 +226,14 @@ def read_line_numbers(library_path):
             else:
                 break
         min_match = min(min_match, same)
-    for key, path in symbols.items():
-        new_path = os.path.sep.join(path.split(os.path.sep)[min_match - 1:])
-        symbols[key] = new_path
+
+    # we want at least one directory (it's uncommon that the source is in /)
+    if min_match >= len(base) - 1:
+        min_match = len(base) - 2
+
+    for symbol, path in symbols.items():
+        new_path = os.path.sep.join(path.split(os.path.sep)[min_match:])
+        symbols[symbol] = new_path
 
     return symbols
 
@@ -160,7 +263,7 @@ def get_abs_library_path(library_name):
     return ""
 
 
-def get_line_numbers(library_name):
+def get_line_numbers_for_name(library_name):
     """Given a shared library returns a dict mapping symbols to relative
     source paths and line numbers.
 
@@ -172,10 +275,10 @@ def get_line_numbers(library_name):
         return {}
 
     library_path = get_abs_library_path(library_name)
-    symbols = read_line_numbers(library_path)
+    symbols = get_line_numbers_for_file(library_path)
     if not symbols:
         library_path = get_debug_file(library_path)
         if library_path is None:
             return {}
-        return read_line_numbers(library_path)
+        return get_line_numbers_for_file(library_path)
     return symbols
