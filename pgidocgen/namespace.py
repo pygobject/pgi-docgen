@@ -86,14 +86,8 @@ class Namespace(object):
         # line number mapping
         namespace_elm = dom.getElementsByTagName("namespace")[0]
         shared_library = namespace_elm.getAttribute("shared-library")
-        shared_libraries = shared_library.split(",") if shared_library else []
-
-        self._source = {}
-        for lib in shared_libraries:
-            for symbol, path in get_line_numbers_for_name(lib).iteritems():
-                if symbol in self._types:
-                    for key in self._types[symbol]:
-                        self._source[key] = path
+        self._shared_libraries = \
+            shared_library.split(",") if shared_library else []
 
         # these are not always included, but we need them
         # for base types
@@ -103,13 +97,20 @@ class Namespace(object):
 
         self._dependencies = deps
 
+    @util.cache_calls
     def get_source(self):
         """Returns a dict mapping C symbols to relative source paths and line
         numbers. In case no debug symbols are present the returned dict will
         be empty.
         """
 
-        return self._source
+        source = {}
+        for lib in self._shared_libraries:
+            for symbol, path in get_line_numbers_for_name(lib).iteritems():
+                if symbol in self._types:
+                    for key in self._types[symbol]:
+                        source[key] = path
+        return source
 
     def import_module(self):
         """Imports the module and initializes all dependencies.

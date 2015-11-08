@@ -12,7 +12,7 @@ from gi.repository import GObject
 
 from .namespace import get_namespace
 from . import util
-from .util import unindent, escape_identifier
+from .util import unindent, escape_identifier, cache_calls
 
 from .funcsig import FuncSignature, py_type_to_class_ref, get_type_name
 from .parser import docstring_to_rest
@@ -97,18 +97,6 @@ class Method(object):
         self.is_static = is_static
         self.code = code
         self.is_vfunc = is_vfunc
-
-
-
-def cache_calls(func):
-    _cache = {}
-    def wrap(*args):
-        if len(_cache) > 100:
-            _cache.clear()
-        if args not in _cache:
-            _cache[args] = func(*args)
-        return _cache[args]
-    return wrap
 
 
 class Repository(object):

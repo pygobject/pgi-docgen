@@ -17,6 +17,17 @@ import cStringIO
 _KWD_RE = re.compile("^(%s)$" % "|".join(keyword.kwlist))
 
 
+def cache_calls(func):
+    _cache = {}
+    def wrap(*args):
+        if len(_cache) > 100:
+            _cache.clear()
+        if args not in _cache:
+            _cache[args] = func(*args)
+        return _cache[args]
+    return wrap
+
+
 def get_child_properties(cls):
     """Returns a list of GParamSpecs or an empty list"""
 

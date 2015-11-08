@@ -302,10 +302,10 @@ class ModuleGenerator(genutil.Generator):
 
         # for sphinx.ext.linkcode
         source_path = os.path.join(dir_, "_source.json")
-        source = repo.get_source()
-        func = get_source_to_url_func(namespace, lib_version)
         url_map = {}
-        if func and source:
+        func = get_source_to_url_func(namespace, lib_version)
+        if func:
+            source = repo.get_source()
             for key, value in source.iteritems():
                 url_map[key] = func(value)
         with open(source_path, "wb") as h:
