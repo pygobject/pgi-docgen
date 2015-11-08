@@ -122,7 +122,7 @@ class TUtil(unittest.TestCase):
         self.assertIs(fake_subclasses(Gtk.Scrollable)[1], Gtk.TreeView)
 
     def test_get_library_version(self):
-        mods = ["Gtk", "Atk", "Gst", "Poppler", "Anthy", "InputPad",
+        mods = ["Gtk", "Atk", "Gst", "Poppler", "Anthy", "InputPad", "Pango",
                 "WebKit2", "GdkPixbuf", "LunarDate", "TotemPlParser", "GVnc"]
 
         for m in mods:

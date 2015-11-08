@@ -451,7 +451,8 @@ def get_library_version(mod):
 
     func_version = ""
     for name in ["get_version", "version", "util_get_version",
-                 "util_get_version_string", "get_version_string"]:
+                 "util_get_version_string", "get_version_string",
+                 "version_string"]:
         if hasattr(mod, name):
             try:
                 value = getattr(mod, name)()

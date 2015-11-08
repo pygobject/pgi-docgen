@@ -121,7 +121,7 @@ def get_tag(namespace, project_version):
 
     if matches("Atk"):
         return "ATK_" + project_version.replace(".", "_")
-    elif matches("Gtk") or matches("GLib"):
+    elif matches("Gtk") or matches("GLib") or matches("Pango"):
         return project_version
     else:
         return ""
