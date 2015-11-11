@@ -114,15 +114,119 @@ def get_project(namespace):
     raise KeyError
 
 
+def get_related_namespaces(ns):
+    """Returns a list of related namespaces which are part of the
+    same project.
+    """
+
+    try:
+        p = get_project(ns)
+    except KeyError:
+        return []
+    else:
+        l = p.namespaces[:]
+        l.remove(ns)
+        return l
+
+def get_generic_library_version(mod):
+    """Tries to return a version string of the library version used to create
+    the gir or if not available the version of the library dlopened.
+
+    If no version could be found, returns an empty string.
+    """
+
+    suffix = ""
+    modname = mod.__name__
+    for i, (o, l) in enumerate(reversed(zip(modname, modname.lower()))):
+        if o != l:
+            suffix = modname[-i - 1:].upper()
+            break
+
+    const_version = []
+    for name in ["MAJOR", "MINOR", "MICRO", "NANO"]:
+        for variant in ["VERSION_" + name, name + "_VERSION",
+                        suffix + "_" + name, suffix + "_" + name + "_VERSION",
+                        suffix + "_VERSION_" + name]:
+            if hasattr(mod, variant):
+                value = int(getattr(mod, variant))
+                const_version.append(value)
+
+    if const_version:
+        return ".".join(map(str, const_version))
+
+    func_version = ""
+    for name in ["get_version", "version", "util_get_version",
+                 "util_get_version_string", "get_version_string",
+                 "version_string"]:
+        if hasattr(mod, name):
+            try:
+                value = getattr(mod, name)()
+            except TypeError:
+                continue
+
+            if isinstance(value, (tuple, list)):
+                func_version = ".".join(map(str, value))
+                break
+            elif isinstance(value, str):
+                func_version = value
+
+    return func_version
+
+
+def get_library_version(mod):
+    mod_name = mod.__name__
+    version = get_generic_library_version(mod)
+    if version:
+        return version
+
+    if mod_name == "GstPbutils":
+        t = [mod.PLUGINS_BASE_VERSION_MAJOR, mod.PLUGINS_BASE_VERSION_MINOR,
+             mod.PLUGINS_BASE_VERSION_MICRO, mod.PLUGINS_BASE_VERSION_NANO]
+        return ".".join(map(str, t))
+
+    return ""
+
+
+def get_project_version(mod):
+    """Returns the version of the current module or some related module in
+    the same project, or an empty string
+    """
+
+    from . import util
+
+    version = get_library_version(mod)
+    if version:
+        return version
+
+    namespace = mod.__name__.rsplit(".")[-1]
+    for related in get_related_namespaces(namespace):
+        try:
+            rmod = util.import_namespace(related)
+        except ImportError:
+            continue
+        version = get_library_version(rmod)
+        if version:
+            break
+
+    return version
+
+
 def get_tag(namespace, project_version):
 
     def matches(ns):
         return namespace == ns or namespace in get_related_namespaces(ns)
 
+    try:
+        p = get_project(namespace)
+    except KeyError:
+        p = None
+
     if matches("Atk"):
         return "ATK_" + project_version.replace(".", "_")
     elif matches("Gtk") or matches("GLib") or matches("Pango"):
         return project_version
+    elif p and "/gstreamer/" in p.doap:
+        return ".".join(project_version.split(".")[:3])
     else:
         return ""
 
@@ -138,33 +242,35 @@ def get_source_to_url_func(namespace, project_version):
         return
 
     tag = get_tag(namespace, project_version)
-
-    if "git.gnome.org" not in project.doap or not tag:
+    if not tag:
         return None
 
-    match = re.search("/browse/(.*?)/", project.doap)
-    if match is None:
-        return
-    git_name = match.group(1)
+    if "git.gnome.org" in project.doap:
+        match = re.search("/browse/(.*?)/", project.doap)
+        if match is None:
+            return
+        git_name = match.group(1)
 
-    def gnome_func(path):
-        path, line = path.rsplit(":", 1)
-        return "https://git.gnome.org/browse/%s/tree/%s?h=%s#n%s" % (
-            git_name, path, tag, line)
+        def gnome_func(path):
+            path, line = path.rsplit(":", 1)
+            return "https://git.gnome.org/browse/%s/tree/%s?h=%s#n%s" % (
+                git_name, path, tag, line)
 
-    return gnome_func
+        return gnome_func
+    elif "cgit.freedesktop.org/gstreamer/" in project.doap:
+        match = re.search("/gstreamer/(.*?)/", project.doap)
+        if match is None:
+            return
+        git_name = match.group(1)
 
+        path_prefix = ""
+        if namespace.startswith("Gst") and \
+                "/gst-plugins-base/" in project.doap:
+            path_prefix = "gst-libs/gst/"
 
-def get_related_namespaces(ns):
-    """Returns a list of related namespaces which are part of the
-    same project.
-    """
+        def gst_func(path):
+            path, line = path.rsplit(":", 1)
+            return ("http://cgit.freedesktop.org/gstreamer/%s/tree/%s%s"
+                    "?h=%s#n%s" % (git_name, path_prefix, path, tag, line))
 
-    try:
-        p = get_project(ns)
-    except KeyError:
-        return []
-    else:
-        l = p.namespaces[:]
-        l.remove(ns)
-        return l
+        return gst_func

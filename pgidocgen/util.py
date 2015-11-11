@@ -360,8 +360,6 @@ def xdg_get_system_data_dirs():
 
 
 def get_gir_dirs():
-    from gi.repository import GLib
-
     dirs = xdg_get_system_data_dirs()
     return [os.path.join(d, "gir-1.0") for d in dirs]
 
@@ -432,75 +430,6 @@ def instance_to_rest(cls, inst):
             inst = int(inst)
 
     return "``%s``" % repr(inst)
-
-
-def get_library_version(mod):
-    """Tries to return a version string of the library version used to create
-    the gir or if not available the version of the library dlopened.
-
-    If no version could be found, returns an empty string.
-    """
-
-    suffix = ""
-    modname = mod.__name__
-    for i, (o, l) in enumerate(reversed(zip(modname, modname.lower()))):
-        if o != l:
-            suffix = modname[-i - 1:].upper()
-            break
-
-    const_version = []
-    for name in ["MAJOR", "MINOR", "MICRO", "NANO"]:
-        for variant in ["VERSION_" + name, name + "_VERSION",
-                        suffix + "_" + name, suffix + "_" + name + "_VERSION",
-                        suffix + "_VERSION_" + name]:
-            if hasattr(mod, variant):
-                value = int(getattr(mod, variant))
-                const_version.append(value)
-
-    if const_version:
-        return ".".join(map(str, const_version))
-
-    func_version = ""
-    for name in ["get_version", "version", "util_get_version",
-                 "util_get_version_string", "get_version_string",
-                 "version_string"]:
-        if hasattr(mod, name):
-            try:
-                value = getattr(mod, name)()
-            except TypeError:
-                continue
-
-            if isinstance(value, (tuple, list)):
-                func_version = ".".join(map(str, value))
-                break
-            elif isinstance(value, str):
-                func_version = value
-
-    return func_version
-
-
-def get_project_version(mod):
-    """Returns the version of the current module or some related module in
-    the same project, or an empty string
-    """
-
-    from . import girdata
-
-    version = get_library_version(mod)
-    if version:
-        return version
-
-    namespace = mod.__name__.rsplit(".")[-1]
-    for related in girdata.get_related_namespaces(namespace):
-        try:
-            rmod = import_namespace(related)
-        except ImportError:
-            continue
-        version = get_library_version(rmod)
-        if version:
-            break
-
-    return version
 
 
 def import_namespace(ns):

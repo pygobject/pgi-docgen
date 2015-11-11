@@ -26,7 +26,7 @@ from . import genutil
 
 from ..doap import get_project_summary
 from ..namespace import get_namespace
-from ..girdata import get_source_to_url_func
+from ..girdata import get_source_to_url_func, get_project_version
 from ..repo import Repository
 from .. import util, BASEDIR
 
@@ -145,7 +145,7 @@ class ModuleGenerator(genutil.Generator):
 
         repo = Repository(namespace, version)
         mod = repo.import_module()
-        lib_version = util.get_project_version(mod)
+        lib_version = get_project_version(mod)
 
         for dep in repo.get_all_dependencies():
             _import_dependency(module, *dep)

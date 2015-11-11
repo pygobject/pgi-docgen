@@ -145,7 +145,7 @@ def get_compile_units(library_path):
     type_ = None
     for line in data.splitlines():
         parts = line.split()
-        if not parts:
+        if len(parts) < 2:
             continue
         if parts[1] == "Abbrev":
             type_ = parts[-1].strip("()")

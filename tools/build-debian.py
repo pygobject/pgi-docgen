@@ -23,7 +23,7 @@ import argparse
 import apt
 import apt_pkg
 
-from pgidocgen.debug import get_debug_files_for_name
+from pgidocgen.debug import get_debug_files_for_name, get_line_numbers_for_name
 
 
 DEB_BLACKLIST = [
@@ -288,7 +288,7 @@ def fetch_girs_cached():
 
 
 def get_gir_shared_libraries(gir_dir, can_build):
-    libs = set()
+    libs = {}
     for entry in os.listdir(gir_dir):
         name, ext = os.path.splitext(entry)
         if name not in can_build:
@@ -298,7 +298,9 @@ def get_gir_shared_libraries(gir_dir, can_build):
             for line in data.splitlines():
                 line = line.strip()
                 if line.startswith("shared-library="):
-                    libs.update(line.split("=")[-1].strip("\"").split(","))
+                    libs.setdefault(name, [])
+                    libs[name].extend(
+                        (line.split("=")[-1].strip("\"").split(",")))
                     break
 
     return libs
@@ -307,9 +309,16 @@ def get_gir_shared_libraries(gir_dir, can_build):
 def check_debug_packages(gir_dir, can_build):
     shared_libs = get_gir_shared_libraries(gir_dir, can_build)
 
+    namespaces_with_debug = set()
     debug_files = set()
-    for lib in shared_libs:
-        debug_files.update(get_debug_files_for_name(lib))
+    for namespace, libs in shared_libs.items():
+        for lib in libs:
+            debug_files.update(get_debug_files_for_name(lib))
+            symbols = get_line_numbers_for_name(lib)
+            if symbols:
+                namespaces_with_debug.add(namespace)
+
+    print "Namespaces with dbg: " + " ".join(sorted(namespaces_with_debug))
 
     debug_packages = set()
     data = subprocess.check_output(["apt-file", "search", ".so"])
