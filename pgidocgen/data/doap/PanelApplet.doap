@@ -4,7 +4,7 @@
          xmlns:gnome="http://api.gnome.org/doap-extensions#"
          xmlns="http://usefulinc.com/ns/doap#">
 
-  <name xml:lang="en">GNOME Panel</name>
+  <name xml:lang="en">gnome-panel</name>
   <shortdesc xml:lang="en">Launch other applications and provide various utilities to manage windows, show the time, etc.</shortdesc>
   <homepage rdf:resource="https://wiki.gnome.org/Projects/GnomePanel" />
   <mailing-list rdf:resource="http://mail.gnome.org/mailman/listinfo/gnome-flashback-list" />
