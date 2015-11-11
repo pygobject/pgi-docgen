@@ -267,6 +267,8 @@ def get_source_to_url_func(namespace, project_version):
         if namespace.startswith("Gst") and \
                 "/gst-plugins-base/" in project.doap:
             path_prefix = "gst-libs/gst/"
+        elif "Gst" in project.namespaces and namespace != "Gst":
+            path_prefix = "libs/gst/"
 
         def gst_func(path):
             path, line = path.rsplit(":", 1)
