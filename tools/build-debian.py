@@ -23,6 +23,8 @@ import argparse
 import apt
 import apt_pkg
 
+from pgidocgen.debug import get_debug_files_for_name
+
 
 DEB_BLACKLIST = [
     "gir1.2-panelapplet-4.0",
@@ -285,6 +287,56 @@ def fetch_girs_cached():
     return temp_data
 
 
+def get_gir_shared_libraries(gir_dir, can_build):
+    libs = set()
+    for entry in os.listdir(gir_dir):
+        name, ext = os.path.splitext(entry)
+        if name not in can_build:
+            continue
+        with open(os.path.join(gir_dir, entry), "rb") as h:
+            data = h.read()
+            for line in data.splitlines():
+                line = line.strip()
+                if line.startswith("shared-library="):
+                    libs.update(line.split("=")[-1].strip("\"").split(","))
+                    break
+
+    return libs
+
+
+def check_debug_packages(gir_dir, can_build):
+    shared_libs = get_gir_shared_libraries(gir_dir, can_build)
+
+    debug_files = set()
+    for lib in shared_libs:
+        debug_files.update(get_debug_files_for_name(lib))
+
+    debug_packages = set()
+    data = subprocess.check_output(["apt-file", "search", ".so"])
+    data += subprocess.check_output(["apt-file", "search", ".debug"])
+    for line in data.splitlines():
+        package, path = line.split(": ", 1)
+        if path in debug_files:
+            debug_packages.add(package)
+
+    cache = apt.Cache()
+    cache.open(None)
+    to_install = set()
+    for package in sorted(debug_packages):
+        if not cache[package].is_installed:
+            if package.startswith(("libwebkit", "libjavascriptcore")):
+                # 5GB of debug data.. nope
+                continue
+            to_install.add(package)
+    cache.close()
+
+    if to_install:
+        print "Not all debug packages installed:\n"
+        print "sudo aptitude install " + " ".join(sorted(to_install))
+        raise SystemExit(1)
+
+
+
 def main(argv):
     parser = argparse.ArgumentParser()
     parser.add_argument('--devhelp', action='store_true')
@@ -292,7 +344,7 @@ def main(argv):
 
     print "[don't forget to apt-file update/apt-get update!]"
 
-    print "find typelibs.."
+    print "searching for typelibs.."
     typelibs = get_typelibs()
 
     data_dir = fetch_girs_cached()
@@ -311,6 +363,9 @@ def main(argv):
     assert not unknown_build, unknown_build
     can_build = set(can_build) - set(BLACKLIST)
     print "%d ready to build after blacklisting" % len(can_build)
+
+    print "searching for debug packages.."
+    check_debug_packages(gir_dir, can_build)
 
     unknown_build = set(BUILD) - set(can_build)
     assert not unknown_build, unknown_build

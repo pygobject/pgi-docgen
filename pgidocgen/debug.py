@@ -57,10 +57,10 @@ def read_elf_section(library_path, name):
 
     content = b""
     for line in data.splitlines():
-        line = line.split()
-        if not line or not line[0].startswith("0x"):
+        parts = line.split(None, 1)
+        if len(parts) != 2 or not parts[0].startswith("0x"):
             continue
-        content += "".join(line[1:-1])
+        content += parts[1][:35].replace(" ", "")
     return tobin(content)
 
 
@@ -79,15 +79,31 @@ def get_debug_build_id_file(library_path):
 
 
 
-def get_debug_file(library_path):
-    """Returns the path of the linked debug library or None"""
+def get_debug_files(library_path):
+    """Returns the possible paths of the linked debug library"""
 
     # See https://sourceware.org/gdb/onlinedocs/gdb/Separate-Debug-Files.html
+    paths = [library_path]
 
     path = get_debug_link_file(library_path)
-    if path is None or not os.path.exists(path):
-        return get_debug_build_id_file(library_path)
-    return path
+    if path is not None:
+        paths.append(path)
+
+    path = get_debug_build_id_file(library_path)
+    if path is not None:
+        paths.append(path)
+
+    return paths
+
+
+def get_debug_files_for_name(library_name):
+
+    # linux only..
+    if not sys.platform.startswith("linux"):
+        return []
+
+    library_path = get_abs_library_path(library_name)
+    return get_debug_files(library_path)
 
 
 def get_public_symbols(library_path):
@@ -270,15 +286,8 @@ def get_line_numbers_for_name(library_name):
     In case of an error returns an empty dict.
     """
 
-    # linux only..
-    if not sys.platform.startswith("linux"):
-        return {}
-
-    library_path = get_abs_library_path(library_name)
-    symbols = get_line_numbers_for_file(library_path)
-    if not symbols:
-        library_path = get_debug_file(library_path)
-        if library_path is None:
-            return {}
-        return get_line_numbers_for_file(library_path)
-    return symbols
+    for path in get_debug_files_for_name(library_name):
+        symbols = get_line_numbers_for_file(path)
+        if symbols:
+            return symbols
+    return {}
