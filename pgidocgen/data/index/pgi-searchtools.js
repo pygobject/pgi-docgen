@@ -9,6 +9,13 @@
  *
  */
 
+function endsWith(str, suffix) {
+    return str.indexOf(suffix, str.length - suffix.length) !== -1;
+}
+
+function count(str, s1) {
+    return (str.length - str.replace(new RegExp(s1,"g"), '').length) / s1.length;
+}
 
 /**
  * Search Module
@@ -200,6 +207,11 @@ var Search = {
     var titleLength = titles.length;
     for (var i = 0; i < titleLength; i++) {
         var title = titles[i];
+
+        // strip away the library version
+        if(title.indexOf(" (") != -1)
+            title = title.slice(0, title.indexOf(" ("));
+
         var all_score = 0;
         for(var j = 0; j < partsLength; j++) {
             var part = parts[j];
@@ -211,11 +223,24 @@ var Search = {
                 all_score += score;
             }
         }
+
         if(all_score >= 0) {
-            // titles get shown last, thus -100
+            var type_name;
+            var filename = filenames[i];
+            if (endsWith(filename, "index") && count(filename, "/") < 2) {
+                // this is the title page of each module..
+                // try to make it the first match
+                all_score += 100;
+                type_name = "module";
+            } else {
+                // all other titles get shown last, thus -100
+                all_score -= 100;
+                type_name = "page";
+            }
+
             results.push([
-                filenames[i], title + " <small>(page)</small>",
-                '', all_score - 100]);
+                filename, title + " <small>(" + type_name + ")</small>",
+                '', all_score]);
         }
     }
 
