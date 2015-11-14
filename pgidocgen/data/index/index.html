@@ -86,6 +86,9 @@ document.onreadystatechange = onFrameReady;
 
 function frameOnLoad() {
     // if the location of the frame changes, push hash to the frameset
+    // Note that this is broken with newer Chrome as it doesn't allow accessing
+    // another frame even if both are on file://
+    // Starting with "chromium --allow-file-access-from-files" works.
 
     function onContentHashChange() {
         var elm = document.getElementById('Content');
@@ -110,6 +113,11 @@ function frameOnLoad() {
         if(!link_.host || !link_.pathname)
             continue
         if (link_.host.indexOf(location.host) != 0) {
+            // online version
+            links[i].setAttribute('target', '_parent');
+        } else if (!location.host && link_.host) {
+            // offline version
+            console.log(link_.pathname)
             links[i].setAttribute('target', '_parent');
         }
     }
