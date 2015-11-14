@@ -18,6 +18,7 @@ import jinja2
 import sphinx
 
 from .mergeindex import merge
+from .util import rest2html
 from . import BASEDIR
 
 
@@ -260,6 +261,14 @@ def main(argv):
         with open(os.path.join(target_path, "sidebar.html"), "wb") as t:
             env = jinja2.Environment().from_string(data)
             t.write(env.render(results=results))
+
+        with open(os.path.join(index_path, "main.html"), "rb") as h:
+            data = h.read()
+        with open(os.path.join(BASEDIR, "data", "main.rst"), "rb") as h:
+            main_rst = h.read()
+        with open(os.path.join(target_path, "main.html"), "wb") as t:
+            env = jinja2.Environment().from_string(data)
+            t.write(env.render(body=rest2html(main_rst)))
 
         static_target = os.path.join(target_path, "_static")
         if not os.path.exists(static_target):

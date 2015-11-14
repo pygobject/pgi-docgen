@@ -13,8 +13,14 @@ import keyword
 import csv
 import cStringIO
 
+from docutils.core import publish_parts
+
 
 _KWD_RE = re.compile("^(%s)$" % "|".join(keyword.kwlist))
+
+
+def rest2html(text):
+    return publish_parts(text, writer_name='html')['html_body']
 
 
 def cache_calls(func):
