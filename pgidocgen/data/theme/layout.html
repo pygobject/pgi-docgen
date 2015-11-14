@@ -120,6 +120,12 @@
 
   {% if not embedded %}
   <script>
+
+    function openSidebar(element) {
+        window.location.href = element.href + location.hash;
+        return false;
+    }
+
       function inIframe() {
             try {
                 return window.self !== window.top;
