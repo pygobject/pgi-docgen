@@ -211,9 +211,6 @@ def _parse_types(dom, namespace):
 
     def add(c_name, py_name):
         assert py_name.count("."), py_name
-        # escape each potential attribute
-        py_name = ".".join(
-            map(util.escape_identifier,  py_name.split(".")))
         types[c_name].add(py_name)
 
     # {key of the to be replaces function: c def of the replacement}
@@ -245,8 +242,6 @@ def _parse_types(dom, namespace):
 
         if shadows:
             shadowed_name = ".".join(full_name.split(".")[:-1] + [shadows])
-            shadowed_name = ".".join(
-                map(util.escape_identifier, shadowed_name.split(".")))
             shadowed[shadowed_name] = c_name
 
         add(c_name, full_name)
@@ -472,6 +467,9 @@ def _parse_docs(dom):
                 if elm.tagName == "virtual-method":
                     # pgi/pygobject escape before prefixing
                     n = "do_" + util.escape_identifier(n)
+                elif elm.tagName == "member":
+                    # enum/flag values
+                    n = n.upper()
                 return n
 
             l = []
@@ -514,7 +512,7 @@ def _parse_docs(dom):
             if tag != "return-value" and not l[-1]:
                 l[-1] = "_"
             l = filter(None, l)
-            key = ".".join(map(util.escape_identifier, l))
+            key = ".".join(l)
 
             if tag in ("method", "constructor"):
                 assert len(l) > 2

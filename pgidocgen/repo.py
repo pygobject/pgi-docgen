@@ -7,6 +7,7 @@
 # version 2.1 of the License, or (at your option) any later version.
 
 import re
+import inspect
 
 from gi.repository import GObject
 
@@ -18,21 +19,165 @@ from .funcsig import FuncSignature, py_type_to_class_ref, get_type_name
 from .parser import docstring_to_rest
 
 
-class Property(object):
+def get_signature_string(callable_):
+    try:
+        argspec = inspect.getargspec(callable_)
+    except TypeError:
+        # ... is not a Python function
+        return u"()"
+    if argspec[0] and argspec[0][0] in ('cls', 'self'):
+        del argspec[0][0]
+    return inspect.formatargspec(*argspec)
 
-    def __init__(self, name, attr_name, type_desc, readable, writable,
-                 construct, short_desc, desc, value_desc):
+
+class BaseDocObject(object):
+
+    name = None
+    fullname = None
+
+    def __repr__(self):
+        return "<%s fullname=%s name=%s>" % (
+            type(self).__name__, self.fullname, self.name)
+
+
+class SignalsMixin(object):
+
+    def _parse_signals(self, repo, obj):
+        if not hasattr(obj, "signals"):
+            self.signals = []
+            return
+
+        signals = []
+        for attr_name,  sig in util.iter_public_attr(obj.signals):
+            signals.append(
+                Signal.from_object(repo, attr_name, self.fullname, sig))
+        signals.sort(key=lambda s: s.name)
+        self.signals = signals
+
+
+class MethodsMixin(object):
+
+    def get_methods(self, static=False):
+        methods = []
+        for m in self.methods:
+            if m.is_static == static:
+                methods.append(m)
+        methods.sort(key=lambda x: x.name)
+        return methods
+
+    def _parse_methods(self, repo, obj):
+        methods = []
+        vfuncs = []
+        for attr, attr_obj in util.iter_public_attr(obj):
+            if not callable(attr_obj):
+                continue
+
+            if not util.is_method_owner(obj, attr):
+                continue
+
+            func = Function.from_object(self.fullname, attr_obj, repo, obj)
+            if func.is_vfunc:
+                vfuncs.append(func)
+            else:
+                methods.append(func)
+
+        methods.sort(key=lambda m: m.name)
+        vfuncs.sort(key=lambda m: m.name)
+        self.methods = methods
+        self.vfuncs = vfuncs
+
+
+class PropertiesMixin(object):
+
+    def _parse_properties(self, repo, obj):
+        if not hasattr(obj, "props"):
+            self.properties = []
+            return
+
+        # get all specs owned by the class
+        specs = []
+        for attr, spec in util.iter_public_attr(obj.props):
+            if not spec or spec.owner_type.pytype is not obj:
+                continue
+            specs.append((attr, spec))
+
+        props = []
+        for attr_name, spec in specs:
+            prop = Property.from_prop_spec(
+                repo, self.fullname, attr_name, spec)
+            props.append(prop)
+        self.properties = props
+
+
+class ChildPropertiesMixin(object):
+
+    def _parse_child_properties(self, repo, obj):
+        props = []
+        for spec in util.get_child_properties(obj):
+            prop = Property.from_child_pspec(repo, self.fullname, spec)
+            props.append(prop)
+        props.sort(key=lambda p: p.name)
+        self.child_properties = props
+
+
+class StylePropertiesMixin(object):
+
+    def _parse_style_properties(self, repo, obj):
+        props = []
+        for spec in util.get_style_properties(obj):
+            prop = Property.from_child_pspec(repo, self.fullname, spec)
+            props.append(prop)
+        props.sort(key=lambda p: p.name)
+        self.style_properties = props
+
+
+class FieldsMixin(object):
+
+    def _parse_fields(self, repo, obj):
+        fields = []
+        for attr, field_info in util.iter_public_attr(obj):
+            if not util.is_field(field_info):
+                continue
+            if not util.is_field_owner(obj, attr):
+                continue
+
+            py_type = field_info.py_type
+            type_name = get_type_name(py_type)
+            if "." in type_name and repo.is_private(type_name):
+                continue
+
+            name = field_info.name
+            type_desc = py_type_to_class_ref(field_info.py_type)
+            readable = field_info.readable
+            writable = field_info.writeable
+            doc_name = self.fullname + "." + name
+            desc = repo.lookup_field_docs(
+                doc_name, current=self.fullname)
+            fields.append(
+                Field(self.fullname, name, readable, writable,
+                      type_desc, desc))
+
+        fields.sort(key=lambda f: f.name)
+        self.fields = fields
+
+
+class Property(BaseDocObject):
+
+    def __init__(self, parent_fullname, name, attr_name,
+                 readable, writable, construct, type_desc, value_desc):
+        self.fullname = parent_fullname + "." + name
         self.name = name
         self.attr_name = attr_name
-        self.type_desc = type_desc
-        self.value_desc = value_desc
 
         self.readable = readable
         self.writable = writable
         self.construct = construct
 
-        self.short_desc = short_desc
-        self.desc = desc
+        self.type_desc = type_desc
+        self.value_desc = value_desc
+
+        self.short_desc = None
+        self.desc = None
 
     @property
     def flags_string(self):
@@ -45,16 +190,109 @@ class Property(object):
             flags.append("c")
         return "/".join(flags)
 
+    @classmethod
+    def from_child_pspec(cls, repo, parent_fullname, spec):
+        """Returns a Property for a ParamSpec"""
 
-class Signal(object):
+        # WARNING: the ParamSpecs classes here aren't the same as for
+        # properties, they come from the GIR not pgi internals..
+        attr_name = ""
+        name = spec.get_name()
+        default_value = spec.get_default_value()
+        if isinstance(default_value, GObject.Value):
+            default_value = default_value.get_value()
+        value_desc = util.instance_to_rest(
+            spec.value_type.pytype, default_value)
+        type_desc = py_type_to_class_ref(spec.value_type.pytype)
+        readable = spec.flags & GObject.ParamFlags.READABLE
+        writable = spec.flags & GObject.ParamFlags.WRITABLE
+        construct = spec.flags & GObject.ParamFlags.CONSTRUCT
 
-    def __init__(self, name, attr_name, sig, flags, desc, short_desc):
+        prop = cls(parent_fullname, name, attr_name,
+                   readable, writable, construct,
+                   type_desc, value_desc)
+
+        if spec.get_blurb() is not None:
+            short_desc = repo._fix_docs(
+                spec.get_blurb(), current=parent_fullname)
+        else:
+            short_desc = u""
+        desc = u""
+
+        prop.short_desc = short_desc
+        prop.desc = desc
+
+        return prop
+
+    @classmethod
+    def from_prop_spec(cls, repo, parent_fullname, attr_name, spec):
+        name = spec.name
+        value_desc = util.instance_to_rest(
+            spec.value_type.pytype, spec.default_value)
+        type_desc = py_type_to_class_ref(spec.value_type.pytype)
+        readable = spec.flags & GObject.ParamFlags.READABLE
+        writable = spec.flags & GObject.ParamFlags.WRITABLE
+        construct = spec.flags & GObject.ParamFlags.CONSTRUCT
+        if spec.blurb is not None:
+            short_desc = repo._fix_docs(
+                spec.blurb, current=parent_fullname)
+        else:
+            short_desc = u""
+
+        prop = cls(parent_fullname, name, attr_name,
+                   readable, writable, construct,
+                   type_desc, value_desc)
+
+        desc = repo.lookup_prop_docs(
+            prop.fullname, current=parent_fullname) or short_desc
+        desc += repo.lookup_prop_meta(prop.fullname)
+        prop.desc = desc
+        prop.short_desc = short_desc
+
+        return prop
+
+
+class Signal(BaseDocObject):
+
+    def __init__(self, parent_fullname, name, attr_name, sig, flags):
+        self.fullname = parent_fullname + "." + name
         self.flags = flags
-        self.desc = desc
-        self.short_desc = short_desc
         self.name = name
         self.attr_name = attr_name
         self.sig = sig
+        self.desc = None
+        self.short_desc = None
+
+    @classmethod
+    def from_object(cls, repo, attr_name, parent_fullname, sig):
+        try:
+            fsig = FuncSignature.from_string(attr_name, sig.__doc__)
+            assert fsig, sig.__doc__
+        except NotImplementedError:
+            fsig = None
+            ssig = "%s(*fixme)" % attr
+        else:
+            ssig = fsig.to_simple_signature()
+
+        inst = cls(parent_fullname, sig.name, attr_name, ssig, sig.flags)
+
+        if fsig:
+            desc = fsig.to_rest_listing(
+                repo, inst.fullname, current=parent_fullname, signal=True)
+        else:
+            # FIXME pgi
+            print "FIXME: signal: %s " % doc_key
+            desc = "(FIXME pgi-docgen: arguments are missing here)"
+
+        desc += "\n\n"
+        desc += repo.lookup_signal_docs(inst.fullname, current=parent_fullname)
+        desc += repo.lookup_signal_meta(inst.fullname)
+        short_desc = repo.lookup_signal_docs(
+            inst.fullname, short=True, current=parent_fullname)
+
+        inst.desc = desc
+        inst.short_desc = short_desc
+        return inst
 
     @property
     def flags_string(self):
@@ -71,9 +309,122 @@ class Signal(object):
         return ", ".join(descs)
 
 
-class Field(object):
+class PyClass(BaseDocObject, MethodsMixin):
 
-    def __init__(self, name, readable, writable, type_desc, desc):
+    def __init__(self, namespace, name):
+        self.fullname = namespace + "." + name
+        self.name = name
+
+    @classmethod
+    def from_object(cls, repo, obj):
+        namespace = obj.__module__
+        name = obj.__name__
+
+        return cls(namespace, name)
+
+
+class Class(BaseDocObject, MethodsMixin, PropertiesMixin, SignalsMixin,
+            ChildPropertiesMixin, StylePropertiesMixin, FieldsMixin):
+
+    def __init__(self, namespace, name):
+        self.fullname = namespace + "." + name
+        self.name = name
+        self.desc = None
+        self.image_name = None
+        self.is_interface = False
+        self.signature = None
+
+        self.methods = []
+        self.methods_inherited = []
+
+        self.vfuncs = []
+        self.vfuncs_inherited = []
+
+        self.properties = []
+        self.properties_inherited = []
+
+        self.signals = []
+        self.signals_inherited = []
+
+        self.fields = []
+        self.fields_inherited = []
+
+        self.child_properties = []
+        self.child_properties_inherited = []
+
+        self.style_properties = []
+        self.style_properties_inherited = []
+
+        self.base_tree = []
+        self.subclasses = []
+
+    @property
+    def bases(self):
+        return [c[0] for c in self.base_tree[0][1]]
+
+    @classmethod
+    def from_object(cls, repo, obj):
+        namespace = obj.__module__
+        name = obj.__name__
+
+        def get_base_tree(obj):
+            x = []
+            for base in util.fake_bases(obj):
+                if base is object:
+                    continue
+                x.append((base.__module__ + "."  + base.__name__,
+                          get_base_tree(base)))
+            return x
+
+        klass = cls(namespace, name)
+        klass._parse_methods(repo, obj)
+        klass._parse_properties(repo, obj)
+        klass._parse_child_properties(repo, obj)
+        klass._parse_style_properties(repo, obj)
+        klass._parse_signals(repo, obj)
+        klass._parse_fields(repo, obj)
+        klass.image_name = util.get_image_name(
+            repo.namespace, repo.version, klass.fullname)
+
+        docs = repo.lookup_attr_docs(klass.fullname, current=klass.fullname)
+        docs += repo.lookup_attr_meta(klass.fullname)
+        klass.desc = docs
+        klass.is_interface = util.is_iface(obj)
+        klass.base_tree = [(klass.fullname, get_base_tree(obj))]
+
+        def iter_bases(obj):
+            for base in util.fake_mro(obj):
+                if base is object or base is obj:
+                    continue
+                yield repo.parse_class(base)
+
+        inherited = {}
+        inherit_types = ["vfuncs", "methods", "properties", "signals",
+                         "fields", "child_properties", "style_properties"]
+        for cls in iter_bases(obj):
+            for type_ in inherit_types:
+                attr = getattr(cls, type_)
+                if len(attr):
+                    inherited.setdefault(type_, []).append(
+                        (cls.fullname, len(attr)))
+        for type_ in inherit_types:
+            setattr(klass, type_ + "_inherited", inherited.get(type_, []))
+
+        subclasses = []
+        for cls in util.fake_subclasses(obj):
+            if cls.__module__ == namespace:
+                subclasses.append(cls.__module__ + "." + cls.__name__)
+        subclasses.sort()
+        klass.subclasses = subclasses
+        klass.signature = get_signature_string(obj.__init__)
+
+        return klass
+
+
+class Field(BaseDocObject):
+
+    def __init__(self, parent_fullname, name, readable, writable, type_desc, desc):
+        self.fullname = parent_fullname + "." + name
         self.name = name
         self.readable = readable
         self.writable = writable
@@ -90,17 +441,190 @@ class Field(object):
         return "/".join(flags)
 
 
-class Method(object):
+class Function(BaseDocObject):
 
-    def __init__(self, name, is_static, is_vfunc, code):
+    def __init__(self, parent_fullname, name, is_method, is_static, is_vfunc,
+                 signature, desc):
+        self.fullname = parent_fullname + "." + name
         self.name = name
+        self.is_method = is_method
         self.is_static = is_static
-        self.code = code
         self.is_vfunc = is_vfunc
+        self.signature = signature
+        self.desc = desc
+
+    @classmethod
+    def from_object(cls, parent_fullname, obj, repo, owner):
+
+        name = obj.__name__
+        fullname = parent_fullname + "." + name
+        is_method = owner is not None
+
+        signature = get_signature_string(obj)
+
+        if is_method:
+            current_rst_target = parent_fullname
+            is_static = util.is_staticmethod(obj)
+            is_vfunc = util.is_virtualmethod(obj)
+        else:
+            current_rst_target = None
+            is_static = False
+            is_vfunc = False
+
+        def get_instance(docs):
+            return cls(
+                parent_fullname, name, is_method, is_static, is_vfunc,
+                signature, docs)
+
+        def get_sig(obj):
+            doc = str(obj.__doc__ or "")
+            first_line = doc and doc.splitlines()[0] or ""
+            return FuncSignature.from_string(name, first_line)
+
+        sig = get_sig(obj)
+
+        # no valid sig, but still a docstring, probably new function
+        # or an override with a new docstring
+        if not sig and obj.__doc__:
+            # add the versionadded from the gir here too
+            docs = str(obj.__doc__ or "")
+            docs += repo.lookup_attr_meta(fullname)
+            return get_instance(docs)
+
+         # no docstring, try to get the signature from base classes
+        if not sig and owner:
+            for base in owner.__mro__[1:]:
+                try:
+                    base_obj = getattr(base, name, None)
+                except NotImplementedError:
+                    # function not implemented in pgi
+                    continue
+                sig = get_sig(base_obj)
+                if sig:
+                    break
+
+        # still nothing, try making the best out of it
+        if not sig:
+            # INFO: this probably only happens if there is an override
+            # for something pgi doesn't support. The base class
+            # is missing the real one, but the gir docs may be still there
+
+            docs = repo.lookup_attr_docs(fullname, current=current_rst_target)
+            if not docs:
+                docs = str(obj.__doc__ or "")
+            docs += repo.lookup_attr_meta(fullname)
+            return get_instance(docs)
+
+        # we got a valid signature here
+        assert sig
+
+        docstring = str(obj.__doc__ or "")
+        # the docstring contains additional text, propably an override
+        # or internal function (GObject.Object methods for example)
+        lines = docstring.splitlines()[1:]
+        while lines and not lines[0].strip():
+            lines = lines[1:]
+        user_docstring = "\n".join(lines)
+
+        # create sphinx lists for the signature we found
+        docs = sig.to_rest_listing(
+            repo, fullname, current=current_rst_target).splitlines()
+        docs = "\n".join(docs)
+
+        # if we have a user docstring, use it, otherwise use the gir one
+        if user_docstring:
+            docs += "\n\n" + unindent(user_docstring)
+        elif repo.lookup_attr_docs(fullname):
+            docs += "\n\n" + repo.lookup_attr_docs(fullname,
+                                                   current=current_rst_target)
+            docs += repo.lookup_attr_meta(fullname)
+
+        return get_instance(docs)
+
+
+class Structure(BaseDocObject, MethodsMixin, FieldsMixin):
+
+    def __init__(self, namespace, name, signature):
+        self.fullname = namespace + "." + name
+        self.name = name
+        self.signature = signature
+        self.desc = None
+        self.methods = []
+        self.fields = []
+
+    @classmethod
+    def from_object(cls, repo, obj):
+        signature = get_signature_string(obj.__init__)
+        instance = cls(obj.__module__, obj.__name__, signature)
+
+        docs = repo.lookup_attr_docs(instance.fullname,
+                                     current=instance.fullname)
+        docs += repo.lookup_attr_meta(instance.fullname)
+        instance._parse_methods(repo, obj)
+        instance._parse_fields(repo, obj)
+        instance.desc = docs
+        return instance
+
+
+class Union(Structure):
+    pass
+
+
+class Flags(BaseDocObject, MethodsMixin):
+
+    def __init__(self, namespace, name):
+        self.fullname = namespace + "." + name
+        self.name = name
+        self.desc = None
+        self.values = []
+        self.methods = []
+
+    def _parse_values(self, repo, obj):
+        values = []
+        for attr_name in dir(obj):
+            if attr_name.upper() != attr_name:
+                continue
+            attr = getattr(obj, attr_name)
+            if not isinstance(attr, obj):
+                continue
+
+            flag_value = Constant.from_object(
+                repo, self.fullname, attr_name, int(attr))
+            values.append((int(attr), flag_value))
+
+        values.sort()
+        self.values = [v[1] for v in values]
+
+    @classmethod
+    def from_object(cls, repo, obj):
+        instance = cls(obj.__module__, obj.__name__)
+        docs = repo.lookup_attr_docs(instance.fullname)
+        docs += repo.lookup_attr_meta(instance.fullname)
+        instance.desc = docs
+        instance._parse_values(repo, obj)
+        instance._parse_methods(repo, obj)
+        return instance
+
+
+class Constant(BaseDocObject):
+
+    def __init__(self, parent_fullname, name, value):
+        self.fullname = parent_fullname + "." + name
+        self.name = name
+        self.value = value
+        self.desc = None
+
+    @classmethod
+    def from_object(cls, repo, parent_fullname, name, obj):
+        instance = Constant(parent_fullname, name, repr(obj))
+        docs = repo.lookup_attr_docs(instance.fullname)
+        docs += repo.lookup_attr_meta(instance.fullname)
+        instance.desc = docs
+        return instance
 
 
 class Repository(object):
-    """Takes gi objects and gives documented code"""
+    """Takes gi objects and gives documentation objects"""
 
     def __init__(self, namespace, version):
         self.namespace = namespace
@@ -220,448 +744,27 @@ class Repository(object):
         rest = docstring_to_rest(self._types, current, d)
         return rest
 
-    def parse_constant(self, name):
-        # FIXME: broken escaping in pgi
-        if name.split(".")[-1][:1].isdigit():
-            return
+    def parse_constant(self, namespace, name, obj):
+        return Constant.from_object(self, namespace, name, obj)
 
-        docs = self.lookup_attr_docs(name)
-        docs += self.lookup_attr_meta(name)
+    def parse_structure(self, obj):
+        return Structure.from_object(self, obj)
 
-        # sphinx gets confused by empty docstrings
-        return """
-%s = %s
-r'''
-.. fake comment to help sphinx
-
-%s
-'''
-
-""" % (name.split(".")[-1], name, docs)
-
-    def parse_custom_class(self, name, obj):
-        return """
-
-%s = %s
-
-""" % (name.split(".")[-1], name)
-
-    def parse_class(self, name, obj):
-        names = []
-        # prefix with the module if it's an external class
-        for base in util.fake_bases(obj):
-            base_name = base.__name__
-            if base_name != "object":
-                base_name = base.__module__ + "." + base_name
-            names.append(base_name)
-        bases = ", ".join(names or ["object"])
-
-        name = str(name)
-        current_rst_target = obj.__module__ + "." + obj.__name__
-        docs = self.lookup_attr_docs(name, current=current_rst_target)
-        docs += self.lookup_attr_meta(name)
-
-        return """
-class %s(%s):
-    r'''
-%s
-    '''
-
-    __init__ = %s.__init__
-
-""" % (name.split(".")[-1], bases, docs.encode("utf-8"), name)
+    def parse_union(self, obj):
+        return Union.from_object(self, obj)
 
     @cache_calls
-    def parse_signals(self, obj):
-        if not (util.is_object(obj) or util.is_iface(obj)):
-            return []
+    def parse_class(self, obj):
+        return Class.from_object(self, obj)
 
-        current_rst_target = obj.__module__ + "." + obj.__name__
+    def parse_pyclass(self, obj):
+        return PyClass.from_object(self, obj)
 
-        if not hasattr(obj, "signals"):
-            return []
+    def parse_flags(self, obj):
+        return Flags.from_object(self, obj)
 
-        result = []
-        for attr, sig in util.iter_public_attr(obj.signals):
-            doc_key = obj.__module__ + "." + obj.__name__ + "." + \
-                escape_identifier(sig.name)
+    def parse_enum(self, obj):
+        return Flags.from_object(self, obj)
 
-            try:
-                fsig = FuncSignature.from_string(attr, sig.__doc__)
-                assert fsig, (doc_key, sig.__doc__)
-            except NotImplementedError:
-                # FIXME pgi
-                print "FIXME: signal: %s " % doc_key
-                desc = "(FIXME pgi-docgen: arguments are missing here)"
-                ssig = "%s(*fixme)" % attr
-            else:
-                ssig = fsig.to_simple_signature()
-                desc = fsig.to_rest_listing(
-                    self, doc_key, current=current_rst_target, signal=True)
-
-            desc += "\n\n"
-            desc += self.lookup_signal_docs(doc_key, current=current_rst_target)
-            desc += self.lookup_signal_meta(doc_key)
-            short_desc = self.lookup_signal_docs(
-                doc_key, short=True, current=current_rst_target)
-
-            result.append(
-                Signal(sig.name, attr, ssig, sig.flags, desc, short_desc))
-
-        return result
-
-    def get_signal_count(self, obj):
-        return len(self.parse_signals(obj))
-
-    @cache_calls
-    def parse_fields(self, obj):
-        current_rst_target = obj.__module__ + "." + obj.__name__
-
-        fields = []
-        for attr, field_info in util.iter_public_attr(obj):
-            if not util.is_field(field_info):
-                continue
-            if not util.is_field_owner(obj, attr):
-                continue
-
-            py_type = field_info.py_type
-            type_name = get_type_name(py_type)
-            if "." in type_name and self.is_private(type_name):
-                continue
-
-            name = field_info.name
-            type_desc = py_type_to_class_ref(field_info.py_type)
-            readable = field_info.readable
-            writable = field_info.writeable
-            doc_name = current_rst_target + "." + name
-            desc = self.lookup_field_docs(doc_name, current=current_rst_target)
-            fields.append(Field(name, readable, writable, type_desc, desc))
-
-        return fields
-
-    def get_field_count(self, obj):
-        return len(self.parse_fields(obj))
-
-    @cache_calls
-    def parse_child_properties(self, obj):
-        if not (util.is_object(obj) or util.is_iface(obj)):
-            return []
-
-        current_rst_target = obj.__module__ + "." + obj.__name__
-
-        props = []
-        # WARNING: the ParamSpecs classes here aren't the same as for
-        # properties, they come from the GIR not pgi internals..
-        for spec in util.get_child_properties(obj):
-            attr_name = ""
-            name = spec.get_name()
-            default_value = spec.get_default_value()
-            if isinstance(default_value, GObject.Value):
-                default_value = default_value.get_value()
-            value_desc = util.instance_to_rest(
-                spec.value_type.pytype, default_value)
-            type_desc = py_type_to_class_ref(spec.value_type.pytype)
-            readable = spec.flags & GObject.ParamFlags.READABLE
-            writable = spec.flags & GObject.ParamFlags.WRITABLE
-            construct = spec.flags & GObject.ParamFlags.CONSTRUCT
-            if spec.get_blurb() is not None:
-                short_desc = self._fix_docs(
-                    spec.get_blurb(), current=current_rst_target)
-            else:
-                short_desc = ""
-            desc = u""
-
-            props.append(Property(name, attr_name, type_desc, readable,
-                      writable, construct, short_desc, desc,
-                      value_desc))
-
-        return props
-
-    @cache_calls
-    def parse_style_properties(self, obj):
-        if not (util.is_object(obj) or util.is_iface(obj)):
-            return []
-
-        current_rst_target = obj.__module__ + "." + obj.__name__
-
-        props = []
-        # WARNING: the ParamSpecs classes here aren't the same as for
-        # properties, they come from the GIR not pgi internals..
-        for spec in util.get_style_properties(obj):
-            attr_name = ""
-            name = spec.get_name()
-            default_value = spec.get_default_value()
-            if isinstance(default_value, GObject.Value):
-                default_value = default_value.get_value()
-            value_desc = util.instance_to_rest(
-                spec.value_type.pytype, default_value)
-            type_desc = py_type_to_class_ref(spec.value_type.pytype)
-            readable = spec.flags & GObject.ParamFlags.READABLE
-            writable = spec.flags & GObject.ParamFlags.WRITABLE
-            construct = spec.flags & GObject.ParamFlags.CONSTRUCT
-            if spec.get_blurb() is not None:
-                short_desc = self._fix_docs(
-                    spec.get_blurb(), current=current_rst_target)
-            else:
-                short_desc = ""
-            desc = u""
-
-            props.append(Property(name, attr_name, type_desc, readable,
-                      writable, construct, short_desc, desc,
-                      value_desc))
-
-        return props
-
-    @cache_calls
-    def parse_properties(self, obj):
-        if not (util.is_object(obj) or util.is_iface(obj)):
-            return []
-
-        current_rst_target = obj.__module__ + "." + obj.__name__
-
-        if not hasattr(obj, "props"):
-            return []
-
-        # get all specs owned by the class
-        specs = []
-        for attr, spec in util.iter_public_attr(obj.props):
-            if not spec or spec.owner_type.pytype is not obj:
-                continue
-            specs.append((attr, spec))
-
-        props = []
-        for attr_name, spec in specs:
-            name = spec.name
-            value_desc = util.instance_to_rest(
-                spec.value_type.pytype, spec.default_value)
-            type_desc = py_type_to_class_ref(spec.value_type.pytype)
-            readable = spec.flags & GObject.ParamFlags.READABLE
-            writable = spec.flags & GObject.ParamFlags.WRITABLE
-            construct = spec.flags & GObject.ParamFlags.CONSTRUCT
-            if spec.blurb is not None:
-                short_desc = self._fix_docs(
-                    spec.blurb, current=current_rst_target)
-            else:
-                short_desc = ""
-            doc_key = obj.__module__ + "." + obj.__name__ + "." + name
-            desc = self.lookup_prop_docs(
-                doc_key, current=current_rst_target) or short_desc
-            desc += self.lookup_prop_meta(doc_key)
-
-            props.append(Property(name, attr_name, type_desc, readable,
-                                  writable, construct, short_desc, desc,
-                                  value_desc))
-
-        return props
-
-    def get_property_count(self, obj):
-        return len(self.parse_properties(obj))
-
-    def get_child_property_count(self, obj):
-        return len(self.parse_child_properties(obj))
-
-    def get_style_property_count(self, obj):
-        return len(self.parse_style_properties(obj))
-
-    def parse_flags(self, name, obj):
-        from gi.repository import GObject
-
-        # the base classes themselves: reference the real ones
-        if obj in (GObject.GFlags, GObject.GEnum):
-            return "%s = GObject.%s" % (obj.__name__, obj.__name__)
-
-        base = obj.__bases__[0]
-        base_name = base.__module__ + "." + base.__name__
-
-        docs = self.lookup_attr_docs(name)
-        docs += self.lookup_attr_meta(name)
-
-        code = """
-class %s(%s):
-    r'''
-%s
-    '''
-""" % (obj.__name__, base_name, docs)
-
-        for attr, attr_obj in util.iter_public_attr(obj):
-            if not callable(attr_obj):
-                continue
-
-            if not util.is_method_owner(obj, attr):
-                continue
-
-            func_key = name + "." + attr
-            code += util.indent(self.parse_function(func_key, obj, attr_obj))
-            code += "\n\n"
-
-        escaped = []
-
-        values = []
-        for attr_name in dir(obj):
-            if attr_name.upper() != attr_name:
-                continue
-            attr = getattr(obj, attr_name)
-            # hacky.. if there is an escaped one, ignore this one
-            # and add it later with setattr
-            if hasattr(obj, "_" + attr_name):
-                escaped.append(attr_name)
-                continue
-            if not isinstance(attr, obj):
-                continue
-            values.append((int(attr), attr_name))
-
-        values.sort()
-
-        for val, n in values:
-            code += "    %s = %r\n" % (n, val)
-            doc_key = name + "." + n.lower()
-            docs = self.lookup_attr_docs(doc_key)
-            docs += self.lookup_attr_meta(doc_key)
-            code += "    r'''\n%s\n'''\n" % docs
-
-        name = obj.__name__
-        for v in escaped:
-            code += "setattr(%s, '%s', %s)\n" % (name, v, "%s._%s" % (name, v))
-
-        return code
-
-    @cache_calls
-    def parse_methods(self, obj):
-        name = obj.__module__ + "." + obj.__name__
-
-        methods = []
-        for attr, attr_obj in util.iter_public_attr(obj):
-            # can fail for the base class
-            try:
-                if not util.is_method_owner(obj, attr):
-                    continue
-            except NotImplementedError:
-                continue
-
-            if callable(attr_obj):
-                func_key = name + "." + attr
-                code = self.parse_function(func_key, obj, attr_obj)
-                code = code or ""
-                is_vfunc = util.is_virtualmethod(attr_obj)
-                is_static = not util.is_normalmethod(attr_obj)
-                methods.append(Method(attr, is_static, is_vfunc, code))
-
-        return methods
-
-    def get_method_count(self, obj):
-        return len([m for m in self.parse_methods(obj) if not m.is_vfunc])
-
-    def get_vfunc_count(self, obj):
-        return len([m for m in self.parse_methods(obj) if m.is_vfunc])
-
-    def parse_function(self, name, owner, obj):
-        """Returns python code for the object"""
-
-        is_method = owner is not None
-
-        if is_method:
-            current_rst_target = owner.__module__ + "." + owner.__name__
-
-            # for methods, add the docstring after
-            def get_func_def(func_name, name, docs):
-                return """
-%s = %s
-r'''
-%s
-'''
-""" % (func_name, name, docs)
-
-        else:
-            current_rst_target = None
-
-            # for toplevel functions, replace the introspected one
-            # since sphinx ignores docstrings on the module level
-            # and replacing __doc__ for normal functions is possible
-            def get_func_def(func_name, name, docs):
-                return """
-%s = %s
-%s.__doc__ = r'''
-%s
-'''
-""" % (func_name, name, func_name, docs)
-
-        def get_sig(obj):
-            doc = str(obj.__doc__ or "")
-            first_line = doc and doc.splitlines()[0] or ""
-            return FuncSignature.from_string(name.split(".")[-1], first_line)
-
-        # FIXME: "GLib.IConv."
-        if name.split(".")[-1] == "":
-            return
-
-        func_name = name.split(".")[-1]
-        sig = get_sig(obj)
-
-        # no valid sig, but still a docstring, probably new function
-        # or an override with a new docstring
-        if not sig and obj.__doc__:
-            # add the versionadded from the gir here too
-            docs = str(obj.__doc__ or "")
-            docs += self.lookup_attr_meta(name)
-            return get_func_def(func_name, name, docs)
-
-        # no docstring, try to get the signature from base classes
-        if not sig and owner:
-            for base in owner.__mro__[1:]:
-                try:
-                    base_obj = getattr(base, func_name, None)
-                except NotImplementedError:
-                    # function not implemented in pgi
-                    continue
-                sig = get_sig(base_obj)
-                if sig:
-                    break
-
-        # still nothing, try making the best out of it
-        if not sig:
-            # INFO: this probably only happens if there is an override
-            # for something pgi doesn't support. The base class
-            # is missing the real one, but the gir docs may be still there
-
-            docs = self.lookup_attr_docs(name, current=current_rst_target)
-            if not docs:
-                docs = str(obj.__doc__ or "")
-            docs += self.lookup_attr_meta(name)
-            return get_func_def(func_name, name, docs)
-
-        # we got a valid signature here
-        assert sig
-
-        docstring = str(obj.__doc__ or "")
-        # the docstring contains additional text, propably an override
-        # or internal function (GObject.Object methods for example)
-        lines = docstring.splitlines()[1:]
-        while lines and not lines[0].strip():
-            lines = lines[1:]
-        user_docstring = "\n".join(lines)
-
-        # create sphinx lists for the signature we found
-        docs = sig.to_rest_listing(
-            self, name, current=current_rst_target).splitlines()
-        docs = "\n".join(docs)
-
-        if util.is_virtualmethod(obj):
-            docs = ":Type: virtual\n\n" + docs
-
-        # if we have a user docstring, use it, otherwise use the gir one
-        if user_docstring:
-            docs += "\n\n" + unindent(user_docstring)
-        elif self.lookup_attr_docs(name):
-            docs += "\n\n" + self.lookup_attr_docs(name,
-                                                   current=current_rst_target)
-            docs += self.lookup_attr_meta(name)
-
-        if is_method:
-            # Rewrap them here so spinx knows that they static and
-            # we can use that information in the autosummary extension.
-            # If we wrap a classmethod in another one sphinx doesn't
-            # pick up the function signature.. so only use staticmethod.
-            if util.is_staticmethod(obj) or util.is_classmethod(obj):
-                name = "staticmethod(%s)" % name
-
-        return get_func_def(func_name, name, docs)
+    def parse_function(self, namespace, obj):
+        return Function.from_object(namespace, obj, self, None)

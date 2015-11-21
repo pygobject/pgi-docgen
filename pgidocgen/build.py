@@ -18,11 +18,9 @@ import jinja2
 import sphinx
 
 from .mergeindex import merge
-from .util import rest2html
-from . import BASEDIR
+from .util import rest2html, BASEDIR
 
 
-OPTIPNG = "optipng"
 DEVHELP_PREFIX = "python-"
 
 
@@ -31,33 +29,6 @@ def get_cpu_count():
         return multiprocessing.cpu_count()
     except NotImplementedError:
         return 2
-
-
-def has_optipng():
-    try:
-        subprocess.check_output([OPTIPNG, "--version"])
-    except OSError:
-        return False
-    return True
-
-
-def png_optimize_dir(dir_, pool_size=6):
-    """Optimizes all pngs in dir_ (non-recursive)"""
-
-    if not os.path.exists(dir_):
-        return
-
-    print "optipng: %r" % dir_
-    pngs = [e for e in os.listdir(dir_) if e.lower().endswith(".png")]
-    paths = [os.path.join(dir_, f) for f in pngs]
-
-    def _do_optimize(path):
-        subprocess.check_output([OPTIPNG, path])
-
-    pool = ThreadPool(pool_size)
-    pool.map(_do_optimize, paths)
-    pool.close()
-    pool.join()
 
 
 def share_static(main):
@@ -105,7 +76,7 @@ def do_build(package):
     copy_env["PGIDOCGEN_TARGET_BASE_PATH"] = \
         os.path.dirname(package.build_path)
 
-    subprocess.check_call(["sphinx-build", "-a", "-E"] + sphinx_args,
+    subprocess.check_call(["sphinx-build", "-j4", "-a", "-E"] + sphinx_args,
                           env=copy_env)
 
     # we don't rebuild, remove all caches
@@ -115,17 +86,6 @@ def do_build(package):
     # remove some pages we don't need
     os.remove(os.path.join(package.build_path, "genindex.html"))
     os.remove(os.path.join(package.build_path, "search.html"))
-
-    if has_optipng():
-        png_dirs = [
-            os.path.join(package.build_path, "_static"),
-            os.path.join(package.build_path, "_images")
-        ]
-
-        for dir_ in png_dirs:
-            png_optimize_dir(dir_)
-    else:
-        print "optipng missing, skipping compression"
 
     return package
 

@@ -9,34 +9,43 @@ import os
 
 from . import genutil
 
+from .. import util
+
 
 _template = genutil.get_template(u"""\
 =========
 Callbacks
 =========
 
-{% if func_names %}
-.. autosummary::
+{% if summary_rows %}
+.. csv-table::
+    :widths: 1, 99
 
-    {% for name in func_names %}
-    {{ name }}
+    {% for row in summary_rows %}
+        {{ row|indent(4, False) }}
     {% endfor %}
+
 {% else %}
 None
+
 {% endif %}
 
 
 Details
 -------
 
-{% if func_names %}
-    {% for name in func_names %}
-.. autofunction:: {{ name }}
+{% if functions %}
+    {% for function in functions %}
+.. function:: {{ function.fullname }}{{ function.signature }}
+
+    {{ function.desc|indent(4, False) }}
 
     {% endfor %}
 {% else %}
 None
+
 {% endif %}
+
 """)
 
 
@@ -47,11 +56,8 @@ class CallbackGenerator(genutil.Generator):
     def __init__(self):
         self._callbacks = {}
 
-    def add_callback(self, obj, code):
-        if isinstance(code, unicode):
-            code = code.encode("utf-8")
-
-        self._callbacks[obj] = code
+    def add_callback(self, func):
+        self._callbacks[func.fullname] = func
 
     def get_names(self):
         return [self._FILENAME]
@@ -59,20 +65,22 @@ class CallbackGenerator(genutil.Generator):
     def is_empty(self):
         return not bool(self._callbacks)
 
-    def write(self, dir_, module_fileobj):
+    def write(self, dir_):
         path = os.path.join(dir_, "%s.rst" % self._FILENAME)
 
-        def get_name(func):
-            return func.__module__ + "." + func.__name__
+        functions = self._callbacks.values()
+        functions.sort(key=lambda f: f.name)
 
-        funcs = self._callbacks.keys()
-        funcs.sort(key=lambda x: x.__name__)
-        func_names = [get_name(f) for f in funcs]
+        summary_rows = []
+        for func in functions:
+            summary_rows.append(util.get_csv_line([
+                "",
+                ":py:func:`%s<%s>` %s" % (func.name, func.fullname,
+                                          util.escape_rest(func.signature))]))
+
+        text = _template.render(
+            functions=functions,
+            summary_rows=summary_rows)
 
         with open(path, "wb") as h:
-            text = _template.render(func_names=func_names)
             h.write(text.encode("utf-8"))
-
-        for f in funcs:
-            code = self._callbacks[f]
-            module_fileobj.write(code + "\n")

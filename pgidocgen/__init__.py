@@ -7,8 +7,6 @@
 
 import os
 
-BASEDIR = os.path.dirname(os.path.realpath(__file__))
-
 # Force disable translations for gi libraries.
 # For example descriptions of properties/signals are translated.
 os.environ["LANG"] = "C.UTF-8"

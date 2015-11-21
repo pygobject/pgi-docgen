@@ -8,8 +8,6 @@
 import os
 
 from . import genutil
-from .fields import FieldsMixin
-
 from .. import util
 
 
@@ -21,29 +19,29 @@ Unions
 .. toctree::
     :maxdepth: 1
 
-{% for name in names %}
-    {{ name }}
+{% for union in unions %}
+    {{ union.name }}
 {% endfor %}
 
 """)
 
-
 _sub_template = genutil.get_template("""\
-{{ "=" * cls_name|length }}
-{{ cls_name }}
-{{ "=" * cls_name|length }}
+{{ "=" * union.fullname|length }}
+{{ union.fullname }}
+{{ "=" * union.fullname|length }}
 
-{{ field_table }}
+.. _{{ union.fullname }}.fields:
 
+Fields
+------
 
-Methods
--------
+{% if field_rows %}
+.. csv-table::
+    :header: "Name", "Type", "Access", "Description"
+    :widths: 20, 1, 1, 100
 
-{% if method_names %}
-.. autosummary::
-
-    {% for name in method_names %}
-        {{ name }}
+    {% for row in field_rows %}
+        {{ row|indent(4, False) }}
     {% endfor %}
 
 {% else %}
@@ -51,97 +49,99 @@ None
 
 {% endif %}
 
+
+Methods
+-------
+
+{% if summary_rows %}
+.. csv-table::
+    :widths: 1, 100
+
+    {% for row in summary_rows %}
+        {{ row|indent(4, False) }}
+    {% endfor %}
+
+{% else %}
+None
+
+{% endif %}
+
+
 Details
 -------
 
-.. autoclass:: {{ cls_name }}
-    {% if not is_base %}
-    :show-inheritance:
-    {% endif %}
-    :members:
-    :undoc-members:
+.. class:: {{ union.fullname }}{{ union.signature }}
+
+    {{ union.desc|indent(4, False) }}
+
+    {% for method in union.get_methods(static=True) %}
+    .. staticmethod:: {{ method.fullname }}{{ method.signature }}
+
+        {{ method.desc|indent(8, False) }}
+
+    {% endfor %}
+
+    {% for method in union.get_methods(static=False) %}
+    .. method:: {{ method.fullname }}{{ method.signature }}
+
+        {{ method.desc|indent(8, False) }}
+
+    {% endfor %}
 
 """)
 
 
-class UnionGenerator(genutil.Generator, FieldsMixin):
+class UnionGenerator(genutil.Generator):
 
     def __init__(self):
         self._unions = {}
-        self._methods = {}
 
     def get_names(self):
-        return ["unions/index.rst"]
+        return ["unions/index"]
 
     def is_empty(self):
         return not bool(self._unions)
 
-    def add_union(self, obj, code):
-        if isinstance(code, unicode):
-            code = code.encode("utf-8")
-        self._unions[obj] = code
+    def add_union(self, union):
+        self._unions[union.fullname] = union
 
-    def add_method(self, cls_obj, obj, code):
-        if isinstance(code, unicode):
-            code = code.encode("utf-8")
-
-        if cls_obj in self._methods:
-            self._methods[cls_obj].append((obj, code))
-        else:
-            self._methods[cls_obj] = [(obj, code)]
-
-    def write(self, dir_, module_fileobj):
+    def write(self, dir_):
         sub_dir = os.path.join(dir_, "unions")
-        path = os.path.join(sub_dir, "index.rst")
+
         os.mkdir(sub_dir)
 
-        unions = sorted(self._unions.keys(), key=lambda x: x.__name__)
+        unions = self._unions.values()
+        unions = sorted(unions, key=lambda x: x.name)
 
-        # write the code
-        for cls in unions:
-            module_fileobj.write(self._unions[cls])
-            methods = self._methods.get(cls, [])
-            def sort_func(e):
-                return util.is_normalmethod(e[0]), e[0].__name__
-            methods.sort(key=sort_func)
-
-            for obj, code in methods:
-                module_fileobj.write(util.indent(code) + "\n")
-
-        # write rest
+        path = os.path.join(sub_dir, "index.rst")
         with open(path, "wb") as h:
-            names = [cls.__name__ for cls in unions]
-            text = _main_template.render(names=names)
+            text = _main_template.render(unions=unions)
             h.write(text.encode("utf-8"))
 
-        for cls in self._unions:
-            methods = [m[0] for m in self._methods.get(cls, [])]
-            self._write_union(sub_dir, cls, methods)
+        for union in unions:
+            self._write_union(sub_dir, union)
 
-    def _write_union(self, sub_dir, cls, methods):
-        rst_path = os.path.join(sub_dir, cls.__name__) + ".rst"
+    def _write_union(self, sub_dir, union):
+        rst_path = os.path.join(sub_dir, union.name) + ".rst"
+
+        methods = union.get_methods(static=True)
+        methods += union.get_methods(static=False)
+
+        summary_rows = []
+        for func in methods:
+            summary_rows.append(util.get_csv_line([
+                "*static*" if func.is_static else "",
+                ":py:func:`%s<%s>` %s" % (func.name, func.fullname,
+                                          util.escape_rest(func.signature))]))
+
+        field_rows = []
+        for field in union.fields:
+            field_rows.append(util.get_csv_line([
+                field.name, field.type_desc, field.flags_string, field.desc]))
 
         with open(rst_path, "wb") as h:
-
-            def get_name(cls):
-                return cls.__module__ + "." + cls.__name__
-
-            cls_name = get_name(cls)
-            field_table = self.get_field_table(cls)
-
-            def get_method_name(cls, obj):
-                return get_name(cls) + "." + obj.__name__
-
-            # sort static methods first, then by name
-            def sort_func(e):
-                return util.is_normalmethod(e), e.__name__
-
-            methods.sort(key=sort_func)
-            method_names = [get_method_name(cls, obj) for obj in methods]
-            is_base = util.is_base(cls)
-
             text = _sub_template.render(
-                method_names=method_names, is_base=is_base,
-                field_table=field_table, cls_name=cls_name)
-
+                union=union,
+                summary_rows=summary_rows,
+                field_rows=field_rows)
             h.write(text.encode("utf-8"))

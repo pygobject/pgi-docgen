@@ -10,17 +10,20 @@ import os
 
 from . import genutil
 
+from .. import util
+
 
 _template = genutil.get_template("""\
 =========
 Functions
 =========
 
-{% if names %}
-.. autosummary::
+{% if summary_rows %}
+.. csv-table::
+    :widths: 1, 100
 
-    {% for name in names %}
-    {{ name }}
+    {% for row in summary_rows %}
+        {{ row|indent(4, False) }}
     {% endfor %}
 
 {% else %}
@@ -31,9 +34,11 @@ None
 Details
 -------
 
-{% if names %}
-    {% for name in names %}
-.. autofunction:: {{ name }}
+{% if functions %}
+    {% for function in functions %}
+.. function:: {{ function.fullname }}{{ function.signature }}
+
+    {{ function.desc|indent(4, False) }}
 
     {% endfor %}
 {% else %}
@@ -54,19 +59,24 @@ class FunctionGenerator(genutil.Generator):
     def is_empty(self):
         return not bool(self._funcs)
 
-    def add_function(self, name, code):
-        if isinstance(code, unicode):
-            code = code.encode("utf-8")
+    def add_function(self, func):
+        self._funcs[func.fullname] = func
 
-        self._funcs[name] = code
-
-    def write(self, dir_, module_fileobj):
+    def write(self, dir_):
         path = os.path.join(dir_, "functions.rst")
-        func_names, func_codes = zip(*sorted(self._funcs.items()))
+
+        functions = self._funcs.values()
+        functions.sort(key=lambda f: f.name)
+
+        summary_rows = []
+        for func in functions:
+            summary_rows.append(util.get_csv_line([
+                "",
+                ":py:func:`%s<%s>` %s" % (func.name, func.fullname,
+                                          util.escape_rest(func.signature))]))
 
         with open(path, "wb") as h:
-            text = _template.render(names=func_names)
+            text = _template.render(
+                functions=functions,
+                summary_rows=summary_rows)
             h.write(text.encode("utf-8"))
-
-        for code in func_codes:
-            module_fileobj.write(code)

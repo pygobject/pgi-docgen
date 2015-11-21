@@ -16,9 +16,9 @@ _template = genutil.get_template("""\
 Constants
 =========
 
-{% if names %}
-    {% for name in names %}
-* :obj:`{{ name }}`
+{% if constants %}
+    {% for constant in constants %}
+* :obj:`{{ constant.fullname }}`
     {% endfor %}
 
 {% else %}
@@ -29,9 +29,12 @@ None
 Details
 -------
 
-{% if names %}
-    {% for name in names %}
-.. autodata:: {{ name }}
+{% if constants %}
+    {% for constant in constants %}
+.. data:: {{ constant.fullname }}
+    :annotation: = {{ constant.value }}
+
+    {{ constant.desc|indent(4, False) }}
 
     {% endfor %}
 {% else %}
@@ -46,11 +49,8 @@ class ConstantsGenerator(genutil.Generator):
     def __init__(self):
         self._consts = {}
 
-    def add_constant(self, name, code):
-        if isinstance(code, unicode):
-            code = code.encode("utf-8")
-
-        self._consts[name] = code
+    def add_constant(self, const):
+        self._consts[const.fullname] = const
 
     def get_names(self):
         return ["constants"]
@@ -58,16 +58,12 @@ class ConstantsGenerator(genutil.Generator):
     def is_empty(self):
         return not bool(self._consts)
 
-    def write(self, dir_, module_fileobj):
+    def write(self, dir_):
         path = os.path.join(dir_, "constants.rst")
 
-        names = self._consts.keys()
-        names.sort()
+        constants = self._consts.values()
+        constants.sort(key=lambda c: c.name)
 
         with open(path, "wb") as h:
-            text = _template.render(names=names)
+            text = _template.render(constants=constants)
             h.write(text.encode("utf-8"))
-
-        for name in names:
-            code = self._consts[name]
-            module_fileobj.write(code + "\n")

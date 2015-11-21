@@ -13,3 +13,4 @@ def pgi_docgen_path(app, pagename, templatename, context, doctree):
 
 def setup(app):
     app.connect('html-page-context', pgi_docgen_path)
+    return {"parallel_read_safe": True}

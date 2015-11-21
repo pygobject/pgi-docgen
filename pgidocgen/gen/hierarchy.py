@@ -32,59 +32,25 @@ None
 """)
 
 
-def get_hierarchy(type_seq):
-    """Returns for a sequence of classes a recursive dict including
-    all their sub classes.
-    """
-
-    def first_mro(obj):
-        l = [obj]
-        bases = util.fake_bases(obj)
-        if bases[0] is not object:
-            l.extend(first_mro(bases[0]))
-        return l
-
-    tree = {}
-    for type_ in type_seq:
-        current = tree
-        for base in reversed(first_mro(type_)):
-            if base not in current:
-                current[base] = {}
-            current = current[base]
-    return tree
-
-
-def to_names(hierarchy):
-
-    def get_name(cls):
-        return cls.__module__ + "." + cls.__name__
-
-    return sorted(
-            [(get_name(k), to_names(v)) for (k, v) in hierarchy.iteritems()])
-
-
 class HierarchyGenerator(genutil.Generator):
 
     _FILENAME = "hierarchy"
 
     def __init__(self):
-        self._classes = set()
+        self._hierarchy = []
 
     def get_names(self):
         return [self._FILENAME]
 
     def is_empty(self):
-        return not bool(self._classes)
+        return not bool(self._hierarchy)
 
-    def add_class(self, class_obj):
+    def set_hierarchy(self, hierarchy):
+        self._hierarchy = hierarchy
 
-        self._classes.add(class_obj)
-
-    def write(self, dir_, module_fileobj):
+    def write(self, dir_):
         path = os.path.join(dir_, "%s.rst" % self._FILENAME)
-        hierarchy = get_hierarchy(self._classes)
-        names = to_names(hierarchy)
 
         with open(path, "wb") as h:
-            text = _template.render(names=names)
+            text = _template.render(names=self._hierarchy)
             h.write(text.encode("utf-8"))

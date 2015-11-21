@@ -28,7 +28,7 @@ from ..doap import get_project_summary
 from ..namespace import get_namespace
 from ..girdata import get_source_to_url_func, get_project_version
 from ..repo import Repository
-from .. import util, BASEDIR
+from .. import util
 
 
 _template = genutil.get_template("""\
@@ -51,19 +51,35 @@ API
 """)
 
 
-def _import_dependency(fobj, namespace, version):
-    """Import the module in the generated code"""
+def get_hierarchy(type_seq):
+    """Returns for a sequence of classes a recursive dict including
+    all their sub classes.
+    """
 
-    fobj.write("import pgi\n")
-    fobj.write("pgi.set_backend('ctypes,null')\n")
-    fobj.write("pgi.require_version('%s', '%s')\n" % (namespace, version))
-    fobj.write("from pgi.repository import %s\n" % namespace)
+    def first_mro(obj):
+        l = [obj]
+        bases = util.fake_bases(obj)
+        if bases[0] is not object:
+            l.extend(first_mro(bases[0]))
+        return l
 
-    # this needs to be synced with Namespace.import_module
-    if namespace in ("Clutter", "ClutterGst", "Gst", "Grl"):
-        fobj.write("%s.init([])\n" % namespace)
-    elif namespace in ("Gsf", "IBus"):
-        fobj.write("%s.init()\n" % namespace)
+    tree = {}
+    for type_ in type_seq:
+        current = tree
+        for base in reversed(first_mro(type_)):
+            if base not in current:
+                current[base] = {}
+            current = current[base]
+    return tree
+
+
+def to_names(hierarchy):
+
+    def get_name(cls):
+        return cls.__module__ + "." + cls.__name__
+
+    return sorted(
+            [(get_name(k), to_names(v)) for (k, v) in hierarchy.iteritems()])
 
 
 class ModuleGenerator(genutil.Generator):
@@ -132,25 +148,12 @@ class ModuleGenerator(genutil.Generator):
 
         os.mkdir(sub_dir)
         dir_ = sub_dir
-        module_path = os.path.join(sub_dir, namespace + ".py")
-        module = open(module_path, "wb")
-
-        # utf-8 encoded .py
-        module.write("# -*- coding: utf-8 -*-\n")
-        # for references to the real module
-        _import_dependency(module, namespace, version)
-        # glib depends on it as it includes static bindings base classes
-        # (FIXME in pgi)
-        _import_dependency(module, "GObject", "2.0")
 
         repo = Repository(namespace, version)
         mod = repo.import_module()
         lib_version = get_project_version(mod)
 
-        for dep in repo.get_all_dependencies():
-            _import_dependency(module, *dep)
-
-        class_gen = ClassGenerator(repo)
+        class_gen = ClassGenerator()
         flags_gen = FlagsGenerator()
         enums_gen = EnumGenerator()
         func_gen = FunctionGenerator()
@@ -161,6 +164,7 @@ class ModuleGenerator(genutil.Generator):
         hier_gen = HierarchyGenerator()
         map_gen = MappingGenerator(repo)
 
+        hierarchy_classes = set()
         for key in dir(mod):
             if key.startswith("_"):
                 continue
@@ -183,93 +187,51 @@ class ModuleGenerator(genutil.Generator):
                     print "Skipping %s: originated from other namespace" % key
                     continue
 
-                if hasattr(obj, "_is_callback"):
-                    code = repo.parse_function(name, None, obj)
-                    cb_gen.add_callback(obj, code)
+                if util.is_callback(obj):
+                    func = repo.parse_function(namespace, obj)
+                    cb_gen.add_callback(func)
                 else:
-                    code = repo.parse_function(name, None, obj)
-                    if code:
-                        func_gen.add_function(name, code)
+                    func = repo.parse_function(namespace, obj)
+                    func_gen.add_function(func)
             elif inspect.isclass(obj):
-                if util.is_iface(obj) or util.is_object(obj):
-                    code = repo.parse_class(name, obj)
-                    if util.is_object(obj):
-                        hier_gen.add_class(obj)
-                        class_gen.add_class(obj, code)
-                    else:
-                        class_gen.add_interface(obj, code)
-
-                    props = repo.parse_properties(obj)
-                    class_gen.add_properties(obj, props)
-
-                    props = repo.parse_child_properties(obj)
-                    class_gen.add_child_properties(obj, props)
-
-                    props = repo.parse_style_properties(obj)
-                    class_gen.add_style_properties(obj, props)
-
-                    sigs = repo.parse_signals(obj)
-                    class_gen.add_signals(obj, sigs)
-
-                    fields = repo.parse_fields(obj)
-                    class_gen.add_fields(obj, fields)
-
-                    methods = repo.parse_methods(obj)
-                    class_gen.add_methods(obj, methods)
-
+                if util.is_object(obj) or util.is_iface(obj):
+                    klass = repo.parse_class(obj)
+                    if not klass.is_interface:
+                        hierarchy_classes.add(obj)
+                    class_gen.add_class(klass)
                 elif util.is_flags(obj):
-                    code = repo.parse_flags(name, obj)
-                    flags_gen.add_flags(obj, code)
+                    flags = repo.parse_flags(obj)
+                    flags_gen.add_flags(obj, flags)
                 elif util.is_enum(obj):
-                    code = repo.parse_flags(name, obj)
-                    enums_gen.add_enum(obj, code)
-                elif util.is_struct(obj) or util.is_union(obj):
+                    enum = repo.parse_enum(obj)
+                    enums_gen.add_enum(obj, enum)
+                elif util.is_struct(obj):
+                    struct = repo.parse_structure(obj)
                     # Hide private structs
-                    if repo.is_private(namespace + "." + obj.__name__):
+                    if repo.is_private(struct.fullname):
                         continue
-
-                    code = repo.parse_class(name, obj)
-
-                    if util.is_struct(obj):
-                        gen = struct_gen
-                        struct_gen.add_struct(obj, code)
-                    else:
-                        gen = union_gen
-                        union_gen.add_union(obj, code)
-
-                    fields = repo.parse_fields(obj)
-                    gen.add_fields(obj, fields)
-
-                    for attr, attr_obj in util.iter_public_attr(obj):
-                        try:
-                            if not util.is_method_owner(obj, attr):
-                                continue
-                        except NotImplementedError:
-                            continue
-
-                        if callable(attr_obj):
-                            func_key = name + "." + attr
-                            code = repo.parse_function(func_key, obj, attr_obj)
-                            if code:
-                                gen.add_method(obj, attr_obj, code)
+                    struct_gen.add_struct(struct)
+                elif util.is_union(obj):
+                    union = repo.parse_union(obj)
+                    union_gen.add_union(union)
                 else:
                     # don't include GError
                     if not issubclass(obj, BaseException):
-                        hier_gen.add_class(obj)
+                        hierarchy_classes.add(obj)
 
                     # classes not subclassing from any gobject base class
                     if util.is_fundamental(obj):
-                        code = repo.parse_class(name, obj)
-                        if code:
-                            class_gen.add_class(obj, code)
+                        klass = repo.parse_class(obj)
+                        class_gen.add_class(klass)
                     else:
-                        code = repo.parse_custom_class(name, obj)
-                        if code:
-                            class_gen.add_class(obj, code, py_class=True)
+                        klass = repo.parse_pyclass(obj)
+                        class_gen.add_pyclass(klass)
             else:
-                code = repo.parse_constant(name)
-                if code:
-                    const_gen.add_constant(name, code)
+                const = repo.parse_constant(namespace, key, obj)
+                const_gen.add_constant(const)
+
+        hierarchy = to_names(get_hierarchy(hierarchy_classes))
+        hier_gen.set_hierarchy(hierarchy)
 
         with open(os.path.join(sub_dir, "index.rst"),  "wb") as h:
 
@@ -285,36 +247,25 @@ class ModuleGenerator(genutil.Generator):
                     continue
                 for name in gen.get_names():
                     names.append(name)
-                gen.write(sub_dir, module)
+                gen.write(sub_dir)
 
             text = _template.render(
                 title=title, project_summary=project_summary, names=names)
             h.write(text.encode("utf-8"))
 
-        module.close()
-
-        # make sure the generated code is valid python
-        try:
-            with open(module.name, "rb") as h:
-                exec h.read() in {}
-        except Exception as e:
-            raise RuntimeError(module.name, e)
-
         # for sphinx.ext.linkcode
-        source_path = os.path.join(dir_, "_source.json")
         url_map = {}
         func = get_source_to_url_func(namespace, lib_version)
         if func:
             source = repo.get_source()
             for key, value in source.iteritems():
                 url_map[key] = func(value)
-        with open(source_path, "wb") as h:
-            json.dump(url_map, h, indent=4)
 
         conf_path = os.path.join(dir_, "_pgi_docgen_conf.py")
         deps = ["-".join(d) for d in repo.get_all_dependencies()]
         with open(conf_path, "wb") as conf:
             conf.write("DEPS = %r\n" % deps)
+            conf.write("SOURCEURLS = %r\n" % url_map)
 
         # make sure the generated config
         with open(conf_path, "rb") as h:
@@ -349,17 +300,20 @@ class ModuleGenerator(genutil.Generator):
 
         # copy the theme, conf.py
         dest_conf = os.path.join(dir_, "conf.py")
-        shutil.copy(os.path.join(BASEDIR, "data", self.CONF_IN), dest_conf)
+        shutil.copy(
+            os.path.join(util.BASEDIR, "data", self.CONF_IN), dest_conf)
 
         theme_dest = os.path.join(dir_, "_" + self.THEME_DIR)
         shutil.copytree(
-            os.path.join(BASEDIR, "data", self.THEME_DIR), theme_dest)
+            os.path.join(util.BASEDIR, "data", self.THEME_DIR), theme_dest)
 
         ext_dest = os.path.join(dir_, "_" + self.EXT_DIR)
-        shutil.copytree(os.path.join(BASEDIR, "data", self.EXT_DIR), ext_dest)
+        shutil.copytree(
+            os.path.join(util.BASEDIR, "data", self.EXT_DIR), ext_dest)
 
         module_id = "%s-%s" % (namespace, version)
-        clsimg_src = os.path.join(BASEDIR, "data", self.CLSIMG_DIR, module_id)
+        clsimg_src = os.path.join(
+            util.BASEDIR, "data", self.CLSIMG_DIR, module_id)
         if os.path.exists(clsimg_src):
             clsimg_dest = os.path.join(dir_, "_" + self.CLSIMG_DIR)
             shutil.copytree(clsimg_src, clsimg_dest)

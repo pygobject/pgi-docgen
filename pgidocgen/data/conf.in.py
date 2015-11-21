@@ -2,30 +2,20 @@
 
 import os
 import sys
-import json
 
 sys.path.insert(0, os.getcwd())
 
-import pgi
-pgi.install_as_gi()
-
-from _pgi_docgen_conf import DEPS
+from _pgi_docgen_conf import DEPS, SOURCEURLS
 
 TARGET = os.environ["PGIDOCGEN_TARGET_BASE_PATH"]
 TARGET_PREFIX = os.environ.get("PGIDOCGEN_TARGET_PREFIX", "")
 mname, mversion = os.path.basename(os.getcwd()).split("-", 1)
 
-with open("_source.json", "rb") as h:
-    SOURCE_MAP = json.load(h)
-
 extensions = [
-    'sphinx.ext.autodoc',
     'sphinx.ext.intersphinx',
     'sphinx.ext.linkcode',
-    '_ext.inheritance_diagram_fork',
-    '_ext.autosummary_fork',
+    '_ext.inheritance_graph',
     '_ext.devhelp_fork',
-    '_ext.toctree',
     '_ext.current_path',
 ]
 source_suffix = '.rst'
@@ -65,15 +55,6 @@ html_context = {
     "extra_css_files": ["_static/css/pgi.css"],
 }
 
-inheritance_node_attrs = dict(shape='box', fontsize=8.5,
-                              color='gray70', style='rounded',
-                              fontname='inherit')
-inheritance_graph_attrs = dict(rankdir="TB", size='""', bgcolor="transparent")
-
-autodoc_member_order = "bysource"
-autodoc_docstring_signature = False
-
-
 def linkcode_resolve(domain, info):
     """for sphinx.ext.linkcode"""
 
@@ -81,4 +62,4 @@ def linkcode_resolve(domain, info):
     if name:
         name += "."
     name += info["fullname"]
-    return SOURCE_MAP.get(name)
+    return SOURCEURLS.get(name)

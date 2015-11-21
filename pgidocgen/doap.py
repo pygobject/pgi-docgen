@@ -9,13 +9,13 @@ import os
 
 from BeautifulSoup import BeautifulStoneSoup
 
-from . import util, BASEDIR
+from . import util
 
 
 def get_project_summary(namespace):
     """Returns a reST summary extracted from a doap file"""
 
-    doap_path = os.path.join(BASEDIR, "data", "doap", namespace) + ".doap"
+    doap_path = os.path.join(util.BASEDIR, "data", "doap", namespace) + ".doap"
     if not os.path.exists(doap_path):
         return u""
 

@@ -16,4 +16,5 @@ else
     pip install git+https://github.com/lazka/pgi.git
     pip install sphinx
     pip install BeautifulSoup
+    pip install jinja2
 fi

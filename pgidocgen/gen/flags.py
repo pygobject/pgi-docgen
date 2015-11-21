@@ -9,8 +9,6 @@ import os
 
 from . import genutil
 
-from .. import util
-
 
 _template = genutil.get_template("""\
 =====
@@ -18,8 +16,8 @@ Flags
 =====
 
 {% if entries %}
-    {% for name, is_base in entries %}
-* :class:`{{ name }}`
+    {% for entry in entries %}
+* :class:`{{ entry.fullname }}`
     {% endfor %}
 
 {% else %}
@@ -31,14 +29,20 @@ Details
 -------
 
 {% if entries %}
-    {% for name, is_base in entries %}
-.. autoclass:: {{ name }}
-    {% if not is_base %}
-    :show-inheritance:
-    {% endif %}
-    :members:
-    :undoc-members:
-    :private-members:
+    {% for entry in entries %}
+.. class:: {{ entry.fullname }}()
+
+    Bases: :class:`GObject.GFlags`
+
+    {{ entry.desc|indent(4, False) }}
+
+    {% for value in entry.values %}
+    .. attribute:: {{ value.name }}
+        :annotation: = {{ value.value }}
+
+        {{ value.desc|indent(8, False) }}
+
+    {% endfor %}
 
     {% endfor %}
 {% else %}
@@ -53,11 +57,8 @@ class FlagsGenerator(genutil.Generator):
     def __init__(self):
         self._flags = {}
 
-    def add_flags(self, obj, code):
-        if isinstance(code, unicode):
-            code = code.encode("utf-8")
-
-        self._flags[obj] = code
+    def add_flags(self, obj, flags):
+        self._flags[obj] = flags
 
     def get_names(self):
         return ["flags"]
@@ -65,20 +66,12 @@ class FlagsGenerator(genutil.Generator):
     def is_empty(self):
         return not bool(self._flags)
 
-    def write(self, dir_, module_fileobj):
+    def write(self, dir_):
         path = os.path.join(dir_, "flags.rst")
-        classes = self._flags.keys()
-        classes.sort(key=lambda x: x.__name__)
 
-        def get_name(cls):
-            return cls.__module__ + "." + cls.__name__
-
-        entries = [(get_name(cls), util.is_base(cls)) for cls in classes]
+        flags = self._flags.values()
+        flags.sort(key=lambda x: x.name)
 
         with open(path, "wb") as h:
-            text = _template.render(entries=entries)
+            text = _template.render(entries=flags)
             h.write(text.encode("utf-8"))
-
-        for cls in classes:
-            code = self._flags[cls]
-            module_fileobj.write(code + "\n")

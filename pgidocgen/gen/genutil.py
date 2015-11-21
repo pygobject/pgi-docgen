@@ -27,7 +27,7 @@ class Generator(object):
 
         raise NotImplementedError
 
-    def write(self, dir_, module_fileobj=None):
+    def write(self, dir_):
         """Create and write everything"""
 
         raise NotImplementedError

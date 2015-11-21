@@ -16,7 +16,24 @@ import cStringIO
 from docutils.core import publish_parts
 
 
+BASEDIR = os.path.dirname(os.path.realpath(__file__))
+
+
 _KWD_RE = re.compile("^(%s)$" % "|".join(keyword.kwlist))
+
+
+def get_image_name(namespace, version, fullname):
+    """Returns a image file name if an image exists"""
+
+    image_path = os.path.join(
+        BASEDIR, "data", "clsimages",
+        "%s-%s" % (namespace, version),
+        "%s.png" % fullname)
+
+    if os.path.exists(image_path):
+        return "%s.png" % fullname
+
+    return None
 
 
 def rest2html(text):
@@ -122,6 +139,9 @@ def escape_parameter(text):
 def get_overridden_class(obj):
     assert inspect.isclass(obj)
 
+    if not hasattr(obj, "__gtype__"):
+        return
+
     # if the class has a base with the same gtype, it's certainly an
     # override
     for base in obj.__mro__[1:]:
@@ -163,7 +183,7 @@ def is_iface(obj):
         return False
 
     from gi.repository import GObject
-    return issubclass(obj, GObject.GInterface)
+    return issubclass(obj, GObject.GInterface) and not is_object(obj)
 
 
 def is_object(obj):
@@ -345,6 +365,12 @@ def is_virtualmethod(obj):
     assert callable(obj)
 
     return getattr(obj, "_is_virtual", False)
+
+
+def is_callback(obj):
+    assert callable(obj)
+
+    return hasattr(obj, "_is_callback")
 
 
 def is_normalmethod(obj):

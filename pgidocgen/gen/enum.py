@@ -15,9 +15,9 @@ _template = genutil.get_template("""\
 Enums
 =====
 
-{% if names %}
-    {% for name in names %}
-* :class:`{{ name }}`
+{% if enums %}
+    {% for enum in enums %}
+* :class:`{{ enum.fullname }}`
     {% endfor %}
 
 {% else %}
@@ -28,13 +28,35 @@ None
 Details
 -------
 
-{% if names %}
-    {% for name in names %}
-.. autoclass:: {{ name }}
-    :show-inheritance:
-    :members:
-    :undoc-members:
-    :private-members:
+{% if enums %}
+    {% for enum in enums %}
+.. class:: {{ enum.fullname }}()
+
+    Bases: :class:`GObject.GEnum`
+
+    {{ enum.desc|indent(4, False) }}
+
+    {% for method in enum.get_methods(static=True) %}
+    .. staticmethod:: {{ method.name }}{{ method.signature }}
+
+        {{ method.desc|indent(8, False) }}
+
+    {% endfor %}
+
+    {% for method in enum.get_methods(static=False) %}
+    .. method:: {{ method.name }}{{ method.signature }}
+
+        {{ method.desc|indent(8, False) }}
+
+    {% endfor %}
+
+    {% for value in enum.values %}
+    .. attribute:: {{ value.name }}
+        :annotation: = {{ value.value }}
+
+        {{ value.desc|indent(8, False) }}
+
+    {% endfor %}
 
     {% endfor %}
 {% else %}
@@ -49,11 +71,8 @@ class EnumGenerator(genutil.Generator):
     def __init__(self):
         self._enums = {}
 
-    def add_enum(self, obj, code):
-        if isinstance(code, unicode):
-            code = code.encode("utf-8")
-
-        self._enums[obj] = code
+    def add_enum(self, obj, enum):
+        self._enums[obj] = enum
 
     def get_names(self):
         return ["enums"]
@@ -61,20 +80,12 @@ class EnumGenerator(genutil.Generator):
     def is_empty(self):
         return not bool(self._enums)
 
-    def write(self, dir_, module_fileobj):
+    def write(self, dir_):
         path = os.path.join(dir_, "enums.rst")
-        classes = self._enums.keys()
-        classes.sort(key=lambda x: x.__name__)
 
-        def get_name(cls):
-            return cls.__module__ + "." + cls.__name__
-
-        names = [get_name(cls) for cls in classes]
+        enums = self._enums.values()
+        enums.sort(key=lambda x: x.name)
 
         with open(path, "wb") as h:
-            text = _template.render(names=names)
+            text = _template.render(enums=enums)
             h.write(text.encode("utf-8"))
-
-        for cls in classes:
-            code = self._enums[cls]
-            module_fileobj.write(code + "\n")

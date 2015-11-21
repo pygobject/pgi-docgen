@@ -1,22 +1,20 @@
 What is this?
 =============
 
-An experiment to create sphinx docs for gi modules using python introspection.
+A tool to create sphinx documentation for gi modules using python
+introspection.
 
-pgi-docgen.py introspects the gi module and pulls in the gir docs. I 
-creates a fake python module for each gi module that contains the whole API
-and uses the real module where needed.
+pgi-docgen.py introspects the gi module, pulls in the gir docs and creates a
+sphinx environment.
 
-pgi-docgen-build.py builds html docs using sphinx and optimizes pngs.
-
-Both steps need a working (and the same) pgi.
-
+pgi-docgen-build.py builds html docs using sphinx.
 
 Requirements
 ------------
 
 * Python2.7 or PyPy
 * pgi (trunk)
+* jinja2
 * Sphinx
 * BeautifulSoup 3
 * graphviz
@@ -95,7 +93,7 @@ Everything in the ``data/theme`` sub directory:
 
     SIL Open Font License
 
-Everything in the ``data/ext`` sub directory:
+``data/ext/devhelp_fork.py``:
 
     https://bitbucket.org/birkenfeld/sphinx/
 

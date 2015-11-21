@@ -9,7 +9,7 @@ import os
 import unittest
 
 from pgidocgen.doap import get_project_summary
-from pgidocgen import BASEDIR
+from pgidocgen.util import BASEDIR
 
 
 class TDoap(unittest.TestCase):

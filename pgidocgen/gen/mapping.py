@@ -42,7 +42,7 @@ class MappingGenerator(genutil.Generator):
     def is_empty(self):
         return False
 
-    def write(self, dir_, module_fileobj):
+    def write(self, dir_):
         path = os.path.join(dir_, "mapping.rst")
 
         lines = []

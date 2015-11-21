@@ -7,10 +7,9 @@
 
 import os
 
-from .fields import FieldsMixin
 from . import genutil
 
-from .. import util, BASEDIR
+from .. import util
 from ..util import get_csv_line, fake_subclasses
 
 
@@ -28,93 +27,127 @@ Classes
 .. toctree::
     :maxdepth: 1
 
-    {% for name in names %}
-    {{ name }}
+    {% for class in classes %}
+    {{ class.name }}
     {% endfor %}
 
 """)
 
 
+_py_template = genutil.get_template("""\
+{{ "=" * cls.fullname|length }}
+{{ cls.fullname }}
+{{ "=" * cls.fullname|length }}
+
+Class Details
+-------------
+
+.. class:: {{ cls.fullname }}
+
+
+""")
+
+
 _sub_template = genutil.get_template("""\
-{{ "=" * cls_name|length }}
-{{ cls_name }}
-{{ "=" * cls_name|length }}
+{{ "=" * cls.fullname|length }}
+{{ cls.fullname }}
+{{ "=" * cls.fullname|length }}
 
-.. inheritance-diagram:: {{ cls_name }}
+{# ################################################ #}
 
-{% if has_image %}
+.. inheritance-graph:: {{ cls.fullname }}
+
+    {% for a, b in inheritance_edges %}
+    {{ a }} -> {{ b }}
+    {% endfor %}
+
+{# ################################################ #}
+
+{% if cls.image_name %}
 Example
 -------
 
-.. image:: ../_clsimages/{{ cls_name }}.png
+.. image:: ../_clsimages/{{ cls.image_name }}
 
 {% endif %}
 
-{% if subclass_names %}
-    {% if is_interface %}
-:Implementations:
-    {% else %}
-:Subclasses:
-    {% endif %}
-    {% for name in subclass_names %}
-    :class:`{{ name }}`{% if not loop.last %}, {% endif %}
-    {% endfor %}
+{# ################################################ #}
+
+{% if cls.is_interface %}
+:Implementations: {% if not cls.subclasses %}None{% endif %}{% for name in cls.subclasses %}:class:`{{ name }}`{% if not loop.last %}, {% endif %}{% endfor %}
+{% else %}
+:Subclasses: {% if not cls.subclasses %}None{% endif %}{% for name in cls.subclasses %}:class:`{{ name }}`{% if not loop.last %}, {% endif %}{% endfor %}
 {% endif %}
 
+{# ################################################ #}
 
-.. _{{ cls_name }}.methods:
+.. _{{ cls.fullname }}.methods:
 
 Methods
 -------
 
-{% if methods_inherited %}
-{{ methods_inherited }}
-
-{% endif %}
-{% if method_names %}
-.. autosummary::
-
-    {% for name in method_names %}
-    {{ name }}
+{% if cls.methods_inherited %}
+:Inherited:
+    {% for name, count in cls.methods_inherited %}
+    :ref:`{{ name }} ({{ count }})<{{ name }}.methods>`{% if not loop.last %}, {% endif %}
     {% endfor %}
 
+
 {% endif %}
-{% if not methods_inherited and not method_names %}
+{% if methods_summary_rows %}
+.. csv-table::
+    :widths: 1, 100
+
+    {% for row in methods_summary_rows %}
+        {{ row|indent(4, False) }}
+    {% endfor %}
+
+{% elif not cls.methods_inherited %}
 None
 
 {% endif %}
 
+{# ################################################ #}
 
-.. _{{ cls_name }}.vfuncs:
+.. _{{ cls.fullname }}.vfuncs:
 
 Virtual Methods
 ---------------
 
-{% if vfuncs_inherited %}
-{{ vfuncs_inherited }}
-
-{% endif %}
-{% if vfunc_names %}
-.. autosummary::
-
-    {% for name in vfunc_names %}
-    {{ name }}
+{% if cls.vfuncs_inherited %}
+:Inherited:
+    {% for name, count in cls.vfuncs_inherited %}
+    :ref:`{{ name }} ({{ count }})<{{ name }}.vfuncs>`{% if not loop.last %}, {% endif %}
     {% endfor %}
 
+
 {% endif %}
-{% if not vfuncs_inherited and not vfunc_names %}
+{% if vfuncs_summary_rows %}
+.. csv-table::
+    :widths: 1, 100
+
+    {% for row in vfuncs_summary_rows %}
+        {{ row|indent(4, False) }}
+    {% endfor %}
+
+{% elif not cls.vfuncs_inherited %}
 None
 
 {% endif %}
 
+{# ################################################ #}
 
-.. _{{ cls_name }}.props:
+.. _{{ cls.fullname }}.props:
 
 Properties
 ----------
 
-{% if props_inherited %}
-{{ props_inherited }}
+{% if cls.properties_inherited %}
+:Inherited:
+    {% for name, count in cls.properties_inherited %}
+    :ref:`{{ name }} ({{ count }})<{{ name }}.props>`{% if not loop.last %}, {% endif %}
+    {% endfor %}
+
 
 {% endif %}
 {% if prop_lines %}
@@ -125,26 +158,29 @@ Properties
     {% for line in prop_lines %}
     {{ line }}
     {% endfor %}
-
-{% endif %}
-{% if not props_inherited and not prop_lines %}
+{% elif not cls.properties_inherited %}
 None
-
 {% endif %}
 
+{# ################################################ #}
 
-{% if child_prop_lines or child_props_inherited %}
+{% if cls.child_properties or cls.child_properties_inherited %}
 
-.. _{{ cls_name }}.child-props:
+.. _{{ cls.fullname }}.child-props:
 
 Child Properties
 ----------------
 
-{% if child_props_inherited %}
-{{ child_props_inherited }}
+{% if cls.child_properties_inherited %}
+:Inherited:
+    {% for name, count in cls.child_properties_inherited %}
+    :ref:`{{ name }} ({{ count }})<{{ name }}.child-props>`{% if not loop.last %}, {% endif %}
+    {% endfor %}
+
 
 {% endif %}
-{% if child_prop_lines %}
+
+{% if cls.child_properties %}
 .. csv-table::
     :header: "Name", "Type", "Default", "Flags", "Short Description"
     :widths: 1, 1, 1, 1, 100
@@ -152,22 +188,29 @@ Child Properties
     {% for line in child_prop_lines %}
     {{ line }}
     {% endfor %}
-
-{% endif %}
 {% endif %}
 
-{% if style_prop_lines or style_props_inherited %}
+{% endif %}
 
-.. _{{ cls_name }}.style-props:
+{# ################################################ #}
+
+{% if cls.style_properties or cls.style_properties_inherited %}
+
+.. _{{ cls.fullname }}.style-props:
 
 Style Properties
 ----------------
 
-{% if style_props_inherited %}
-{{ style_props_inherited }}
+{% if cls.style_properties_inherited %}
+:Inherited:
+    {% for name, count in cls.style_properties_inherited %}
+    :ref:`{{ name }} ({{ count }})<{{ name }}.style-props>`{% if not loop.last %}, {% endif %}
+    {% endfor %}
+
 
 {% endif %}
-{% if style_prop_lines %}
+
+{% if cls.style_properties %}
 .. csv-table::
     :header: "Name", "Type", "Default", "Flags", "Short Description"
     :widths: 1, 1, 1, 1, 100
@@ -175,18 +218,23 @@ Style Properties
     {% for line in style_prop_lines %}
     {{ line }}
     {% endfor %}
-
-{% endif %}
 {% endif %}
 
+{% endif %}
 
-.. _{{ cls_name }}.signals:
+{# ################################################ #}
+
+.. _{{ cls.fullname }}.signals:
 
 Signals
 -------
 
-{% if sigs_inherited %}
-{{ sigs_inherited }}
+{% if cls.signals_inherited %}
+:Inherited:
+    {% for name, count in cls.signals_inherited %}
+    :ref:`{{ name }} ({{ count }})<{{ name }}.signals>`{% if not loop.last %}, {% endif %}
+    {% endfor %}
+
 
 {% endif %}
 {% if sig_lines %}
@@ -197,33 +245,87 @@ Signals
     {% for line in sig_lines %}
     {{ line }}
     {% endfor %}
+{% elif not cls.signals_inherited %}
+None
+{% endif %}
+
+{# ################################################ #}
+
+.. _{{ cls.fullname }}.fields:
+
+Fields
+------
+
+{% if cls.fields_inherited %}
+:Inherited:
+    {% for name, count in cls.signals_inherited %}
+    :ref:`{{ name }} ({{ count }})<{{ name }}.fields>`{% if not loop.last %}, {% endif %}
+    {% endfor %}
+
 
 {% endif %}
-{% if not sigs_inherited and not sig_lines %}
+{% if field_lines %}
+.. csv-table::
+    :header: "Name", "Type", "Access", "Description"
+    :widths: 20, 1, 1, 100
+
+    {% for row in field_lines %}
+    {{ row|indent(4, False) }}
+    {% endfor %}
+
+{% elif not cls.fields_inherited %}
 None
 
 {% endif %}
 
-
-{{ field_table }}
-
+{# ################################################ #}
 
 Class Details
 -------------
 
-.. autoclass:: {{ cls_name }}
-    {% if not is_base %}
-    :show-inheritance:
-    {% endif %}
-    :members:
-    :undoc-members:
+.. class:: {{ cls.fullname }}{{ cls.signature }}
 
-{% if signals %}
+    {% if cls.bases %}
+    :Bases:
+        {% for base in cls.bases %}
+        :class:`{{ base }}`{% if not loop.last %}, {% endif %}
+        {% endfor %}
+
+    {% endif %}
+
+    {{ cls.desc|indent(4, False) }}
+
+    {% for method in cls.get_methods(static=True) %}
+    .. staticmethod:: {{ method.fullname }}{{ method.signature }}
+
+        {{ method.desc|indent(8, False) }}
+
+    {% endfor %}
+
+    {% for method in cls.get_methods(static=False) %}
+    .. method:: {{ method.fullname }}{{ method.signature }}
+
+        {{ method.desc|indent(8, False) }}
+
+    {% endfor %}
+
+    {% for method in cls.vfuncs %}
+    .. method:: {{ method.fullname }}{{ method.signature }}
+
+        :Type: virtual
+
+        {{ method.desc|indent(8, False) }}
+
+    {% endfor %}
+
+{# ################################################ #}
+
+{% if cls.signals %}
 Signal Details
 --------------
 
-{% for signal in signals %}
-.. py:function:: {{ cls_name }}.signals.{{ signal.sig }}
+{% for signal in cls.signals %}
+.. py:function:: {{ cls.fullname }}.signals.{{ signal.sig }}
 
     :Signal Name: ``{{ signal.name }}``
     :Flags: {{ signal.flags_string }}
@@ -234,19 +336,19 @@ Signal Details
 {% endfor %}
 {% endif %}
 
+{# ################################################ #}
 
-{% if properties %}
+{% if cls.properties %}
 Property Details
 ----------------
 
-{% for prop in properties %}
-.. py:data:: {{ cls_name }}.props.{{ prop.attr_name }}
+{% for prop in cls.properties %}
+.. py:data:: {{ cls.fullname }}.props.{{ prop.attr_name }}
 
     :Name: ``{{ prop.name }}``
     :Type: {{ prop.type_desc }}
     :Default Value: {{ prop.value_desc }}
     :Flags: {{ prop.flags_string }}
-
 
     {{ prop.desc|indent(4, False) }}
 
@@ -257,299 +359,157 @@ Property Details
 """)
 
 
-_pysub_template = genutil.get_template("""\
-{{ "=" * cls_name|length }}
-{{ cls_name }}
-{{ "=" * cls_name|length }}
-
-.. autoclass:: {{ cls_name }}
-    :members:
-    :undoc-members:
-
-""")
-
-
-class ClassGenerator(genutil.Generator, FieldsMixin):
+class ClassGenerator(genutil.Generator):
     """For GObjects an GInterfaces"""
 
-    def __init__(self, repo):
-        self._classes = {}  # cls -> code
+    def __init__(self):
+        self._classes = {}
         self._ifaces = {}
-        self._methods = {}  # cls -> [methods]
-        self._props = {}  # cls -> [prop]
-        self._child_props = {}  # cls -> [prop]
-        self._style_props = {}  # cls -> [prop]
-        self._sigs = {}  # cls -> [sig]
-        self._py_class = set()
+        self._pyclasses = {}
 
-        self.repo = repo
-
-    def add_class(self, obj, code, py_class=False):
-        if isinstance(code, unicode):
-            code = code.encode("utf-8")
-
-        self._classes[obj] = code
-        if py_class:
-            self._py_class.add(obj)
-
-    def add_interface(self, obj, code):
-        if isinstance(code, unicode):
-            code = code.encode("utf-8")
-
-        self._ifaces[obj] = code
-
-    def add_methods(self, cls_obj, methods):
-        assert cls_obj not in self._methods
-
-        self._methods[cls_obj] = methods
-
-    def _get_inheritance_list(self, cls, ref_suffix):
-        if ref_suffix == "methods":
-            cfunc = self.repo.get_method_count
-        elif ref_suffix == "vfuncs":
-            cfunc = self.repo.get_vfunc_count
-        elif ref_suffix == "props":
-            cfunc = self.repo.get_property_count
-        elif ref_suffix == "signals":
-            cfunc = self.repo.get_signal_count
-        elif ref_suffix == "fields":
-            cfunc = self.repo.get_field_count
-        elif ref_suffix == "child-props":
-            cfunc = self.repo.get_child_property_count
-        elif ref_suffix == "style-props":
-            cfunc = self.repo.get_style_property_count
+    def add_class(self, obj):
+        if obj.is_interface:
+            self._ifaces[obj.fullname] = obj
         else:
-            assert 0
+            self._classes[obj.fullname] = obj
 
-        bases = []
-        for base in util.fake_mro(cls):
-            if base is object or base is cls:
-                continue
-            num = cfunc(base)
-            if num:
-                name = base.__module__ + "." + base.__name__
-                bases.append(
-                    ":ref:`%s (%d)<%s.%s>`" % (name, num, name, ref_suffix))
-
-        if bases:
-            return """
-
-:Inherited: %s
-
-""" % ", ".join(bases)
-        else:
-            return ""
-
-    def add_properties(self, cls, props):
-        assert cls not in self._props
-
-        if props:
-            self._props[cls] = props
-
-    def add_child_properties(self, cls, props):
-        assert cls not in self._child_props
-
-        if props:
-            self._child_props[cls] = props
-
-    def add_style_properties(self, cls, props):
-        assert cls not in self._style_props
-
-        if props:
-            self._style_props[cls] = props
-
-    def add_signals(self, cls, sigs):
-        assert cls not in self._sigs
-
-        if sigs:
-            self._sigs[cls] = sigs
+    def add_pyclass(self, obj):
+        self._pyclasses[obj.fullname] = obj
 
     def get_names(self):
         names = []
         if self._ifaces:
             names.append("interfaces/index.rst")
-        if self._classes:
+        if self._classes or self._pyclasses:
             names.append("classes/index.rst")
         return names
 
     def is_empty(self):
-        return not bool(self._classes) and not bool(self._ifaces)
+        return not bool(self._classes) and not bool(self._ifaces) and \
+            not bool(self._pyclasses)
 
-    def get_mro(self, cls):
-        return [c for c in cls.__mro__ if
-                c in self._classes or c in self._ifaces]
-
-    def write(self, dir_, module_fileobj):
+    def write(self, dir_):
         if self._ifaces:
-            self._write(module_fileobj, os.path.join(dir_, "interfaces"),
+            self._write(os.path.join(dir_, "interfaces"),
                         self._ifaces, True)
 
-        if self._classes:
-            self._write(module_fileobj, os.path.join(dir_, "classes"),
-                        self._classes, False)
+        if self._classes or self._pyclasses:
+            classes = self._classes.copy()
+            classes.update(self._pyclasses)
+            self._write(os.path.join(dir_, "classes"), classes, False)
 
-    def _write(self, module_fileobj, sub_dir, classes, is_interface):
+    def _write(self, sub_dir, classes, is_interface):
         os.mkdir(sub_dir)
         index_path = os.path.join(sub_dir, "index.rst")
 
-        # write the code
-        for cls in classes:
-            module_fileobj.write(classes[cls])
-
-            methods = self._methods.get(cls, [])
-
-            def method_sort_key(m):
-                return m.is_vfunc, not m.is_static, m.name
-
-            for method in sorted(methods, key=method_sort_key):
-                code = method.code
-                if not isinstance(code, bytes):
-                    code = code.encode("utf-8")
-                module_fileobj.write(util.indent(code) + "\n")
-
-        classes = sorted(classes.keys(), key=lambda x: x.__name__)
+        classes = sorted(classes.values(), key=lambda x: x.name)
 
         # index rst
         with open(index_path, "wb") as h:
-            names = [cls.__name__ for cls in classes]
             text = _main_template.render(
-                is_interface=is_interface, names=names)
+                is_interface=is_interface, classes=classes)
             h.write(text.encode("utf-8"))
 
         for cls in classes:
-            self._write_class(sub_dir, cls, is_interface)
+            with open(os.path.join(sub_dir, cls.name) + ".rst", "wb") as h:
+                self._write_class(h, cls)
 
-    def _get_subclasses(self, cls):
-        subclasses = []
-        for sub in fake_subclasses(cls):
-            # don't include things we happened to import
-            if sub not in self._classes and sub not in self._ifaces:
-                continue
-            subclasses.append(sub)
-        return set(subclasses)
+    def _write_class(self, h, cls):
+        pyclass = cls in self._pyclasses.values()
 
-    def _write_class(self, sub_dir, cls, is_interface):
-
-        def get_name(cls):
-            return cls.__module__ + "." + cls.__name__
-
-        with open(os.path.join(sub_dir, cls.__name__) + ".rst", "wb") as h:
-            cls_name = get_name(cls)
-            is_base = util.is_base(cls)
-
-            # special case classes which don't inherit from any GI class
-            # and are defined in the overrides:
-            # e.g. Gtk.TreeModelRow, GObject.ParamSpec
-            if cls in self._py_class:
-                text = _pysub_template.render(cls_name=cls_name)
-                h.write(text.encode("utf-8"))
-                return
-
-            # SUBCLASSES
-            subclasses = self._get_subclasses(cls)
-            subclass_names = sorted([get_name(c) for c in subclasses])
-
-            # IMAGE
-            image_path = os.path.join(
-                BASEDIR, "data", "clsimages", "%s-%s" % (
-                    self.repo.namespace, self.repo.version),
-                "%s.png" % cls_name)
-            has_image = os.path.exists(image_path)
-
-            # METHODS
-
-            # sort static methods first, then by name
-            def sort_func(m):
-                return not m.is_static, m.name
-
-            methods_inherited = self._get_inheritance_list(cls, "methods")
-            methods = sorted(
-                [m for m in self._methods.get(cls, []) if not m.is_vfunc],
-                key=sort_func)
-
-            method_names = []
-            for method in methods:
-                method_names.append(cls_name + "." + method.name)
-
-            # VFUNCS
-
-            # sort static methods first, then by name
-            def sort_func(m):
-                return not m.is_static, m.name
-
-            vfuncs_inherited = self._get_inheritance_list(cls, "vfuncs")
-            vfuncs = sorted(
-                [m for m in self._methods.get(cls, []) if m.is_vfunc],
-                 key=sort_func)
-            vfunc_names = []
-            for method in vfuncs:
-                vfunc_names.append(cls_name + "." + method.name)
-
-            # PROPERTIES
-            props_inherited = self._get_inheritance_list(cls, "props")
-            props = sorted(self._props.get(cls, []), key=lambda p: p.name)
-
-            prop_lines = []
-            for p in props:
-                fstr = p.flags_string
-                rst_target = cls_name + ".props." + p.attr_name
-                name = ":py:data:`%s<%s>`" % (p.name, rst_target)
-                line = get_csv_line([name, p.type_desc, fstr, p.short_desc])
-                prop_lines.append(line)
-
-            # CHILD PROPERTIES
-            child_props_inherited = self._get_inheritance_list(
-                cls, "child-props")
-            child_props = sorted(
-                self._child_props.get(cls, []), key=lambda p: p.name)
-            child_prop_lines = []
-            for p in child_props:
-                name = "``%s``" % p.name
-                line = get_csv_line(
-                    [name, p.type_desc, p.value_desc,
-                     p.flags_string, p.short_desc])
-                child_prop_lines.append(line)
-
-            # STYLE PROPERTIES
-            style_props_inherited = self._get_inheritance_list(
-                cls, "style-props")
-            style_props = sorted(
-                self._style_props.get(cls, []), key=lambda p: p.name)
-            style_prop_lines = []
-            for p in style_props:
-                name = "``%s``" % p.name
-                line = get_csv_line(
-                    [name, p.type_desc, p.value_desc,
-                     p.flags_string, p.short_desc])
-                style_prop_lines.append(line)
-
-            # SIGNALS
-            sigs_inherited = self._get_inheritance_list(cls, "signals")
-            sigs = sorted(self._sigs.get(cls, []), key=lambda s: s.name)
-            sig_lines = []
-            for sig in sigs:
-                rst_target = cls_name + ".signals." + sig.attr_name
-                name_ref = ":py:func:`%s<%s>`" % (sig.name, rst_target)
-                line = get_csv_line([name_ref, sig.short_desc])
-                sig_lines.append(line)
-
-            # FIELDS
-            fields_inherited = self._get_inheritance_list(cls, "fields")
-            field_table = self.get_field_table(cls, fields_inherited)
-
-            # render
-            text = _sub_template.render(
-                cls_name=cls_name, is_interface=is_interface,
-                subclass_names=subclass_names, has_image=has_image,
-                methods_inherited=methods_inherited, method_names=method_names,
-                vfuncs_inherited=vfuncs_inherited, vfunc_names=vfunc_names,
-                props_inherited=props_inherited, prop_lines=prop_lines,
-                child_props_inherited=child_props_inherited,
-                child_prop_lines=child_prop_lines,
-                style_props_inherited=style_props_inherited,
-                style_prop_lines=style_prop_lines,
-                sigs_inherited=sigs_inherited, sig_lines=sig_lines,
-                field_table=field_table, is_base=is_base,
-                signals=sigs, properties=props)
+        if pyclass:
+            text = _py_template.render(
+                cls=cls,
+            )
 
             h.write(text.encode("utf-8"))
+            return
+
+        # methods
+        methods = cls.get_methods(static=True)
+        methods += cls.get_methods(static=False)
+
+        summary_rows = []
+        for func in methods:
+            summary_rows.append(util.get_csv_line([
+                "*static*" if func.is_static else "",
+                ":py:func:`%s<%s>` %s" % (func.name, func.fullname,
+                                          util.escape_rest(func.signature))]))
+        methods_summary_rows = summary_rows
+
+        # vfuncs
+        summary_rows = []
+        for func in cls.vfuncs:
+            summary_rows.append(util.get_csv_line([
+                "",
+                ":py:func:`%s<%s>` %s" % (func.name, func.fullname,
+                                          util.escape_rest(func.signature))]))
+        vfuncs_summary_rows = summary_rows
+
+        # props
+        prop_lines = []
+        for p in cls.properties:
+            fstr = p.flags_string
+            rst_target = cls.fullname + ".props." + p.attr_name
+            name = ":py:data:`%s<%s>`" % (p.name, rst_target)
+            line = get_csv_line([name, p.type_desc, fstr, p.short_desc])
+            prop_lines.append(line)
+
+        # child props
+        child_prop_lines = []
+        for p in cls.child_properties:
+            name = "``%s``" % p.name
+            line = get_csv_line(
+                [name, p.type_desc, p.value_desc,
+                 p.flags_string, p.short_desc])
+            child_prop_lines.append(line)
+
+        # style props
+        style_prop_lines = []
+        for p in cls.style_properties:
+            name = "``%s``" % p.name
+            line = get_csv_line(
+                [name, p.type_desc, p.value_desc,
+                 p.flags_string, p.short_desc])
+            style_prop_lines.append(line)
+
+        # signals
+        sig_lines = []
+        for sig in cls.signals:
+            rst_target = cls.fullname + ".signals." + sig.attr_name
+            name_ref = ":py:func:`%s<%s>`" % (sig.name, rst_target)
+            line = get_csv_line([name_ref, sig.short_desc])
+            sig_lines.append(line)
+
+        # fields
+        field_lines = []
+        for field in cls.fields:
+            field_lines.append(util.get_csv_line([
+                field.name, field.type_desc, field.flags_string, field.desc]))
+
+        def get_edges(tree):
+            edges = []
+            for cls, sub in tree:
+                for base in sub:
+                    edges.append((base[0], cls))
+                edges.extend(get_edges(sub))
+            return edges
+
+        # inheritance edges
+        inheritance_edges = get_edges(cls.base_tree)
+        inheritance_edges.sort()
+
+        # render
+        text = _sub_template.render(
+            cls=cls,
+            methods_summary_rows=methods_summary_rows,
+            vfuncs_summary_rows=vfuncs_summary_rows,
+            prop_lines=prop_lines,
+            child_prop_lines=child_prop_lines,
+            style_prop_lines=style_prop_lines,
+            sig_lines=sig_lines,
+            field_lines=field_lines,
+            inheritance_edges=inheritance_edges,
+        )
+
+        h.write(text.encode("utf-8"))
