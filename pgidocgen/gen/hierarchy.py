@@ -9,8 +9,6 @@ import os
 
 from . import genutil
 
-from .. import util
-
 
 _template = genutil.get_template("""\
 =========

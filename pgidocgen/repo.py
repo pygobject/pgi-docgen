@@ -271,7 +271,7 @@ class Signal(BaseDocObject):
             assert fsig, sig.__doc__
         except NotImplementedError:
             fsig = None
-            ssig = "%s(*fixme)" % attr
+            ssig = "%s(*fixme)" % attr_name
         else:
             ssig = fsig.to_simple_signature()
 
@@ -282,7 +282,7 @@ class Signal(BaseDocObject):
                 repo, inst.fullname, current=parent_fullname, signal=True)
         else:
             # FIXME pgi
-            print "FIXME: signal: %s " % doc_key
+            print "FIXME: signal: %s " % inst.fullname
             desc = "(FIXME pgi-docgen: arguments are missing here)"
 
         desc += "\n\n"

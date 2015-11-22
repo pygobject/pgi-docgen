@@ -10,7 +10,7 @@ import os
 from . import genutil
 
 from .. import util
-from ..util import get_csv_line, fake_subclasses
+from ..util import get_csv_line
 
 
 _main_template = genutil.get_template("""\
