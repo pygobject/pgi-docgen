@@ -13,10 +13,11 @@ from gi.repository import GObject
 
 from .namespace import get_namespace
 from . import util
-from .util import unindent, escape_identifier, cache_calls
+from .util import unindent, cache_calls
 
 from .funcsig import FuncSignature, py_type_to_class_ref, get_type_name
 from .parser import docstring_to_rest
+from .girdata import get_source_to_url_func, get_project_version
 
 
 def get_signature_string(callable_):
@@ -623,6 +624,34 @@ class Constant(BaseDocObject):
         return instance
 
 
+class SymbolMapping(object):
+
+    def __init__(self, symbol_map, source_map):
+        self.symbol_map = symbol_map # [(c sym, py sym)]
+        self.source_map = source_map # {py sym: git url}
+
+    @classmethod
+    def from_repo(cls, repo, module):
+        lib_version = get_project_version(module)
+        func = get_source_to_url_func(repo.namespace, lib_version)
+        source_map = {}
+        if func:
+            source = repo.get_source()
+            for key, value in source.iteritems():
+                source_map[key] = func(value)
+
+        symbol_map = []
+        items = repo.get_types().iteritems()
+        for key, values in sorted(items, key=lambda x: x[0].lower()):
+            for value in values:
+                if not value.startswith(repo.namespace + "."):
+                    continue
+                if repo.is_private(value):
+                    continue
+                symbol_map.append((key, value))
+        return cls(symbol_map, source_map)
+
+
 class Repository(object):
     """Takes gi objects and gives documentation objects"""
 
@@ -640,6 +669,9 @@ class Repository(object):
         for sub_ns in loaded:
             self._types.update(sub_ns.get_types())
         self._types.update(ns.get_types())
+
+    def get_types(self):
+        return self._types
 
     def lookup_attr_docs(self, *args, **kwargs):
         docs = self._lookup_docs("all", *args, **kwargs)
@@ -768,3 +800,6 @@ class Repository(object):
 
     def parse_function(self, namespace, obj):
         return Function.from_object(namespace, obj, self, None)
+
+    def parse_mapping(self, module):
+        return SymbolMapping.from_repo(self, module)

@@ -9,7 +9,6 @@ import os
 import types
 import inspect
 import shutil
-import json
 from urllib2 import urlopen, URLError, HTTPError
 
 from .klass import ClassGenerator
@@ -26,7 +25,7 @@ from . import genutil
 
 from ..doap import get_project_summary
 from ..namespace import get_namespace
-from ..girdata import get_source_to_url_func, get_project_version
+from ..girdata import get_project_version
 from ..repo import Repository
 from .. import util
 
@@ -162,7 +161,7 @@ class ModuleGenerator(genutil.Generator):
         const_gen = ConstantsGenerator()
         cb_gen = CallbackGenerator()
         hier_gen = HierarchyGenerator()
-        map_gen = MappingGenerator(repo)
+        map_gen = MappingGenerator()
 
         hierarchy_classes = set()
         for key in dir(mod):
@@ -230,6 +229,9 @@ class ModuleGenerator(genutil.Generator):
                 const = repo.parse_constant(namespace, key, obj)
                 const_gen.add_constant(const)
 
+        symbol_mapping = repo.parse_mapping(mod)
+        map_gen.set_mapping(symbol_mapping)
+
         hierarchy = to_names(get_hierarchy(hierarchy_classes))
         hier_gen.set_hierarchy(hierarchy)
 
@@ -253,19 +255,12 @@ class ModuleGenerator(genutil.Generator):
                 title=title, project_summary=project_summary, names=names)
             h.write(text.encode("utf-8"))
 
-        # for sphinx.ext.linkcode
-        url_map = {}
-        func = get_source_to_url_func(namespace, lib_version)
-        if func:
-            source = repo.get_source()
-            for key, value in source.iteritems():
-                url_map[key] = func(value)
-
         conf_path = os.path.join(dir_, "_pgi_docgen_conf.py")
         deps = ["-".join(d) for d in repo.get_all_dependencies()]
         with open(conf_path, "wb") as conf:
             conf.write("DEPS = %r\n" % deps)
-            conf.write("SOURCEURLS = %r\n" % url_map)
+            # for sphinx.ext.linkcode
+            conf.write("SOURCEURLS = %r\n" % symbol_mapping.source_map)
 
         # make sure the generated config
         with open(conf_path, "rb") as h:

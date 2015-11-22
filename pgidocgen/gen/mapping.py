@@ -33,30 +33,31 @@ Symbol Mapping
 
 class MappingGenerator(genutil.Generator):
 
-    def __init__(self, repo):
-        self.repo = repo
+    def __init__(self):
+        self._mapping = None
+
+    def set_mapping(self, mapping):
+        self._mapping = mapping
 
     def get_names(self):
         return ["mapping"]
 
     def is_empty(self):
-        return False
+        return not bool(self._mapping)
 
     def write(self, dir_):
         path = os.path.join(dir_, "mapping.rst")
 
         lines = []
-        items = self.repo._types.iteritems()
-        for key, values in sorted(items, key=lambda x: x[0].lower()):
-            key = util.escape_rest(key)
-            for value in values:
-                if not value.startswith(self.repo.namespace + "."):
-                    continue
-                if self.repo.is_private(value):
-                    continue
-                value = util.escape_rest(value)
-                line = util.get_csv_line([key, ":py:data:`%s`" % value])
-                lines.append(line)
+        for key, value in self._mapping.symbol_map:
+            url = self._mapping.source_map.get(value, u"")
+            value = util.escape_rest(value)
+            if url:
+                key = "`%s <%s>`__" % (util.escape_rest(key), url)
+            else:
+                key = util.escape_rest(key)
+            line = util.get_csv_line([key, ":py:data:`%s`" % value])
+            lines.append(line)
 
         with open(path, "wb") as h:
             text = _template.render(lines=lines)
