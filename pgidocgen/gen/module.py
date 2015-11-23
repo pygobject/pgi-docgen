@@ -182,7 +182,7 @@ class ModuleGenerator(object):
                 title=title, ps=module.project_summary, names=names)
             h.write(text.encode("utf-8"))
 
-        conf_path = os.path.join(dir_, "_pgi_docgen_conf.py")
+        conf_path = os.path.join(dir_, "conf_data.py")
         deps = ["-".join(d) for d in module.dependencies]
         with open(conf_path, "wb") as conf:
             conf.write("DEPS = %r\n" % deps)

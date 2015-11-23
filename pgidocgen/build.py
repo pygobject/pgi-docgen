@@ -138,7 +138,7 @@ def main(argv):
         path = os.path.join(args.source, entry)
 
         # extract the build dir from the config
-        conf_path = os.path.join(path, "_pgi_docgen_conf.py")
+        conf_path = os.path.join(path, "conf_data.py")
         with open(conf_path, "rb") as h:
             exec_env = {}
             exec h.read() in exec_env

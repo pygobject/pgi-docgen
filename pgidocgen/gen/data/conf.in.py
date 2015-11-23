@@ -5,7 +5,7 @@ import sys
 
 sys.path.insert(0, os.getcwd())
 
-from _pgi_docgen_conf import DEPS, SOURCEURLS
+from conf_data import DEPS, SOURCEURLS
 
 TARGET = os.environ["PGIDOCGEN_TARGET_BASE_PATH"]
 TARGET_PREFIX = os.environ.get("PGIDOCGEN_TARGET_PREFIX", "")
