@@ -51,7 +51,7 @@ None
 class FunctionGenerator(genutil.Generator):
 
     def __init__(self):
-        self._funcs = {}
+        self._funcs = set()
 
     def get_names(self):
         return ["functions"]
@@ -60,13 +60,12 @@ class FunctionGenerator(genutil.Generator):
         return not bool(self._funcs)
 
     def add_function(self, func):
-        self._funcs[func.fullname] = func
+        self._funcs.add(func)
 
     def write(self, dir_):
         path = os.path.join(dir_, "functions.rst")
 
-        functions = self._funcs.values()
-        functions.sort(key=lambda f: f.name)
+        functions = sorted(self._funcs, key=lambda f: f.name)
 
         summary_rows = []
         for func in functions:

@@ -51,25 +51,22 @@ None
 
 class CallbackGenerator(genutil.Generator):
 
-    _FILENAME = "callbacks"
-
     def __init__(self):
-        self._callbacks = {}
+        self._callbacks = set()
 
     def add_callback(self, func):
-        self._callbacks[func.fullname] = func
+        self._callbacks.add(func)
 
     def get_names(self):
-        return [self._FILENAME]
+        return ["callbacks"]
 
     def is_empty(self):
         return not bool(self._callbacks)
 
     def write(self, dir_):
-        path = os.path.join(dir_, "%s.rst" % self._FILENAME)
+        path = os.path.join(dir_, "callbacks.rst")
 
-        functions = self._callbacks.values()
-        functions.sort(key=lambda f: f.name)
+        functions = sorted(self._callbacks, key=lambda f: f.name)
 
         summary_rows = []
         for func in functions:

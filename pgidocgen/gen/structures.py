@@ -94,7 +94,7 @@ Details
 class StructGenerator(genutil.Generator):
 
     def __init__(self):
-        self._structs = {}
+        self._structs = set()
 
     def get_names(self):
         return ["structs/index"]
@@ -103,15 +103,14 @@ class StructGenerator(genutil.Generator):
         return not bool(self._structs)
 
     def add_struct(self, struct):
-        self._structs[struct.fullname] = struct
+        self._structs.add(struct)
 
     def write(self, dir_):
         sub_dir = os.path.join(dir_, "structs")
 
         os.mkdir(sub_dir)
 
-        structs = self._structs.values()
-        structs = sorted(structs, key=lambda x: x.name)
+        structs = sorted(self._structs, key=lambda x: x.name)
 
         path = os.path.join(sub_dir, "index.rst")
         with open(path, "wb") as h:

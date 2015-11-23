@@ -55,10 +55,10 @@ None
 class FlagsGenerator(genutil.Generator):
 
     def __init__(self):
-        self._flags = {}
+        self._flags = set()
 
     def add_flags(self, flags):
-        self._flags[flags.fullname] = flags
+        self._flags.add(flags)
 
     def get_names(self):
         return ["flags"]
@@ -69,8 +69,7 @@ class FlagsGenerator(genutil.Generator):
     def write(self, dir_):
         path = os.path.join(dir_, "flags.rst")
 
-        flags = self._flags.values()
-        flags.sort(key=lambda x: x.name)
+        flags = sorted(self._flags, key=lambda x: x.name)
 
         with open(path, "wb") as h:
             text = _template.render(entries=flags)

@@ -70,25 +70,11 @@ API
 """)
 
 
-class ModuleGenerator(genutil.Generator):
+class ModuleGenerator(object):
 
-    CLSIMG_DIR = "clsimages"
-
-    def __init__(self):
-        self._modules = []
-
-    def get_names(self):
-        names = []
-        for namespace, version in self._modules:
-            nick = "%s_%s" % (namespace, version)
-            names.append(nick + "/index")
-        return names
-
-    def add_module(self, namespace, version):
-        self._modules.append((namespace, version))
-
-    def is_empty(self):
-        return not bool(self._modules)
+    def __init__(self, namespace, version):
+        self._namespace = namespace
+        self._version = version
 
     def write(self, dir_):
         try:
@@ -116,11 +102,7 @@ class ModuleGenerator(genutil.Generator):
 
             return mods
 
-        mods = []
-        for namespace, version in self._modules:
-            mods.extend(get_to_write(dir_, namespace, version))
-        mods = set(mods)
-
+        mods = set(get_to_write(dir_, self._namespace, self._version))
         for namespace, version in mods:
             nick = "%s-%s" % (namespace, version)
             sub_dir = os.path.join(dir_, nick)

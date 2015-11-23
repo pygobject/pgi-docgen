@@ -69,10 +69,10 @@ None
 class EnumGenerator(genutil.Generator):
 
     def __init__(self):
-        self._enums = {}
+        self._enums = set()
 
     def add_enum(self, enum):
-        self._enums[enum.fullname] = enum
+        self._enums.add(enum)
 
     def get_names(self):
         return ["enums"]
@@ -83,8 +83,7 @@ class EnumGenerator(genutil.Generator):
     def write(self, dir_):
         path = os.path.join(dir_, "enums.rst")
 
-        enums = self._enums.values()
-        enums.sort(key=lambda x: x.name)
+        enums = sorted(self._enums, key=lambda x: x.name)
 
         with open(path, "wb") as h:
             text = _template.render(enums=enums)

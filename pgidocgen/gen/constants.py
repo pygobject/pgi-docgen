@@ -47,10 +47,10 @@ None
 class ConstantsGenerator(genutil.Generator):
 
     def __init__(self):
-        self._consts = {}
+        self._consts = set()
 
     def add_constant(self, const):
-        self._consts[const.fullname] = const
+        self._consts.add(const)
 
     def get_names(self):
         return ["constants"]
@@ -61,8 +61,7 @@ class ConstantsGenerator(genutil.Generator):
     def write(self, dir_):
         path = os.path.join(dir_, "constants.rst")
 
-        constants = self._consts.values()
-        constants.sort(key=lambda c: c.name)
+        constants = sorted(self._consts, key=lambda c: c.name)
 
         with open(path, "wb") as h:
             text = _template.render(constants=constants)

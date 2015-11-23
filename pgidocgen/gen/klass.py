@@ -364,18 +364,18 @@ class ClassGenerator(genutil.Generator):
     """For GObjects an GInterfaces"""
 
     def __init__(self):
-        self._classes = {}
-        self._ifaces = {}
-        self._pyclasses = {}
+        self._classes = set()
+        self._ifaces = set()
+        self._pyclasses = set()
 
     def add_class(self, obj):
         if obj.is_interface:
-            self._ifaces[obj.fullname] = obj
+            self._ifaces.add(obj)
         else:
-            self._classes[obj.fullname] = obj
+            self._classes.add(obj)
 
     def add_pyclass(self, obj):
-        self._pyclasses[obj.fullname] = obj
+        self._pyclasses.add(obj)
 
     def get_names(self):
         names = []
@@ -403,7 +403,7 @@ class ClassGenerator(genutil.Generator):
         os.mkdir(sub_dir)
         index_path = os.path.join(sub_dir, "index.rst")
 
-        classes = sorted(classes.values(), key=lambda x: x.name)
+        classes = sorted(classes, key=lambda x: x.name)
 
         # index rst
         with open(index_path, "wb") as h:
@@ -416,7 +416,7 @@ class ClassGenerator(genutil.Generator):
                 self._write_class(h, cls)
 
     def _write_class(self, h, cls):
-        pyclass = cls in self._pyclasses.values()
+        pyclass = cls in self._pyclasses
 
         if pyclass:
             text = _py_template.render(

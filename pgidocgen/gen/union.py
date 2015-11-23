@@ -94,7 +94,7 @@ Details
 class UnionGenerator(genutil.Generator):
 
     def __init__(self):
-        self._unions = {}
+        self._unions = set()
 
     def get_names(self):
         return ["unions/index"]
@@ -103,15 +103,14 @@ class UnionGenerator(genutil.Generator):
         return not bool(self._unions)
 
     def add_union(self, union):
-        self._unions[union.fullname] = union
+        self._unions.add(union)
 
     def write(self, dir_):
         sub_dir = os.path.join(dir_, "unions")
 
         os.mkdir(sub_dir)
 
-        unions = self._unions.values()
-        unions = sorted(unions, key=lambda x: x.name)
+        unions = sorted(self._unions, key=lambda x: x.name)
 
         path = os.path.join(sub_dir, "index.rst")
         with open(path, "wb") as h:

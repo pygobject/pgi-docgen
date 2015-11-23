@@ -31,7 +31,7 @@ def get_class_image_path(namespace, version, class_name):
     Might not exist.
     """
 
-    return os.path.join(get_class_image_dir(),
+    return os.path.join(get_class_image_dir(namespace, version),
                         "%s.%s.png" % (namespace, class_name))
 
 

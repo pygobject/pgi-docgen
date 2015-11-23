@@ -64,8 +64,7 @@ def main(argv):
         print "GIR file for %s not found, aborting." % namespace
         raise SystemExit(1)
 
-    gen = ModuleGenerator()
     namespace, version = namespace.split("-", 1)
     print "Create docs: Namespace=%s, Version=%s" % (namespace, version)
-    gen.add_module(namespace, version)
+    gen = ModuleGenerator(namespace, version)
     gen.write(args.target)
