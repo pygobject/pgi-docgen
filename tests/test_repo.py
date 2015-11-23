@@ -8,7 +8,7 @@
 
 import unittest
 
-from pgidocgen.repo import Repository
+from pgidocgen.repo import Repository, Class
 
 
 class TRepository(unittest.TestCase):
@@ -96,12 +96,12 @@ class TRepository(unittest.TestCase):
         from pgi.repository import Gtk
 
         repo = Repository("Gtk", "3.0")
-        self.assertTrue(repo.parse_class(Gtk.Button))
-        self.assertTrue(repo.parse_class(Gtk.Paned))
-        self.assertTrue(repo.parse_class(Gtk.ActionBar))
+        Class.from_object(repo, Gtk.Button)
+        Class.from_object(repo, Gtk.Paned)
+        Class.from_object(repo, Gtk.ActionBar)
 
     def test_class_gudev(self):
         from pgi.repository import GUdev
 
         repo = Repository("GUdev", "1.0")
-        self.assertTrue(repo.parse_class(GUdev.Client))
+        Class.from_object(repo, GUdev.Client)

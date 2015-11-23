@@ -71,8 +71,8 @@ class EnumGenerator(genutil.Generator):
     def __init__(self):
         self._enums = {}
 
-    def add_enum(self, obj, enum):
-        self._enums[obj] = enum
+    def add_enum(self, enum):
+        self._enums[enum.fullname] = enum
 
     def get_names(self):
         return ["enums"]

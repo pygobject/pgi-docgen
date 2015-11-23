@@ -8,16 +8,18 @@
 
 import re
 import inspect
+import types
 
 from gi.repository import GObject
 
 from .namespace import get_namespace
 from . import util
-from .util import unindent, cache_calls
+from .util import unindent
 
 from .funcsig import FuncSignature, py_type_to_class_ref, get_type_name
 from .parser import docstring_to_rest
 from .girdata import get_source_to_url_func, get_project_version
+from .doap import get_project_summary
 
 
 def get_signature_string(callable_):
@@ -29,6 +31,38 @@ def get_signature_string(callable_):
     if argspec[0] and argspec[0][0] in ('cls', 'self'):
         del argspec[0][0]
     return inspect.formatargspec(*argspec)
+
+
+
+def get_hierarchy(type_seq):
+    """Returns for a sequence of classes a recursive dict including
+    all their sub classes.
+    """
+
+    def first_mro(obj):
+        l = [obj]
+        bases = util.fake_bases(obj)
+        if bases[0] is not object:
+            l.extend(first_mro(bases[0]))
+        return l
+
+    tree = {}
+    for type_ in type_seq:
+        current = tree
+        for base in reversed(first_mro(type_)):
+            if base not in current:
+                current[base] = {}
+            current = current[base]
+    return tree
+
+
+def to_names(hierarchy):
+
+    def get_name(cls):
+        return cls.__module__ + "." + cls.__name__
+
+    return sorted(
+            [(get_name(k), to_names(v)) for (k, v) in hierarchy.iteritems()])
 
 
 class BaseDocObject(object):
@@ -363,8 +397,14 @@ class Class(BaseDocObject, MethodsMixin, PropertiesMixin, SignalsMixin,
     def bases(self):
         return [c[0] for c in self.base_tree[0][1]]
 
+    _cache = {}
+
     @classmethod
     def from_object(cls, repo, obj):
+        # cache as we need them multiple times for the inheritance counts
+        if obj in cls._cache:
+            return cls._cache[obj]
+
         namespace = obj.__module__
         name = obj.__name__
 
@@ -397,28 +437,29 @@ class Class(BaseDocObject, MethodsMixin, PropertiesMixin, SignalsMixin,
             for base in util.fake_mro(obj):
                 if base is object or base is obj:
                     continue
-                yield repo.parse_class(base)
+                yield Class.from_object(repo, base)
 
         inherited = {}
         inherit_types = ["vfuncs", "methods", "properties", "signals",
                          "fields", "child_properties", "style_properties"]
-        for cls in iter_bases(obj):
+        for base in iter_bases(obj):
             for type_ in inherit_types:
-                attr = getattr(cls, type_)
+                attr = getattr(base, type_)
                 if len(attr):
                     inherited.setdefault(type_, []).append(
-                        (cls.fullname, len(attr)))
+                        (base.fullname, len(attr)))
         for type_ in inherit_types:
             setattr(klass, type_ + "_inherited", inherited.get(type_, []))
 
         subclasses = []
-        for cls in util.fake_subclasses(obj):
-            if cls.__module__ == namespace:
-                subclasses.append(cls.__module__ + "." + cls.__name__)
+        for subc in util.fake_subclasses(obj):
+            if subc.__module__ == namespace:
+                subclasses.append(subc.__module__ + "." + subc.__name__)
         subclasses.sort()
         klass.subclasses = subclasses
         klass.signature = get_signature_string(obj.__init__)
 
+        cls._cache[obj] = klass
         return klass
 
 
@@ -631,7 +672,7 @@ class SymbolMapping(object):
         self.source_map = source_map # {py sym: git url}
 
     @classmethod
-    def from_repo(cls, repo, module):
+    def from_module(cls, repo, module):
         lib_version = get_project_version(module)
         func = get_source_to_url_func(repo.namespace, lib_version)
         source_map = {}
@@ -652,6 +693,105 @@ class SymbolMapping(object):
         return cls(symbol_map, source_map)
 
 
+class Module(BaseDocObject):
+
+    def __init__(self, namespace):
+        self.fullname = namespace
+        self.name = namespace
+
+        self.classes = []
+        self.pyclasses = []
+        self.constants = []
+        self.functions = []
+        self.callbacks = []
+        self.flags = []
+        self.enums = []
+        self.structures = []
+        self.unions = []
+
+        self.symbol_mapping = None
+        self.hierarchy = None
+        self.project_summary = None
+        self.library_version = None
+        self.dependencies = []
+
+    @classmethod
+    def from_repo(cls, repo):
+        mod = Module(repo.namespace)
+        mod.dependencies = repo.get_all_dependencies()
+
+        pymod = repo.import_module()
+        mod.library_version = get_project_version(pymod)
+        hierarchy_classes = set()
+
+        for key in dir(pymod):
+            if key.startswith("_"):
+                continue
+            obj = getattr(pymod, key)
+
+            if isinstance(obj, types.FunctionType):
+                if obj.__module__.split(".")[-1] != repo.namespace:
+                    # originated from other namespace
+                    continue
+
+                func = Function.from_object(repo.namespace, obj, repo, None)
+                if util.is_callback(obj):
+                    mod.functions.append(func)
+                else:
+                    mod.callbacks.append(func)
+            elif inspect.isclass(obj):
+                if obj.__name__ != key:
+                    # renamed class
+                    continue
+                if obj.__module__.split(".")[-1] != repo.namespace:
+                    # originated from other namespace
+                    continue
+
+                if util.is_object(obj) or util.is_iface(obj):
+                    klass = Class.from_object(repo, obj)
+                    if not klass.is_interface:
+                        hierarchy_classes.add(obj)
+                    mod.classes.append(klass)
+                elif util.is_flags(obj):
+                    flags = Flags.from_object(repo, obj)
+                    mod.flags.append(flags)
+                elif util.is_enum(obj):
+                    enum = Flags.from_object(repo, obj)
+                    mod.enums.append(enum)
+                elif util.is_struct(obj):
+                    struct = Structure.from_object(repo, obj)
+                    # Hide private structs
+                    if repo.is_private(struct.fullname):
+                        continue
+                    mod.structures.append(struct)
+                elif util.is_union(obj):
+                    union = Union.from_object(repo, obj)
+                    mod.unions.append(union)
+                else:
+                    # don't include GError
+                    if not issubclass(obj, BaseException):
+                        hierarchy_classes.add(obj)
+
+                    # classes not subclassing from any gobject base class
+                    if util.is_fundamental(obj):
+                        klass = Class.from_object(repo, obj)
+                        mod.classes.append(klass)
+                    else:
+                        klass = PyClass.from_object(repo, obj)
+                        mod.pyclasses.append(klass)
+            else:
+                const = Constant.from_object(repo, repo.namespace, key, obj)
+                mod.constants.append(const)
+
+        symbol_mapping = SymbolMapping.from_module(repo, pymod)
+        mod.symbol_mapping = symbol_mapping
+
+        mod.hierarchy = to_names(get_hierarchy(hierarchy_classes))
+        mod.project_summary = get_project_summary(repo.namespace)
+
+        return mod
+
+
 class Repository(object):
     """Takes gi objects and gives documentation objects"""
 
@@ -669,6 +809,9 @@ class Repository(object):
         for sub_ns in loaded:
             self._types.update(sub_ns.get_types())
         self._types.update(ns.get_types())
+
+    def parse(self):
+        return Module.from_repo(self)
 
     def get_types(self):
         return self._types
@@ -775,31 +918,3 @@ class Repository(object):
             return u""
         rest = docstring_to_rest(self._types, current, d)
         return rest
-
-    def parse_constant(self, namespace, name, obj):
-        return Constant.from_object(self, namespace, name, obj)
-
-    def parse_structure(self, obj):
-        return Structure.from_object(self, obj)
-
-    def parse_union(self, obj):
-        return Union.from_object(self, obj)
-
-    @cache_calls
-    def parse_class(self, obj):
-        return Class.from_object(self, obj)
-
-    def parse_pyclass(self, obj):
-        return PyClass.from_object(self, obj)
-
-    def parse_flags(self, obj):
-        return Flags.from_object(self, obj)
-
-    def parse_enum(self, obj):
-        return Flags.from_object(self, obj)
-
-    def parse_function(self, namespace, obj):
-        return Function.from_object(namespace, obj, self, None)
-
-    def parse_mapping(self, module):
-        return SymbolMapping.from_repo(self, module)

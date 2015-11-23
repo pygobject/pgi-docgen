@@ -146,3 +146,7 @@ table.navigation a .fa
 .viewcode-link {
     color: #999 !important;
 }
+
+.rst-content .line-block {
+    margin-left: 0;
+}

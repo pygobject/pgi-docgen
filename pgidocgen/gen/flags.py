@@ -57,8 +57,8 @@ class FlagsGenerator(genutil.Generator):
     def __init__(self):
         self._flags = {}
 
-    def add_flags(self, obj, flags):
-        self._flags[obj] = flags
+    def add_flags(self, flags):
+        self._flags[flags.fullname] = flags
 
     def get_names(self):
         return ["flags"]

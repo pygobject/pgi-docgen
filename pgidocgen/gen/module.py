@@ -6,8 +6,6 @@
 # version 2.1 of the License, or (at your option) any later version.
 
 import os
-import types
-import inspect
 import shutil
 from urllib2 import urlopen, URLError, HTTPError
 
@@ -23,9 +21,7 @@ from .hierarchy import HierarchyGenerator
 from .mapping import MappingGenerator
 from . import genutil
 
-from ..doap import get_project_summary
 from ..namespace import get_namespace
-from ..girdata import get_project_version
 from ..repo import Repository
 from .. import util
 
@@ -36,21 +32,29 @@ _template = genutil.get_template("""\
 {{ "=" * title|length }}
 
 {% if ps %}
+{% if ps.name %}
 :Parent Project:
     {{ ps.name|erest|indent(4, False) }}
+{% endif %}
+{% if ps.description %}
 :Description:
     {{ ps.description|erest|indent(4, False) }}
+{% endif %}
+{% if ps.homepage %}
 :Homepage:
     `{{ ps.homepage|erest }} <{{ ps.homepage }}>`__
+{% endif %}
+{% if ps.bugtracker %}
 :Bug Tracker:
     `{{ ps.bugtracker|erest }} <{{ ps.bugtracker }}>`__
+{% endif %}
 :Repositories:
     {% for name, url in ps.repositories %}
-    * `{{ name|erest }} <{{ url }}>`__
+    | `{{ name|erest }} <{{ url }}>`__
     {% endfor %}
 :Mailing Lists:
     {% for name, url in ps.mailinglists %}
-    * `{{ name|erest }} <{{ url }}>`__
+    | `{{ name|erest }} <{{ url }}>`__
     {% endfor %}
 {% endif %}
 
@@ -65,37 +69,6 @@ API
     {% endfor %}
 
 """)
-
-
-def get_hierarchy(type_seq):
-    """Returns for a sequence of classes a recursive dict including
-    all their sub classes.
-    """
-
-    def first_mro(obj):
-        l = [obj]
-        bases = util.fake_bases(obj)
-        if bases[0] is not object:
-            l.extend(first_mro(bases[0]))
-        return l
-
-    tree = {}
-    for type_ in type_seq:
-        current = tree
-        for base in reversed(first_mro(type_)):
-            if base not in current:
-                current[base] = {}
-            current = current[base]
-    return tree
-
-
-def to_names(hierarchy):
-
-    def get_name(cls):
-        return cls.__module__ + "." + cls.__name__
-
-    return sorted(
-            [(get_name(k), to_names(v)) for (k, v) in hierarchy.iteritems()])
 
 
 class ModuleGenerator(genutil.Generator):
@@ -165,99 +138,54 @@ class ModuleGenerator(genutil.Generator):
         os.mkdir(sub_dir)
         dir_ = sub_dir
 
-        repo = Repository(namespace, version)
-        mod = repo.import_module()
-        lib_version = get_project_version(mod)
+        module = Repository(namespace, version).parse()
 
         class_gen = ClassGenerator()
+        for klass in module.classes:
+            class_gen.add_class(klass)
+        for klass in module.pyclasses:
+            class_gen.add_pyclass(klass)
+
         flags_gen = FlagsGenerator()
+        for flags in module.flags:
+            flags_gen.add_flags(flags)
+
         enums_gen = EnumGenerator()
+        for enum in module.enums:
+            enums_gen.add_enum(enum)
+
         func_gen = FunctionGenerator()
+        for func in module.functions:
+            func_gen.add_function(func)
+
         struct_gen = StructGenerator()
+        for struct in module.structures:
+            struct_gen.add_struct(struct)
+
         union_gen = UnionGenerator()
+        for union in module.unions:
+            union_gen.add_union(union)
+
         const_gen = ConstantsGenerator()
+        for const in module.constants:
+            const_gen.add_constant(const)
+
         cb_gen = CallbackGenerator()
+        for callback in module.callbacks:
+            cb_gen.add_callback(callback)
+
         hier_gen = HierarchyGenerator()
+        hier_gen.set_hierarchy(module.hierarchy)
+
         map_gen = MappingGenerator()
-
-        hierarchy_classes = set()
-        for key in dir(mod):
-            if key.startswith("_"):
-                continue
-            obj = getattr(mod, key)
-
-            # skip classes which are renamed
-            if inspect.isclass(obj):
-                if obj.__name__ != key:
-                    print "Skipping %s: renamed class" % key
-                    continue
-                if obj.__module__.split(".")[-1] != namespace:
-                    print "Skipping %s: originated from other namespace" % key
-                    continue
-
-            name = "%s.%s" % (namespace, key)
-
-            if isinstance(obj, types.FunctionType):
-
-                if obj.__module__.split(".")[-1] != namespace:
-                    print "Skipping %s: originated from other namespace" % key
-                    continue
-
-                if util.is_callback(obj):
-                    func = repo.parse_function(namespace, obj)
-                    cb_gen.add_callback(func)
-                else:
-                    func = repo.parse_function(namespace, obj)
-                    func_gen.add_function(func)
-            elif inspect.isclass(obj):
-                if util.is_object(obj) or util.is_iface(obj):
-                    klass = repo.parse_class(obj)
-                    if not klass.is_interface:
-                        hierarchy_classes.add(obj)
-                    class_gen.add_class(klass)
-                elif util.is_flags(obj):
-                    flags = repo.parse_flags(obj)
-                    flags_gen.add_flags(obj, flags)
-                elif util.is_enum(obj):
-                    enum = repo.parse_enum(obj)
-                    enums_gen.add_enum(obj, enum)
-                elif util.is_struct(obj):
-                    struct = repo.parse_structure(obj)
-                    # Hide private structs
-                    if repo.is_private(struct.fullname):
-                        continue
-                    struct_gen.add_struct(struct)
-                elif util.is_union(obj):
-                    union = repo.parse_union(obj)
-                    union_gen.add_union(union)
-                else:
-                    # don't include GError
-                    if not issubclass(obj, BaseException):
-                        hierarchy_classes.add(obj)
-
-                    # classes not subclassing from any gobject base class
-                    if util.is_fundamental(obj):
-                        klass = repo.parse_class(obj)
-                        class_gen.add_class(klass)
-                    else:
-                        klass = repo.parse_pyclass(obj)
-                        class_gen.add_pyclass(klass)
-            else:
-                const = repo.parse_constant(namespace, key, obj)
-                const_gen.add_constant(const)
-
-        symbol_mapping = repo.parse_mapping(mod)
-        map_gen.set_mapping(symbol_mapping)
-
-        hierarchy = to_names(get_hierarchy(hierarchy_classes))
-        hier_gen.set_hierarchy(hierarchy)
+        map_gen.set_mapping(module.symbol_mapping)
 
         with open(os.path.join(sub_dir, "index.rst"),  "wb") as h:
 
             title = "%s %s" % (namespace, version)
-            if lib_version:
-                title += " (%s)" % lib_version
-            project_summary = get_project_summary(namespace)
+            if module.library_version:
+                title += " (%s)" % module.library_version
+  
             names = []
             gens = [func_gen, cb_gen, class_gen, hier_gen, struct_gen,
                     union_gen, flags_gen, enums_gen, const_gen, map_gen]
@@ -269,15 +197,15 @@ class ModuleGenerator(genutil.Generator):
                 gen.write(sub_dir)
 
             text = _template.render(
-                title=title, ps=project_summary, names=names)
+                title=title, ps=module.project_summary, names=names)
             h.write(text.encode("utf-8"))
 
         conf_path = os.path.join(dir_, "_pgi_docgen_conf.py")
-        deps = ["-".join(d) for d in repo.get_all_dependencies()]
+        deps = ["-".join(d) for d in module.dependencies]
         with open(conf_path, "wb") as conf:
             conf.write("DEPS = %r\n" % deps)
             # for sphinx.ext.linkcode
-            conf.write("SOURCEURLS = %r\n" % symbol_mapping.source_map)
+            conf.write("SOURCEURLS = %r\n" % module.symbol_mapping.source_map)
 
         # make sure the generated config
         with open(conf_path, "rb") as h:
