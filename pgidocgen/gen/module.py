@@ -47,14 +47,18 @@ _template = genutil.get_template("""\
 :Bug Tracker:
     `{{ ps.bugtracker|erest }} <{{ ps.bugtracker }}>`__
 {% endif %}
+{% if ps.repositories %}
 :Repositories:
     {% for name, url in ps.repositories %}
     | `{{ name|erest }} <{{ url }}>`__
     {% endfor %}
+{% endif %}
+{% if ps.mailinglists %}
 :Mailing Lists:
     {% for name, url in ps.mailinglists %}
     | `{{ name|erest }} <{{ url }}>`__
     {% endfor %}
+{% endif %}
 {% endif %}
 
 API
