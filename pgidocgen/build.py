@@ -47,7 +47,14 @@ def share_static(main):
             continue
         roots.append(path)
 
-    shared = os.path.join(main, "_shared_static")
+    shared = os.path.join(main, "_static")
+
+    if os.name == "nt" and roots:
+        # on windows just make sure we copy one to the root for the
+        # index
+        shutil.rmtree(shared, ignore_errors=True)
+        shutil.copytree(os.path.join(roots[0], "_static"), shared)
+        return
 
     for root in roots:
         static = os.path.join(root, "_static")
@@ -231,13 +238,6 @@ def main(argv):
             env = jinja2.Environment().from_string(data)
             t.write(env.render(body=rest2html(main_rst)))
 
-        static_target = os.path.join(target_path, "_static")
-        if not os.path.exists(static_target):
-            shutil.copytree(
-                os.path.join(get_data_dir(), "theme", "static"),
-                static_target)
-
-    if not devhelp and os.name != "nt":
         share_static(target_path)
 
     # for devhelp to pick things up the dir name has to match the
