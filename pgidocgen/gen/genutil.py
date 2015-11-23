@@ -8,9 +8,12 @@
 
 import jinja2
 
+from ..util import escape_rest
+
 
 _RST_ENV = jinja2.Environment(
     trim_blocks=True, lstrip_blocks=True, undefined=jinja2.StrictUndefined)
+_RST_ENV.filters['erest'] = escape_rest
 
 
 def get_template(source):

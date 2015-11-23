@@ -12,14 +12,27 @@ from BeautifulSoup import BeautifulStoneSoup
 from . import util
 
 
+class ProjectSummary(object):
+
+    name = None
+    description = None
+    homepage = None
+    bugtracker = None
+    repositories = []
+    mailinglists = []
+
+
 def get_project_summary(namespace):
     """Returns a reST summary extracted from a doap file"""
 
+    ps = ProjectSummary()
+
     doap_path = os.path.join(util.BASEDIR, "data", "doap", namespace) + ".doap"
     if not os.path.exists(doap_path):
-        return u""
+        return
 
-    soup = BeautifulStoneSoup(open(doap_path, "rb"))
+    with open(doap_path, "rb") as h:
+        soup = BeautifulStoneSoup(h)
 
     name = soup.find("name")
     shortdesc = soup.find("shortdesc")
@@ -30,42 +43,30 @@ def get_project_summary(namespace):
     repository = soup.find("repository")
     repositories = (repository and repository.findAll("browse")) or []
 
-    to_sub = lambda x: util.indent(util.force_unindent(x))
-
-    summ = []
-
     if name:
-        name_text = ":Parent Project:\n%s" % to_sub(name.string)
+        ps.name = name.string
         if shortdesc:
-            name_text += " (%s)" % shortdesc.string.strip()
-        summ.append(name_text)
+            ps.name += " (%s)" % shortdesc.string.strip()
 
     if description:
-        summ.append(":Description:\n%s" % to_sub(description.string))
+        ps.description = description.string
 
     if homepage:
-        summ.append(":Homepage:\n%s" % to_sub(homepage["rdf:resource"]))
+        ps.homepage = homepage["rdf:resource"]
 
     if bug_database:
-        summ.append(":Bug Tracker:\n%s" % to_sub(bug_database["rdf:resource"]))
+        ps.bugtracker = bug_database["rdf:resource"]
 
-    if len(repositories) == 1:
-        l = repositories[0]
-        summ.append(":Repository:\n%s" % to_sub(l["rdf:resource"]))
-    elif len(mailing_lists) > 1:
-        repo_text = ":Repositories:\n"
-        for r in repositories:
-            repo_text += "    * %s\n" % r["rdf:resource"]
-        summ.append(repo_text)
+    ps.repositories = [
+        (r["rdf:resource"], r["rdf:resource"]) for r in repositories]
 
-    if len(mailing_lists) == 1:
-        l = mailing_lists[0]
-        summ.append(":Mailing List:\n%s" % to_sub(l["rdf:resource"]))
-    elif len(mailing_lists) > 1:
-        ml_text = ":Mailing Lists:\n"
-        for l in mailing_lists:
-            ml_text += "    * %s\n" % l["rdf:resource"]
-        summ.append(ml_text)
+    def strip_mailto(s):
+        if s.startswith("mailto:"):
+            return s[7:]
+        return s
 
+    ps.mailinglists = [
+        (strip_mailto(r["rdf:resource"]), r["rdf:resource"])
+        for r in mailing_lists]
 
-    return "\n".join(summ)
+    return ps

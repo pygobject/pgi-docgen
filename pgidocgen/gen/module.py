@@ -35,7 +35,24 @@ _template = genutil.get_template("""\
 {{ title }}
 {{ "=" * title|length }}
 
-{{ project_summary }}
+{% if ps %}
+:Parent Project:
+    {{ ps.name|erest|indent(4, False) }}
+:Description:
+    {{ ps.description|erest|indent(4, False) }}
+:Homepage:
+    `{{ ps.homepage|erest }} <{{ ps.homepage }}>`__
+:Bug Tracker:
+    `{{ ps.bugtracker|erest }} <{{ ps.bugtracker }}>`__
+:Repositories:
+    {% for name, url in ps.repositories %}
+    * `{{ name|erest }} <{{ url }}>`__
+    {% endfor %}
+:Mailing Lists:
+    {% for name, url in ps.mailinglists %}
+    * `{{ name|erest }} <{{ url }}>`__
+    {% endfor %}
+{% endif %}
 
 API
 ---
@@ -252,7 +269,7 @@ class ModuleGenerator(genutil.Generator):
                 gen.write(sub_dir)
 
             text = _template.render(
-                title=title, project_summary=project_summary, names=names)
+                title=title, ps=project_summary, names=names)
             h.write(text.encode("utf-8"))
 
         conf_path = os.path.join(dir_, "_pgi_docgen_conf.py")
