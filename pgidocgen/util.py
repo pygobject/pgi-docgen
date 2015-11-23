@@ -16,24 +16,7 @@ import cStringIO
 from docutils.core import publish_parts
 
 
-BASEDIR = os.path.dirname(os.path.realpath(__file__))
-
-
 _KWD_RE = re.compile("^(%s)$" % "|".join(keyword.kwlist))
-
-
-def get_image_name(namespace, version, fullname):
-    """Returns a image file name if an image exists"""
-
-    image_path = os.path.join(
-        BASEDIR, "data", "clsimages",
-        "%s-%s" % (namespace, version),
-        "%s.png" % fullname)
-
-    if os.path.exists(image_path):
-        return "%s.png" % fullname
-
-    return None
 
 
 def rest2html(text):

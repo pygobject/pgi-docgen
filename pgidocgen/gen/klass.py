@@ -6,6 +6,7 @@
 # version 2.1 of the License, or (at your option) any later version.
 
 import os
+import shutil
 
 from . import genutil
 
@@ -63,11 +64,11 @@ _sub_template = genutil.get_template("""\
 
 {# ################################################ #}
 
-{% if cls.image_name %}
+{% if image_path %}
 Example
 -------
 
-.. image:: ../_clsimages/{{ cls.image_name }}
+.. image:: {{ image_path }}
 
 {% endif %}
 
@@ -499,6 +500,19 @@ class ClassGenerator(genutil.Generator):
         inheritance_edges = get_edges(cls.base_tree)
         inheritance_edges.sort()
 
+        # copy images
+        if cls.image_path:
+            target_dir = os.path.join(os.path.dirname(h.name), "images")
+            try:
+                os.mkdir(target_dir)
+            except OSError:
+                pass
+            basename = os.path.basename(cls.image_path)
+            shutil.copyfile(cls.image_path, os.path.join(target_dir, basename))
+            image_path = "images/%s" % basename
+        else:
+            image_path = None
+
         # render
         text = _sub_template.render(
             cls=cls,
@@ -510,6 +524,7 @@ class ClassGenerator(genutil.Generator):
             sig_lines=sig_lines,
             field_lines=field_lines,
             inheritance_edges=inheritance_edges,
+            image_path=image_path,
         )
 
         h.write(text.encode("utf-8"))

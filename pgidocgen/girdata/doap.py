@@ -9,7 +9,21 @@ import os
 
 from BeautifulSoup import BeautifulStoneSoup
 
-from . import util
+
+_BASEDIR = os.path.dirname(os.path.realpath(__file__))
+
+
+def get_doap_dir():
+    return os.path.join(_BASEDIR, "doap")
+
+
+def get_doap_path(namespace):
+    """Returns an absolute path to the doap file of a project.
+
+    Might not exist.
+    """
+
+    return os.path.join(get_doap_dir(), "%s.doap" % namespace)
 
 
 class ProjectSummary(object):
@@ -27,7 +41,7 @@ def get_project_summary(namespace):
 
     ps = ProjectSummary()
 
-    doap_path = os.path.join(util.BASEDIR, "data", "doap", namespace) + ".doap"
+    doap_path = get_doap_path(namespace)
     if not os.path.exists(doap_path):
         return
 

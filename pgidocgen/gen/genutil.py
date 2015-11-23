@@ -6,9 +6,18 @@
 # License as published by the Free Software Foundation; either
 # version 2.1 of the License, or (at your option) any later version.
 
+import os
+
 import jinja2
 
 from ..util import escape_rest
+
+
+_BASEDIR = os.path.dirname(os.path.realpath(__file__))
+
+
+def get_data_dir():
+    return os.path.join(_BASEDIR, "data")
 
 
 _RST_ENV = jinja2.Environment(

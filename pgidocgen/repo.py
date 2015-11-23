@@ -6,6 +6,7 @@
 # License as published by the Free Software Foundation; either
 # version 2.1 of the License, or (at your option) any later version.
 
+import os
 import re
 import inspect
 import types
@@ -18,8 +19,8 @@ from .util import unindent
 
 from .funcsig import FuncSignature, py_type_to_class_ref, get_type_name
 from .parser import docstring_to_rest
-from .girdata import get_source_to_url_func, get_project_version
-from .doap import get_project_summary
+from .girdata import get_source_to_url_func, get_project_version, \
+    get_project_summary, get_class_image_path
 
 
 def get_signature_string(callable_):
@@ -365,9 +366,9 @@ class Class(BaseDocObject, MethodsMixin, PropertiesMixin, SignalsMixin,
         self.fullname = namespace + "." + name
         self.name = name
         self.desc = None
-        self.image_name = None
         self.is_interface = False
         self.signature = None
+        self.image_path = None
 
         self.methods = []
         self.methods_inherited = []
@@ -408,6 +409,10 @@ class Class(BaseDocObject, MethodsMixin, PropertiesMixin, SignalsMixin,
         namespace = obj.__module__
         name = obj.__name__
 
+        image_path = get_class_image_path(repo.namespace, repo.version, name)
+        if not os.path.exists(image_path):
+            image_path = None
+
         def get_base_tree(obj):
             x = []
             for base in util.fake_bases(obj):
@@ -424,8 +429,6 @@ class Class(BaseDocObject, MethodsMixin, PropertiesMixin, SignalsMixin,
         klass._parse_style_properties(repo, obj)
         klass._parse_signals(repo, obj)
         klass._parse_fields(repo, obj)
-        klass.image_name = util.get_image_name(
-            repo.namespace, repo.version, klass.fullname)
 
         docs = repo.lookup_attr_docs(klass.fullname, current=klass.fullname)
         docs += repo.lookup_attr_meta(klass.fullname)
@@ -458,6 +461,7 @@ class Class(BaseDocObject, MethodsMixin, PropertiesMixin, SignalsMixin,
         subclasses.sort()
         klass.subclasses = subclasses
         klass.signature = get_signature_string(obj.__init__)
+        klass.image_path = image_path
 
         cls._cache[obj] = klass
         return klass

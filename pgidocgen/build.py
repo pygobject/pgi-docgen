@@ -18,7 +18,8 @@ import jinja2
 import sphinx
 
 from .mergeindex import merge
-from .util import rest2html, BASEDIR
+from .util import rest2html
+from .gen.genutil import get_data_dir
 
 
 DEVHELP_PREFIX = "python-"
@@ -208,7 +209,7 @@ def main(argv):
         print repr(target_path)
         merge(target_path, include_terms=False, exclude_old=True)
 
-        index_path = os.path.join(BASEDIR, "data", "index")
+        index_path = os.path.join(get_data_dir(), "index")
         for entry in os.listdir(index_path):
             src = os.path.join(index_path, entry)
             dst = os.path.join(target_path, entry)
@@ -224,7 +225,7 @@ def main(argv):
 
         with open(os.path.join(index_path, "main.html"), "rb") as h:
             data = h.read()
-        with open(os.path.join(BASEDIR, "data", "main.rst"), "rb") as h:
+        with open(os.path.join(get_data_dir(), "main.rst"), "rb") as h:
             main_rst = h.read()
         with open(os.path.join(target_path, "main.html"), "wb") as t:
             env = jinja2.Environment().from_string(data)
@@ -233,7 +234,7 @@ def main(argv):
         static_target = os.path.join(target_path, "_static")
         if not os.path.exists(static_target):
             shutil.copytree(
-                os.path.join(BASEDIR, "data", "theme", "static"),
+                os.path.join(get_data_dir(), "theme", "static"),
                 static_target)
 
     if not devhelp and os.name != "nt":

@@ -23,7 +23,6 @@ from . import genutil
 
 from ..namespace import get_namespace
 from ..repo import Repository
-from .. import util
 
 
 _template = genutil.get_template("""\
@@ -73,10 +72,7 @@ API
 
 class ModuleGenerator(genutil.Generator):
 
-    THEME_DIR = "theme"
     CLSIMG_DIR = "clsimages"
-    EXT_DIR = "ext"
-    CONF_IN = "conf.in.py"
 
     def __init__(self):
         self._modules = []
@@ -238,22 +234,14 @@ class ModuleGenerator(genutil.Generator):
             except (HTTPError, URLError) as e:
                 print "ERROR: %r" % e
 
+        data_dir = genutil.get_data_dir()
+
         # copy the theme, conf.py
         dest_conf = os.path.join(dir_, "conf.py")
-        shutil.copy(
-            os.path.join(util.BASEDIR, "data", self.CONF_IN), dest_conf)
+        shutil.copy(os.path.join(data_dir, "conf.in.py"), dest_conf)
 
-        theme_dest = os.path.join(dir_, "_" + self.THEME_DIR)
-        shutil.copytree(
-            os.path.join(util.BASEDIR, "data", self.THEME_DIR), theme_dest)
+        theme_dest = os.path.join(dir_, "_theme")
+        shutil.copytree(os.path.join(data_dir, "theme"), theme_dest)
 
-        ext_dest = os.path.join(dir_, "_" + self.EXT_DIR)
-        shutil.copytree(
-            os.path.join(util.BASEDIR, "data", self.EXT_DIR), ext_dest)
-
-        module_id = "%s-%s" % (namespace, version)
-        clsimg_src = os.path.join(
-            util.BASEDIR, "data", self.CLSIMG_DIR, module_id)
-        if os.path.exists(clsimg_src):
-            clsimg_dest = os.path.join(dir_, "_" + self.CLSIMG_DIR)
-            shutil.copytree(clsimg_src, clsimg_dest)
+        ext_dest = os.path.join(dir_, "_ext")
+        shutil.copytree(os.path.join(data_dir, "ext"), ext_dest)

@@ -7,8 +7,32 @@
 
 """Database containing additional optional info about common gir files"""
 
+import os
 import re
 from collections import namedtuple
+
+from .doap import get_project_summary, get_doap_dir
+
+
+get_project_summary, get_doap_dir
+
+_BASEDIR = os.path.dirname(os.path.realpath(__file__))
+
+
+def get_class_image_dir(namespace, version):
+    return os.path.join(
+            _BASEDIR, "clsimages",
+            "%s-%s" % (namespace, version))
+
+
+def get_class_image_path(namespace, version, class_name):
+    """Returns an absolute path to the class image file.
+
+    Might not exist.
+    """
+
+    return os.path.join(get_class_image_dir(),
+                        "%s.%s.png" % (namespace, class_name))
 
 
 Project = P = namedtuple('Project', ['namespaces', 'doap'])
@@ -193,7 +217,7 @@ def get_project_version(mod):
     the same project, or an empty string
     """
 
-    from . import util
+    from .. import util
 
     version = get_library_version(mod)
     if version:

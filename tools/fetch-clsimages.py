@@ -15,75 +15,75 @@ import pgi
 pgi.require_version("Gtk", "3.0")
 
 from pgi.repository import Gtk
-from pgidocgen import BASEDIR
+from pgidocgen.girdata import get_class_image_dir
 
 
-DESTINATION = os.path.join(BASEDIR, "data", "clsimages", "Gtk-3.0")
+DESTINATION = get_class_image_dir("Gtk", "3.0")
 
 GTK_MAPPING = {
-    "Gtk.Button": "button",
-    "Gtk.Switch": "switch",
-    "Gtk.ToggleButton": "toggle-button",
-    "Gtk.CheckButton": "check-button",
-    "Gtk.LinkButton": "link-button",
-    "Gtk.MenuButton": "menu-button",
-    "Gtk.LockButton": "lock-button",
-    "Gtk.Entry": "entry",
-    "Gtk.SearchEntry": "search-entry",
-    "Gtk.RadioButton": "radio-group",
-    "Gtk.Label": "label",
-    "Gtk.AccelLabel": "accel-label",
-    "Gtk.ComboBox": "combo-box",
-    "Gtk.ComboBoxText": "combo-box-text",
-    "Gtk.InfoBar": "info-bar",
-    "Gtk.RecentChooserDialog": "recentchooserdialog",
-    "Gtk.TextView": "multiline-text",
-    "Gtk.TreeView": "list-and-tree",
-    "Gtk.IconView": "icon-view",
-    "Gtk.ColorButton": "color-button",
-    "Gtk.FontButton": "font-button",
-    "Gtk.FileChooserButton": "file-button",
-    "Gtk.Separator": "separator",
-    "Gtk.Paned": "panes",
-    "Gtk.Frame": "frame",
-    "Gtk.Window": "window",
-    "Gtk.FileChooser": "filechooser",
-    "Gtk.PageSetup": "pagesetupdialog",
-    "Gtk.Toolbar": "toolbar",
-    "Gtk.ToolPalette": "toolpalette",
-    "Gtk.MenuBar": "menubar",
-    "Gtk.MessageDialog": "messagedialog",
-    "Gtk.AboutDialog": "aboutdialog",
-    "Gtk.Notebook": "notebook",
-    "Gtk.ProgressBar": "progressbar",
-    "Gtk.LevelBar": "levelbar",
-    "Gtk.ScrolledWindow": "scrolledwindow",
-    "Gtk.Scrollbar": "scrollbar",
-    "Gtk.SpinButton": "spinbutton",
-    "Gtk.Statusbar": "statusbar",
-    "Gtk.Scale": "scales",
-    "Gtk.Image": "image",
-    "Gtk.Spinner": "spinner",
-    "Gtk.VolumeButton": "volumebutton",
-    "Gtk.Assistant": "assistant",
-    "Gtk.AppChooserButton": "appchooserbutton",
-    "Gtk.AppChooserDialog": "appchooserdialog",
-    "Gtk.FontChooserDialog": "fontchooser",
-    "Gtk.ColorChooserDialog": "colorchooser",
-    "Gtk.HeaderBar": "headerbar",
-    "Gtk.PlacesSidebar": "placessidebar",
-    "Gtk.Stack": "stack",
-    "Gtk.StackSwitcher": "stackswitcher",
-    "Gtk.ListBox": "list-box",
-    "Gtk.FlowBox": "flow-box",
-    "Gtk.ActionBar": "action-bar",
-    "Gtk.ComboBoxText": "combo-box-text",
-    "Gtk.PlacesSidebar": "placessidebar",
-    "Gtk.SearchBar": "search-bar",
-    "Gtk.Frame": "frame",
-    "Gtk.Sidebar": "sidebar",
-    "Gtk.GLArea": "glarea",
-    "Gtk.LockButton": "lockbutton",
+    "Button": "button",
+    "Switch": "switch",
+    "ToggleButton": "toggle-button",
+    "CheckButton": "check-button",
+    "LinkButton": "link-button",
+    "MenuButton": "menu-button",
+    "LockButton": "lock-button",
+    "Entry": "entry",
+    "SearchEntry": "search-entry",
+    "RadioButton": "radio-group",
+    "Label": "label",
+    "AccelLabel": "accel-label",
+    "ComboBox": "combo-box",
+    "ComboBoxText": "combo-box-text",
+    "InfoBar": "info-bar",
+    "RecentChooserDialog": "recentchooserdialog",
+    "TextView": "multiline-text",
+    "TreeView": "list-and-tree",
+    "IconView": "icon-view",
+    "ColorButton": "color-button",
+    "FontButton": "font-button",
+    "FileChooserButton": "file-button",
+    "Separator": "separator",
+    "Paned": "panes",
+    "Frame": "frame",
+    "Window": "window",
+    "FileChooser": "filechooser",
+    "PageSetup": "pagesetupdialog",
+    "Toolbar": "toolbar",
+    "ToolPalette": "toolpalette",
+    "MenuBar": "menubar",
+    "MessageDialog": "messagedialog",
+    "AboutDialog": "aboutdialog",
+    "Notebook": "notebook",
+    "ProgressBar": "progressbar",
+    "LevelBar": "levelbar",
+    "ScrolledWindow": "scrolledwindow",
+    "Scrollbar": "scrollbar",
+    "SpinButton": "spinbutton",
+    "Statusbar": "statusbar",
+    "Scale": "scales",
+    "Image": "image",
+    "Spinner": "spinner",
+    "VolumeButton": "volumebutton",
+    "Assistant": "assistant",
+    "AppChooserButton": "appchooserbutton",
+    "AppChooserDialog": "appchooserdialog",
+    "FontChooserDialog": "fontchooser",
+    "ColorChooserDialog": "colorchooser",
+    "HeaderBar": "headerbar",
+    "PlacesSidebar": "placessidebar",
+    "Stack": "stack",
+    "StackSwitcher": "stackswitcher",
+    "ListBox": "list-box",
+    "FlowBox": "flow-box",
+    "ActionBar": "action-bar",
+    "ComboBoxText": "combo-box-text",
+    "PlacesSidebar": "placessidebar",
+    "SearchBar": "search-bar",
+    "Frame": "frame",
+    "Sidebar": "sidebar",
+    "GLArea": "glarea",
+    "LockButton": "lockbutton",
 }
 
 GTK_URL = ("https://git.gnome.org/browse/gtk+/plain/docs/"
@@ -101,7 +101,7 @@ def fetch(args):
 def main(dest, mapping):
     # make sure there are no typos in the mapping
     for key in mapping.keys():
-        if not hasattr(Gtk, key.split(".")[-1]):
+        if not hasattr(Gtk, key):
             print key, "missing..."
 
     missing = []
@@ -109,9 +109,8 @@ def main(dest, mapping):
         value = getattr(Gtk, name)
         try:
             if issubclass(value, Gtk.Widget):
-                key = "Gtk." + name
-                if key not in GTK_MAPPING:
-                    missing.append(key)
+                if name not in GTK_MAPPING:
+                    missing.append(name)
         except TypeError:
             pass
 

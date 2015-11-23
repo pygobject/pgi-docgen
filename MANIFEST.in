@@ -1,5 +1,6 @@
 include pgidocgen/*.py
 include pgidocgen/gen/*.py
+include pgidocgen/girdata/*.py
 include MANIFEST.in
 include *.py
 include *.sh
@@ -7,4 +8,6 @@ include tests/*.py
 include tools/*.py
 include tools/*.sh
 include README.rst
-recursive-include pgidocgen/data *
+recursive-include pgidocgen/girdata/clsimages *
+recursive-include pgidocgen/girdata/doap *
+recursive-include pgidocgen/gen/data *

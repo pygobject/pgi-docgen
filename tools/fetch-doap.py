@@ -13,8 +13,7 @@ from multiprocessing import Pool
 import requests
 
 from pgidocgen.util import get_gir_files
-from pgidocgen.girdata import PROJECTS
-from pgidocgen import BASEDIR
+from pgidocgen.girdata import PROJECTS, get_doap_path
 
 
 def fetch(project):
@@ -36,7 +35,7 @@ def main(argv):
     pool = Pool(20)
     for content, project in pool.imap_unordered(fetch, PROJECTS):
         for ns in project.namespaces:
-            path = os.path.join(BASEDIR, 'data', 'doap', ns) + ".doap"
+            path = get_doap_path(ns)
             with open(path, 'wb') as h:
                 h.write(content)
 
