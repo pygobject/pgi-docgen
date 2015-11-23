@@ -11,10 +11,10 @@ import os
 import re
 from collections import namedtuple
 
-from .doap import get_project_summary, get_doap_dir
+from .doap import get_project_summary, get_doap_dir, get_doap_path
 
 
-get_project_summary, get_doap_dir
+get_project_summary, get_doap_dir, get_doap_path
 
 _BASEDIR = os.path.dirname(os.path.realpath(__file__))
 
