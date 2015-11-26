@@ -54,9 +54,9 @@ def MarkDownParseBlocks(linesref, symbol, context):
 
         if md_block["type"] == "markup":
             if not md_block["closed"]:
-                if line.index(md_block["start"]) != -1:
+                if line.find(md_block["start"]) != -1:
                     md_block["depth"] += 1
-                if line.index(md_block["end"]) != -1:
+                if line.find(md_block["end"]) != -1:
                     if md_block["depth"] > 0:
                         md_block["depth"] -= 1
                     else:
@@ -272,7 +272,7 @@ def MarkDownParseBlocks(linesref, symbol, context):
         elif markup_match:
             # markup, including <?xml version="1.0"?>
             tag = markup_match.group(1)
-            is_self_closing = len(markup_match.groups()) >= 2
+            is_self_closing = markup_match.group(2) is not None
 
             # skip link markdown
             # TODO(ensonic): consider adding more uri schemes (ftp, ...)
@@ -495,7 +495,7 @@ def MarkDownOutputDocBook(blocksref, symbol, context):
                 output += "<informalexample><programlisting><![CDATA[\n";
 
             for line in block["lines"]:
-                output += ReplaceEntities(lines, symbol) + "\n"
+                output += ReplaceEntities(line, symbol) + "\n"
 
             output += "]]></%s></informalexample>\n" % tag
         elif block["type"] == "markup":

@@ -70,7 +70,7 @@ This is equivalent to:
 gtk_entry_buffer_get_length (gtk_entry_get_buffer (entry));
 </programlisting></informalexample>\
 """,
-            "Retrieves the current length of the text in\n`entry`. \n\nThis is equivalent to\\:\n\n``gtk_entry_buffer_get_length (gtk_entry_get_buffer (entry));``",
+            "Retrieves the current length of the text in\n`entry`. \nThis is equivalent to\\:\n``gtk_entry_buffer_get_length (gtk_entry_get_buffer (entry));``",
         ),(
             "the unique ID for @window, or <literal>0</literal> if the window has not yet been added to a #GtkApplication",
             "the unique ID for `window`, or ``0`` if the window has not yet been added to a :py:obj:`Gtk.Application`",
@@ -134,9 +134,6 @@ gtk_entry_buffer_get_length (gtk_entry_get_buffer (entry));
 ),(
         "a |[ blaa()\n ]| adsad",
         "a ``blaa()`` adsad",
-),(
-        "|[ #include <gtk/gtk.h> ]|",
-        "``#include <gtk/gtk.h>``"
 ),(
         "or #ATK_RELATION_NULL if",
         "or :py:obj:`Atk.RelationType.NULL` if"

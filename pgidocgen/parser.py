@@ -12,6 +12,7 @@ from BeautifulSoup import BeautifulStoneSoup, Tag
 
 from . import util
 from .util import escape_rest, force_unindent
+from .gtkdoc import ConvertMarkDown
 
 
 def _handle_data(types, current, d):
@@ -234,10 +235,11 @@ def _handle_xml(types, current, out, item):
         out.append(_handle_data(types, current, data))
 
 
-def docstring_to_rest(types, current, docstring):
-    # |[ ]| seems to mark inline code. Move it to docbook so we have a
-    # single thing to work with below
+def docstring_to_docbook(docstring):
+    docstring = ConvertMarkDown("", docstring)
 
+    # ConvertMarkDown doesn't handle inline markup yet... so at least convert
+    # inline code for now
     def to_programlisting(match):
         from xml.sax.saxutils import escape
         escaped = escape(match.group(1))
@@ -245,6 +247,12 @@ def docstring_to_rest(types, current, docstring):
 
     docstring = re.sub("\|\[(.*?)\]\|", to_programlisting,
                        docstring, flags=re.MULTILINE | re.DOTALL)
+
+    return docstring
+
+
+def docstring_to_rest(types, current, docstring):
+    docstring = docstring_to_docbook(docstring)
 
     soup = BeautifulStoneSoup(docstring,
                               convertEntities=BeautifulStoneSoup.HTML_ENTITIES)
@@ -271,4 +279,8 @@ def docstring_to_rest(types, current, docstring):
 """ % match.group(1).strip()
 
     rst = re.sub('@?Since\s*\\\\?:?\s+([^\s]+)$', fixup_added_since, rst)
+
+    if rst.endswith("\n"):
+        rst = rst[:-1]
+
     return rst

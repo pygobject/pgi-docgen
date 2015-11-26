@@ -72,3 +72,19 @@ description</para>
 
         output = ConvertMarkDown("", input_)
         self.assertEqual(expexted, output)
+
+    def test_docbook(self):
+        input_ = """\
+<itemizedlist>
+  <listitem>#GtkWidgetClass.get_request_mode()</listitem>
+  <listitem>#GtkWidgetClass.get_preferred_width()</listitem>
+  <listitem>#GtkWidgetClass.get_preferred_height()</listitem>
+  <listitem>#GtkWidgetClass.get_preferred_height_for_width()</listitem>
+  <listitem>#GtkWidgetClass.get_preferred_width_for_height()</listitem>
+  <listitem>#GtkWidgetClass.get_preferred_height_and_baseline_for_width()</listitem>
+</itemizedlist>
+"""
+
+        # docbook should stay the same
+        output = ConvertMarkDown("", input_)
+        self.assertEqual(input_, output)
