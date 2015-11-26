@@ -110,6 +110,28 @@ gtk_entry_buffer_get_length (gtk_entry_get_buffer (entry));
             "the :obj:`None` state or initial state"
         ),(
             """\
+bla bla
+bla:
+
+- The channel was just created, and has not been written to or read from yet.
+  bla
+
+- The channel is write-only.
+
+foo
+""",
+            """bla bla
+bla\:
+
+
+* The channel was just created, and has not been written to or read from yet.
+  bla
+* The channel is write-only.
+
+
+foo"""
+        ),(
+            """\
 <itemizedlist>
   <listitem>#GtkWidgetClass.get_request_mode()</listitem>
   <listitem>#GtkWidgetClass.get_preferred_width()</listitem>

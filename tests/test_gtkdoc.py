@@ -106,3 +106,32 @@ GTK+ uses a height-for-width (and wid
 
         output = ConvertMarkDown("", input_)
         self.assertEqual(expected, output)
+
+    def test_lists(self):
+        input_ = """\
+bla bla
+bla:
+
+- The channel was just created, and has not been written to or read from yet.
+  bla
+
+- The channel is write-only.
+
+foo
+"""
+        expected = """\
+<para>bla bla
+bla:</para>
+<itemizedlist>
+<listitem>
+<para>The channel was just created, and has not been written to or read from yet.
+bla</para>
+</listitem>
+<listitem>
+<para>The channel is write-only.</para>
+</listitem>
+</itemizedlist>
+<para>foo</para>
+"""
+        output = ConvertMarkDown("", input_)
+        self.assertEqual(expected, output)

@@ -172,7 +172,14 @@ def _handle_xml(types, current, out, item):
                     continue
                 other_out = []
                 _handle_xml(types, current, other_out, item)
-                lines.append("* " + "".join(other_out))
+                item_text = "".join(other_out).strip()
+                data = ""
+                for i, line in enumerate(item_text.splitlines()):
+                    if i == 0:
+                        data += "* " + line + "\n"
+                    else:
+                        data += "  " + line + "\n"
+                lines.append(data.rstrip())
             out.append("\n\n" + "\n".join(lines) + "\n\n")
         elif item.name == "ulink":
             out.append("`%s <%s>`__" % (item.getText(), item.get("url", "")))
