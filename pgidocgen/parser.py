@@ -186,7 +186,8 @@ def _handle_xml(types, current, out, item):
                 out.append(code)
 
         elif item.name == "title":
-            out.append(_handle_data(types, current, item.getText()))
+            code = "\n**%s**\n\n" % escape_rest(item.getText())
+            out.append(code)
         elif item.name == "keycombo":
             subs = []
             for sub in item.contents:

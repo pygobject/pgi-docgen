@@ -88,3 +88,21 @@ description</para>
         # docbook should stay the same
         output = ConvertMarkDown("", input_)
         self.assertEqual(input_, output)
+
+    def test_header(self):
+        input_ = """
+widget lifecycle, states and style.
+
+# Height-for-width Geometry Management # {#geometry-management}
+
+GTK+ uses a height-for-width (and wid
+"""
+
+        expected = """\
+<para>widget lifecycle, states and style.</para>
+<refsect2 id="geometry-management"><title>Height-for-width Geometry Management</title><para>GTK+ uses a height-for-width (and wid</para>
+</refsect2>
+"""
+
+        output = ConvertMarkDown("", input_)
+        self.assertEqual(expected, output)

@@ -35,6 +35,7 @@ class TDocstring(unittest.TestCase):
 
     def _check(self, text, expected):
         out = docstring_to_rest(self.types, "Gtk.Widget", text)
+        print out
         self.assertEqual(out, expected)
 
     def test_various(self):
@@ -127,6 +128,34 @@ gtk_entry_buffer_get_length (gtk_entry_get_buffer (entry));
 * #GtkWidgetClass.get\\_preferred\\_width\\_for\\_height()
 * #GtkWidgetClass.get\\_preferred\\_height\\_and\\_baseline\\_for\\_width()
 
+"""
+),(
+    """\
+GtkWidget is the base class all widgets in GTK+ derive from. It manages the
+widget lifecycle, states and style.
+
+# Height-for-width Geometry Management # {#geometry-management}
+
+GTK+ uses a height-for-width (and width-for-height) geometry management
+system. Height-for-width means that a widget can change how much
+vertical space it needs, depending on the amount of horizontal space
+that it is given (and similar for width-for-height). The most common
+example is a label that reflows to fill up the available width, wraps
+to fewer lines, and therefore needs less height.
+"""
+    ,
+    """\
+GtkWidget is the base class all widgets in GTK+ derive from. It manages the
+widget lifecycle, states and style.
+
+**Height-for-width Geometry Management**
+
+GTK+ uses a height-for-width (and width-for-height) geometry management
+system. Height-for-width means that a widget can change how much
+vertical space it needs, depending on the amount of horizontal space
+that it is given (and similar for width-for-height). The most common
+example is a label that reflows to fill up the available width, wraps
+to fewer lines, and therefore needs less height.
 """
 ),(
             "the #AtkTextAttribute enumerated type corresponding to the specified name, or #ATK_TEXT_ATTRIBUTE_INVALID if no matching text attribute is found.",
