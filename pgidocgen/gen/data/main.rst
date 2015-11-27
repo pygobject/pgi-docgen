@@ -23,8 +23,3 @@ Can I use this documentation with Devhelp?
 
 I want to know how to write GTK+ applications...
     Check out the `Python GTK+ 3 Tutorial <https://python-gtk-3-tutorial.readthedocs.org/>`__.
-
-
-This space for rent `Python GTK+ 3 Tutorial <https://python-gtk-3-tutorial.readthedocs.org/>`__ adfsafsaf: safdas safds
-    ..
-        .
