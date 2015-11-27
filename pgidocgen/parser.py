@@ -193,7 +193,13 @@ def _handle_xml(types, current, out, item):
                 out.append(code)
 
         elif item.name == "title":
-            code = "\n**%s**\n\n" % escape_rest(item.getText())
+            # fake a title by creating a "Definition List". It can contain
+            # inline markup and is bold in the default theme. Only restriction
+            # is it doesn't allow newlines, but we can live with that for
+            # titles
+            title_text = " ".join(
+                _handle_data(types, current, item.getText()).splitlines())
+            code = "\n%s\n    ..\n        .\n\n" % title_text
             out.append(code)
         elif item.name == "keycombo":
             subs = []

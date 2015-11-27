@@ -170,7 +170,9 @@ to fewer lines, and therefore needs less height.
 GtkWidget is the base class all widgets in GTK+ derive from. It manages the
 widget lifecycle, states and style.
 
-**Height-for-width Geometry Management**
+Height-for-width Geometry Management
+    ..
+        .
 
 GTK+ uses a height-for-width (and width-for-height) geometry management
 system. Height-for-width means that a widget can change how much
