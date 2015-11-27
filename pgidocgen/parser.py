@@ -180,7 +180,7 @@ def _handle_xml(types, current, out, item):
                     else:
                         data += "  " + line + "\n"
                 lines.append(data.rstrip())
-            out.append("\n\n" + "\n".join(lines) + "\n\n")
+            out.append("\n" + "\n".join(lines) + "\n")
         elif item.name == "ulink":
             out.append("`%s <%s>`__" % (item.getText(), item.get("url", "")))
         elif item.name == "programlisting":
@@ -191,7 +191,10 @@ def _handle_xml(types, current, out, item):
                 code = "\n.. code-block:: c\n\n%s\n" % util.indent(
                     util.unindent(item.getText(), ignore_first_line=True))
                 out.append(code)
-
+        elif item.name == "para":
+            for item in item.contents:
+                _handle_xml(types, current, out, item)
+            out.append("\n")
         elif item.name == "title":
             # fake a title by creating a "Definition List". It can contain
             # inline markup and is bold in the default theme. Only restriction
@@ -208,7 +211,6 @@ def _handle_xml(types, current, out, item):
                     continue
                 subs.append(_handle_data(types, current, sub.getText()))
             out.append(" + ".join(subs))
-
         elif item.name == "varlistentry":
             terms = []
             listitem = None
@@ -266,9 +268,9 @@ def docstring_to_docbook(docstring):
 
 
 def docstring_to_rest(types, current, docstring):
-    docstring = docstring_to_docbook(docstring)
+    docbook = docstring_to_docbook(docstring)
 
-    soup = BeautifulStoneSoup(docstring,
+    soup = BeautifulStoneSoup(docbook,
                               convertEntities=BeautifulStoneSoup.HTML_ENTITIES)
     out = []
     for item in soup.contents:
@@ -292,9 +294,11 @@ def docstring_to_rest(types, current, docstring):
 
 """ % match.group(1).strip()
 
-    rst = re.sub('@?Since\s*\\\\?:?\s+([^\s]+)$', fixup_added_since, rst)
+    rst = re.sub('@?Since\s*\\\\?:?\s+([^\s]+)(\\n|$)', fixup_added_since, rst)
 
-    if rst.endswith("\n"):
+    if not docstring.endswith("\n"):
+        rst = rst.rstrip("\n")
+    while rst.endswith("\n\n"):
         rst = rst[:-1]
 
     return rst

@@ -135,3 +135,25 @@ bla</para>
 """
         output = ConvertMarkDown("", input_)
         self.assertEqual(expected, output)
+
+    def test_paragraphs(self):
+        input_ = """\
+foo,
+bar.
+
+foo,
+bar.
+
+foo,
+bar.
+"""
+        expected = """\
+<para>foo,
+bar.</para>
+<para>foo,
+bar.</para>
+<para>foo,
+bar.</para>
+"""
+        output = ConvertMarkDown("", input_)
+        self.assertEqual(expected, output)

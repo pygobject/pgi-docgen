@@ -71,7 +71,14 @@ This is equivalent to:
 gtk_entry_buffer_get_length (gtk_entry_get_buffer (entry));
 </programlisting></informalexample>\
 """,
-            "Retrieves the current length of the text in\n`entry`. \nThis is equivalent to\\:\n``gtk_entry_buffer_get_length (gtk_entry_get_buffer (entry));``",
+            """\
+Retrieves the current length of the text in
+`entry`. 
+
+This is equivalent to\\:
+
+``gtk_entry_buffer_get_length (gtk_entry_get_buffer (entry));``\
+""",
         ),(
             "the unique ID for @window, or <literal>0</literal> if the window has not yet been added to a #GtkApplication",
             "the unique ID for `window`, or ``0`` if the window has not yet been added to a :py:obj:`Gtk.Application`",
@@ -128,8 +135,8 @@ bla\:
   bla
 * The channel is write-only.
 
-
-foo"""
+foo
+"""
         ),(
             """\
 <itemizedlist>
@@ -139,17 +146,15 @@ foo"""
   <listitem>#GtkWidgetClass.get_preferred_height_for_width()</listitem>
   <listitem>#GtkWidgetClass.get_preferred_width_for_height()</listitem>
   <listitem>#GtkWidgetClass.get_preferred_height_and_baseline_for_width()</listitem>
-</itemizedlist>\
+</itemizedlist>
 """,
             """
-
 * #GtkWidgetClass.get\\_request\\_mode()
 * #GtkWidgetClass.get\\_preferred\\_width()
 * #GtkWidgetClass.get\\_preferred\\_height()
 * #GtkWidgetClass.get\\_preferred\\_height\\_for\\_width()
 * #GtkWidgetClass.get\\_preferred\\_width\\_for\\_height()
 * #GtkWidgetClass.get\\_preferred\\_height\\_and\\_baseline\\_for\\_width()
-
 """
 ),(
     """\
@@ -170,6 +175,7 @@ to fewer lines, and therefore needs less height.
 GtkWidget is the base class all widgets in GTK+ derive from. It manages the
 widget lifecycle, states and style.
 
+
 Height-for-width Geometry Management
     ..
         .
@@ -181,6 +187,27 @@ that it is given (and similar for width-for-height). The most common
 example is a label that reflows to fill up the available width, wraps
 to fewer lines, and therefore needs less height.
 """
+),(
+        """\
+foo,
+bar.
+
+foo,
+bar.
+
+foo,
+bar.
+""",
+        """\
+foo,
+bar.
+
+foo,
+bar.
+
+foo,
+bar.
+""",
 ),(
             "the #AtkTextAttribute enumerated type corresponding to the specified name, or #ATK_TEXT_ATTRIBUTE_INVALID if no matching text attribute is found.",
             "the :py:obj:`Atk.TextAttribute` enumerated type corresponding to the specified name, or #ATK\\_TEXT\\_ATTRIBUTE\\_INVALID if no matching text attribute is found."
@@ -213,7 +240,7 @@ to fewer lines, and therefore needs less height.
         "a :obj:`int` that"
 ),(
         "a @Since: ATK-2.1.0",
-        "a \n\n.. versionadded:: ATK-2.1.0\n\n"
+        "a \n\n.. versionadded:: ATK-2.1.0"
 ),(
         "Since: this is",
         "Since\\: this is",
@@ -242,12 +269,11 @@ path\\:
 
 
 user\\_data\\:
-    user data set when the signal handler was connected.
-
+    user data set when the signal handler was connected.\
 """,
 ),(
         "<varlistentry><term>#POPPLER_ANNOT_TEXT_ICON_NOTE</term></varlistentry>",
-        "\n#POPPLER\\_ANNOT\\_TEXT\\_ICON\\_NOTE\n\n",
+        "\n#POPPLER\\_ANNOT\\_TEXT\\_ICON\\_NOTE",
 ),(
         "this is some ::signal-foo blah",
         "this is some :py:func:`::signal-foo<Gtk.Widget.signals.signal_foo>` blah",
@@ -265,6 +291,7 @@ bar\
 """,
         """\
 foo
+
 
 .. code-block:: c
 
