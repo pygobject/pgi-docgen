@@ -11,6 +11,7 @@ from . import genutil
 
 
 _template = genutil.get_template("""\
+{% import '.genutil.UTIL' as util %}
 =====
 Enums
 =====
@@ -34,19 +35,23 @@ Details
 
     Bases: :class:`GObject.GEnum`
 
-    {{ enum.desc|indent(4, False) }}
+    {{ util.render_info(enum.info)|indent(4, False) }}
 
     {% for method in enum.get_methods(static=True) %}
     .. staticmethod:: {{ method.name }}{{ method.signature }}
 
-        {{ method.desc|indent(8, False) }}
+        {{ method.signature_desc|indent(8, False) }}
+
+        {{ util.render_info(method.info)|indent(8, False) }}
 
     {% endfor %}
 
     {% for method in enum.get_methods(static=False) %}
     .. method:: {{ method.name }}{{ method.signature }}
 
-        {{ method.desc|indent(8, False) }}
+        {{ method.signature_desc|indent(8, False) }}
+
+        {{ util.render_info(method.info)|indent(8, False) }}
 
     {% endfor %}
 
@@ -54,7 +59,7 @@ Details
     .. attribute:: {{ value.name }}
         :annotation: = {{ value.value }}
 
-        {{ value.desc|indent(8, False) }}
+        {{ util.render_info(value.info)|indent(8, False) }}
 
     {% endfor %}
 

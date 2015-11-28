@@ -13,6 +13,7 @@ from .. import util
 
 
 _template = genutil.get_template(u"""\
+{% import '.genutil.UTIL' as util %}
 =========
 Callbacks
 =========
@@ -38,7 +39,9 @@ Details
     {% for function in functions %}
 .. function:: {{ function.fullname }}{{ function.signature }}
 
-    {{ function.desc|indent(4, False) }}
+    {{ function.signature_desc|indent(4, False) }}
+
+    {{ util.render_info(function.info)|indent(4, False) }}
 
     {% endfor %}
 {% else %}

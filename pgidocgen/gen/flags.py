@@ -11,6 +11,7 @@ from . import genutil
 
 
 _template = genutil.get_template("""\
+{% import '.genutil.UTIL' as util %}
 =====
 Flags
 =====
@@ -34,13 +35,13 @@ Details
 
     Bases: :class:`GObject.GFlags`
 
-    {{ entry.desc|indent(4, False) }}
+    {{ util.render_info(entry.info)|indent(4, False) }}
 
     {% for value in entry.values %}
     .. attribute:: {{ value.name }}
         :annotation: = {{ value.value }}
 
-        {{ value.desc|indent(8, False) }}
+        {{ util.render_info(value.info)|indent(8, False) }}
 
     {% endfor %}
 

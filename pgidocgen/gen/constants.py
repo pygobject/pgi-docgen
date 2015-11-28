@@ -12,6 +12,7 @@ from . import genutil
 
 
 _template = genutil.get_template("""\
+{% import '.genutil.UTIL' as util %}
 =========
 Constants
 =========
@@ -34,7 +35,7 @@ Details
 .. data:: {{ constant.fullname }}
     :annotation: = {{ constant.value }}
 
-    {{ constant.desc|indent(4, False) }}
+    {{ util.render_info(constant.info)|indent(4, False) }}
 
     {% endfor %}
 {% else %}

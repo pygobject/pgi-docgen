@@ -84,7 +84,7 @@ def do_build(package):
     copy_env["PGIDOCGEN_TARGET_BASE_PATH"] = \
         os.path.dirname(package.build_path)
 
-    subprocess.check_call(["sphinx-build", "-j4", "-a", "-E"] + sphinx_args,
+    subprocess.check_call(["sphinx-build", "-a", "-E"] + sphinx_args,
                           env=copy_env)
 
     # we don't rebuild, remove all caches

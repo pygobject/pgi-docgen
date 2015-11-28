@@ -34,7 +34,6 @@ def get_signature_string(callable_):
     return inspect.formatargspec(*argspec)
 
 
-
 def get_hierarchy(type_seq):
     """Returns for a sequence of classes a recursive dict including
     all their sub classes.
@@ -64,6 +63,16 @@ def to_names(hierarchy):
 
     return sorted(
             [(get_name(k), to_names(v)) for (k, v) in hierarchy.iteritems()])
+
+
+def to_short_desc(docs):
+    """Extracts the first sentence."""
+
+    parts = re.split("\.[\s$]", docs, 1, re.MULTILINE)
+    if len(parts) > 1:
+        return parts[0] + "."
+    else:
+        return docs
 
 
 class BaseDocObject(object):
@@ -182,16 +191,8 @@ class FieldsMixin(object):
             if "." in type_name and repo.is_private(type_name):
                 continue
 
-            name = field_info.name
-            type_desc = py_type_to_class_ref(field_info.py_type)
-            readable = field_info.readable
-            writable = field_info.writeable
-            doc_name = self.fullname + "." + name
-            desc = repo.lookup_field_docs(
-                doc_name, current=self.fullname)
             fields.append(
-                Field(self.fullname, name, readable, writable,
-                      type_desc, desc))
+                Field.from_object(repo, self.fullname, field_info))
 
         fields.sort(key=lambda f: f.name)
         self.fields = fields
@@ -203,6 +204,8 @@ class Property(BaseDocObject):
                  readable, writable, construct, type_desc, value_desc):
         self.fullname = parent_fullname + "." + name
         self.name = name
+        self.info = None
+
         self.attr_name = attr_name
 
         self.readable = readable
@@ -211,9 +214,7 @@ class Property(BaseDocObject):
 
         self.type_desc = type_desc
         self.value_desc = value_desc
-
         self.short_desc = None
-        self.desc = None
 
     @property
     def flags_string(self):
@@ -253,11 +254,8 @@ class Property(BaseDocObject):
                 spec.get_blurb(), current=parent_fullname)
         else:
             short_desc = u""
-        desc = u""
 
         prop.short_desc = short_desc
-        prop.desc = desc
-
         return prop
 
     @classmethod
@@ -279,10 +277,9 @@ class Property(BaseDocObject):
                    readable, writable, construct,
                    type_desc, value_desc)
 
-        desc = repo.lookup_prop_docs(
-            prop.fullname, current=parent_fullname) or short_desc
-        desc += repo.lookup_prop_meta(prop.fullname)
-        prop.desc = desc
+        prop.info = DocInfo.from_object(repo, "properties", prop)
+        if not prop.info.desc:
+            prop.info.desc = short_desc
         prop.short_desc = short_desc
 
         return prop
@@ -292,11 +289,13 @@ class Signal(BaseDocObject):
 
     def __init__(self, parent_fullname, name, attr_name, sig, flags):
         self.fullname = parent_fullname + "." + name
-        self.flags = flags
         self.name = name
+        self.info = None
+
+        self.flags = flags
         self.attr_name = attr_name
-        self.sig = sig
-        self.desc = None
+        self.signature = sig
+        self.signature_desc = None
         self.short_desc = None
 
     @classmethod
@@ -313,21 +312,16 @@ class Signal(BaseDocObject):
         inst = cls(parent_fullname, sig.name, attr_name, ssig, sig.flags)
 
         if fsig:
-            desc = fsig.to_rest_listing(
+            signature_desc = fsig.to_rest_listing(
                 repo, inst.fullname, current=parent_fullname, signal=True)
         else:
             # FIXME pgi
             print "FIXME: signal: %s " % inst.fullname
-            desc = "(FIXME pgi-docgen: arguments are missing here)"
+            signature_desc = "(FIXME pgi-docgen: arguments are missing here)"
 
-        desc += "\n\n"
-        desc += repo.lookup_signal_docs(inst.fullname, current=parent_fullname)
-        desc += repo.lookup_signal_meta(inst.fullname)
-        short_desc = repo.lookup_signal_docs(
-            inst.fullname, short=True, current=parent_fullname)
-
-        inst.desc = desc
-        inst.short_desc = short_desc
+        inst.signature_desc = signature_desc
+        inst.info = DocInfo.from_object(repo, "signals", inst)
+        inst.short_desc = to_short_desc(inst.info.desc)
         return inst
 
     @property
@@ -365,7 +359,8 @@ class Class(BaseDocObject, MethodsMixin, PropertiesMixin, SignalsMixin,
     def __init__(self, namespace, name):
         self.fullname = namespace + "." + name
         self.name = name
-        self.desc = None
+        self.info = None
+
         self.is_interface = False
         self.signature = None
         self.image_path = None
@@ -418,7 +413,7 @@ class Class(BaseDocObject, MethodsMixin, PropertiesMixin, SignalsMixin,
             for base in util.fake_bases(obj):
                 if base is object:
                     continue
-                x.append((base.__module__ + "."  + base.__name__,
+                x.append((base.__module__ + "." + base.__name__,
                           get_base_tree(base)))
             return x
 
@@ -430,9 +425,7 @@ class Class(BaseDocObject, MethodsMixin, PropertiesMixin, SignalsMixin,
         klass._parse_signals(repo, obj)
         klass._parse_fields(repo, obj)
 
-        docs = repo.lookup_attr_docs(klass.fullname, current=klass.fullname)
-        docs += repo.lookup_attr_meta(klass.fullname)
-        klass.desc = docs
+        klass.info = DocInfo.from_object(repo, "all", klass)
         klass.is_interface = util.is_iface(obj)
         klass.base_tree = [(klass.fullname, get_base_tree(obj))]
 
@@ -469,13 +462,14 @@ class Class(BaseDocObject, MethodsMixin, PropertiesMixin, SignalsMixin,
 
 class Field(BaseDocObject):
 
-    def __init__(self, parent_fullname, name, readable, writable, type_desc, desc):
+    def __init__(self, parent_fullname, name):
         self.fullname = parent_fullname + "." + name
         self.name = name
-        self.readable = readable
-        self.writable = writable
-        self.type_desc = type_desc
-        self.desc = desc
+        self.info = None
+
+        self.readable = False
+        self.writable = False
+        self.type_desc = None
 
     @property
     def flags_string(self):
@@ -486,18 +480,34 @@ class Field(BaseDocObject):
             flags.append("w")
         return "/".join(flags)
 
+    @classmethod
+    def from_object(cls, repo, parent_fullname, field_info):
+        name = field_info.name
+        field = cls(parent_fullname, name)
+
+        field.type_desc = py_type_to_class_ref(field_info.py_type)
+        field.readable = field_info.readable
+        field.writable = field_info.writeable
+
+        field.info = DocInfo.from_object(repo, "fields", field)
+
+        return field
+
 
 class Function(BaseDocObject):
 
     def __init__(self, parent_fullname, name, is_method, is_static, is_vfunc,
-                 signature, desc):
+                 signature):
         self.fullname = parent_fullname + "." + name
         self.name = name
+        self.info = None
+
         self.is_method = is_method
         self.is_static = is_static
         self.is_vfunc = is_vfunc
+
         self.signature = signature
-        self.desc = desc
+        self.signature_desc = u""
 
     @classmethod
     def from_object(cls, parent_fullname, obj, repo, owner):
@@ -517,10 +527,15 @@ class Function(BaseDocObject):
             is_static = False
             is_vfunc = False
 
-        def get_instance(docs):
-            return cls(
+        def get_instance(docs=None, force_docs=False):
+            instance = cls(
                 parent_fullname, name, is_method, is_static, is_vfunc,
-                signature, docs)
+                signature)
+            instance.info = DocInfo.from_object(repo, "all", instance,
+                                                current_rst_target)
+            if docs is not None and (not instance.info.desc or force_docs):
+                instance.info.desc = docs
+            return instance
 
         def get_sig(obj):
             doc = str(obj.__doc__ or "")
@@ -534,10 +549,9 @@ class Function(BaseDocObject):
         if not sig and obj.__doc__:
             # add the versionadded from the gir here too
             docs = str(obj.__doc__ or "")
-            docs += repo.lookup_attr_meta(fullname)
-            return get_instance(docs)
+            return get_instance(docs, force_docs=True)
 
-         # no docstring, try to get the signature from base classes
+        # no docstring, try to get the signature from base classes
         if not sig and owner:
             for base in owner.__mro__[1:]:
                 try:
@@ -555,11 +569,8 @@ class Function(BaseDocObject):
             # for something pgi doesn't support. The base class
             # is missing the real one, but the gir docs may be still there
 
-            docs = repo.lookup_attr_docs(fullname, current=current_rst_target)
-            if not docs:
-                docs = str(obj.__doc__ or "")
-            docs += repo.lookup_attr_meta(fullname)
-            return get_instance(docs)
+            docs = str(obj.__doc__ or "")
+            return get_instance(docs, force_docs=False)
 
         # we got a valid signature here
         assert sig
@@ -570,22 +581,18 @@ class Function(BaseDocObject):
         lines = docstring.splitlines()[1:]
         while lines and not lines[0].strip():
             lines = lines[1:]
-        user_docstring = "\n".join(lines)
+        user_docstring = unindent("\n".join(lines))
+
+        if user_docstring:
+            instance = get_instance(user_docstring, force_docs=True)
+        else:
+            instance = get_instance()
 
         # create sphinx lists for the signature we found
-        docs = sig.to_rest_listing(
-            repo, fullname, current=current_rst_target).splitlines()
-        docs = "\n".join(docs)
+        instance.signature_desc = sig.to_rest_listing(
+            repo, fullname, current=current_rst_target)
 
-        # if we have a user docstring, use it, otherwise use the gir one
-        if user_docstring:
-            docs += "\n\n" + unindent(user_docstring)
-        elif repo.lookup_attr_docs(fullname):
-            docs += "\n\n" + repo.lookup_attr_docs(fullname,
-                                                   current=current_rst_target)
-            docs += repo.lookup_attr_meta(fullname)
-
-        return get_instance(docs)
+        return instance
 
 
 class Structure(BaseDocObject, MethodsMixin, FieldsMixin):
@@ -593,8 +600,9 @@ class Structure(BaseDocObject, MethodsMixin, FieldsMixin):
     def __init__(self, namespace, name, signature):
         self.fullname = namespace + "." + name
         self.name = name
+        self.info = None
+
         self.signature = signature
-        self.desc = None
         self.methods = []
         self.fields = []
 
@@ -602,13 +610,9 @@ class Structure(BaseDocObject, MethodsMixin, FieldsMixin):
     def from_object(cls, repo, obj):
         signature = get_signature_string(obj.__init__)
         instance = cls(obj.__module__, obj.__name__, signature)
-
-        docs = repo.lookup_attr_docs(instance.fullname,
-                                     current=instance.fullname)
-        docs += repo.lookup_attr_meta(instance.fullname)
+        instance.info = DocInfo.from_object(repo, "all", instance)
         instance._parse_methods(repo, obj)
         instance._parse_fields(repo, obj)
-        instance.desc = docs
         return instance
 
 
@@ -621,6 +625,8 @@ class Flags(BaseDocObject, MethodsMixin):
     def __init__(self, namespace, name):
         self.fullname = namespace + "." + name
         self.name = name
+        self.info = None
+
         self.desc = None
         self.values = []
         self.methods = []
@@ -644,9 +650,7 @@ class Flags(BaseDocObject, MethodsMixin):
     @classmethod
     def from_object(cls, repo, obj):
         instance = cls(obj.__module__, obj.__name__)
-        docs = repo.lookup_attr_docs(instance.fullname)
-        docs += repo.lookup_attr_meta(instance.fullname)
-        instance.desc = docs
+        instance.info = DocInfo.from_object(repo, "all", instance)
         instance._parse_values(repo, obj)
         instance._parse_methods(repo, obj)
         return instance
@@ -657,23 +661,23 @@ class Constant(BaseDocObject):
     def __init__(self, parent_fullname, name, value):
         self.fullname = parent_fullname + "." + name
         self.name = name
+        self.info = None
+
         self.value = value
-        self.desc = None
 
     @classmethod
     def from_object(cls, repo, parent_fullname, name, obj):
         instance = Constant(parent_fullname, name, repr(obj))
-        docs = repo.lookup_attr_docs(instance.fullname)
-        docs += repo.lookup_attr_meta(instance.fullname)
-        instance.desc = docs
+        instance.info = DocInfo.from_object(repo, "all", instance,
+                                            parent_fullname)
         return instance
 
 
 class SymbolMapping(object):
 
     def __init__(self, symbol_map, source_map):
-        self.symbol_map = symbol_map # [(c sym, py sym)]
-        self.source_map = source_map # {py sym: git url}
+        self.symbol_map = symbol_map  # [(c sym, py sym)]
+        self.source_map = source_map  # {py sym: git url}
 
     @classmethod
     def from_module(cls, repo, module):
@@ -796,6 +800,31 @@ class Module(BaseDocObject):
         return mod
 
 
+class DocInfo(BaseDocObject):
+
+    def __init__(self, fullname, name):
+        self.fullname = fullname
+        self.name = name
+
+        self.desc = u""
+        self.shadowed_desc = u""
+
+        self.version_added = u""
+        self.version_deprecated = u""
+        self.deprecation_desc = u""
+
+    @classmethod
+    def from_object(cls, repo, type_, doc_object, current=None):
+        info = cls(doc_object.fullname, doc_object.name)
+        if current is None:
+            current = info.fullname
+        info.desc, info.shadowed_desc = repo.lookup_docs(
+            type_, info.fullname, current=current)
+        info.version_added, info.version_deprecated, info.deprecation_desc = \
+            repo.lookup_meta(type_, info.fullname)
+        return info
+
+
 class Repository(object):
     """Takes gi objects and gives documentation objects"""
 
@@ -814,41 +843,8 @@ class Repository(object):
             self._types.update(sub_ns.get_types())
         self._types.update(ns.get_types())
 
-    def parse(self):
-        return Module.from_repo(self)
-
-    def get_types(self):
-        return self._types
-
-    def lookup_attr_docs(self, *args, **kwargs):
-        docs = self._lookup_docs("all", *args, **kwargs)
-        shadowed = self._lookup_docs("all_shadowed", *args, **kwargs)
-        if shadowed and shadowed != docs:
-            docs += """
-
-.. note::
-
-    This function is an alternative implementation for bindings. The following
-    text is the documentation of the original, replaced function, which might
-    include additional information:
-
-%s
-""" % util.indent(util.indent(shadowed))
-        return docs
-
-    def _lookup_meta(self, source, name):
-        source = self._docs[source]
-
-        docs = u""
-        if name in source:
-            version, dep_version, dep = source[name][1:]
-            if version:
-                docs += u"\n\n.. versionadded:: %s\n\n" % version
-            if dep_version or dep:
-                dep_version = dep_version or "??"
-                docs += u"\n\n.. deprecated:: %s\n%s\n\n" % (
-                    dep_version, util.indent(self._fix_docs(dep)))
-        return docs
+    def _fix_docs(self, d, current=None):
+        return docstring_to_rest(self._types, current, d or u"")
 
     def _lookup_docs(self, source, name, current=None):
         source = self._docs[source]
@@ -857,49 +853,31 @@ class Repository(object):
             return self._fix_docs(docs, current)
         return u""
 
-    def lookup_attr_meta(self, name):
-        return self._lookup_meta("all", name)
+    def parse(self):
+        return Module.from_repo(self)
 
-    def lookup_field_docs(self, *args, **kwargs):
-        return self._lookup_docs("fields", *args, **kwargs)
+    def get_types(self):
+        return self._types
 
-    def lookup_return_docs(self, *args, **kwargs):
-        if kwargs.pop("signal", False):
-            return self._lookup_docs("signal-returns", *args, **kwargs)
+    def lookup_docs(self, type_, *args, **kwargs):
+        docs = self._lookup_docs(type_, *args, **kwargs)
+        if type_ == "all":
+            shadowed = self._lookup_docs("all_shadowed", *args, **kwargs)
         else:
-            return self._lookup_docs("returns", *args, **kwargs)
+            shadowed = u""
 
-    def lookup_parameter_docs(self, *args, **kwargs):
-        if kwargs.pop("signal", False):
-            return self._lookup_docs("signal-parameters", *args, **kwargs)
+        return docs, shadowed
+
+    def lookup_meta(self, type_, fullname):
+        source = self._docs[type_]
+
+        if fullname in source:
+            version_added, dep_version, dep = source[fullname][1:]
+            dep = self._fix_docs(dep)
         else:
-            return self._lookup_docs("parameters", *args, **kwargs)
+            version_added = dep_version = dep = u""
 
-    def lookup_signal_docs(self, name, short=False, current=None):
-        source = self._docs["signals"]
-        if name in source:
-            docs = source[name][0]
-            if short:
-                parts = re.split("\.[\s$]", docs, 1, re.MULTILINE)
-                if len(parts) > 1:
-                    return self._fix_docs(parts[0] + ".", current)
-                else:
-                    return self._fix_docs(docs, current)
-            else:
-                return self._fix_docs(docs, current)
-        return u""
-
-    def lookup_signal_meta(self, name):
-        return self._lookup_meta("signals", name)
-
-    def lookup_prop_docs(self, *args, **kwargs):
-        return self._lookup_docs("properties", *args, **kwargs)
-
-    def lookup_prop_meta(self, name):
-        return self._lookup_meta("properties", name)
-
-    def get_dependencies(self):
-        return self._ns.get_dependencies()
+        return version_added, dep_version, dep
 
     def get_all_dependencies(self):
         return self._ns.get_all_dependencies()
@@ -916,9 +894,3 @@ class Repository(object):
         assert "." in name
 
         return name in self._private
-
-    def _fix_docs(self, d, current=None):
-        if not d:
-            return u""
-        rest = docstring_to_rest(self._types, current, d)
-        return rest

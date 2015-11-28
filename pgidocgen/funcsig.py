@@ -162,8 +162,9 @@ class FuncSignature(object):
             if signal and i == 0:
                 text = "The object which received the signal"
             else:
-                text = doc_repo.lookup_parameter_docs(
-                    param_key, current=current, signal=signal)
+                text = doc_repo.lookup_docs(
+                    "signal-parameters" if signal else "parameters",
+                    param_key, current=current)[0]
             key = escape_rest(key)
             docs.append(":param %s:\n%s\n" % (key, indent(text)))
             docs.append(":type %s: %s" % (key, arg_to_class_ref(value)))
@@ -176,16 +177,18 @@ class FuncSignature(object):
         for r in self.res:
             if len(r) == 1:
                 # normal return value
-                text = doc_repo.lookup_return_docs(
-                    full_name, current=current, signal=signal)
+                text = doc_repo.lookup_docs(
+                    "signal-returns" if signal else "returns",
+                    full_name, current=current)[0]
                 if text:
                     return_docs.append(text)
             else:
                 # out value
                 name, type_ = r
                 pkey = full_name + "." + name
-                text = doc_repo.lookup_parameter_docs(
-                    pkey, current=current, signal=signal)
+                text = doc_repo.lookup_docs(
+                    "signal-parameters" if signal else "parameters",
+                    pkey, current=current)[0]
                 if text:
                     if len(self.res) != 1:
                         text = ":%s:\n%s" % (escape_rest(name), indent(text))

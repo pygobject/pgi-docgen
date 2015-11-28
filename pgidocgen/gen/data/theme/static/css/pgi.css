@@ -150,3 +150,9 @@ table.navigation a .fa
 .rst-content .line-block {
     margin-left: 0;
 }
+
+.rst-content dl:not(.docutils) dl dt .property {
+    padding-left: 8px;
+    color: #999;
+    font-size: 80%;
+}

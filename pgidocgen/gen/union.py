@@ -26,6 +26,7 @@ Unions
 """)
 
 _sub_template = genutil.get_template("""\
+{% import '.genutil.UTIL' as util %}
 {{ "=" * union.fullname|length }}
 {{ union.fullname }}
 {{ "=" * union.fullname|length }}
@@ -72,19 +73,23 @@ Details
 
 .. class:: {{ union.fullname }}{{ union.signature }}
 
-    {{ union.desc|indent(4, False) }}
+    {{ util.render_info(union.info)|indent(4, False) }}
 
     {% for method in union.get_methods(static=True) %}
     .. staticmethod:: {{ method.fullname }}{{ method.signature }}
 
-        {{ method.desc|indent(8, False) }}
+        {{ method.signature_desc|indent(8, False) }}
+
+        {{ util.render_info(method.info)|indent(8, False) }}
 
     {% endfor %}
 
     {% for method in union.get_methods(static=False) %}
     .. method:: {{ method.fullname }}{{ method.signature }}
 
-        {{ method.desc|indent(8, False) }}
+        {{ method.signature_desc|indent(8, False) }}
+
+        {{ util.render_info(method.info)|indent(8, False) }}
 
     {% endfor %}
 
@@ -136,7 +141,8 @@ class UnionGenerator(genutil.Generator):
         field_rows = []
         for field in union.fields:
             field_rows.append(util.get_csv_line([
-                field.name, field.type_desc, field.flags_string, field.desc]))
+                field.name, field.type_desc, field.flags_string,
+                field.info.desc]))
 
         with open(rst_path, "wb") as h:
             text = _sub_template.render(
