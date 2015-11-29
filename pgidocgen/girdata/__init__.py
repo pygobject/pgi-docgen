@@ -32,7 +32,7 @@ def get_class_image_path(namespace, version, class_name):
     """
 
     return os.path.join(get_class_image_dir(namespace, version),
-                        "%s.%s.png" % (namespace, class_name))
+                        "%s.png" % class_name)
 
 
 Project = P = namedtuple('Project', ['namespaces', 'doap'])

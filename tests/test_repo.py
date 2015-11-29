@@ -79,6 +79,9 @@ class TRepository(unittest.TestCase):
         Class.from_object(repo, Gtk.Paned)
         Class.from_object(repo, Gtk.ActionBar)
 
+        klass = Class.from_object(repo, Gtk.TextView)
+        self.assertTrue(klass.image_path)
+
     def test_gobject(self):
         Repository("GObject", "2.0")
 
