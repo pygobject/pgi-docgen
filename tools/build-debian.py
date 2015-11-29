@@ -84,6 +84,7 @@ BLACKLIST = [
     "Meta-Muffin.0",
     "libisocodes-1.2.2",
     'Nice-0.1',
+    "Geoclue-2.0",
 
     # criticals.. better skip
     "NMClient-1.0",
@@ -152,7 +153,6 @@ BUILD = ['AccountsService-1.0', 'Anjuta-3.0', 'AppIndicator3-0.1', 'Atk-1.0',
 'ClutterGst-3.0', 'Gom-1.0', 'Limba-1.0', 'PanelApplet-5.0', 'AppStream-0.8',
 'Abi-3.0', 'Gnm-1.12', 'Hkl-4.0', 'Libmsi-1.0', 'Vips-8.0', 'GooCanvas-2.0',
 'GSound-1.0', 'Accounts-1.0', 'Signon-1.0', 'Fwupd-1.0', 'Grss-0.7',
-'Geoclue-2.0',
 ]
 
 
