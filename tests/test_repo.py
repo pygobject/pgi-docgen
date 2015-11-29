@@ -47,6 +47,10 @@ class TRepository(unittest.TestCase):
         # we include a note containing the shadowed docs
         self.assertTrue(func.info.shadowed_desc)
 
+        klass = find(mod.structures, "IConv")
+        func = find(klass.methods, "_")
+        self.assertTrue(func.info.desc)
+
     def test_gio(self):
         repo = Repository("Gio", "2.0")
         Gio = repo.import_module()

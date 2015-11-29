@@ -86,7 +86,7 @@ def get_style_properties(cls):
 
 def iter_public_attr(obj):
     for attr in sorted(dir(obj)):
-        if attr.startswith("_"):
+        if attr.startswith("_") and not attr == "_":
             continue
 
         try:
