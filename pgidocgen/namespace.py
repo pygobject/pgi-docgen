@@ -437,11 +437,18 @@ def _parse_docs(dom):
     path_seen = set()
     path_done = set()
 
+    all_elements = dom.getElementsByTagName("*")
+
+    def get_elements(name):
+        for elm in all_elements:
+            if elm.tagName == name:
+                yield elm
+
     for target, result in tag_names:
         tag = target[0]
         needed = target[1:]
 
-        for e in dom.getElementsByTagName(tag):
+        for e in get_elements(tag):
             doc_elm = get_child_by_tag(e, "doc")
             docs = (doc_elm and doc_elm.firstChild.nodeValue) or ""
             version = e.getAttribute("version")
