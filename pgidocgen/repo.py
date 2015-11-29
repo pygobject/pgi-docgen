@@ -271,7 +271,7 @@ class Property(BaseDocObject):
 
         if spec.get_blurb() is not None:
             short_desc = repo._fix_docs(
-                spec.get_blurb(), current=parent_fullname)
+                spec.get_blurb().decode("utf-8"), current=parent_fullname)
         else:
             short_desc = u""
 
@@ -286,7 +286,7 @@ class Property(BaseDocObject):
         type_desc = py_type_to_class_ref(spec.value_type.pytype)
         if spec.blurb is not None:
             short_desc = repo._fix_docs(
-                spec.blurb, current=parent_fullname)
+                spec.blurb.decode("utf-8"), current=parent_fullname)
         else:
             short_desc = u""
 
