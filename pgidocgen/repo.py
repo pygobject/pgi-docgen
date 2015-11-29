@@ -200,32 +200,53 @@ class FieldsMixin(object):
 
 class Property(BaseDocObject):
 
-    def __init__(self, parent_fullname, name, attr_name,
-                 readable, writable, construct, type_desc, value_desc):
+    def __init__(self, parent_fullname, name, attr_name, flags,
+                 type_desc, value_desc):
         self.fullname = parent_fullname + "." + name
         self.name = name
         self.info = None
 
         self.attr_name = attr_name
-
-        self.readable = readable
-        self.writable = writable
-        self.construct = construct
-
+        self.flags = flags
         self.type_desc = type_desc
         self.value_desc = value_desc
         self.short_desc = None
 
     @property
-    def flags_string(self):
+    def flags_short(self):
         flags = []
-        if self.readable:
-            flags.append("r")
-        if self.writable:
-            flags.append("w")
-        if self.construct:
-            flags.append("c")
-        return "/".join(flags)
+        for key in sorted(dir(GObject.ParamFlags)):
+            if key != key.upper():
+                continue
+            flag = getattr(GObject.ParamFlags, key)
+            if bin(flag).count("1") != 1:
+                continue
+            if key.startswith(("PRIVATE", "STATIC")):
+                continue
+
+            if self.flags & flag:
+                flags.append((
+                    flag, "".join([p[:1] for p in key.split("_")]).lower()))
+        return "/".join([x[1] for x in sorted(flags)])
+
+    @property
+    def flags_string(self):
+        descs = []
+
+        for key in sorted(dir(GObject.ParamFlags)):
+            if key != key.upper():
+                continue
+            flag = getattr(GObject.ParamFlags, key)
+            if bin(flag).count("1") != 1:
+                continue
+            if key.startswith(("PRIVATE", "STATIC")):
+                continue
+
+            if self.flags & flag:
+                d = ":obj:`%s <GObject.ParamFlags.%s>`" % (key, key)
+                descs.append((flag, d))
+
+        return ", ".join([x[1] for x in sorted(descs)])
 
     @classmethod
     def from_child_pspec(cls, repo, parent_fullname, spec):
@@ -241,13 +262,14 @@ class Property(BaseDocObject):
         value_desc = util.instance_to_rest(
             spec.value_type.pytype, default_value)
         type_desc = py_type_to_class_ref(spec.value_type.pytype)
-        readable = spec.flags & GObject.ParamFlags.READABLE
-        writable = spec.flags & GObject.ParamFlags.WRITABLE
-        construct = spec.flags & GObject.ParamFlags.CONSTRUCT
 
-        prop = cls(parent_fullname, name, attr_name,
-                   readable, writable, construct,
+        prop = cls(parent_fullname, name, attr_name, spec.flags,
                    type_desc, value_desc)
+
+        prop.info = DocInfo(prop.fullname, prop.name)
+
+        if spec.flags & GObject.ParamFlags.DEPRECATED:
+            prop.info.deprecated = True
 
         if spec.get_blurb() is not None:
             short_desc = repo._fix_docs(
@@ -264,20 +286,18 @@ class Property(BaseDocObject):
         value_desc = util.instance_to_rest(
             spec.value_type.pytype, spec.default_value)
         type_desc = py_type_to_class_ref(spec.value_type.pytype)
-        readable = spec.flags & GObject.ParamFlags.READABLE
-        writable = spec.flags & GObject.ParamFlags.WRITABLE
-        construct = spec.flags & GObject.ParamFlags.CONSTRUCT
         if spec.blurb is not None:
             short_desc = repo._fix_docs(
                 spec.blurb, current=parent_fullname)
         else:
             short_desc = u""
 
-        prop = cls(parent_fullname, name, attr_name,
-                   readable, writable, construct,
+        prop = cls(parent_fullname, name, attr_name, spec.flags,
                    type_desc, value_desc)
 
         prop.info = DocInfo.from_object(repo, "properties", prop)
+        if spec.flags & GObject.ParamFlags.DEPRECATED:
+            prop.info.deprecated = True
         if not prop.info.desc:
             prop.info.desc = short_desc
         prop.short_desc = short_desc
@@ -321,6 +341,8 @@ class Signal(BaseDocObject):
 
         inst.signature_desc = signature_desc
         inst.info = DocInfo.from_object(repo, "signals", inst)
+        if sig.flags & GObject.SignalFlags.DEPRECATED:
+            inst.info.deprecated = True
         inst.short_desc = to_short_desc(inst.info.desc)
         return inst
 
@@ -328,15 +350,15 @@ class Signal(BaseDocObject):
     def flags_string(self):
         descs = []
 
-        for key in dir(GObject.SignalFlags):
+        for key in sorted(dir(GObject.SignalFlags)):
             if key != key.upper():
                 continue
             flag = getattr(GObject.SignalFlags, key)
             if self.flags & flag:
                 d = ":obj:`%s <GObject.SignalFlags.%s>`" % (key, key)
-                descs.append(d)
+                descs.append((flag, d))
 
-        return ", ".join(descs)
+        return ", ".join([x[1] for x in sorted(descs)])
 
 
 class PyClass(BaseDocObject, MethodsMixin):
@@ -810,6 +832,8 @@ class DocInfo(BaseDocObject):
         self.shadowed_desc = u""
 
         self.version_added = u""
+
+        self.deprecated = False
         self.version_deprecated = u""
         self.deprecation_desc = u""
 
@@ -822,6 +846,8 @@ class DocInfo(BaseDocObject):
             type_, info.fullname, current=current)
         info.version_added, info.version_deprecated, info.deprecation_desc = \
             repo.lookup_meta(type_, info.fullname)
+        info.deprecated = bool(
+            info.version_deprecated or info.deprecation_desc)
         return info
 
 

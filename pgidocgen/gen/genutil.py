@@ -73,7 +73,7 @@ UTIL = """\
 .. versionadded:: {{ info.version_added|nolinebreak }}
 {% endif %}
 
-{% if info.version_deprecated or info.deprecation_desc %}
+{% if info.deprecated %}
 .. deprecated:: {{ info.version_deprecated|nolinebreak or "???" }}
     {% if info.deprecation_desc %}
     {{ info.deprecation_desc|indent(4, False) }}

@@ -456,28 +456,37 @@ class ClassGenerator(genutil.Generator):
         # props
         prop_lines = []
         for p in cls.properties:
-            fstr = p.flags_string
             rst_target = cls.fullname + ".props." + p.attr_name
             name = ":py:data:`%s<%s>`" % (p.name, rst_target)
-            line = get_csv_line([name, p.type_desc, fstr, p.short_desc])
+            short_desc = p.short_desc
+            if p.info.deprecated:
+                short_desc += " ``deprecated``"
+            line = get_csv_line(
+                [name, p.type_desc, p.flags_short, short_desc])
             prop_lines.append(line)
 
         # child props
         child_prop_lines = []
         for p in cls.child_properties:
             name = "``%s``" % p.name
+            short_desc = p.short_desc
+            if p.info.deprecated:
+                short_desc += " ``deprecated``"
             line = get_csv_line(
                 [name, p.type_desc, p.value_desc,
-                 p.flags_string, p.short_desc])
+                 p.flags_short, short_desc])
             child_prop_lines.append(line)
 
         # style props
         style_prop_lines = []
         for p in cls.style_properties:
             name = "``%s``" % p.name
+            short_desc = p.short_desc
+            if p.info.deprecated:
+                short_desc += " ``deprecated``"
             line = get_csv_line(
                 [name, p.type_desc, p.value_desc,
-                 p.flags_string, p.short_desc])
+                 p.flags_short, short_desc])
             style_prop_lines.append(line)
 
         # signals
@@ -485,7 +494,10 @@ class ClassGenerator(genutil.Generator):
         for sig in cls.signals:
             rst_target = cls.fullname + ".signals." + sig.attr_name
             name_ref = ":py:func:`%s<%s>`" % (sig.name, rst_target)
-            line = get_csv_line([name_ref, sig.short_desc])
+            short_desc = sig.short_desc
+            if sig.info.deprecated:
+                short_desc += " ``deprecated``"
+            line = get_csv_line([name_ref, short_desc])
             sig_lines.append(line)
 
         # fields

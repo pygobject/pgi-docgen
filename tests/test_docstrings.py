@@ -35,7 +35,6 @@ class TDocstring(unittest.TestCase):
 
     def _check(self, text, expected):
         out = docstring_to_rest(self.types, "Gtk.Widget", text)
-        print out
         self.assertEqual(out, expected)
 
     def test_various(self):
