@@ -213,6 +213,9 @@ def _parse_types(dom, namespace):
 
     def add(c_name, py_name):
         assert py_name.count("."), py_name
+        # escape each potential attribute
+        py_name = ".".join(
+            map(util.escape_parameter, py_name.split(".")))
         types[c_name].add(py_name)
 
     # {key of the to be replaces function: c def of the replacement}
@@ -244,6 +247,8 @@ def _parse_types(dom, namespace):
 
         if shadows:
             shadowed_name = ".".join(full_name.split(".")[:-1] + [shadows])
+            shadowed_name = ".".join(
+                map(util.escape_parameter, shadowed_name.split(".")))
             shadowed[shadowed_name] = c_name
 
         add(c_name, full_name)
@@ -466,25 +471,35 @@ def _parse_docs(dom):
             deprecated_version = e.getAttribute("deprecated-version")
 
             def get_name(elm):
+                """Returns a string (maybe be empty) or None"""
+
                 # if this entry shadows another one use its name
                 shadows = elm.getAttribute("shadows")
                 if shadows:
                     n = shadows
                 else:
-                    n = elm.getAttribute("name") or \
-                        elm.getAttribute("glib:name")
+                    if elm.hasAttribute("name"):
+                        n = elm.getAttribute("name")
+                    elif elm.hasAttribute("glib:name"):
+                        n = elm.getAttribute("glib:name")
+                    else:
+                        return
+
                 if elm.tagName == "virtual-method":
                     # pgi/pygobject escape before prefixing
                     n = "do_" + util.escape_identifier(n)
                 elif elm.tagName == "member":
                     # enum/flag values
                     n = n.upper()
+
                 return n
 
             l = []
             tags = []
             current = e
-            l.append(get_name(current))
+            name = get_name(current)
+            if name is not None:
+                l.append(name)
             shadowed = False
             while current.tagName != "namespace":
                 # this gets shadowed by another entry, bail out
@@ -496,7 +511,8 @@ def _parse_docs(dom):
                 if current.tagName == "repository":
                     break
                 name = get_name(current)
-                l.insert(0, name)
+                if name is not None:
+                    l.insert(0, name)
 
             # for shadowed function docs we save docs anyway since we
             # can include them in the function docs for the replacement.
@@ -517,11 +533,7 @@ def _parse_docs(dom):
 
             path_done.add(tuple(tags))
 
-            # special case: GLib.IConv._
-            if tag != "return-value" and not l[-1]:
-                l[-1] = "_"
-            l = filter(None, l)
-            key = ".".join(l)
+            key = ".".join(map(util.escape_parameter, l))
 
             if tag in ("method", "constructor"):
                 assert len(l) > 2

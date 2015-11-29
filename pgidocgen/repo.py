@@ -15,7 +15,7 @@ from gi.repository import GObject
 
 from .namespace import get_namespace
 from . import util
-from .util import unindent
+from .util import unindent, escape_parameter
 
 from .funcsig import FuncSignature, py_type_to_class_ref, get_type_name
 from .parser import docstring_to_rest
@@ -93,9 +93,8 @@ class SignalsMixin(object):
             return
 
         signals = []
-        for attr_name,  sig in util.iter_public_attr(obj.signals):
-            signals.append(
-                Signal.from_object(repo, attr_name, self.fullname, sig))
+        for attr_name, sig in util.iter_public_attr(obj.signals):
+            signals.append(Signal.from_object(repo, self.fullname, sig))
         signals.sort(key=lambda s: s.name)
         self.signals = signals
 
@@ -200,13 +199,13 @@ class FieldsMixin(object):
 
 class Property(BaseDocObject):
 
-    def __init__(self, parent_fullname, name, attr_name, flags,
+    def __init__(self, parent_fullname, name, prop_name, flags,
                  type_desc, value_desc):
         self.fullname = parent_fullname + "." + name
         self.name = name
         self.info = None
 
-        self.attr_name = attr_name
+        self.prop_name = prop_name
         self.flags = flags
         self.type_desc = type_desc
         self.value_desc = value_desc
@@ -254,7 +253,6 @@ class Property(BaseDocObject):
 
         # WARNING: the ParamSpecs classes here aren't the same as for
         # properties, they come from the GIR not pgi internals..
-        attr_name = ""
         name = spec.get_name()
         default_value = spec.get_default_value()
         if isinstance(default_value, GObject.Value):
@@ -263,7 +261,7 @@ class Property(BaseDocObject):
             spec.value_type.pytype, default_value)
         type_desc = py_type_to_class_ref(spec.value_type.pytype)
 
-        prop = cls(parent_fullname, name, attr_name, spec.flags,
+        prop = cls(parent_fullname, escape_parameter(name), name, spec.flags,
                    type_desc, value_desc)
 
         prop.info = DocInfo(prop.fullname, prop.name)
@@ -292,7 +290,7 @@ class Property(BaseDocObject):
         else:
             short_desc = u""
 
-        prop = cls(parent_fullname, name, attr_name, spec.flags,
+        prop = cls(parent_fullname, escape_parameter(name), name, spec.flags,
                    type_desc, value_desc)
 
         prop.info = DocInfo.from_object(repo, "properties", prop)
@@ -307,29 +305,31 @@ class Property(BaseDocObject):
 
 class Signal(BaseDocObject):
 
-    def __init__(self, parent_fullname, name, attr_name, sig, flags):
+    def __init__(self, parent_fullname, name, sig_name, flags):
         self.fullname = parent_fullname + "." + name
         self.name = name
         self.info = None
 
+        self.sig_name = sig_name
         self.flags = flags
-        self.attr_name = attr_name
-        self.signature = sig
         self.signature_desc = None
         self.short_desc = None
 
     @classmethod
-    def from_object(cls, repo, attr_name, parent_fullname, sig):
+    def from_object(cls, repo, parent_fullname, sig):
+        name = escape_parameter(sig.name)
+        inst = cls(parent_fullname, name, sig.name, sig.flags)
+
         try:
-            fsig = FuncSignature.from_string(attr_name, sig.__doc__)
-            assert fsig, sig.__doc__
+            fsig = FuncSignature.from_string(name, sig.__doc__)
+            assert fsig, (sig.__doc__, name)
         except NotImplementedError:
             fsig = None
-            ssig = "%s(*fixme)" % attr_name
+            ssig = "%s(*fixme)" % name
         else:
             ssig = fsig.to_simple_signature()
 
-        inst = cls(parent_fullname, sig.name, attr_name, ssig, sig.flags)
+        inst.signature = ssig
 
         if fsig:
             signature_desc = fsig.to_rest_listing(

@@ -26,9 +26,8 @@ class TRepository(unittest.TestCase):
         func = find(mod.functions, "extents_to_pixels")
         self.assertTrue(":param inclusive:" in func.signature_desc)
 
-        #  FIXME
-        # self.assertTrue(
-        #     repo.lookup_parameter_docs("Pango.break_.text"))
+        func = find(mod.functions, "break_")
+        self.assertTrue(":param text:" in func.signature_desc)
 
         func = find(find(mod.structures, "TabArray").methods, "new")
         self.assertTrue(":param initial\\_size:" in func.signature_desc)
@@ -60,7 +59,7 @@ class TRepository(unittest.TestCase):
         self.assertTrue(signal.info.desc)
         self.assertNotEqual(method.info.desc, signal.info.desc)
 
-        signal = find(klass.signals, "command-line")
+        signal = find(klass.signals, "command_line")
         self.assertTrue(":param command\\_line:" in signal.signature_desc)
 
         klass = Class.from_object(repo, Gio.File)

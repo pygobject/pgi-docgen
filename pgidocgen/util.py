@@ -101,14 +101,28 @@ def iter_public_attr(obj):
 
 
 def escape_identifier(text, reg=_KWD_RE):
-    """Escape C identifiers so they can be used as attributes/arguments"""
+    """Escape C identifiers (or a part of them)
+    so they can be used as attributes/arguments
+    """
+
+    assert "-" not in text
 
     # see http://docs.python.org/reference/lexical_analysis.html#identifiers
     if not text:
-        return text
+        return u"_"
     if text[0].isdigit():
         text = "_" + text
     return reg.sub(r"\1_", text)
+
+
+def unescape_parameter(text):
+    start = 0
+    end = 0
+    if escape_parameter(text[1:]) == text:
+        start = 1
+    if escape_parameter(text[:-1]) == text:
+        end = -1
+    return text[start:len(text) + end].replace("_", "-")
 
 
 def escape_parameter(text):

@@ -15,6 +15,8 @@ import os
 
 from sphinx.search import js_index
 
+from .util import unescape_parameter
+
 
 class SearchIndexMerger(object):
 
@@ -165,7 +167,7 @@ def fixup_props_signals(index):
             for k, v in attributes.iteritems():
                 v[1] = prop_index
                 v[3] = attr_key + "." + k
-                k = "%s (%s)" % (k.replace("_", "-"), ns)
+                k = "%s (%s)" % (unescape_parameter(k), ns)
                 objects[""][k] = v
             del objects[attr_key]
         elif attr_key.endswith(".signals"):
@@ -173,7 +175,7 @@ def fixup_props_signals(index):
             for k, v in attributes.iteritems():
                 v[1] = sig_index
                 v[3] = attr_key + "." + k
-                k = "%s (%s)" % (k.replace("_", "-"), ns)
+                k = "%s (%s)" % (unescape_parameter(k), ns)
                 objects[""][k] = v
             del objects[attr_key]
 

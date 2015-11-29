@@ -334,7 +334,7 @@ Signal Details
 {% for signal in cls.signals %}
 .. py:function:: {{ cls.fullname }}.signals.{{ signal.signature }}
 
-    :Signal Name: ``{{ signal.name }}``
+    :Signal Name: ``{{ signal.sig_name }}``
     :Flags: {{ signal.flags_string }}
 
     {{ signal.signature_desc|indent(4, False) }}
@@ -351,9 +351,9 @@ Property Details
 ----------------
 
 {% for prop in cls.properties %}
-.. py:data:: {{ cls.fullname }}.props.{{ prop.attr_name }}
+.. py:data:: {{ cls.fullname }}.props.{{ prop.name }}
 
-    :Name: ``{{ prop.name }}``
+    :Name: ``{{ prop.prop_name }}``
     :Type: {{ prop.type_desc }}
     :Default Value: {{ prop.value_desc }}
     :Flags: {{ prop.flags_string }}
@@ -456,8 +456,8 @@ class ClassGenerator(genutil.Generator):
         # props
         prop_lines = []
         for p in cls.properties:
-            rst_target = cls.fullname + ".props." + p.attr_name
-            name = ":py:data:`%s<%s>`" % (p.name, rst_target)
+            rst_target = cls.fullname + ".props." + p.name
+            name = ":py:data:`%s<%s>`" % (p.prop_name, rst_target)
             short_desc = p.short_desc
             if p.info.deprecated:
                 short_desc += " ``deprecated``"
@@ -468,7 +468,7 @@ class ClassGenerator(genutil.Generator):
         # child props
         child_prop_lines = []
         for p in cls.child_properties:
-            name = "``%s``" % p.name
+            name = "``%s``" % p.prop_name
             short_desc = p.short_desc
             if p.info.deprecated:
                 short_desc += " ``deprecated``"
@@ -480,7 +480,7 @@ class ClassGenerator(genutil.Generator):
         # style props
         style_prop_lines = []
         for p in cls.style_properties:
-            name = "``%s``" % p.name
+            name = "``%s``" % p.prop_name
             short_desc = p.short_desc
             if p.info.deprecated:
                 short_desc += " ``deprecated``"
@@ -492,8 +492,8 @@ class ClassGenerator(genutil.Generator):
         # signals
         sig_lines = []
         for sig in cls.signals:
-            rst_target = cls.fullname + ".signals." + sig.attr_name
-            name_ref = ":py:func:`%s<%s>`" % (sig.name, rst_target)
+            rst_target = cls.fullname + ".signals." + sig.name
+            name_ref = ":py:func:`%s<%s>`" % (sig.sig_name, rst_target)
             short_desc = sig.short_desc
             if sig.info.deprecated:
                 short_desc += " ``deprecated``"
