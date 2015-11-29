@@ -30,9 +30,12 @@ def get_namespace(namespace, version, _cache={}):
     if key in _cache:
         return _cache[key]
     if SHELVE_CACHE:
-        if os.path.getsize(SHELVE_CACHE) == 0:
-            # created by tempfile, replace here
-            os.remove(SHELVE_CACHE)
+        try:
+            if os.path.getsize(SHELVE_CACHE) == 0:
+                # created by tempfile, replace here
+                os.remove(SHELVE_CACHE)
+        except OSError:
+            pass
 
         d = shelve.open(SHELVE_CACHE, protocol=2)
         if key in d:
@@ -70,7 +73,6 @@ class Namespace(object):
         self.namespace = namespace
         self.version = version
 
-        print "Parsing GIR (%s-%s)" % (namespace, version)
         dom = _get_dom(self.path)
 
         self._types = _parse_types(dom, namespace)

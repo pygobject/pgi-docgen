@@ -11,97 +11,97 @@ import unittest
 from pgidocgen.repo import Repository, Class
 
 
+def find(l, name):
+    for i in l:
+        if i.name == name:
+            return i
+    raise LookupError
+
+
 class TRepository(unittest.TestCase):
 
     def test_pango(self):
         repo = Repository("Pango", "1.0")
-
-        self.assertTrue(
-            repo.lookup_parameter_docs("Pango.extents_to_pixels.inclusive"))
+        mod = repo.parse()
+        func = find(mod.functions, "extents_to_pixels")
+        self.assertTrue(":param inclusive:" in func.signature_desc)
 
         #  FIXME
         # self.assertTrue(
         #     repo.lookup_parameter_docs("Pango.break_.text"))
 
-        self.assertTrue(
-            repo.lookup_parameter_docs("Pango.TabArray.new.initial_size"))
+        func = find(find(mod.structures, "TabArray").methods, "new")
+        self.assertTrue(":param initial\\_size:" in func.signature_desc)
 
         self.assertTrue(repo.is_private("Pango.RendererPrivate"))
         self.assertFalse(repo.is_private("Pango.AttrIterator"))
 
-    def test_glib_shadowed(self):
+    def test_glib(self):
         repo = Repository("GLib", "2.0")
+        mod = repo.parse()
 
         # GLib.io_add_watch points to g_io_add_watch_full and should
         # also use its docs
-
-        self.assertTrue(
-            repo.lookup_parameter_docs("GLib.io_add_watch.priority"))
-
-        self.assertTrue(
-            "priority" in repo.lookup_attr_docs("GLib.io_add_watch"))
+        func = find(mod.functions, "io_add_watch")
+        self.assertTrue(":param priority:" in func.signature_desc)
 
         # we include a note containing the shadowed docs
-        self.assertTrue(
-            ".. note::" in repo.lookup_attr_docs("GLib.io_add_watch"))
+        self.assertTrue(func.info.shadowed_desc)
 
     def test_gio(self):
         repo = Repository("Gio", "2.0")
+        Gio = repo.import_module()
 
-        method = repo.lookup_attr_docs("Gio.Application.activate")
-        signal = repo.lookup_signal_docs("Gio.Application.activate")
+        klass = Class.from_object(repo, Gio.Application)
+        method = find(klass.methods, "activate")
+        signal = find(klass.signals, "activate")
 
-        self.assertTrue(method)
-        self.assertTrue(signal)
-        self.assertNotEqual(method, signal)
+        self.assertTrue(method.info.desc)
+        self.assertTrue(signal.info.desc)
+        self.assertNotEqual(method.info.desc, signal.info.desc)
 
-        self.assertFalse(
-            repo.lookup_parameter_docs(
-                "Gio.Application.command-line.command_line"))
+        signal = find(klass.signals, "command-line")
+        self.assertTrue(":param command\\_line:" in signal.signature_desc)
 
-        self.assertTrue(
-            repo.lookup_parameter_docs(
-                "Gio.Application.command-line.command_line", signal=True))
+        klass = Class.from_object(repo, Gio.File)
+        method = find(klass.methods, "load_contents_finish")
+        self.assertTrue(":returns:" in method.signature_desc)
 
-    def test_returns(self):
-        repo = Repository("Gio", "2.0")
-
-        ret = repo.lookup_return_docs("Gio.File.load_contents_finish")
-        self.assertTrue(ret.strip())
-
-    def test_vfuns(self):
+    def test_gtk(self):
         repo = Repository("Gtk", "3.0")
+        Gtk = repo.import_module()
 
-        ret = repo.lookup_attr_docs("Gtk.TreeModel.do_get_iter")
-        self.assertTrue(ret.strip())
+        klass = Class.from_object(repo, Gtk.TreeModel)
+        vfunc = find(klass.vfuncs, "do_get_iter")
+        self.assertTrue(vfunc.info.desc)
 
-    def test_other(self):
-        Repository("GLib", "2.0")
-        Repository("GObject", "2.0")
-
-    def test_version_added(self):
-        repo = Repository("Atk", "1.0")
-        docs = repo.lookup_attr_meta("Atk.Document.get_attributes")
-        self.assertTrue(".. versionadded:: 1.12" in docs)
-
-        docs = repo.lookup_attr_meta("Atk.Document.get_attribute_value")
-        self.assertTrue(".. versionadded:: 1.12" in docs)
-
-    def test_deprecated(self):
-        repo = Repository("Atk", "1.0")
-        docs = repo.lookup_attr_meta("Atk.Hyperlink.is_selected_link")
-        self.assertTrue(".. deprecated::" in docs)
-
-    def test_class_gtk3(self):
-        from pgi.repository import Gtk
-
-        repo = Repository("Gtk", "3.0")
         Class.from_object(repo, Gtk.Button)
         Class.from_object(repo, Gtk.Paned)
         Class.from_object(repo, Gtk.ActionBar)
 
-    def test_class_gudev(self):
-        from pgi.repository import GUdev
+    def test_gobject(self):
+        Repository("GObject", "2.0")
 
+    def test_atk(self):
+        repo = Repository("Atk", "1.0")
+        Atk = repo.import_module()
+
+        klass = Class.from_object(repo, Atk.Document)
+        method = find(klass.methods, "get_attributes")
+        self.assertEqual(method.info.version_added, "1.12")
+
+        method = find(klass.methods, "get_attribute_value")
+        self.assertEqual(method.info.version_added, "1.12")
+
+        klass = Class.from_object(repo, Atk.Hyperlink)
+
+        method = find(klass.methods, "is_selected_link")
+        self.assertTrue(method.info.deprecated)
+        self.assertEqual(method.info.version_added, "1.4")
+        self.assertEqual(method.info.version_deprecated, "1.8")
+        self.assertTrue(method.info.deprecation_desc, "1.8")
+
+    def test_gudev(self):
         repo = Repository("GUdev", "1.0")
+        GUdev = repo.import_module()
         Class.from_object(repo, GUdev.Client)

@@ -766,9 +766,9 @@ class Module(BaseDocObject):
 
                 func = Function.from_object(repo.namespace, obj, repo, None)
                 if util.is_callback(obj):
-                    mod.functions.append(func)
-                else:
                     mod.callbacks.append(func)
+                else:
+                    mod.functions.append(func)
             elif inspect.isclass(obj):
                 if obj.__name__ != key:
                     # renamed class
