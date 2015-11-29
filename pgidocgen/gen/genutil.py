@@ -76,7 +76,7 @@ UTIL = """\
 {% if info.deprecated %}
 .. deprecated:: {{ info.version_deprecated|nolinebreak or "???" }}
     {% if info.deprecation_desc %}
-    {{ info.deprecation_desc|indent(4, False) }}
+    {{ info.deprecation_desc|nolinebreak }}
     {% endif %}
 {% endif %}
 {% endmacro %}
