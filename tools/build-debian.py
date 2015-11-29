@@ -29,6 +29,8 @@ from pgidocgen.debug import get_debug_files_for_name, get_line_numbers_for_name
 DEB_BLACKLIST = [
     "gir1.2-panelapplet-4.0",
     "gir1.2-gpaste-2.0",
+    "gir1.2-gdm3",
+    "gir1.2-webkit2-3.0",
 ]
 
 BLACKLIST = [
@@ -81,6 +83,7 @@ BLACKLIST = [
     "SugarExt-1.0",
     "Meta-Muffin.0",
     "libisocodes-1.2.2",
+    'Nice-0.1',
 
     # criticals.. better skip
     "NMClient-1.0",
@@ -134,7 +137,7 @@ BUILD = ['AccountsService-1.0', 'Anjuta-3.0', 'AppIndicator3-0.1', 'Atk-1.0',
 'SpiceClientGtk-3.0', 'SugarGestures-1.0', 'TelepathyGLib-0.12',
 'TelepathyLogger-0.2', 'TotemPlParser-1.0', 'Tracker-1.0',
 'TrackerControl-1.0', 'TrackerMiner-1.0', 'UDisks-2.0', 'UMockdev-1.0',
-'UPowerGlib-1.0', 'Vte-2.91', 'WebKit-3.0', 'WebKit2-3.0', 'Wnck-3.0',
+'UPowerGlib-1.0', 'Vte-2.91', 'WebKit-3.0', 'Wnck-3.0',
 'Xkl-1.0', 'Zeitgeist-2.0', 'Zpj-0.0', 'cairo-1.0', 'fontconfig-2.0',
 'freetype2-2.0', 'libxml2-2.0', 'xfixes-4.0', 'xft-2.0', 'xlib-2.0',
 'xrandr-1.3', "CoglPango-2.0", "GFBGraph-0.2", "GrlPls-0.2", "Guestfs-1.0",
@@ -149,6 +152,7 @@ BUILD = ['AccountsService-1.0', 'Anjuta-3.0', 'AppIndicator3-0.1', 'Atk-1.0',
 'ClutterGst-3.0', 'Gom-1.0', 'Limba-1.0', 'PanelApplet-5.0', 'AppStream-0.8',
 'Abi-3.0', 'Gnm-1.12', 'Hkl-4.0', 'Libmsi-1.0', 'Vips-8.0', 'GooCanvas-2.0',
 'GSound-1.0', 'Accounts-1.0', 'Signon-1.0', 'Fwupd-1.0', 'Grss-0.7',
+'Geoclue-2.0',
 ]
 
 
