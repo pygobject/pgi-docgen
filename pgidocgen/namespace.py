@@ -7,6 +7,7 @@
 
 import os
 import gc
+import ctypes
 import re
 import shelve
 import collections
@@ -179,9 +180,16 @@ class Namespace(object):
 
 
 def get_cairo_types():
-    """Creates an (incomplete) c symbol to python key mapping for pycairo"""
+    """Creates an (incomplete) c symbol to python key mapping for
+    pycairo/cairocffi
+    """
 
-    import cairo
+    try:
+        import cairo
+    except ImportError:
+        import cairocffi as cairo
+
+    lib = ctypes.CDLL("libcairo.so")
 
     def get_mapping(obj, prefix):
         map_ = {}
@@ -189,10 +197,8 @@ def get_cairo_types():
             if arg.startswith("_"):
                 continue
             c_name = "_".join(filter(None, ["cairo", prefix, arg]))
-            map_[c_name] = [obj.__module__ + "." + obj.__name__ + "." + arg]
-            # import ctypes
-            # lib = ctypes.CDLL("libcairo.so")
-            # assert getattr(lib, c_name)
+            if hasattr(lib, c_name):
+                map_[c_name] = ["cairo." + obj.__name__ + "." + arg]
         return map_
 
     types = {}
