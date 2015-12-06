@@ -8,7 +8,8 @@
 
 import unittest
 
-from pgidocgen.repo import Repository, Class
+from pgidocgen.repo import Repository, Class, get_hierarchy
+from pgidocgen import util
 
 
 def find(l, name):
@@ -19,6 +20,19 @@ def find(l, name):
 
 
 class TRepository(unittest.TestCase):
+
+    def test_hierarchy(self):
+        from pgi.repository import GObject
+
+        repo = Repository("Atk", "1.0")
+        Atk = repo.import_module()
+        hier = get_hierarchy([Atk.NoOpObjectFactory])
+        self.assertEqual(hier.keys(), [GObject.Object])
+        self.assertEqual(hier[GObject.Object].keys(), [Atk.ObjectFactory])
+        self.assertEqual(hier[GObject.Object][Atk.ObjectFactory].keys(),
+                         [Atk.NoOpObjectFactory])
+        self.assertFalse(
+            hier[GObject.Object][Atk.ObjectFactory][Atk.NoOpObjectFactory])
 
     def test_pango(self):
         repo = Repository("Pango", "1.0")
