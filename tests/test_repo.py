@@ -21,6 +21,16 @@ def find(l, name):
 
 class TRepository(unittest.TestCase):
 
+    def test_method_inheritance(self):
+        repo = Repository("Atk", "1.0")
+        Atk = repo.import_module()
+        klass = Class.from_object(repo, Atk.Plug)
+        self.assertEqual(
+            klass.methods_inherited,
+            [('Atk.Object', 23),
+             ('GObject.Object', 33),
+             ('Atk.Component', 13)])
+
     def test_hierarchy(self):
         from pgi.repository import GObject
 
