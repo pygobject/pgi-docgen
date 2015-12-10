@@ -10,6 +10,8 @@ import os
 import re
 import inspect
 import types
+from collections import namedtuple
+
 
 from gi.repository import GObject
 
@@ -375,6 +377,36 @@ class PyClass(BaseDocObject, MethodsMixin):
         return cls(namespace, name)
 
 
+class ClassNode(object):
+
+    def __init__(self, name, is_interface, is_abstract):
+        self.name = name
+        self.is_interface = is_interface
+        self.is_abstract = is_abstract
+
+    def __hash__(self):
+        return hash((self.name, self.is_interface, self.is_abstract))
+
+    def __eq__(self, other):
+        return self.name == other.name and \
+            self.is_interface == other.is_interface and \
+            self.is_abstract == other.is_abstract
+
+    @classmethod
+    def from_class(cls, obj):
+        is_interface = util.is_iface(obj)
+        if is_interface:
+            # pgi bug, interface base class has no gtype
+            is_abstract = False
+        else:
+            is_abstract = obj.__gtype__.is_abstract()
+        name = obj.__module__ + "." + obj.__name__
+        return cls(name, is_interface, is_abstract)
+
+    def __repr__(self):
+        return "<%s name=%r>" % (type(self).__name__, self.name)
+
+
 class Class(BaseDocObject, MethodsMixin, PropertiesMixin, SignalsMixin,
             ChildPropertiesMixin, StylePropertiesMixin, FieldsMixin):
 
@@ -384,6 +416,7 @@ class Class(BaseDocObject, MethodsMixin, PropertiesMixin, SignalsMixin,
         self.info = None
 
         self.is_interface = False
+        self.is_abstract = False
         self.signature = None
         self.image_path = None
 
@@ -430,14 +463,16 @@ class Class(BaseDocObject, MethodsMixin, PropertiesMixin, SignalsMixin,
         if not os.path.exists(image_path):
             image_path = None
 
-        def get_base_tree(obj):
+        def get_sub_tree(obj):
             x = []
             for base in util.fake_bases(obj):
                 if base is object:
                     continue
-                x.append((base.__module__ + "." + base.__name__,
-                          get_base_tree(base)))
+                x.append((ClassNode.from_class(base), get_sub_tree(base)))
             return x
+
+        def get_base_tree(obj):
+            return [(ClassNode.from_class(obj), get_sub_tree(obj))]
 
         klass = cls(namespace, name)
         klass._parse_methods(repo, obj)
@@ -448,8 +483,15 @@ class Class(BaseDocObject, MethodsMixin, PropertiesMixin, SignalsMixin,
         klass._parse_fields(repo, obj)
 
         klass.info = DocInfo.from_object(repo, "all", klass)
-        klass.is_interface = util.is_iface(obj)
-        klass.base_tree = [(klass.fullname, get_base_tree(obj))]
+
+        if util.is_iface(obj):
+            klass.is_interface = True
+            klass.is_abstract = True
+        else:
+            klass.is_interface = False
+            klass.is_abstract = obj.__gtype__.is_abstract()
+
+        klass.base_tree = get_base_tree(obj)
 
         def iter_bases(obj):
             for base in util.fake_mro(obj):

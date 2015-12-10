@@ -59,8 +59,18 @@ _sub_template = genutil.get_template("""\
 
 .. inheritance-graph:: {{ cls.fullname }}
 
+    {% for a in inheritance_nodes %}
+    {% if a.is_interface %}
+    {{ a.name }}: #3091D1
+    {% elif a.is_abstract %}
+    {{ a.name }}: #AAAAAA
+    {% else %}
+    {{ a.name }}: #75507B
+    {% endif %}
+    {% endfor %}
+
     {% for a, b in inheritance_edges %}
-    {{ a }} -> {{ b }}
+    {{ a.name }} -> {{ b.name }}
     {% endfor %}
 
 {# ################################################ #}
@@ -290,10 +300,20 @@ Class Details
     {% if cls.bases %}
     :Bases:
         {% for base in cls.bases %}
-        :class:`{{ base }}`{% if not loop.last %}, {% endif %}
+        :class:`{{ base.name }}`{% if not loop.last %}, {% endif %}
         {% endfor %}
 
     {% endif %}
+    {% if not cls.is_interface %}
+    :Abstract:
+        {% if cls.is_abstract %}
+        Yes
+        {% else %}
+        No
+        {% endif%}
+
+    {% endif %}
+
 
     {{ util.render_info(cls.info)|indent(4, False) }}
 
@@ -515,9 +535,20 @@ class ClassGenerator(genutil.Generator):
                 edges.extend(get_edges(sub))
             return edges
 
+        def get_nodes(tree):
+            nodes = {}
+            for cls, sub in tree:
+                nodes[cls.name] = cls
+                nodes.update(get_nodes(sub))
+            return nodes
+
         # inheritance edges
         inheritance_edges = get_edges(cls.base_tree)
-        inheritance_edges.sort()
+        inheritance_edges = list(set(inheritance_edges))
+        inheritance_edges.sort(key=lambda x: x[0].name)
+
+        inheritance_nodes = get_nodes(cls.base_tree).values()
+        inheritance_nodes.sort(key=lambda x: x.name)
 
         # copy images
         if cls.image_path:
@@ -543,6 +574,7 @@ class ClassGenerator(genutil.Generator):
             sig_lines=sig_lines,
             field_lines=field_lines,
             inheritance_edges=inheritance_edges,
+            inheritance_nodes=inheritance_nodes,
             image_path=image_path,
         )
 

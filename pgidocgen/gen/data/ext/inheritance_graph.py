@@ -8,7 +8,7 @@ from sphinx.ext.graphviz import render_dot, GraphvizError
 from sphinx.util.compat import Directive
 
 
-def generate_dot(graph, urls={}):
+def generate_dot(graph, colors, urls={}):
     g_attrs = {
         'rankdir': 'TB',
         'size': '""',
@@ -39,20 +39,12 @@ def generate_dot(graph, urls={}):
     res.append('digraph g {\n')
     res.append(format_graph_attrs(g_attrs))
 
-    interfaces = set(["GObject.GInterface"])
-    for a, b in graph:
-        if a == "GObject.GInterface":
-            interfaces.add(b)
-
     for fullname, url in urls.items():
         this_node_attrs = n_attrs.copy()
         this_node_attrs['URL'] = '"%s"' % url
 
-        if fullname in interfaces:
-            this_node_attrs["color"] = '"#3091D1"'
-        else:
-            this_node_attrs["color"] = '"#75507B"'
-
+        if fullname in colors:
+            this_node_attrs["color"] = '"%s"' % colors[fullname]
         res.append('  "%s" [%s];\n' %
                    (fullname, format_node_attrs(this_node_attrs)))
 
@@ -84,8 +76,16 @@ class InheritanceGraph(Directive):
         classes = set()
         classes.add(class_name)
         graph = []
+        colors = {}
         for line in self.content:
+            if not line.strip():
+                continue
             parts = map(unicode.strip, line.split("->"))
+            if len(parts) != 2:
+                parts = map(unicode.strip, line.split(":"))
+                assert len(parts) == 2
+                colors[parts[0]] = parts[1]
+                continue
             classes.update(parts)
             graph.append(parts)
 
@@ -100,6 +100,7 @@ class InheritanceGraph(Directive):
         node['graph'] = graph
         node['content'] = class_name
         node['graph_classes'] = classes
+        node['graph_colors'] = colors
 
         return [node]
 
@@ -137,6 +138,7 @@ def html_visit_inheritance_graph(self, node):
     graph = node['graph']
     class_name = node['content']
     classes = node['graph_classes']
+    colors = node['graph_colors']
 
     urls = {}
     for fullname, child in zip(classes, node):
@@ -146,7 +148,7 @@ def html_visit_inheritance_graph(self, node):
             url = ""
         urls[fullname] = url
 
-    dotcode = generate_dot(graph, urls)
+    dotcode = generate_dot(graph, colors, urls)
     render_dot_html(self, node, dotcode, [], 'inheritance', 'inheritance',
                     alt='Inheritance diagram of ' + class_name)
     raise nodes.SkipNode

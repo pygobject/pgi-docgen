@@ -12,7 +12,7 @@ from pgidocgen.util import is_staticmethod, is_classmethod, is_normalmethod
 from pgidocgen.util import is_method_owner, is_fundamental, is_object
 from pgidocgen.util import instance_to_rest, get_child_properties
 from pgidocgen.util import fake_subclasses, get_style_properties
-from pgidocgen.util import import_namespace, unescape_parameter
+from pgidocgen.util import import_namespace, unescape_parameter, fake_bases
 
 
 class TUtil(unittest.TestCase):
@@ -124,3 +124,9 @@ class TUtil(unittest.TestCase):
         self.assertEqual(unescape_parameter("print_"), "print")
         self.assertEqual(unescape_parameter("_print"), "-print")
         self.assertEqual(unescape_parameter("_3"), "3")
+
+    def test_fake_bases(self):
+        from pgi.repository import Atk, GObject
+
+        self.assertEqual(
+            fake_bases(Atk.ImplementorIface), [GObject.GInterface])
