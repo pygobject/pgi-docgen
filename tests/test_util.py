@@ -130,3 +130,9 @@ class TUtil(unittest.TestCase):
 
         self.assertEqual(
             fake_bases(Atk.ImplementorIface), [GObject.GInterface])
+
+    def test_fake_bases_ignore_redundant(self):
+        from pgi.repository import Gtk
+
+        self.assertEqual(
+            fake_bases(Gtk.Dialog, ignore_redundant=True), [Gtk.Window])

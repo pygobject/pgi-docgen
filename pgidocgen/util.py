@@ -311,15 +311,28 @@ def fake_subclasses(cls):
     return subs
 
 
-def fake_bases(obj):
+def fake_bases(obj, ignore_redundant=False):
+    """If ignore_redundant=True any bases which are already implied by previous
+    bases are ignored.
+    """
+
     # hide overrides by merging the bases in
     possible_bases = []
+    known = set()
     for base in obj.__bases__:
+        new_bases = []
         if base.__name__ == obj.__name__ and base.__module__ == obj.__module__:
-            for upper_base in fake_bases(base):
-                possible_bases.append(upper_base)
+            for upper_base in fake_bases(base,
+                                         ignore_redundant=ignore_redundant):
+                new_bases.append(upper_base)
         else:
-            possible_bases.append(base)
+            new_bases.append(base)
+
+        for new_base in new_bases:
+            if not ignore_redundant or new_base not in known:
+                possible_bases.append(new_base)
+
+        known.update(base.__mro__)
 
     # preserve the mro
     mro_bases = []

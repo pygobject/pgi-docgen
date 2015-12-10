@@ -544,7 +544,6 @@ class ClassGenerator(genutil.Generator):
 
         # inheritance edges
         inheritance_edges = get_edges(cls.base_tree)
-        inheritance_edges = list(set(inheritance_edges))
         inheritance_edges.sort(key=lambda x: x[0].name)
 
         inheritance_nodes = get_nodes(cls.base_tree).values()

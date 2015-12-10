@@ -465,7 +465,7 @@ class Class(BaseDocObject, MethodsMixin, PropertiesMixin, SignalsMixin,
 
         def get_sub_tree(obj):
             x = []
-            for base in util.fake_bases(obj):
+            for base in util.fake_bases(obj, ignore_redundant=True):
                 if base is object:
                     continue
                 x.append((ClassNode.from_class(base), get_sub_tree(base)))
