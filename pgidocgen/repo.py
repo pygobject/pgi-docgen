@@ -12,17 +12,31 @@ import inspect
 import types
 from collections import namedtuple
 
+from sphinx.pycode import ModuleAnalyzer
+from sphinx.errors import PycodeError
 
 from gi.repository import GObject
 
 from .namespace import get_namespace
 from . import util
-from .util import unindent, escape_parameter
+from .util import unindent, escape_parameter, import_namespace
 
 from .funcsig import FuncSignature, py_type_to_class_ref, get_type_name
 from .parser import docstring_to_rest
 from .girdata import get_source_to_url_func, get_project_version, \
     get_project_summary, get_class_image_path
+
+
+def parse_override_docs(namespace):
+    module = import_namespace(namespace)
+    try:
+        ma = ModuleAnalyzer.for_module("pgi.overrides.%s" % namespace)
+    except PycodeError:
+        return {}
+    docs = {}
+    for key, value in ma.find_attr_docs().iteritems():
+        docs[namespace + "." + ".".join(filter(None, key))] = "\n".join(value)
+    return docs
 
 
 def get_signature_string(callable_):

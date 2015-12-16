@@ -8,7 +8,8 @@
 
 import unittest
 
-from pgidocgen.repo import Repository, Class, get_hierarchy
+from pgidocgen.repo import Repository, Class, get_hierarchy, \
+    parse_override_docs, Function
 from pgidocgen import util
 
 
@@ -20,6 +21,17 @@ def find(l, name):
 
 
 class TRepository(unittest.TestCase):
+
+    def test_parse_override_docs(self):
+        docs = parse_override_docs("Gtk")
+        self.assertTrue("Gtk.Widget.translate_coordinates" in docs)
+        self.assertTrue(docs["Gtk.Widget.translate_coordinates"])
+
+    def test_override_method(self):
+        repo = Repository("Gtk", "3.0")
+        Gtk = repo.import_module()
+        func = Function.from_object("Gtk.Widget", Gtk.Widget.translate_coordinates, repo, Gtk.Widget)
+        self.assertEqual(func.signature, "(dest_widget, src_x, src_y)")
 
     def test_method_inheritance(self):
         repo = Repository("Atk", "1.0")
