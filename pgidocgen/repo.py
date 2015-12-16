@@ -574,8 +574,7 @@ class Field(BaseDocObject):
 
 class Function(BaseDocObject):
 
-    def __init__(self, parent_fullname, name, is_method, is_static, is_vfunc,
-                 signature):
+    def __init__(self, parent_fullname, name, is_method, is_static, is_vfunc):
         self.fullname = parent_fullname + "." + name
         self.name = name
         self.info = None
@@ -584,7 +583,7 @@ class Function(BaseDocObject):
         self.is_static = is_static
         self.is_vfunc = is_vfunc
 
-        self.signature = signature
+        self.signature = u"()"
         self.signature_desc = u""
 
     @classmethod
@@ -593,8 +592,6 @@ class Function(BaseDocObject):
         name = obj.__name__
         fullname = parent_fullname + "." + name
         is_method = owner is not None
-
-        signature = get_signature_string(obj)
 
         if is_method:
             current_rst_target = parent_fullname
@@ -605,70 +602,56 @@ class Function(BaseDocObject):
             is_static = False
             is_vfunc = False
 
-        def get_instance(docs=None, force_docs=False):
+        def get_docstring():
+            """Get first non-empty docstring following the MRO"""
+
+            doc = str(obj.__doc__ or u"")
+
+            # no docstring, try to get it from base classes
+            if not doc and owner:
+                for base in owner.__mro__[1:]:
+                    try:
+                        base_obj = getattr(base, name, None)
+                    except NotImplementedError:
+                        # function not implemented in pgi
+                        continue
+                    else:
+                        doc = str(base_obj.__doc__ or u"")
+                    if doc:
+                        break
+
+            return doc
+
+        docstring = get_docstring()
+        first_line = docstring and docstring.splitlines()[0] or u""
+
+        def get_instance():
             instance = cls(
-                parent_fullname, name, is_method, is_static, is_vfunc,
-                signature)
+                parent_fullname, name, is_method, is_static, is_vfunc)
             instance.info = DocInfo.from_object(repo, "all", instance,
                                                 current_rst_target)
-            if docs is not None and (not instance.info.desc or force_docs):
-                instance.info.desc = docs
             return instance
 
-        def get_sig(obj):
-            doc = str(obj.__doc__ or "")
-            first_line = doc and doc.splitlines()[0] or ""
-            return FuncSignature.from_string(name, first_line)
-
-        sig = get_sig(obj)
+        sig = FuncSignature.from_string(name, first_line)
 
         # no valid sig, but still a docstring, probably new function
         # or an override with a new docstring
-        if not sig and obj.__doc__:
-            # add the versionadded from the gir here too
-            docs = str(obj.__doc__ or "")
-            return get_instance(docs, force_docs=True)
-
-        # no docstring, try to get the signature from base classes
-        if not sig and owner:
-            for base in owner.__mro__[1:]:
-                try:
-                    base_obj = getattr(base, name, None)
-                except NotImplementedError:
-                    # function not implemented in pgi
-                    continue
-                sig = get_sig(base_obj)
-                if sig:
-                    break
-
-        # still nothing, try making the best out of it
         if not sig:
-            # INFO: this probably only happens if there is an override
-            # for something pgi doesn't support. The base class
-            # is missing the real one, but the gir docs may be still there
-
-            docs = str(obj.__doc__ or "")
-            return get_instance(docs, force_docs=False)
+            instance = get_instance()
+            if docstring:
+                instance.info.desc = docstring
+            instance.signature = get_signature_string(obj)
+            return instance
 
         # we got a valid signature here
         assert sig
 
-        docstring = str(obj.__doc__ or "")
-        # the docstring contains additional text, propably an override
-        # or internal function (GObject.Object methods for example)
-        lines = docstring.splitlines()[1:]
-        while lines and not lines[0].strip():
-            lines = lines[1:]
-        user_docstring = unindent("\n".join(lines))
-
-        if user_docstring:
-            instance = get_instance(user_docstring, force_docs=True)
-        else:
-            instance = get_instance()
+        instance = get_instance()
 
         # create sphinx lists for the signature we found
         instance.signature_desc = sig.to_rest_listing(
             repo, fullname, current=current_rst_target)
+        instance.signature = sig.to_simple_signature()
 
         return instance
 

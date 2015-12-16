@@ -71,7 +71,12 @@ class TFuncSigs(unittest.TestCase):
         sig = FuncSignature.from_string("to_hash",
             "to_hash(flags: NetworkManager.SettingHashFlags, foo: [int]) -> "
             "{str: {int: int}}")
-        self.assertEqual(sig.to_simple_signature(), "to_hash(flags, foo)")
+        self.assertEqual(sig.to_simple_signature(), "(flags, foo)")
+
+    def test_to_simple_sig_2(self):
+        sig = FuncSignature.from_string("to_hash",
+            "to_hash(flags: Foo.Bar, foo: [int or None], *data)")
+        self.assertEqual(sig.to_simple_signature(), "(flags, foo, *data)")
 
     def test_arg_to_class_ref(self):
         self.assertEqual(arg_to_class_ref("bytes"), ":obj:`bytes <str>`")

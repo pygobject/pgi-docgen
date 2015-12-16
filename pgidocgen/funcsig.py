@@ -135,12 +135,12 @@ class FuncSignature(object):
 
         e.g. foo(bar, bar2, *args)
         """
-        name = self.name
+
         args = []
         for key, value in self.args:
             args.append(key)
 
-        return "%s(%s)" % (name, ", ".join(args))
+        return "(%s)" % (", ".join(args),)
 
     def to_rest_listing(self, doc_repo, full_name, current=None, signal=False):
         """A reST listing for this function signature.
