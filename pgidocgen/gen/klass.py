@@ -311,9 +311,12 @@ Class Details
         {% else %}
         No
         {% endif%}
+    {% endif %}
+    {% if cls.class_struct %}
+    :Structure:
+        :class:`{{ cls.class_struct }}`
 
     {% endif %}
-
 
     {{ util.render_info(cls.info)|indent(4, False) }}
 

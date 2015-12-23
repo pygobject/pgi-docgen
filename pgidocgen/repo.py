@@ -141,6 +141,26 @@ class MethodsMixin(object):
             else:
                 methods.append(func)
 
+        # merge in methods from the class struct
+        existing_names = set([m.name for m in methods])
+        if hasattr(obj, "_get_class_struct"):
+            cls_struct = obj._get_class_struct()
+            struct = Structure.from_object(repo, type(cls_struct))
+            for m in Structure.from_object(repo, type(cls_struct)).methods:
+                # don't replace existing ones, in this case the class struct
+                # has to be used directly
+                if m.name in existing_names:
+                    continue
+                # fake the name so it belongs to the class and not the class
+                # struct
+                new_fullname = self.fullname + "." + m.name
+                repo.add_source_alias(m.fullname, new_fullname)
+                m.fullname = new_fullname
+                # We never need the instance, so from the user's POV this is
+                # static
+                m.is_static = True
+                methods.append(m)
+
         methods.sort(key=lambda m: m.name)
         vfuncs.sort(key=lambda m: m.name)
         self.methods = methods
@@ -434,6 +454,8 @@ class Class(BaseDocObject, MethodsMixin, PropertiesMixin, SignalsMixin,
         self.signature = None
         self.image_path = None
 
+        self.class_struct = ""
+
         self.methods = []
         self.methods_inherited = []
 
@@ -504,6 +526,10 @@ class Class(BaseDocObject, MethodsMixin, PropertiesMixin, SignalsMixin,
         else:
             klass.is_interface = False
             klass.is_abstract = obj.__gtype__.is_abstract()
+            class_struct = obj._get_class_struct()
+            if class_struct:
+                cs = type(class_struct)
+                klass.class_struct = cs.__module__ + "." + cs.__name__
 
         klass.base_tree = get_base_tree(obj)
 
@@ -900,6 +926,7 @@ class Repository(object):
         self._ns = ns = get_namespace(namespace, version)
         self._docs = ns.parse_docs()
         self._private = ns.parse_private()
+        self._source_aliases = {}
 
         # merge all type mappings
         self._types = {}
@@ -955,8 +982,22 @@ class Repository(object):
     def import_module(self):
         return self._ns.import_module()
 
+    def add_source_alias(self, orig, alias):
+        """In case we provide a method under a different name we have to
+        make sure the build finds the source link.
+        """
+
+        self._source_aliases[orig] = alias
+
     def get_source(self):
-        return self._ns.get_source()
+        source = self._ns.get_source()
+
+        # add the aliases
+        for orig, alias in self._source_aliases.iteritems():
+            if orig in source:
+                source[alias] = source[orig]
+
+        return source
 
     def is_private(self, name):
         """is_private('Gtk.ViewportPrivate')"""
