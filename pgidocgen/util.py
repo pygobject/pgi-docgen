@@ -474,11 +474,20 @@ def instance_to_rest(cls, inst):
     return "``%s``" % repr(inst)
 
 
-def import_namespace(ns):
+def import_namespace(namespace, version=None):
     """Equivalent to 'from gi.repository import <ns>'
 
     Returns the namespace module.
     Raises ImportError in case the import fails.
     """
 
-    return getattr(__import__("gi.repository." + ns).repository, ns)
+    if version is not None:
+        import gi
+
+        try:
+            gi.require_version(namespace, version)
+        except ValueError as e:
+            raise ImportError(e, version)
+
+    return getattr(
+        __import__("gi.repository." + namespace).repository, namespace)

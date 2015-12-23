@@ -26,5 +26,5 @@ class TGIRData(unittest.TestCase):
 
     def test_get_project_version(self):
         self.assertEqual(
-            get_project_version(import_namespace("GObject")),
-            get_library_version(import_namespace("GLib")))
+            get_project_version(import_namespace("GObject", "2.0")),
+            get_library_version(import_namespace("GLib", "2.0")))

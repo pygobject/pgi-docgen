@@ -23,7 +23,7 @@ def find(l, name):
 class TRepository(unittest.TestCase):
 
     def test_parse_override_docs(self):
-        docs = parse_override_docs("Gtk")
+        docs = parse_override_docs("Gtk", "3.0")
         self.assertTrue("Gtk.Widget.translate_coordinates" in docs)
         self.assertTrue(docs["Gtk.Widget.translate_coordinates"])
 

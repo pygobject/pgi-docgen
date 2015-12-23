@@ -129,12 +129,7 @@ class Namespace(object):
         to_load += [(self.namespace, self.version)]
 
         for (namespace, version) in to_load:
-            try:
-                gi.require_version(namespace, version)
-            except ValueError as e:
-                raise ImportError(e, version)
-
-            module = util.import_namespace(namespace)
+            module = util.import_namespace(namespace, version)
 
             # this needs to be synced with module._import_dependency
             if namespace in ("Clutter", "ClutterGst", "Gst", "Grl"):

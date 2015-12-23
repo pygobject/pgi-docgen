@@ -27,8 +27,8 @@ from .girdata import get_source_to_url_func, get_project_version, \
     get_project_summary, get_class_image_path
 
 
-def parse_override_docs(namespace):
-    module = import_namespace(namespace)
+def parse_override_docs(namespace, version):
+    module = import_namespace(namespace, version)
     try:
         ma = ModuleAnalyzer.for_module("pgi.overrides.%s" % namespace)
     except PycodeError:
@@ -908,6 +908,8 @@ class Repository(object):
             self._types.update(sub_ns.get_types())
         self._types.update(ns.get_types())
 
+        self._overrides_docs = parse_override_docs(namespace, version)
+
     def _fix_docs(self, d, current=None):
         return docstring_to_rest(self._types, current, d or u"")
 
@@ -923,6 +925,9 @@ class Repository(object):
 
     def get_types(self):
         return self._types
+
+    def lookup_override_docs(self, fullname):
+        return self._overrides_docs.get(fullname, u"")
 
     def lookup_docs(self, type_, *args, **kwargs):
         docs = self._lookup_docs(type_, *args, **kwargs)
