@@ -12,7 +12,7 @@ from pgidocgen.util import is_staticmethod, is_classmethod, is_normalmethod
 from pgidocgen.util import is_method_owner, is_fundamental, is_object
 from pgidocgen.util import instance_to_rest, get_child_properties
 from pgidocgen.util import fake_subclasses, get_style_properties
-from pgidocgen.util import import_namespace, unescape_parameter, fake_bases
+from pgidocgen.util import unescape_parameter, fake_bases
 
 
 class TUtil(unittest.TestCase):

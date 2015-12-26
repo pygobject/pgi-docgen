@@ -10,7 +10,6 @@ import unittest
 
 from pgidocgen.repo import Repository, Class, get_hierarchy, \
     parse_override_docs, Function
-from pgidocgen import util
 
 
 def find(l, name):

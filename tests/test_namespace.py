@@ -83,7 +83,7 @@ class TNamespace(unittest.TestCase):
 
     def test_pango(self):
         ns = Namespace("Pango", "1.0")
-        types = ns.get_types()
+        # types = ns.get_types()
         ns.parse_docs()
 
         # FIXME

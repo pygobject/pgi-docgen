@@ -10,7 +10,6 @@ import os
 import re
 import inspect
 import types
-from collections import namedtuple
 
 from sphinx.pycode import ModuleAnalyzer
 from sphinx.errors import PycodeError
@@ -19,7 +18,7 @@ from gi.repository import GObject
 
 from .namespace import get_namespace
 from . import util
-from .util import unindent, escape_parameter, import_namespace
+from .util import escape_parameter, import_namespace
 
 from .funcsig import FuncSignature, py_type_to_class_ref, get_type_name
 from .parser import docstring_to_rest
@@ -28,7 +27,8 @@ from .girdata import get_source_to_url_func, get_project_version, \
 
 
 def parse_override_docs(namespace, version):
-    module = import_namespace(namespace, version)
+    import_namespace(namespace, version)
+
     try:
         ma = ModuleAnalyzer.for_module("pgi.overrides.%s" % namespace)
     except PycodeError:
@@ -147,7 +147,7 @@ class MethodsMixin(object):
         if hasattr(obj, "_get_class_struct"):
             cls_struct = obj._get_class_struct()
             struct = Structure.from_object(repo, type(cls_struct))
-            for m in Structure.from_object(repo, type(cls_struct)).methods:
+            for m in struct.methods:
                 # don't replace existing ones, in this case the class struct
                 # has to be used directly
                 if m.name in existing_names:
@@ -886,9 +886,9 @@ class Module(BaseDocObject):
         def is_cs(obj):
             return obj.fullname in class_struct_names
 
-        mod.class_structures = [cls for cls in mod.structures if is_cs(cls)]
+        mod.class_structures = [c for c in mod.structures if is_cs(c)]
         mod.structures = [
-            cls for cls in mod.structures if cls not in mod.class_structures]
+            c for c in mod.structures if c not in mod.class_structures]
 
         symbol_mapping = SymbolMapping.from_module(repo, pymod)
         mod.symbol_mapping = symbol_mapping

@@ -121,8 +121,6 @@ class Namespace(object):
         Can raise ImportError.
         """
 
-        import gi
-
         # This is all needed because some modules depending on GStreamer
         # segfaults if Gst.init() isn't called before introspecting them
         to_load = list(reversed(self.get_all_dependencies()))

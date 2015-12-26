@@ -6,7 +6,6 @@
 # License as published by the Free Software Foundation; either
 # version 2.1 of the License, or (at your option) any later version.
 
-import os
 import sys
 from multiprocessing import Pool
 
@@ -20,7 +19,7 @@ def fetch(project):
     print project.doap
     resp = requests.get(project.doap)
     if resp.status_code != requests.codes.ok:
-        raise Exception(url)
+        raise Exception(project.doap)
     return resp.content, project
 
 

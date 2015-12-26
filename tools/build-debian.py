@@ -258,8 +258,8 @@ def fetch_girs(girs, dest):
                     # XXX: This fails in various ways unrelated to the actual
                     # download action
                     version.fetch_binary(tmp_download)
-                except Exception as e:
-                    print e
+                except Exception as error:
+                    print error
     cache.close()
 
     print "Extracting packages.."
