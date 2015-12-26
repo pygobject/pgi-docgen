@@ -435,7 +435,7 @@ class Class(BaseDocObject, MethodsMixin, PropertiesMixin, SignalsMixin,
         self.signature = None
         self.image_path = None
 
-        self.class_struct = ""
+        self.gtype_struct = ""
 
         self.methods = []
         self.methods_inherited = []
@@ -504,13 +504,17 @@ class Class(BaseDocObject, MethodsMixin, PropertiesMixin, SignalsMixin,
         if util.is_iface(obj):
             klass.is_interface = True
             klass.is_abstract = True
+            iface_struct = obj._get_iface_struct()
+            if iface_struct:
+                cs = type(iface_struct)
+                klass.gtype_struct = class_name(cs)
         else:
             klass.is_interface = False
             klass.is_abstract = obj.__gtype__.is_abstract()
             class_struct = obj._get_class_struct()
             if class_struct:
                 cs = type(class_struct)
-                klass.class_struct = class_name(cs)
+                klass.gtype_struct = class_name(cs)
 
         klass.base_tree = get_base_tree(obj)
 
@@ -784,6 +788,7 @@ class Module(BaseDocObject):
         self.enums = []
         self.structures = []
         self.class_structures = []
+        self.iface_structures = []
         self.unions = []
 
         self.symbol_mapping = None
@@ -860,15 +865,21 @@ class Module(BaseDocObject):
                 const = Constant.from_object(repo, repo.namespace, key, obj)
                 mod.constants.append(const)
 
-        class_struct_names = set(
-            filter(None, [c.class_struct for c in mod.classes]))
+        gtype_structs = set(
+            [(c.gtype_struct, c.is_interface) for c in mod.classes
+             if c.gtype_struct])
 
-        def is_cs(obj):
-            return obj.fullname in class_struct_names
+        def is_gtype_struct(obj, is_iface):
+            return (obj.fullname, is_iface) in gtype_structs
 
-        mod.class_structures = [c for c in mod.structures if is_cs(c)]
+        mod.class_structures = [
+            c for c in mod.structures if is_gtype_struct(c, False)]
+        mod.iface_structures = [
+            c for c in mod.structures if is_gtype_struct(c, True)]
+
         mod.structures = [
-            c for c in mod.structures if c not in mod.class_structures]
+            c for c in mod.structures
+            if c not in mod.class_structures and c not in mod.iface_structures]
 
         symbol_mapping = SymbolMapping.from_module(repo, pymod)
         mod.symbol_mapping = symbol_mapping

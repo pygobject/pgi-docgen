@@ -148,6 +148,11 @@ class ModuleGenerator(object):
         for struct in module.class_structures:
             class_struct_gen.add_struct(struct)
 
+        iface_struct_gen = StructGenerator("iface-structs",
+                                           "Interface Structures")
+        for struct in module.iface_structures:
+            iface_struct_gen.add_struct(struct)
+
         union_gen = UnionGenerator()
         for union in module.unions:
             union_gen.add_union(union)
@@ -174,7 +179,7 @@ class ModuleGenerator(object):
   
             names = []
             gens = [func_gen, cb_gen, class_gen, hier_gen, struct_gen,
-                    class_struct_gen,
+                    class_struct_gen, iface_struct_gen,
                     union_gen, flags_gen, enums_gen, const_gen, map_gen]
             for gen in gens:
                 if gen.is_empty():

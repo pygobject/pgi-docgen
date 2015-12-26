@@ -312,9 +312,9 @@ Class Details
         No
         {% endif%}
     {% endif %}
-    {% if cls.class_struct %}
+    {% if cls.gtype_struct %}
     :Structure:
-        :class:`{{ cls.class_struct }}`
+        :class:`{{ cls.gtype_struct }}`
 
     {% endif %}
 
