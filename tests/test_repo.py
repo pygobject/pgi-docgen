@@ -40,7 +40,7 @@ class TRepository(unittest.TestCase):
         self.assertEqual(
             klass.methods_inherited,
             [('Atk.Object', 23),
-             ('GObject.Object', 38),
+             ('GObject.Object', 33),
              ('Atk.Component', 13)])
 
     def test_hierarchy(self):
@@ -128,11 +128,6 @@ class TRepository(unittest.TestCase):
             LookupError, find, mod.class_structures, "TableChild")
         self.assertRaises(
             LookupError, find, mod.structures, "WidgetClass")
-
-        Container = find(mod.classes, "Container")
-        func = find(Container.methods, "list_child_properties")
-        self.assertTrue(func.info.desc)
-        self.assertTrue(func.signature_desc)
 
     def test_gobject(self):
         Repository("GObject", "2.0")
