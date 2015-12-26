@@ -72,13 +72,14 @@ def get_hierarchy(type_seq):
     return tree
 
 
+def class_name(cls):
+    return cls.__module__.split(".")[-1] + "." + cls.__name__
+
+
 def to_names(hierarchy):
 
-    def get_name(cls):
-        return cls.__module__ + "." + cls.__name__
-
     return sorted(
-            [(get_name(k), to_names(v)) for (k, v) in hierarchy.iteritems()])
+            [(class_name(k), to_names(v)) for (k, v) in hierarchy.iteritems()])
 
 
 def to_short_desc(docs):
@@ -434,7 +435,7 @@ class ClassNode(object):
             is_abstract = False
         else:
             is_abstract = obj.__gtype__.is_abstract()
-        name = obj.__module__ + "." + obj.__name__
+        name = class_name(obj)
         return cls(name, is_interface, is_abstract)
 
     def __repr__(self):
@@ -529,7 +530,7 @@ class Class(BaseDocObject, MethodsMixin, PropertiesMixin, SignalsMixin,
             class_struct = obj._get_class_struct()
             if class_struct:
                 cs = type(class_struct)
-                klass.class_struct = cs.__module__ + "." + cs.__name__
+                klass.class_struct = class_name(cs)
 
         klass.base_tree = get_base_tree(obj)
 
@@ -554,7 +555,7 @@ class Class(BaseDocObject, MethodsMixin, PropertiesMixin, SignalsMixin,
         subclasses = []
         for subc in util.fake_subclasses(obj):
             if subc.__module__ == namespace:
-                subclasses.append(subc.__module__ + "." + subc.__name__)
+                subclasses.append(class_name(subc))
         subclasses.sort()
         klass.subclasses = subclasses
         klass.signature = get_signature_string(obj.__init__)
@@ -802,6 +803,7 @@ class Module(BaseDocObject):
         self.flags = []
         self.enums = []
         self.structures = []
+        self.class_structures = []
         self.unions = []
 
         self.symbol_mapping = None
@@ -877,6 +879,16 @@ class Module(BaseDocObject):
             else:
                 const = Constant.from_object(repo, repo.namespace, key, obj)
                 mod.constants.append(const)
+
+        class_struct_names = set(
+            filter(None, [c.class_struct for c in mod.classes]))
+
+        def is_cs(obj):
+            return obj.fullname in class_struct_names
+
+        mod.class_structures = [cls for cls in mod.structures if is_cs(cls)]
+        mod.structures = [
+            cls for cls in mod.structures if cls not in mod.class_structures]
 
         symbol_mapping = SymbolMapping.from_module(repo, pymod)
         mod.symbol_mapping = symbol_mapping

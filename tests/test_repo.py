@@ -30,7 +30,8 @@ class TRepository(unittest.TestCase):
     def test_override_method(self):
         repo = Repository("Gtk", "3.0")
         Gtk = repo.import_module()
-        func = Function.from_object("Gtk.Widget", Gtk.Widget.translate_coordinates, repo, Gtk.Widget)
+        func = Function.from_object(
+            "Gtk.Widget", Gtk.Widget.translate_coordinates, repo, Gtk.Widget)
         self.assertEqual(func.signature, "(dest_widget, src_x, src_y)")
 
     def test_method_inheritance(self):
@@ -40,7 +41,7 @@ class TRepository(unittest.TestCase):
         self.assertEqual(
             klass.methods_inherited,
             [('Atk.Object', 23),
-             ('GObject.Object', 33),
+             ('GObject.Object', 38),
              ('Atk.Component', 13)])
 
     def test_hierarchy(self):
@@ -108,6 +109,7 @@ class TRepository(unittest.TestCase):
 
     def test_gtk(self):
         repo = Repository("Gtk", "3.0")
+        mod = repo.parse()
         Gtk = repo.import_module()
 
         klass = Class.from_object(repo, Gtk.TreeModel)
@@ -120,6 +122,13 @@ class TRepository(unittest.TestCase):
 
         klass = Class.from_object(repo, Gtk.TextView)
         self.assertTrue(klass.image_path)
+
+        find(mod.class_structures, "WidgetClass")
+        find(mod.structures, "TableChild")
+        self.assertRaises(
+            LookupError, find, mod.class_structures, "TableChild")
+        self.assertRaises(
+            LookupError, find, mod.structures, "WidgetClass")
 
     def test_gobject(self):
         Repository("GObject", "2.0")
