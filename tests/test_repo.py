@@ -129,6 +129,11 @@ class TRepository(unittest.TestCase):
         self.assertRaises(
             LookupError, find, mod.structures, "WidgetClass")
 
+        Container = find(mod.classes, "Container")
+        func = find(Container.methods, "list_child_properties")
+        self.assertTrue(func.info.desc)
+        self.assertTrue(func.signature_desc)
+
     def test_gobject(self):
         Repository("GObject", "2.0")
 
