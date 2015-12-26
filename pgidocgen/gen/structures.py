@@ -50,6 +50,7 @@ None
 
 {% endif %}
 
+.. _{{ struct.fullname }}.methods:
 
 Methods
 -------

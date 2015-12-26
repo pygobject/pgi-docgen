@@ -104,6 +104,13 @@ Methods
     :ref:`{{ name }} ({{ count }})<{{ name }}.methods>`{% if not loop.last %}, {% endif %}
     {% endfor %}
 
+{% endif %}
+{% if cls.gtype_struct_methods_inherited %}
+:Structs:
+    {% for name, count in cls.gtype_struct_methods_inherited %}
+    :ref:`{{ name }} ({{ count }})<{{ name }}.methods>`{% if not loop.last %}, {% endif %}
+    {% endfor %}
+
 
 {% endif %}
 {% if methods_summary_rows %}
@@ -114,7 +121,7 @@ Methods
         {{ row|indent(4, False) }}
     {% endfor %}
 
-{% elif not cls.methods_inherited %}
+{% elif not cls.methods_inherited and not cls.gtype_struct_methods_inherited %}
 None
 
 {% endif %}

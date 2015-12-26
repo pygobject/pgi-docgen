@@ -436,6 +436,7 @@ class Class(BaseDocObject, MethodsMixin, PropertiesMixin, SignalsMixin,
         self.image_path = None
 
         self.gtype_struct = ""
+        self.gtype_struct_methods_inherited = []
 
         self.methods = []
         self.methods_inherited = []
@@ -515,6 +516,25 @@ class Class(BaseDocObject, MethodsMixin, PropertiesMixin, SignalsMixin,
             if class_struct:
                 cs = type(class_struct)
                 klass.gtype_struct = class_name(cs)
+
+        def iter_gtype_structs(obj):
+            for base in util.fake_mro(obj):
+                if base is object:
+                    continue
+                if util.is_iface(base):
+                    struct = base._get_iface_struct()
+                else:
+                    struct = base._get_class_struct()
+                if not struct:
+                    continue
+                yield Structure.from_object(repo, type(struct))
+
+        for struct in iter_gtype_structs(obj):
+            method_count = len(struct.methods)
+            if not method_count:
+                continue
+            klass.gtype_struct_methods_inherited.append(
+                (struct.fullname, method_count))
 
         klass.base_tree = get_base_tree(obj)
 
@@ -678,13 +698,22 @@ class Structure(BaseDocObject, MethodsMixin, FieldsMixin):
         self.methods = []
         self.fields = []
 
+    _cache = {}
+
     @classmethod
     def from_object(cls, repo, obj):
+        # cache as we need them multiple times for the inheritance counts
+        if obj in cls._cache:
+            return cls._cache[obj]
+
         signature = get_signature_string(obj.__init__)
         instance = cls(obj.__module__, obj.__name__, signature)
         instance.info = DocInfo.from_object(repo, "all", instance)
         instance._parse_methods(repo, obj)
         instance._parse_fields(repo, obj)
+
+        cls._cache[obj] = instance
+
         return instance
 
 
