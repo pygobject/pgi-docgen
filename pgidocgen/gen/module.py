@@ -140,9 +140,13 @@ class ModuleGenerator(object):
         for func in module.functions:
             func_gen.add_function(func)
 
-        struct_gen = StructGenerator()
+        struct_gen = StructGenerator("structs", "Structures")
         for struct in module.structures:
             struct_gen.add_struct(struct)
+
+        class_struct_gen = StructGenerator("class-structs", "Class Structures")
+        for struct in module.class_structures:
+            class_struct_gen.add_struct(struct)
 
         union_gen = UnionGenerator()
         for union in module.unions:
@@ -170,6 +174,7 @@ class ModuleGenerator(object):
   
             names = []
             gens = [func_gen, cb_gen, class_gen, hier_gen, struct_gen,
+                    class_struct_gen,
                     union_gen, flags_gen, enums_gen, const_gen, map_gen]
             for gen in gens:
                 if gen.is_empty():

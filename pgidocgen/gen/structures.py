@@ -12,9 +12,9 @@ from .. import util
 
 
 _main_template = genutil.get_template("""\
-==========
-Structures
-==========
+{{ "=" * title|length }}
+{{ title }}
+{{ "=" * title|length }}
 
 .. toctree::
     :maxdepth: 1
@@ -98,11 +98,13 @@ Details
 
 class StructGenerator(genutil.Generator):
 
-    def __init__(self):
+    def __init__(self, key, title):
+        self._key = key
+        self._title = title
         self._structs = set()
 
     def get_names(self):
-        return ["structs/index"]
+        return ["%s/index" % self._key]
 
     def is_empty(self):
         return not bool(self._structs)
@@ -111,7 +113,7 @@ class StructGenerator(genutil.Generator):
         self._structs.add(struct)
 
     def write(self, dir_):
-        sub_dir = os.path.join(dir_, "structs")
+        sub_dir = os.path.join(dir_, self._key)
 
         os.mkdir(sub_dir)
 
@@ -119,7 +121,7 @@ class StructGenerator(genutil.Generator):
 
         path = os.path.join(sub_dir, "index.rst")
         with open(path, "wb") as h:
-            text = _main_template.render(structures=structs)
+            text = _main_template.render(structures=structs, title=self._title)
             h.write(text.encode("utf-8"))
 
         for struct in structs:
