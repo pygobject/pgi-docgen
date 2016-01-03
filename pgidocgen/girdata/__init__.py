@@ -10,7 +10,6 @@
 import os
 import re
 import json
-from collections import namedtuple
 
 from .doap import get_project_summary, get_doap_dir, get_doap_path
 
