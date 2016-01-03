@@ -9,6 +9,7 @@
 
 import os
 import re
+import json
 from collections import namedtuple
 
 from .doap import get_project_summary, get_doap_dir, get_doap_path
@@ -179,6 +180,19 @@ GTK_DOCS = [
     Docs("https://developer.gnome.org/clutter/stable/", "clutter", ["Clutter-1.0"]),
     Docs("http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/", "gstreamer-1.0", ["Gst-1.0"]),
 ]
+
+
+def load_doc_references(namespace, version):
+    """Returns a mapping of gtk-doc references to URLs or an empty dict
+    on error.
+    """
+
+    path = get_docref_path(namespace, version)
+    try:
+        with open(path, "rb") as h:
+            return json.load(h)
+    except IOError:
+        return {}
 
 
 def get_project(namespace):

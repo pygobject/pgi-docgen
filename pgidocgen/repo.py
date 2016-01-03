@@ -959,17 +959,26 @@ class Repository(object):
         self._docs = ns.parse_docs()
         self._private = ns.parse_private()
 
-        # merge all type mappings
+        # merge all type mappings and doc references
         self._types = {}
+        self._refs = {}
         loaded = [ns] + [get_namespace(*x) for x in ns.get_all_dependencies()]
         for sub_ns in loaded:
             self._types.update(sub_ns.get_types())
+            self._refs.update(sub_ns.get_doc_references())
         self._types.update(ns.get_types())
+        self._refs.update(ns.get_doc_references())
+
+        # remove all references which look like C types, we handle them
+        # separately and link the API doc version instead
+        for k, v in self._refs.items():
+            if k in self._types:
+                del self._refs[k]
 
         self._overrides_docs = parse_override_docs(namespace, version)
 
     def _fix_docs(self, d, current=None):
-        return docstring_to_rest(self._types, current, d or u"")
+        return docstring_to_rest(self._types, self._refs, current, d or u"")
 
     def _lookup_docs(self, source, name, current=None):
         source = self._docs[source]

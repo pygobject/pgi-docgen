@@ -15,6 +15,7 @@ from xml.dom import minidom
 
 from . import util
 from .debug import get_line_numbers_for_name
+from .girdata import load_doc_references
 
 
 # Enable caching during building multiples modules if PGIDOCGEN_CACHE is set
@@ -99,6 +100,10 @@ class Namespace(object):
                 deps.append(("GObject", "2.0"))
 
         self._dependencies = deps
+
+    @util.cache_calls
+    def get_doc_references(self):
+        return load_doc_references(self.namespace, self.version)
 
     @util.cache_calls
     def get_source(self):

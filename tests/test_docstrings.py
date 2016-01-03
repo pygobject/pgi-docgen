@@ -33,8 +33,12 @@ class TDocstring(unittest.TestCase):
             "GdkFrameTimings": ["Gdk.FrameTimings"],
         }
 
+        self.docrefs = {
+            "im-a-ref": "http://example.com",
+        }
+
     def _check(self, text, expected):
-        out = docstring_to_rest(self.types, "Gtk.Widget", text)
+        out = docstring_to_rest(self.types, self.docrefs, "Gtk.Widget", text)
         self.assertEqual(out, expected)
 
     def test_various(self):
@@ -305,6 +309,12 @@ bar\
 ),(
         "a [foo][bar] b [quux][baz]",
         "a foo b quux",
+),(
+        "a [foo][AtkObject]",
+        "a :obj:`Atk.Object`",
+),(
+        "a [foo][im-a-ref]",
+        "a `foo <http://example.com>`__",
 ),(
         "in *@dest_x and ",
         "in `dest_x` and ",

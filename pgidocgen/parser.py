@@ -161,7 +161,7 @@ def _handle_data(types, current, d):
     return "".join(out)
 
 
-def _handle_xml(types, current, out, item):
+def _handle_xml(types, docrefs, current, out, item):
     if isinstance(item, Tag):
         if item.name == "literal" or item.name == "type":
             out.append("``%s``" % item.text)
@@ -171,7 +171,7 @@ def _handle_xml(types, current, out, item):
                 if not isinstance(item, Tag):
                     continue
                 other_out = []
-                _handle_xml(types, current, other_out, item)
+                _handle_xml(types, docrefs, current, other_out, item)
                 item_text = "".join(other_out).strip()
                 data = ""
                 for i, line in enumerate(item_text.splitlines()):
@@ -183,6 +183,18 @@ def _handle_xml(types, current, out, item):
             out.append("\n" + "\n".join(lines) + "\n")
         elif item.name == "ulink":
             out.append("`%s <%s>`__" % (item.getText(), item.get("url", "")))
+        elif item.name == "link":
+            linked = item.get("linkend", "")
+            if not linked:
+                out.append(item.getText())
+            else:
+                if linked in types:
+                    out.append(":obj:`%s`" % types[linked][0])
+                elif linked in docrefs:
+                    url = docrefs[linked]
+                    out.append("`%s <%s>`__" % (item.getText(), url))
+                else:
+                    out.append(item.getText())
         elif item.name == "programlisting":
             text = item.getText()
             if not text.count("\n"):
@@ -193,7 +205,7 @@ def _handle_xml(types, current, out, item):
                 out.append(code)
         elif item.name == "para":
             for item in item.contents:
-                _handle_xml(types, current, out, item)
+                _handle_xml(types, docrefs, current, out, item)
             out.append("\n")
         elif item.name == "title":
             # fake a title by creating a "Definition List". It can contain
@@ -242,7 +254,7 @@ def _handle_xml(types, current, out, item):
             out.extend(lines)
         else:
             for sub in item.contents:
-                _handle_xml(types, current, out, sub)
+                _handle_xml(types, docrefs, current, out, sub)
     else:
         if not out or out[-1].endswith("\n"):
             data = force_unindent(item.string, ignore_first_line=False)
@@ -267,14 +279,14 @@ def docstring_to_docbook(docstring):
     return docstring
 
 
-def docstring_to_rest(types, current, docstring):
+def docstring_to_rest(types, docrefs, current, docstring):
     docbook = docstring_to_docbook(docstring)
 
     soup = BeautifulStoneSoup(docbook,
                               convertEntities=BeautifulStoneSoup.HTML_ENTITIES)
     out = []
     for item in soup.contents:
-        _handle_xml(types, current, out, item)
+        _handle_xml(types, docrefs, current, out, item)
 
     # make sure to insert spaces between special reST chars
     rst = ""
