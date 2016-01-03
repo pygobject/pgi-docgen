@@ -104,7 +104,7 @@ def _handle_data(types, current, d):
                 if obj_id in types:
                     obj_rst_id = types[obj_id][0]
                 else:
-                    obj_rst_id = current
+                    obj_rst_id = ".".join(current.split(".")[:2])
 
                 if sigprop and obj_rst_id:
                     fallback = False

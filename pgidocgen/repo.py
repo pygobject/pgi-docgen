@@ -288,7 +288,7 @@ class Property(BaseDocObject):
 
         if spec.get_blurb() is not None:
             short_desc = repo._fix_docs(
-                spec.get_blurb().decode("utf-8"), current=parent_fullname)
+                spec.get_blurb().decode("utf-8"), current=prop.fullname)
         else:
             short_desc = u""
 
@@ -301,14 +301,15 @@ class Property(BaseDocObject):
         value_desc = util.instance_to_rest(
             spec.value_type.pytype, spec.default_value)
         type_desc = py_type_to_class_ref(spec.value_type.pytype)
-        if spec.blurb is not None:
-            short_desc = repo._fix_docs(
-                spec.blurb.decode("utf-8"), current=parent_fullname)
-        else:
-            short_desc = u""
 
         prop = cls(parent_fullname, escape_parameter(name), name, spec.flags,
                    type_desc, value_desc)
+
+        if spec.blurb is not None:
+            short_desc = repo._fix_docs(
+                spec.blurb.decode("utf-8"), current=prop.fullname)
+        else:
+            short_desc = u""
 
         prop.info = DocInfo.from_object(repo, "properties", prop)
         if spec.flags & GObject.ParamFlags.DEPRECATED:
@@ -350,7 +351,7 @@ class Signal(BaseDocObject):
 
         if fsig:
             signature_desc = fsig.to_rest_listing(
-                repo, inst.fullname, current=parent_fullname, signal=True)
+                repo, inst.fullname, current=inst.fullname, signal=True)
         else:
             # FIXME pgi
             print "FIXME: signal: %s " % inst.fullname
@@ -625,11 +626,9 @@ class Function(BaseDocObject):
         is_method = owner is not None
 
         if is_method:
-            current_rst_target = parent_fullname
             is_static = util.is_staticmethod(obj)
             is_vfunc = util.is_virtualmethod(obj)
         else:
-            current_rst_target = None
             is_static = False
             is_vfunc = False
 
@@ -659,8 +658,7 @@ class Function(BaseDocObject):
         def get_instance():
             instance = cls(
                 parent_fullname, name, is_method, is_static, is_vfunc)
-            instance.info = DocInfo.from_object(repo, "all", instance,
-                                                current_rst_target)
+            instance.info = DocInfo.from_object(repo, "all", instance)
             return instance
 
         sig = FuncSignature.from_string(name, first_line)
@@ -681,7 +679,7 @@ class Function(BaseDocObject):
 
         # create sphinx lists for the signature we found
         instance.signature_desc = sig.to_rest_listing(
-            repo, fullname, current=current_rst_target)
+            repo, fullname, current=instance.fullname)
         instance.signature = sig.to_simple_signature()
 
         return instance
@@ -769,8 +767,7 @@ class Constant(BaseDocObject):
     @classmethod
     def from_object(cls, repo, parent_fullname, name, obj):
         instance = Constant(parent_fullname, name, repr(obj))
-        instance.info = DocInfo.from_object(repo, "all", instance,
-                                            parent_fullname)
+        instance.info = DocInfo.from_object(repo, "all", instance)
         return instance
 
 
@@ -935,12 +932,10 @@ class DocInfo(BaseDocObject):
         self.deprecation_desc = u""
 
     @classmethod
-    def from_object(cls, repo, type_, doc_object, current=None):
+    def from_object(cls, repo, type_, doc_object):
         info = cls(doc_object.fullname, doc_object.name)
-        if current is None:
-            current = info.fullname
         info.desc, info.shadowed_desc = repo.lookup_docs(
-            type_, info.fullname, current=current)
+            type_, info.fullname, current=info.fullname)
         info.version_added, info.version_deprecated, info.deprecation_desc = \
             repo.lookup_meta(type_, info.fullname)
         info.deprecated = bool(
