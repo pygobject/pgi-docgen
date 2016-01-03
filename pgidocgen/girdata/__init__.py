@@ -35,13 +35,26 @@ def get_class_image_path(namespace, version, class_name):
                         "%s.png" % class_name)
 
 
-Project = P = namedtuple('Project', ['namespaces', 'doap'])
-"""A project is roughly something which gets released at the same time and
-has the same release version number. In most cases one git repo.
-The namespaces might not actually be included in the project but the libraries
-of the GIR are (e.g. GLib-2.0.gir is in libgirepository, but it's part of GLib)
-"""
+def get_docref_dir():
+    return os.path.join(_BASEDIR, "docref")
 
+
+def get_docref_path(namespace, version):
+    return os.path.join(get_docref_dir(), "%s-%s.json" % (namespace, version))
+
+
+class Project(object):
+    """A project is roughly something which gets released at the same time and
+    has the same release version number. In most cases one git repo. The
+    namespaces might not actually be included in the project but the libraries
+    of the GIR are (e.g. GLib-2.0.gir is in libgirepository, but it's part of
+    GLib) """
+
+    def __init__(self, namespaces, doap=None):
+        self.namespaces = namespaces
+        self.doap = doap or ""
+
+P = Project
 
 PROJECTS = [
     P(['Goa'], 'https://git.gnome.org/browse/gnome-online-accounts/plain/gnome-online-accounts.doap'),
@@ -129,6 +142,42 @@ PROJECTS = [
     P(['HarfBuzz'], 'http://cgit.freedesktop.org/harfbuzz/plain/harfbuzz.doap'),
     P(['Gom'], 'https://git.gnome.org/browse/gom/plain/gom.doap'),
     P(['Gnm'], 'https://git.gnome.org/browse/gnumeric/plain/gnumeric.doap'),
+]
+
+
+class Docs(object):
+    """An online accessible instance of gtk-doc.
+
+    (should we add some way to allow multiple versions instead of pointing to
+    the latest?)
+    """
+
+    def __init__(self, url, doc_id, namespaces):
+        self.url = url
+        self.doc_id = doc_id
+        self.namespaces = namespaces
+
+    @property
+    def devhelp_url(self):
+        return "%s%s.devhelp2" % (self.url, self.doc_id)
+
+    def __repr__(self):
+        return "<%s url=%r doc_id=%r namespaces=%r>" % (
+            type(self).__name__, self.url, self.doc_id, self.namespaces)
+
+
+GTK_DOCS = [
+    Docs("https://developer.gnome.org/glib/stable/", "glib", ["GLib-2.0"]),
+    Docs("https://developer.gnome.org/gio/stable/", "gio", ["Gio-2.0"]),
+    Docs("https://developer.gnome.org/gobject/stable/", "gobject", ["GObject-2.0"]),
+    Docs("https://developer.gnome.org/pango/stable/", "pango", ["Pango-1.0"]),
+    Docs("https://developer.gnome.org/gdk-pixbuf/unstable/", "gdk-pixbuf", ["GdkPixbuf-2.0"]),
+    Docs("https://developer.gnome.org/gdk3/stable/", "gdk3", ["Gdk-3.0"]),
+    Docs("https://developer.gnome.org/gtk3/stable/", "gtk3", ["Gtk-3.0"]),
+    Docs("http://webkitgtk.org/reference/webkit2gtk/stable/", "webkit2gtk-4.0", ["WebKit2-4.0"]),
+    Docs("https://developer.gnome.org/cairo/stable/", "cairo", ["cairo-1.0"]),
+    Docs("https://developer.gnome.org/clutter/stable/", "clutter", ["Clutter-1.0"]),
+    Docs("http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/", "gstreamer-1.0", ["Gst-1.0"]),
 ]
 
 

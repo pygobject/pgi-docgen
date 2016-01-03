@@ -10,4 +10,5 @@ include tools/*.sh
 include README.rst
 recursive-include pgidocgen/girdata/clsimages *
 recursive-include pgidocgen/girdata/doap *
+recursive-include pgidocgen/girdata/docref *
 recursive-include pgidocgen/gen/data *
