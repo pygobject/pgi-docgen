@@ -194,7 +194,7 @@ def _handle_xml(types, docrefs, current, out, item):
                     url = docrefs[linked]
                     out.append("`%s <%s>`__" % (item.getText(), url))
                 else:
-                    out.append(item.getText())
+                    out.append("'%s [%s]'" % (item.getText(), linked))
         elif item.name == "programlisting":
             text = item.getText()
             if not text.count("\n"):

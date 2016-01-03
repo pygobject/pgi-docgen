@@ -308,7 +308,7 @@ bar\
         "a style class named ``level-`` `name`",
 ),(
         "a [foo][bar] b [quux][baz]",
-        "a foo b quux",
+        "a 'foo [bar]' b 'quux [baz]'",
 ),(
         "a [foo][AtkObject]",
         "a :obj:`Atk.Object`",
