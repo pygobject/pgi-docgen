@@ -1,3 +1,4 @@
+# # -*- coding: utf-8 -*-
 # Copyright 2015 Christoph Reiter
 #
 # This library is free software; you can redistribute it and/or
@@ -7,6 +8,8 @@
 
 """
 This is a partial Python port of the markdown code from gtk-doc.
+
+Sections not ported fully are marked with PYTHONTODO
 
 See https://git.gnome.org/browse/gtk-doc/commit/gtkdoc-mkdb.in?id=c567d9e28c355f43faeba61fb81fd16fc74cf062
 """
@@ -420,13 +423,130 @@ def ReplaceEntities(text, symbol):
     return text;
 
 
+def MarkDownParseSpanElementsInner(text, markersref):
+    markup = ""
+    markers = dict.fromkeys(markersref, 1)
+
+    while text != "":
+        closest_marker = "";
+        closest_marker_index = 0;
+        closest_marker_position = -1;
+        text_marker = "";
+        i = 0;
+        offset = 0;
+
+        for marker, use in markers.items():
+            if not use:
+                continue
+
+            try:
+                marker_position = text.index(marker)
+            except ValueError:
+                marker_position = -1
+
+            if marker_position < 0:
+                markers[marker] = 0
+                continue
+
+            if closest_marker == "" or marker_position < closest_marker_position:
+                closest_marker = marker
+                closest_marker_index = i
+                closest_marker_position = marker_position
+
+        if closest_marker_position >= 0:
+            text_marker = text[closest_marker_position:]
+
+        if text_marker == "":
+            markup += text
+            text = ""
+            continue
+
+        markup += text[:closest_marker_position]
+        text = text[closest_marker_position:]
+        markers_rest = {k: v for k, v in markers.items() if v and k != closest_marker}
+
+        if closest_marker == "![" or closest_marker == "[":
+            element = None
+
+            # PYTHONTODO: Python doesn't support recursive regexp. I just
+            # removed it from the pattern; not sure what it breaks
+            match = re.search(r"\[((?:[^][])*)\]", text)
+            if "]" in text and match:
+                element = {
+                    "!": text[:1] == "!",
+                    "a": match.group(1),
+                }
+
+                offset = len(match.group())
+                if element["!"]:
+                    offset += 1
+
+                remaining_text = text[offset:]
+                remaining_match = re.search(r"^\([ ]*([^)'\"]*?)(?:[ ]+['\"](.+?)['\"])?[ ]*\)", remaining_text)
+                remaining_match2 = re.search(r"^\s*\[([^\]<]*?)\]", remaining_text)
+                if remaining_match is not None:
+                    element["»"] = remaining_match.group(1)
+                    try:
+                        element["#"] = remaining_match.group(2)
+                    except IndexError:
+                        pass
+                    offset += len(remaining_match.group())
+                elif remaining_match2 is not None:
+                    element["ref"] = remaining_match2.group(1)
+                    offset += len(remaining_match2.group())
+                else:
+                    element = None
+
+            if element is not None:
+                if element.get("»"):
+                    element["»"] = element["»"].replace("&", "&amp;")
+                    element["»"] = element["»"].replace("<", "&lt;")
+
+                if element.get("!"):
+                    markup += "<inlinemediaobject><imageobject><imagedata fileref=\"" + element["»"] + "\"></imagedata></imageobject>"
+                    if "a" in element:
+                        markup += "<textobject><phrase>" + element["a"] + "</phrase></textobject>"
+                    markup += "</inlinemediaobject>"
+                elif element.get("ref"):
+                    element["a"] = MarkDownParseSpanElementsInner(element["a"], markers_rest)
+                    markup += "<link linkend=\"" + element["ref"] + "\""
+                    if "#" in element:
+                        # title attribute not supported
+                        pass
+                    markup += ">" + element["a"] + "</link>"
+                else:
+                    element["a"] = MarkDownParseSpanElementsInner(element["a"], markers_rest)
+                    markup += "<ulink url=\"" + element["»"] + "\""
+                    if "#" in element:
+                        # title attribute not supported
+                        pass
+                    markup += ">" + element["a"] + "</ulink>"
+            else:
+                markup += closest_marker
+                if closest_marker == "![":
+                  offset = 2
+                else:
+                  offset = 1
+        else:
+            # PYTHONTODO: we handle inline references when parsing docbook
+            # so just skip anything we don't handle
+            markup += closest_marker
+            offset += len(closest_marker)
+
+        if offset > 0:
+          text = text[offset:]
+
+    return markup
+
+
 def MarkDownParseSpanElements(text):
-    # TODO
-    return text
+    markers = ("\\", "<", "![", "[", "`", "%", "#", "@")
+
+    return MarkDownParseSpanElementsInner(text, markers)
 
 
 def ExpandAbbreviations(symbol, text):
-    # TODO
+    # PYTHONTODO
     return text
 
 

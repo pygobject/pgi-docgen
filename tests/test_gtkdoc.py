@@ -157,3 +157,24 @@ bar.</para>
 """
         output = ConvertMarkDown("", input_)
         self.assertEqual(expected, output)
+
+    def test_reference(self):
+        input_ = """\
+The #GData struct is an opaque data structure to represent a
+[Keyed Data List][glib-Keyed-Data-Lists]. It should only be
+accessed via the following functions."""
+
+        expected = """\
+<para>The #GData struct is an opaque data structure to represent a
+<link linkend="glib-Keyed-Data-Lists">Keyed Data List</link>. It should only be
+accessed via the following functions.</para>
+"""
+
+        output = ConvertMarkDown("", input_)
+        self.assertEqual(expected, output)
+
+    def test_reference2(self):
+        input_ = "a [foo][bar] b [quux][baz]"
+        expected = '<para>a <link linkend="bar">foo</link> b <link linkend="baz">quux</link></para>\n'
+        output = ConvertMarkDown("", input_)
+        self.assertEqual(expected, output)

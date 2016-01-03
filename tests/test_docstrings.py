@@ -303,6 +303,9 @@ bar\
         "a style class named <literal>level-</literal>@name",
         "a style class named ``level-`` `name`",
 ),(
+        "a [foo][bar] b [quux][baz]",
+        "a foo b quux",
+),(
         "in *@dest_x and ",
         "in `dest_x` and ",
         )]
