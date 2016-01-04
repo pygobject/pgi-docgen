@@ -65,6 +65,10 @@ var Search = {
     Search._active_query = query;
     this.output = $('#search-results');
 
+    this.output.empty();
+    var listItem = $('<li><a style="color:#888">Loading Search Index...</a></li>');
+    this.output.append(listItem);
+
     if (this.hasIndex())
       this.query(query);
     else
@@ -127,8 +131,14 @@ var Search = {
         results = results.slice(results.length - max_entries, results.length);
 
     function displayNextItem(query, entry_index) {
-      if (query !== Search._active_query || !results.length)
+      if (query !== Search._active_query)
         return;
+
+      if (!results.length) {
+          var listItem = $('<li><a style="color:#888">No Results</a></li>');
+          Search.output.append(listItem);
+          return;
+      }
 
       var item = results.pop();
       var listItem = $('<li style="display:none"></li>');
