@@ -156,3 +156,7 @@ table.navigation a .fa
     color: #999;
     font-size: 80%;
 }
+
+.rst-content table.field-list .field-name {
+    text-align: right;
+}
