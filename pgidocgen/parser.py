@@ -103,8 +103,10 @@ def _handle_data(types, current, d):
                 obj_id = obj.lstrip("#")
                 if obj_id in types:
                     obj_rst_id = types[obj_id][0]
-                else:
+                elif current:
                     obj_rst_id = ".".join(current.split(".")[:2])
+                else:
+                    obj_rst_id = None
 
                 if sigprop and obj_rst_id:
                     fallback = False
