@@ -161,6 +161,33 @@ def _handle_data(types, current, d):
     return "".join(out)
 
 
+def docref_to_pyref(types, ref):
+    """Take a gtk-doc reference and try to convert it to a Python reference.
+
+    If that fails returns None.
+    """
+
+    # GtkEntryCompletion
+    if ref in types:
+        return types[ref][0]
+
+    # gtk-assistant-commit -> gtk_assistant_commit -> Gtk.Assistant.commit
+    func = ref.replace("-", "_")
+    if func in types:
+        return types[func][0]
+
+    # GtkEntryCompletion--inline-completion ->
+    #   Gtk.EntryCompletion.props.inline_completion
+    if "--" in ref:
+        type_, prop = ref.split("--", 1)
+        type_ = "".join(map(lambda p: p.title(), type_.split("-")))
+        prop = prop.replace("-", "_")
+        if type_ in types:
+            return "%s.props.%s" % (types[type_][0], prop)
+
+    return None
+
+
 def _handle_xml(types, docrefs, current, out, item):
     if isinstance(item, Tag):
         if item.name == "literal" or item.name == "type":
@@ -188,8 +215,9 @@ def _handle_xml(types, docrefs, current, out, item):
             if not linked:
                 out.append(item.getText())
             else:
-                if linked in types:
-                    out.append(":obj:`%s`" % types[linked][0])
+                pyref = docref_to_pyref(types, linked)
+                if pyref is not None:
+                    out.append(":obj:`%s`" % pyref)
                 elif linked in docrefs:
                     url = docrefs[linked]
                     out.append("`%s <%s>`__" % (item.getText(), url))

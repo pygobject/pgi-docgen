@@ -316,6 +316,12 @@ bar\
         "a [foo][im-a-ref]",
         "a `foo <http://example.com>`__",
 ),(
+        "a [foo][gtk-tree-model-get]",
+        "a :obj:`Gtk.TreeModel.get`",
+),(
+        "a [foo][gtk-container--border-width]",
+        "a :obj:`Gtk.Container.props.border_width`",
+),(
         "in *@dest_x and ",
         "in `dest_x` and ",
         )]
