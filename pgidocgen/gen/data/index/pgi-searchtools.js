@@ -1,13 +1,16 @@
 // Utils ------------------------
 
+/** Returns whether `str` starts with `suffix` */
 function endsWith(str, suffix) {
     return str.indexOf(suffix, str.length - suffix.length) !== -1;
 }
 
+/** Returns how ofter `s1` occurs in `str` */
 function count(str, s1) {
     return (str.length - str.replace(new RegExp(s1,"g"), '').length) / s1.length;
 }
 
+/** Asserts the condition and throws `message` if it's not true */
 function assert(condition, message) {
     if (!condition) {
         throw message || "Assertion failed";
@@ -16,15 +19,27 @@ function assert(condition, message) {
 
 // SearchResults ------------------------
 
+/**
+ * Creates a new SearchResults object.
+ * @class
+ */
 SearchResults = function(id) {
     this._obj = $(document.getElementById(id));
     this._current_id = 0;
 }
 
+/**
+ * Stops any currently occurring fill operation
+ */
 SearchResults.prototype.abortFill = function() {
     this._current_id++;
 }
 
+/**
+ * Fills the results list with the provided results.
+ * `show_max` is the number or entries shown in the end (-1 means unlimited)
+ * `show_first` is the number which will be inserted immediately (-1 means all)
+ */
 SearchResults.prototype.fill = function(results, show_max, show_first) {
     assert(show_first <= show_max);
 
@@ -69,6 +84,9 @@ SearchResults.prototype.fill = function(results, show_max, show_first) {
         displayNextItem(this._current_id, 0);
 }
 
+/**
+ * Clears the result list and shows a status message
+ */
 SearchResults.prototype.showMessage = function(text) {
     this._obj.empty();
     var listItem = $('<li></li>');
@@ -79,7 +97,10 @@ SearchResults.prototype.showMessage = function(text) {
 
 // SearchIndex ------------------------
 
-
+/**
+ * Creates a new SearchIndex
+ * @class
+ */
 SearchIndex = function() {
     this._results = new SearchResults('search-results');
     this._index = null;
@@ -88,6 +109,9 @@ SearchIndex = function() {
     this._active_query = null;
 }
 
+/** Load the search index located at `url`. Pass an ID for an empty script tag
+ * as `target_id`.
+ */
 SearchIndex.prototype.loadIndex = function(url, target_id) {
     $.ajax({type: "GET", url: url, data: null,
             dataType: "script", cache: true,
@@ -98,6 +122,10 @@ SearchIndex.prototype.loadIndex = function(url, target_id) {
             }});
 }
 
+/**
+ * This gets called by the loaded search index. After the index is set
+ * any queued queries are executed.
+ */
 SearchIndex.prototype.setIndex = function(index) {
     assert(this._index === null);
 
@@ -108,6 +136,10 @@ SearchIndex.prototype.setIndex = function(index) {
     }
 }
 
+/**
+ * Start a search. Any active search will be aborted and a new one queued.
+ * This also works before the search index is loaded.
+ */
 SearchIndex.prototype.performSearch = function(query) {
     if (query == this._active_query)
         return;
@@ -121,24 +153,17 @@ SearchIndex.prototype.performSearch = function(query) {
       this._queued_query = query;
 }
 
+/**
+ * Abort the search. This should be followed by an performSearch() otherwise
+ * the search is in an inconsistent state
+ */
 SearchIndex.prototype.abortSearch = function() {
     this._results.abortFill();
 }
 
-SearchIndex.prototype._getModules = function() {
-    assert(this._index !== null);
-
-    var results = [];
-    var modules = this._index.modules;
-
-    for(var i in modules) {
-        var name = modules[i];
-        results.push([name + "/index", name, "", 0]);
-    }
-
-    return results;
-}
-
+/**
+ * Starts the actual search. Needs an index already set.
+ */
 SearchIndex.prototype._query = function(query) {
     assert(this._index !== null);
 
@@ -180,6 +205,28 @@ SearchIndex.prototype._query = function(query) {
     this._results.fill(results, max_entries, show_first);
 }
 
+/**
+ * Creates a fake search result list containing all toplevel modules.
+ * This is equal to the initial content of the search list and should
+ * be shown when the search entry is empty
+ */
+SearchIndex.prototype._getModules = function() {
+    assert(this._index !== null);
+
+    var results = [];
+    var modules = this._index.modules;
+
+    for(var i in modules) {
+        var name = modules[i];
+        results.push([name + "/index", name, "", 0]);
+    }
+
+    return results;
+}
+
+/**
+ * Given a search term list returns a list of unsorted results from the index.
+ */
 SearchIndex.prototype._getResults = function(parts) {
     assert(this._index !== null);
 
