@@ -243,17 +243,27 @@ SearchIndex.prototype._getResults = function(parts) {
 
         var lower_text = text.toLowerCase();
         var lower_part = part.toLowerCase();
+        var index = lower_text.indexOf(lower_part);
 
         // it's not in there
-        if(lower_text.indexOf(lower_part) == -1)
+        if(index == -1)
             return -1;
 
         // prefer more matching text
         var lower_count = lower_text.split(lower_part).length - 1;
         score = (lower_count * part.length) / text.length;
 
-        // prefer when it starts a part (either beginning or afer a ".")
-        if(("." + lower_text).indexOf("." + lower_part) != -1)
+        // get the character right before the match
+        var prev;
+        if (index == 0)
+            prev = ""
+        else
+            prev = lower_text[index - 1];
+
+        // prefer when it starts a part, preferring start, "." and ":"
+        if (prev == "." || prev == ":"  || prev == "")
+            score *= 3;
+        else if (prev == "-" || prev == "_")
             score *= 2;
 
         return score;
@@ -301,53 +311,38 @@ SearchIndex.prototype._getResults = function(parts) {
     }
 
     for (var prefix in objects) {
-      for (var name in objects[prefix]) {
-        var fullname = (prefix ? prefix + '.' : '') + name;
-        var all_score = 0;
-        for(var j = 0; j < partsLength; j++) {
-            var part = parts[j];
-            var score = do_score(fullname, part);
-            if(score < 0) {
-                all_score = -1;
-                break;
-            } else {
-                all_score += score;
+        for (var name in objects[prefix]) {
+            var fullname = (prefix ? prefix + '.' : '') + name;
+
+            var all_score = 0;
+            for(var j = 0; j < partsLength; j++) {
+                var part = parts[j];
+                var score = do_score(fullname, part);
+                if(score < 0) {
+                    all_score = -1;
+                    break;
+                } else {
+                    all_score += score;
+                }
+            }
+
+            if(all_score >= 0) {
+                var match = objects[prefix][name];
+                var type_name = objnames[match[1]][1];
+                var filename = filenames[match[0]];
+                var anchor = match[3];
+
+                if (anchor === '')
+                    anchor = fullname;
+                else if (anchor == '-')
+                    anchor = objnames[match[1]][1] + '-' + fullname;
+
+                results.push([
+                    filename,
+                    fullname + " <small>(" + type_name + ")</small>",
+                    '#' + anchor, all_score]);
             }
         }
-
-        if(all_score >= 0) {
-            var match = objects[prefix][name];
-            var anchor = match[3];
-            if (anchor === '')
-                anchor = fullname;
-            else if (anchor == '-')
-                anchor = objnames[match[1]][1] + '-' + fullname;
-            var type_name = objnames[match[1]][1]
-            var filename = filenames[match[0]];
-
-            // prefix properties and signals
-            var is_sig_prop = false;
-            if(type_name == "property") {
-                fullname = ":" + fullname;
-                is_sig_prop = true;
-            } else if(type_name == "signal") {
-                fullname = "::" + fullname;
-                is_sig_prop = true
-            }
-
-            // Move the type name to the front
-            if(is_sig_prop) {
-                var start = fullname.indexOf("(");
-                var cls = fullname.slice(start + 1, fullname.length - 1);
-                fullname = cls + fullname.slice(0, start);
-            }
-
-            results.push([
-                filename,
-                fullname + " <small>(" + type_name + ")</small>",
-                '#' + anchor, all_score]);
-        }
-      }
     }
 
     return results;
