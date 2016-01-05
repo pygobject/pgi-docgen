@@ -319,7 +319,7 @@ bar\
         "a [foo][gtk-tree-model-get]",
         "a :obj:`Gtk.TreeModel.get`",
 ),(
-        "a [foo][gtk-container--border-width]",
+        "a [foo][GtkContainer--border-width]",
         "a :obj:`Gtk.Container.props.border_width`",
 ),(
         "in *@dest_x and ",

@@ -182,7 +182,6 @@ def docref_to_pyref(types, ref):
     #   Gtk.EntryCompletion.props.inline_completion
     if "--" in ref:
         type_, prop = ref.split("--", 1)
-        type_ = "".join(map(lambda p: p.title(), type_.split("-")))
         prop = prop.replace("-", "_")
         if type_ in types:
             return "%s.props.%s" % (types[type_][0], prop)
