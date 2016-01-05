@@ -1,13 +1,4 @@
-/*
- * searchtools.js_t
- * ~~~~~~~~~~~~~~~~
- *
- * Sphinx JavaScript utilties for the full-text search.
- *
- * :copyright: Copyright 2007-2014 by the Sphinx team, see AUTHORS.
- * :license: BSD, see LICENSE for details.
- *
- */
+// Utils ------------------------
 
 function endsWith(str, suffix) {
     return str.indexOf(suffix, str.length - suffix.length) !== -1;
@@ -17,65 +8,126 @@ function count(str, s1) {
     return (str.length - str.replace(new RegExp(s1,"g"), '').length) / s1.length;
 }
 
-/**
- * Search Module
- */
-var Search = {
+function assert(condition, message) {
+    if (!condition) {
+        throw message || "Assertion failed";
+    }
+}
 
-  _index : null,
-  _modules : null,
-  _queued_query : null,
-  _active_query : null,
+// SearchResults ------------------------
 
-  loadIndex : function(url) {
+SearchResults = function(id) {
+    this._obj = $(document.getElementById(id));
+    this._current_id = 0;
+}
+
+SearchResults.prototype.abortFill = function() {
+    this._current_id++;
+}
+
+SearchResults.prototype.fill = function(results, show_max, show_first) {
+    assert(show_first <= show_max);
+
+    this.abortFill();
+
+    if (results.length > show_max && show_max != -1)
+        results = results.slice(results.length - show_max, results.length);
+
+    var that = this;
+
+    function displayNextItem(current_id, entry_index) {
+        if (current_id !== that._current_id || !results.length)
+            return;
+
+        if (!results.length) {
+            that.showMessage("No Results");
+            return;
+        }
+
+        var item = results.pop();
+        var listItem = $('<li style="display:none"></li>');
+        listItem.append($('<a/>').attr('href',
+            item[0] + ".html" +
+            item[2]).attr('target', 'Content').html(item[1]));
+        that._obj.append(listItem);
+
+        // show the first `entry_index` immediately, then delay updates
+        if (entry_index <= show_first || show_first == -1) {
+            listItem.show();
+            displayNextItem(current_id, entry_index + 1);
+        } else {
+            listItem.slideDown(5, function() {
+                displayNextItem(current_id, entry_index + 1);
+            });
+        }
+    }
+
+    this._obj.empty();
+    if (!results.length)
+        that.showMessage("No Results");
+    else
+        displayNextItem(this._current_id, 0);
+}
+
+SearchResults.prototype.showMessage = function(text) {
+    this._obj.empty();
+    var listItem = $('<li></li>');
+    listItem.append($('<a/>').attr('class', 'message').html(text));
+    this._obj.append(listItem);
+}
+
+
+// SearchIndex ------------------------
+
+
+SearchIndex = function() {
+    this._results = new SearchResults('search-results');
+    this._index = null;
+
+    this._queued_query = null;
+    this._active_query = null;
+}
+
+SearchIndex.prototype.loadIndex = function(url, target_id) {
     $.ajax({type: "GET", url: url, data: null,
             dataType: "script", cache: true,
             complete: function(jqxhr, textstatus) {
               if (textstatus != "success") {
-                document.getElementById("searchindexloader").src = url;
+                document.getElementById(target_id).src = url;
               }
             }});
-  },
+}
 
-  setIndex : function(index) {
-    var q;
+SearchIndex.prototype.setIndex = function(index) {
+    assert(this._index === null);
+
     this._index = index;
-    this._modules = Search.getModules();
     if ((q = this._queued_query) !== null) {
       this._queued_query = null;
-      Search.query(q);
+      this._query(q);
     }
-  },
+}
 
-  hasIndex : function() {
-      return this._index !== null;
-  },
-
-  deferQuery : function(query) {
-      this._queued_query = query;
-  },
-
-  /**
-   * perform a search for something (or wait until index is loaded)
-   */
-  performSearch : function(query) {
-    // set new query to stop active ones
-    if (query == Search._active_query)
+SearchIndex.prototype.performSearch = function(query) {
+    if (query == this._active_query)
         return;
-    Search._active_query = query;
-    this.output = $('#search-results');
+    this._active_query = query;
 
-    this.output.empty();
-    var listItem = $('<li><a style="color:#888">Loading Search Index...</a></li>');
-    this.output.append(listItem);
-
-    if (this.hasIndex())
-      this.query(query);
+    this.abortSearch();
+    this._results.showMessage("Loading Search Index...");
+    if (this._index !== null)
+      this._query(query);
     else
-      this.deferQuery(query);
-  },
+      this._queued_query = query;
+}
 
-  getModules : function() {
+SearchIndex.prototype.abortSearch = function() {
+    this._results.abortFill();
+}
+
+SearchIndex.prototype._getModules = function() {
+    assert(this._index !== null);
+
     var results = [];
     var modules = this._index.modules;
 
@@ -85,12 +137,11 @@ var Search = {
     }
 
     return results;
-  },
+}
 
-  /**
-   * execute search (requires search index to be loaded)
-   */
-  query : function(query) {
+SearchIndex.prototype._query = function(query) {
+    assert(this._index !== null);
+
     var parts = query.split(/\s+/);
     // filter out empty ones
     parts = parts.filter(function(e){return e}); 
@@ -100,13 +151,12 @@ var Search = {
     var results = [];
 
     if(!parts.length) {
-        results = this._modules.slice(0);
-        // XXX: show all entries
-        max_entries = 99999;
-        show_first = max_entries;
+        results = this._getModules();
+        max_entries = -1;
+        show_first = -1;
     } else {
         // array of [filename, title, anchor, score]
-        results = this.getResult(parts);
+        results = this._getResults(parts);
     }
 
     // now sort the results by score (in opposite order of appearance, since the
@@ -127,70 +177,19 @@ var Search = {
       }
     });
 
-    if (results.length > max_entries)
-        results = results.slice(results.length - max_entries, results.length);
+    this._results.fill(results, max_entries, show_first);
+}
 
-    function displayNextItem(query, entry_index) {
-      if (query !== Search._active_query)
-        return;
+SearchIndex.prototype._getResults = function(parts) {
+    assert(this._index !== null);
 
-      if (!results.length) {
-          var listItem = $('<li><a style="color:#888">No Results</a></li>');
-          Search.output.append(listItem);
-          return;
-      }
-
-      var item = results.pop();
-      var listItem = $('<li style="display:none"></li>');
-      listItem.append($('<a/>').attr('href',
-        item[0] + ".html" +
-        item[2]).attr('target', 'Content').html(item[1]));
-      Search.output.append(listItem);
-
-      // show the first 30 immediately, then delay updates
-      if (entry_index < show_first) {
-        listItem.show();
-        displayNextItem(query, entry_index + 1);
-      } else {
-        listItem.slideDown(5, function() {
-          displayNextItem(query, entry_index + 1);
-        });
-      }
-    }
-
-    $('#search-results').empty();
-    displayNextItem(query, 1);
-  },
-
-  /**
-   * search for object names
-   */
-  getResult : function(parts) {
-    var filenames = this._index.filenames;
-    var objects = this._index.objects;
-    var objnames = this._index.objnames;
-    var titles = this._index.titles;
+    var index = this._index;
+    var filenames = index.filenames;
+    var objects = index.objects;
+    var objnames = index.objnames;
+    var titles = index.titles;
 
     var results = [];
-
-    if(!parts.length) {
-        return []
-        h = new Object();
-
-        var filenamesLength = filenames.length;
-        for(var i=0; i < filenamesLength; i++) {
-            var fn = filenames[i];
-            var name = fn.split("/")[0].replace("-", " ")
-            h[name] = fn;
-        }
-
-        for(var name in h) {
-            var path = h[name].split("/")[0] + "/index";
-            results.push([path, name, '#', 1]);
-        }
-
-        return results;
-    }
 
     var do_score = function (text, part) {
         // returns -1 if not found, or a score >= 0
@@ -305,5 +304,4 @@ var Search = {
     }
 
     return results;
-  }
-};
+}

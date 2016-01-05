@@ -95,11 +95,6 @@
     <script type="text/javascript" id="searchindexloader"></script>
 
     <script type="text/javascript">
-    jQuery(function() { Search.loadIndex("searchindex.js"); });
-    </script>
-
-
-    <script type="text/javascript">
 
     var delay = (function(){
       var timer = 0;
@@ -110,18 +105,26 @@
     })();
 
     jQuery(function () {
-        $('#search-box').show();
+        Search = new SearchIndex();
+        Search.loadIndex("searchindex.js", "searchindexloader");
 
         $('#settings-button').click(function(){
             $(this).toggleClass("down");
             alert("not implemented..");
         });
+
         $('#search-field').focus();
+
+        $('#search-field').keydown(function(){
+            Search.abortSearch();
+        });
+
         $('#search-field').keyup(function(){
+            Search.abortSearch();
             var val = $(this).val()
             delay(function(){
                 Search.performSearch(val);
-            }, 200);
+            }, 150);
         });
     });
     </script>
