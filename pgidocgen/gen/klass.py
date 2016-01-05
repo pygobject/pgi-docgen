@@ -362,7 +362,7 @@ Signal Details
 --------------
 
 {% for signal in cls.signals %}
-.. py:function:: {{ cls.fullname }}.signals.{{ signal.signature }}
+.. py:function:: {{ cls.fullname }}.signals.{{ signal.name }}{{ signal.signature }}
 
     :Signal Name: ``{{ signal.sig_name }}``
     :Flags: {{ signal.flags_string }}
