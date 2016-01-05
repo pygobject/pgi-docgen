@@ -34,9 +34,11 @@ p {
 
 .wy-side-nav-search, .wy-nav-top {
     background-color: #75507b;
+    border-bottom: 1px solid #888;
 }
 .wy-side-nav-search input[type="text"] {
-    border-color: #75507b;
+    border-color: #404040;
+    border-radius: 5px;
 }
 
 @media screen and (max-width: 768px){
@@ -98,12 +100,12 @@ tt.descname, tt.descclassname, code.descname, code.descclassname {
 
 table.navigation
 {
-background: #e2e2e2;
+    background: #e2e2e2;
 
-border-spacing: 5px;
-margin-top: 0;
-margin-bottom: 0;
-font-size: 0.8em;
+    border-spacing: 5px;
+    margin-top: 0;
+    margin-bottom: 0;
+    font-size: 0.8em;
 }
 
 .fixed-bar {
@@ -121,11 +123,12 @@ font-size: 0.8em;
 
 table.navigation td
 {
-padding: 6px 8px;
-height: 100%;
-vertical-align: middle;
-font-size: 1.1em;
-font-weight:bold;
+    padding: 6px 8px;
+    height: 100%;
+    vertical-align: middle;
+    font-size: 1.1em;
+    font-weight:bold;
+    background-color: #efefef;
 }
 
 table.navigation .fa
