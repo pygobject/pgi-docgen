@@ -160,3 +160,7 @@ table.navigation a .fa
 .rst-content table.field-list .field-name {
     text-align: right;
 }
+
+.rst-content table.field-list table.field-list .field-name {
+    text-align: left;
+}
