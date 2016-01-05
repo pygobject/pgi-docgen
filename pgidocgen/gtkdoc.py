@@ -516,7 +516,7 @@ def MarkDownParseSpanElementsInner(text, markersref):
                     markup += ">" + element["a"] + "</link>"
                 else:
                     element["a"] = MarkDownParseSpanElementsInner(element["a"], markers_rest)
-                    markup += "<ulink url=\"" + element["»"] + "\""
+                    markup += "<ulink url=\"" + element.get("»", "") + "\""
                     if "#" in element:
                         # title attribute not supported
                         pass
@@ -527,6 +527,15 @@ def MarkDownParseSpanElementsInner(text, markersref):
                   offset = 2
                 else:
                   offset = 1
+        elif closest_marker == "`":
+            match = re.search(r"^(`+)([^`]+?)\1(?!`)", text)
+            if match:
+                element_text = match.group(2)
+                markup += "<literal>" + element_text + "</literal>"
+                offset = len(match.group())
+            else:
+                markup += "`"
+                offset += 1
         else:
             # PYTHONTODO: we handle inline references when parsing docbook
             # so just skip anything we don't handle

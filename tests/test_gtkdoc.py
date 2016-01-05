@@ -178,3 +178,21 @@ accessed via the following functions.</para>
         expected = '<para>a <link linkend="bar">foo</link> b <link linkend="baz">quux</link></para>\n'
         output = ConvertMarkDown("", input_)
         self.assertEqual(expected, output)
+
+    def test_reference_empty(self):
+        input_ = "[][]"
+        expected = '<para><ulink url=""></ulink></para>\n'
+        output = ConvertMarkDown("", input_)
+        self.assertEqual(expected, output)
+
+    def test_inline_code(self):
+        input_ = "a `abc`"
+        expected = '<para>a <literal>abc</literal></para>\n'
+        output = ConvertMarkDown("", input_)
+        self.assertEqual(expected, output)
+
+    def test_inline_code2(self):
+        input_ = "a `[][]`"
+        expected = '<para>a <literal>[][]</literal></para>\n'
+        output = ConvertMarkDown("", input_)
+        self.assertEqual(expected, output)

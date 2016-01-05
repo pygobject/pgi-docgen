@@ -322,6 +322,9 @@ bar\
         "a [foo][GtkContainer--border-width]",
         "a :obj:`Gtk.Container.props.border_width`",
 ),(
+        "`bla[0][1] = 3`",
+        "``bla[0][1] = 3``",
+),(
         "in *@dest_x and ",
         "in `dest_x` and ",
         )]
