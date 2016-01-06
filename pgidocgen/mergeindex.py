@@ -142,6 +142,24 @@ class SearchIndexMerger(object):
         return done
 
 
+def fixup_vfuncs(index):
+    """Mark vfuncs as vfuncs"""
+
+    vfunc_index = len(index["objnames"]) + 1
+    index["objnames"][str(vfunc_index)] = [
+        "gobject", "vfunc", "Virtual Function"]
+    index["objtypes"][str(vfunc_index)] = "gobject:vfunc"
+
+    objects = index["objects"]
+    for attr_key, attributes in objects.items():
+        if "." not in attr_key:
+            continue
+        for k, v in attributes.iteritems():
+            # XXX: there could be methods called "do_XXX"..
+            if k.startswith("do_"):
+                v[1] = vfunc_index
+
+
 def fixup_props_signals(index):
     """Move things around so that signals and properties
     better match devhelp output.
@@ -213,6 +231,7 @@ def merge(path, include_terms=False, exclude_old=True):
                 merger.add_index(key, None)
                 continue
             fixup_props_signals(mod)
+            fixup_vfuncs(mod)
             if not include_terms:
                 mod["terms"].clear()
                 mod["titleterms"].clear()
