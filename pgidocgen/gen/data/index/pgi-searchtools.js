@@ -146,6 +146,7 @@ SearchIndex.prototype.performSearch = function(query) {
     this._active_query = query;
 
     this.abortSearch();
+    window.scrollTo(0, 0);
     this._results.showMessage("Loading Search Index...");
     if (this._index !== null)
       this._query(query);
