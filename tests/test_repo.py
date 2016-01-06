@@ -8,8 +8,9 @@
 
 import unittest
 
-from pgidocgen.repo import Repository, Class, get_hierarchy, \
-    parse_override_docs, Function, Flags, fixup_added_since
+from pgidocgen.repo import Repository, fixup_added_since
+from pgidocgen.docobj import Class, Function, Flags, get_hierarchy
+from pgidocgen.overrides import parse_override_docs
 
 
 def find(l, name):
