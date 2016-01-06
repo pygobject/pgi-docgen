@@ -30,22 +30,6 @@ def _handle_data(types, current, d):
     results, remainder = scanner.scan(d)
     assert not remainder
 
-    objects = {
-        "NULL": "None",
-        "TRUE": "True",
-        "FALSE": "False",
-        "gint": "int",
-        "gboolean": "bool",
-        "gchar": "str",
-        "gdouble": "float",
-        "glong": "int",
-        "gfloat": "float",
-        "guint": "int",
-        "gulong": "int",
-        "char": "str",
-        "gpointer": "object",
-    }
-
     def id_ref(token):
         # possible identifier reference
 
@@ -55,12 +39,9 @@ def _handle_data(types, current, d):
         if sub.startswith(("#", "%")):
             sub = sub[1:]
 
-        if sub in objects:
-            return ":obj:`%s`" % objects[sub]
-        elif sub in types:
+        if sub in types:
             pytype = types[sub][0]
-            assert "." in pytype
-            return ":py:obj:`%s`" % pytype
+            return ":obj:`%s`" % pytype
         elif token.startswith(("#", "%")):
             if token.endswith("s"):
                 # if we are sure it's a reference and it ends with 's'
@@ -69,15 +50,14 @@ def _handle_data(types, current, d):
                 if sub in types:
                     pytype = types[sub][0]
                     assert "." in pytype
-                    return ":class:`%s <%s>`" % (pytype + "s", pytype)
+                    return ":obj:`%s <%s>`" % (pytype + "s", pytype)
             else:
                 # also try to add "s", GdkFrameTiming(s)
                 sub = token[1:] + "s"
                 if sub in types:
                     pytype = types[sub][0]
-                    assert "." in pytype
                     py_no_s = pytype[:-1] if pytype[-1] == "s" else pytype
-                    return ":class:`%s <%s>`" % (py_no_s, pytype)
+                    return ":obj:`%s <%s>`" % (py_no_s, pytype)
 
         return token
 

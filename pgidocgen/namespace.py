@@ -79,6 +79,7 @@ class Namespace(object):
 
         self._types = _parse_types(dom, namespace)
         self._types.update(get_cairo_types())
+        self._types.update(get_base_types())
 
         # dependencies
         deps = []
@@ -208,6 +209,23 @@ def get_cairo_types():
 
     return types
 
+
+def get_base_types():
+    return {
+        "NULL": ["None"],
+        "TRUE": ["True"],
+        "FALSE": ["False"],
+        "gint": ["int"],
+        "gboolean": ["bool"],
+        "gchar": ["str"],
+        "gdouble": ["float"],
+        "glong": ["int"],
+        "gfloat": ["float"],
+        "guint": ["int"],
+        "gulong": ["int"],
+        "char": ["str"],
+        "gpointer": ["object"],
+    }
 
 
 def _parse_types(dom, namespace):
