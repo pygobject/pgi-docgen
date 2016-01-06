@@ -328,15 +328,6 @@ def docstring_to_rest(types, docrefs, current, docstring):
                 rst += " "
         rst += c
 
-    def fixup_added_since(match):
-        return """
-
-.. versionadded:: %s
-
-""" % match.group(1).strip()
-
-    rst = re.sub('@?Since\s*\\\\?:?\s+([^\s]+)(\\n|$)', fixup_added_since, rst)
-
     if not docstring.endswith("\n"):
         rst = rst.rstrip("\n")
     while rst.endswith("\n\n"):

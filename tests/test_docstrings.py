@@ -242,9 +242,6 @@ bar.
         "a #gint** that",
         "a :obj:`int` that"
 ),(
-        "a @Since: ATK-2.1.0",
-        "a \n\n.. versionadded:: ATK-2.1.0"
-),(
         "Since: this is",
         "Since\\: this is",
 ),(
