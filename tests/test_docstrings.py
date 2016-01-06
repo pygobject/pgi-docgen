@@ -325,6 +325,23 @@ bar\
         "`bla[0][1] = 3`",
         "``bla[0][1] = 3``",
 ),(
+        """\
+|[<!-- language="C" -->
+    GdkEvent *event;
+    GdkEventType type;
+
+    type = event->type;
+]|
+""",
+        """
+.. code-block:: c
+
+    GdkEvent *event;
+    GdkEventType type;
+    
+    type = event->type;
+""",
+),(
         "in *@dest_x and ",
         "in `dest_x` and ",
         )]

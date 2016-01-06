@@ -196,3 +196,25 @@ accessed via the following functions.</para>
         expected = '<para>a <literal>[][]</literal></para>\n'
         output = ConvertMarkDown("", input_)
         self.assertEqual(expected, output)
+
+    def test_code(self):
+        input_ = """\
+|[<!-- language="C" -->
+    GdkEvent *event;
+    GdkEventType type;
+
+    type = event->type;
+]|
+"""
+
+        expected = '''\
+<informalexample><programlisting language="C"><![CDATA[
+    GdkEvent *event;
+    GdkEventType type;
+
+    type = event->type;
+]]></programlisting></informalexample>
+<para></para>
+'''
+        output = ConvertMarkDown("", input_)
+        self.assertEqual(expected, output)
