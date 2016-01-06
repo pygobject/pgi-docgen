@@ -7,7 +7,7 @@
 
 import unittest
 
-from pgidocgen.repo import docstring_to_rest
+from pgidocgen.repo import docbook_to_rest
 from pgidocgen.namespace import get_base_types
 
 
@@ -39,8 +39,14 @@ class TDocstring(unittest.TestCase):
             "im-a-ref": "http://example.com",
         }
 
+    def get_docrefs(self):
+        return self.docrefs
+
+    def get_types(self):
+        return self.types
+
     def _check(self, text, expected):
-        out = docstring_to_rest(self.types, self.docrefs, "Gtk.Widget", text)
+        out = docbook_to_rest(self, "Gtk.Widget", text)
         self.assertEqual(out, expected)
 
     def test_various(self):
@@ -227,10 +233,10 @@ bar.
         "table by initializing \\*\\*selected",
 ),(
         "captions are #AtkObjects",
-        "captions are :class:`Atk.Objects <Atk.Object>`"
+        "captions are :obj:`Atk.Objects <Atk.Object>`"
 ),(
         "appropriate.  #AtkTable summaries may themselves be (simplified) #AtkTables, etc.",
-        "appropriate.  :obj:`Atk.Table` summaries may themselves be (simplified) :class:`Atk.Tables <Atk.Table>`, etc.",
+        "appropriate.  :obj:`Atk.Table` summaries may themselves be (simplified) :obj:`Atk.Tables <Atk.Table>`, etc.",
 ),(
         "the #GtkSettings:gtk-error-bell setting",
         "the :obj:`Gtk.Settings` :py:data:`:gtk-error-bell<Gtk.Settings.props.gtk_error_bell>` setting",
@@ -248,7 +254,7 @@ bar.
         "Since\\: this is",
 ),(
         "foo #GdkFrameTiming",
-        "foo :class:`Gdk.FrameTiming <Gdk.FrameTimings>`",
+        "foo :obj:`Gdk.FrameTiming <Gdk.FrameTimings>`",
 ),(
         "%NULL-terminated",
         ":obj:`None`-terminated",  # kinda useless, but hey

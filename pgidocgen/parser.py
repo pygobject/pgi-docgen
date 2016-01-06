@@ -273,6 +273,13 @@ def _handle_xml(types, docrefs, current, out, item):
 
 
 def docstring_to_docbook(docstring):
+    """Takes a docstring from the gir and converts the markdown/docbook
+    mix to docbook.
+
+    Unlike in gtk-doc references to types/symbols will not be resolved.
+    Things like "#GtkWidget" will remain as is.
+    """
+
     docstring = ConvertMarkDown("", docstring)
 
     # ConvertMarkDown doesn't handle inline markup yet... so at least convert
@@ -288,12 +295,17 @@ def docstring_to_docbook(docstring):
     return docstring
 
 
-def docstring_to_rest(types, docrefs, current, docstring):
+def docbook_to_rest(repo, current, docstring):
+    """Converts the output of docstring_to_docbook() to reST.
+
+    """
     docbook = docstring_to_docbook(docstring)
 
     soup = BeautifulStoneSoup(docbook,
                               convertEntities=BeautifulStoneSoup.HTML_ENTITIES)
     out = []
+    types = repo.get_types()
+    docrefs = repo.get_docrefs()
     for item in soup.contents:
         _handle_xml(types, docrefs, current, out, item)
 

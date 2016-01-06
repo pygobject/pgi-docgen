@@ -21,7 +21,7 @@ from . import util
 from .util import escape_parameter, import_namespace
 
 from .funcsig import FuncSignature, py_type_to_class_ref, get_type_name
-from .parser import docstring_to_rest
+from .parser import docbook_to_rest
 from .girdata import get_source_to_url_func, get_project_version, \
     get_project_summary, get_class_image_path
 
@@ -995,7 +995,7 @@ class Repository(object):
         self._overrides_docs = parse_override_docs(namespace, version)
 
     def _fix_docs(self, d, current=None):
-        return docstring_to_rest(self._types, self._refs, current, d or u"")
+        return docbook_to_rest(self, current, d or u"")
 
     def _lookup_docs(self, source, name, current=None):
         source = self._docs[source]
@@ -1010,6 +1010,9 @@ class Repository(object):
 
     def get_types(self):
         return self._types
+
+    def get_docrefs(self):
+        return self._refs
 
     def lookup_override_docs(self, fullname):
         return self._overrides_docs.get(fullname, u"")
