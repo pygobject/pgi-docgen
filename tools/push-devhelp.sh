@@ -6,7 +6,7 @@
 # License as published by the Free Software Foundation; either
 # version 2.1 of the License, or (at your option) any later version.
 
-cd _devhelp/_build
+cd _docs/_build_devhelp
 rm -f README.rst
 echo "This repository was created automatically using https://github.com/lazka/pgi-docgen\n" >> README.rst
 echo "It contains devhelp packages for PyGObject\n\n" >> README.rst

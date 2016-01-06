@@ -2,7 +2,6 @@
 _docs
 pgi
 _venv
-_devhelp
 _docs*
 MANIFEST
 tools/_temp_data_dir

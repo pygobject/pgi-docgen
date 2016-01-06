@@ -365,17 +365,15 @@ def main(argv):
 
     os.environ["XDG_DATA_DIRS"] = data_dir
 
+    subprocess.check_call(
+        ["python", "./pgi-docgen.py", "_docs"] + BUILD)
+    subprocess.check_call(
+        ["python", "./pgi-docgen-build.py", "_docs", "_docs/_build"])
+
     if args.devhelp:
         subprocess.check_call(
-            ["python", "./pgi-docgen.py", "_devhelp"] + BUILD)
-        subprocess.check_call(
             ["python", "./pgi-docgen-build.py", "--devhelp",
-             "_devhelp", "_devhelp/_build"])
-    else:
-        subprocess.check_call(
-            ["python", "./pgi-docgen.py", "_docs"] + BUILD)
-        subprocess.check_call(
-            ["python", "./pgi-docgen-build.py", "_docs", "_docs/_build"])
+             "_docs", "_docs/_build_devhelp"])
 
 
 if __name__ == "__main__":
