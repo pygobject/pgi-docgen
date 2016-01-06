@@ -7,7 +7,7 @@
 
 import unittest
 
-from pgidocgen.repo import docbook_to_rest
+from pgidocgen.repo import docstring_to_rest
 from pgidocgen.namespace import get_base_types
 
 
@@ -46,7 +46,7 @@ class TDocstring(unittest.TestCase):
         return self.types
 
     def _check(self, text, expected):
-        out = docbook_to_rest(self, "Gtk.Widget", text)
+        out = docstring_to_rest(self, "Gtk.Widget", text)
         self.assertEqual(out, expected)
 
     def test_various(self):

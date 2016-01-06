@@ -272,7 +272,7 @@ def _handle_xml(types, docrefs, current, out, item):
         out.append(_handle_data(types, current, data))
 
 
-def docstring_to_docbook(docstring):
+def _docstring_to_docbook(docstring):
     """Takes a docstring from the gir and converts the markdown/docbook
     mix to docbook.
 
@@ -295,12 +295,7 @@ def docstring_to_docbook(docstring):
     return docstring
 
 
-def docbook_to_rest(repo, current, docstring):
-    """Converts the output of docstring_to_docbook() to reST.
-
-    """
-    docbook = docstring_to_docbook(docstring)
-
+def _docbook_to_rest(repo, current, docbook):
     soup = BeautifulStoneSoup(docbook,
                               convertEntities=BeautifulStoneSoup.HTML_ENTITIES)
     out = []
@@ -319,6 +314,27 @@ def docbook_to_rest(repo, current, docstring):
             if escape_rest(last) != last and escape_rest(first) != first:
                 rst += " "
         rst += c
+
+    return rst
+
+
+def docstring_to_rest(repo, current, docstring):
+    """Converts `docstring` to reST.
+
+    Args:
+        repo (Repository): the repo that produced the docstring
+        current (str): the Python identifier for the docstring.
+            In case the docstring comes from Gtk.Widget.some_func, the parser
+            can use "Gtk.Widget" in case a signal without a class name is
+            referenced.
+        docstring (str): the docstring
+
+    Returns:
+        str: the docstring converted to reST
+    """
+
+    docbook = _docstring_to_docbook(docstring)
+    rst = _docbook_to_rest(repo, current, docbook)
 
     if not docstring.endswith("\n"):
         rst = rst.rstrip("\n")
