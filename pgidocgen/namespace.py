@@ -83,7 +83,12 @@ def fixup_added_since(text):
     added_since = [""]
 
     def fixup_added_since(match):
-        added_since[0] = match.group(2).rstrip(".")
+        version = match.group(2)
+        # e.g. "3.10."
+        version = version.rstrip(".")
+        # e.g. "ATK-2-16"
+        version = version.split("-", 1)[-1].replace("-", ".")
+        added_since[0] = version
         return ""
 
     text = re.sub(

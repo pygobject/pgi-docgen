@@ -70,6 +70,15 @@ class TNamespace(unittest.TestCase):
 
         self.assertEqual(types["G_MININT8"], ["GLib.MININT8"])
 
+    def test_atk(self):
+        ns = get_namespace("Atk", "1.0")
+        types = ns.get_types()
+        docs = ns.parse_docs()
+        versions = get_versions(docs)
+        self.assertTrue("ATK-0.7" not in versions)
+        self.assertTrue("0.7" in versions)
+        self.assertTrue("2.16" in versions)
+
     def test_cairo(self):
         ns = get_namespace("cairo", "1.0")
         types = ns.get_types()
@@ -122,7 +131,7 @@ class TNamespace(unittest.TestCase):
         self.assertEqual(
             fixup_added_since("Foo\nSince: 3.14"), ("Foo", "3.14"))
         self.assertEqual(
-            fixup_added_since("Foo\n@Since: ATK-3.14"), ("Foo", "ATK-3.14"))
+            fixup_added_since("Foo\n@Since: ATK-3.14"), ("Foo", "3.14"))
         self.assertEqual(
             fixup_added_since("to the baseline. Since 3.10."),
             ("to the baseline.", "3.10"))
