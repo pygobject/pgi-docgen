@@ -83,7 +83,7 @@ def fixup_added_since(text):
     added_since = [""]
 
     def fixup_added_since(match):
-        added_since[0] = match.group(2)
+        added_since[0] = match.group(2).rstrip(".")
         return ""
 
     text = re.sub(
@@ -100,6 +100,19 @@ def _fixup_all_added_since(all_docs):
                 docs, version = fixup_added_since(e.docs)
                 type_docs[k] = DocEntry(docs, version,
                                         e.deprecated_version, e.deprecated)
+
+
+def get_versions(all_docs):
+    """Collects all 'added since' and 'deprecated since' versions"""
+
+    versions = set()
+    for type_, type_docs in all_docs.iteritems():
+        for k, e in type_docs.iteritems():
+            if e.version:
+                versions.add(e.version)
+            if e.deprecated_version:
+                versions.add(e.deprecated_version)
+    return versions
 
 
 DocEntry = collections.namedtuple(

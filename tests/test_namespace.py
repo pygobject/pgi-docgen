@@ -8,13 +8,14 @@
 
 import unittest
 
-from pgidocgen.namespace import Namespace, get_cairo_types, fixup_added_since
+from pgidocgen.namespace import Namespace, get_cairo_types, \
+    fixup_added_since, get_versions, get_namespace
 
 
 class TNamespace(unittest.TestCase):
 
     def test_soup(self):
-        ns = Namespace("Soup", "2.4")
+        ns = get_namespace("Soup", "2.4")
         types = ns.get_types()
         ns.parse_docs()
 
@@ -31,7 +32,7 @@ class TNamespace(unittest.TestCase):
                          [u'Soup.Cookie.parse', u'Soup.cookie_parse'])
 
     def test_gtk(self):
-        ns = Namespace("Gtk", "3.0")
+        ns = get_namespace("Gtk", "3.0")
         types = ns.get_types()
         ns.parse_docs()
 
@@ -40,14 +41,17 @@ class TNamespace(unittest.TestCase):
         self.assertEqual(types["GtkArrowType"], ["Gtk.ArrowType"])
 
     def test_gdk(self):
-        ns = Namespace("Gdk", "3.0")
+        ns = get_namespace("Gdk", "3.0")
         types = ns.get_types()
-        ns.parse_docs()
+        docs = ns.parse_docs()
+        versions = get_versions(docs)
+        self.assertTrue("2.0" in versions)
+        self.assertTrue("3.0" in versions)
 
         self.assertEqual(types["GdkModifierType"], ["Gdk.ModifierType"])
 
     def test_gobject(self):
-        ns = Namespace("GObject", "2.0")
+        ns = get_namespace("GObject", "2.0")
         types = ns.get_types()
         ns.parse_docs()
 
@@ -57,7 +61,7 @@ class TNamespace(unittest.TestCase):
         self.assertEqual(types["G_MAXSSIZE"], ["GObject.G_MAXSSIZE"])
 
     def test_glib(self):
-        ns = Namespace("GLib", "2.0")
+        ns = get_namespace("GLib", "2.0")
         types = ns.get_types()
         ns.parse_docs()
 
@@ -67,7 +71,7 @@ class TNamespace(unittest.TestCase):
         self.assertEqual(types["G_MININT8"], ["GLib.MININT8"])
 
     def test_cairo(self):
-        ns = Namespace("cairo", "1.0")
+        ns = get_namespace("cairo", "1.0")
         types = ns.get_types()
         ns.parse_docs()
 
@@ -82,7 +86,7 @@ class TNamespace(unittest.TestCase):
             types["cairo_surface_get_content"], ["cairo.Surface.get_content"])
 
     def test_pango(self):
-        ns = Namespace("Pango", "1.0")
+        ns = get_namespace("Pango", "1.0")
         # types = ns.get_types()
         ns.parse_docs()
 
@@ -90,26 +94,26 @@ class TNamespace(unittest.TestCase):
         # self.assertEqual(types["pango_break"], ["Pango.break_"])
 
     def test_ges(self):
-        ns = Namespace("GES", "1.0")
+        ns = get_namespace("GES", "1.0")
         ns.parse_docs()
         types = ns.get_types()
         self.assertTrue("position" not in types)
 
     def test_deps(self):
-        ns = Namespace("DBus", "1.0")
+        ns = get_namespace("DBus", "1.0")
         deps = ns.get_dependencies()
         self.assertTrue(("GObject", "2.0") in deps)
 
-        ns = Namespace("GLib", "2.0")
+        ns = get_namespace("GLib", "2.0")
         deps = ns.get_dependencies()
         self.assertFalse(deps)
 
-        ns = Namespace("GObject", "2.0")
+        ns = get_namespace("GObject", "2.0")
         deps = ns.get_dependencies()
         self.assertEqual(deps, [("GLib", "2.0")])
 
     def test_all_deps(self):
-        ns = Namespace("DBus", "1.0")
+        ns = get_namespace("DBus", "1.0")
         deps = ns.get_all_dependencies()
         self.assertTrue(("GObject", "2.0") in deps)
         self.assertTrue(("GLib", "2.0") in deps)
@@ -119,3 +123,6 @@ class TNamespace(unittest.TestCase):
             fixup_added_since("Foo\nSince: 3.14"), ("Foo", "3.14"))
         self.assertEqual(
             fixup_added_since("Foo\n@Since: ATK-3.14"), ("Foo", "ATK-3.14"))
+        self.assertEqual(
+            fixup_added_since("to the baseline. Since 3.10."),
+            ("to the baseline.", "3.10"))
