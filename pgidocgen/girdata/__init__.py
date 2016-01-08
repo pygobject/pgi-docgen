@@ -5,7 +5,15 @@
 # License as published by the Free Software Foundation; either
 # version 2.1 of the License, or (at your option) any later version.
 
-"""Database containing additional optional info about common gir files"""
+"""Database containing additional optional info about common gir files.
+
+The gir files don't contain all the info we would like to have so this is a
+collection of various information about the relation of the girs and their
+projects and additional data fetched from other sources.
+
+See tools/fetch-*.py for scripts which updates some of this info from external
+sources.
+"""
 
 import os
 import re
@@ -20,6 +28,11 @@ _BASEDIR = os.path.dirname(os.path.realpath(__file__))
 
 
 def get_class_image_dir(namespace, version):
+    """The image directory for a given `namespace` and `version`.
+
+    The returned directory path might not exist.
+    """
+
     return os.path.join(
             _BASEDIR, "clsimages",
             "%s-%s" % (namespace, version))
@@ -36,10 +49,18 @@ def get_class_image_path(namespace, version, class_name):
 
 
 def get_docref_dir():
+    """The gtk-doc reference mapping directory"""
+
     return os.path.join(_BASEDIR, "docref")
 
 
 def get_docref_path(namespace, version):
+    """Returns the path to a json file containing a mapping of Python
+    identifiers to URL for gtk-doc online instances.
+
+    Returned path might not exist.
+    """
+
     return os.path.join(get_docref_dir(), "%s-%s.json" % (namespace, version))
 
 
@@ -195,6 +216,10 @@ def load_doc_references(namespace, version):
 
 
 def get_project(namespace):
+    """Returns a Project instance for a given namespace or raises KeyError
+    if the passed namespace is not part of a known project.
+    """
+
     for p in PROJECTS:
         if namespace in p.namespaces:
             return p
@@ -203,7 +228,7 @@ def get_project(namespace):
 
 def get_related_namespaces(ns):
     """Returns a list of related namespaces which are part of the
-    same project.
+    same project excluding the passed namespace.
     """
 
     try:
@@ -214,6 +239,7 @@ def get_related_namespaces(ns):
         l = p.namespaces[:]
         l.remove(ns)
         return l
+
 
 def get_generic_library_version(mod):
     """Tries to return a version string of the library version used to create
@@ -261,17 +287,28 @@ def get_generic_library_version(mod):
 
 
 def get_library_version(mod):
+    """Returns a library version as string for a given Python module. In
+    case no version is found returns an empty string.
+
+    As there is no standard way to retrieve the version of the shared lib
+    this might fail or return wrong info.
+    """
+
     mod_name = mod.__name__
-    version = get_generic_library_version(mod)
-    if version:
-        return version
+    version = ""
 
     if mod_name == "GstPbutils":
         t = [mod.PLUGINS_BASE_VERSION_MAJOR, mod.PLUGINS_BASE_VERSION_MINOR,
              mod.PLUGINS_BASE_VERSION_MICRO, mod.PLUGINS_BASE_VERSION_NANO]
         return ".".join(map(str, t))
 
-    return ""
+    version = get_generic_library_version(mod)
+
+    # some cleanup
+    version = version.rstrip(".")
+    version = version.split("-", 1)[0]
+
+    return version
 
 
 def get_project_version(mod):
@@ -299,6 +336,11 @@ def get_project_version(mod):
 
 
 def get_tag(namespace, project_version):
+    """Returns the VCS tag for the given `namespace` and the library
+    version retrieved using get_project_version().
+
+    In case not tag can be found returns an empty string.
+    """
 
     def matches(ns):
         return namespace == ns or namespace in get_related_namespaces(ns)
