@@ -198,6 +198,8 @@ class ModuleGenerator(object):
             conf.write("DEPS = %r\n" % deps)
             # for sphinx.ext.linkcode
             conf.write("SOURCEURLS = %r\n" % module.symbol_mapping.source_map)
+            # for the sidebar index
+            conf.write("LIB_VERSION = %r\n" % module.library_version)
 
         # make sure the generated config
         with open(conf_path, "rb") as h:

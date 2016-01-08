@@ -25,6 +25,7 @@ function assert(condition, message) {
  */
 SearchResults = function(id) {
     this._obj = $(document.getElementById(id));
+    this._original = this._obj.html();
     this._current_id = 0;
 }
 
@@ -33,6 +34,14 @@ SearchResults = function(id) {
  */
 SearchResults.prototype.abortFill = function() {
     this._current_id++;
+}
+
+/**
+ * Hide the search results and restores the original list
+ */
+SearchResults.prototype.hide = function() {
+    this.abortFill();
+    this._obj.html(this._original);
 }
 
 /**
@@ -61,9 +70,12 @@ SearchResults.prototype.fill = function(results, show_max, show_first) {
 
         var item = results.pop();
         var listItem = $('<li style="display:none"></li>');
-        listItem.append($('<a/>').attr('href',
+        var a = $('<a/>').attr('href',
             item[0] + ".html" +
-            item[2]).attr('target', 'Content').html(item[1]));
+            item[3]).attr('target', 'Content').attr("title", item[1]);
+        a.append($('<div/>').attr("class", "right").html(item[2]));
+        a.append($('<div/>').attr("class", "left").html(item[1]));
+        listItem.append(a);
         that._obj.append(listItem);
 
         // show the first `entry_index` immediately, then delay updates
@@ -147,11 +159,13 @@ SearchIndex.prototype.performSearch = function(query) {
 
     this.abortSearch();
     window.scrollTo(0, 0);
-    this._results.showMessage("Loading Search Index...");
+
     if (this._index !== null)
-      this._query(query);
-    else
-      this._queued_query = query;
+        this._query(query);
+    else {
+        this._results.showMessage("Loading Search Index...");
+        this._queued_query = query;
+    }
 }
 
 /**
@@ -177,13 +191,12 @@ SearchIndex.prototype._query = function(query) {
     var results = [];
 
     if(!parts.length) {
-        results = this._getModules();
-        max_entries = -1;
-        show_first = -1;
-    } else {
-        // array of [filename, title, anchor, score]
-        results = this._getResults(parts);
+        this._results.hide();
+        return;
     }
+
+    // array of [filename, title, anchor, score]
+    results = this._getResults(parts);
 
     // now sort the results by score (in opposite order of appearance, since the
     // display function below uses pop() to retrieve items) and then
@@ -204,25 +217,6 @@ SearchIndex.prototype._query = function(query) {
     });
 
     this._results.fill(results, max_entries, show_first);
-}
-
-/**
- * Creates a fake search result list containing all toplevel modules.
- * This is equal to the initial content of the search list and should
- * be shown when the search entry is empty
- */
-SearchIndex.prototype._getModules = function() {
-    assert(this._index !== null);
-
-    var results = [];
-    var modules = this._index.modules;
-
-    for(var i in modules) {
-        var name = modules[i];
-        results.push([name + "/index", name, "", 0]);
-    }
-
-    return results;
 }
 
 /**
@@ -274,10 +268,13 @@ SearchIndex.prototype._getResults = function(parts) {
     var titleLength = titles.length;
     for (var i = 0; i < titleLength; i++) {
         var title = titles[i];
+        var version = "";
 
         // strip away the library version
-        if(title.indexOf(" (") != -1)
+        if(title.indexOf(" (") != -1) {
+            version = title.slice(title.indexOf(" (") + 2, title.length - 1);
             title = title.slice(0, title.indexOf(" ("));
+        }
 
         var all_score = 0;
         for(var j = 0; j < partsLength; j++) {
@@ -298,7 +295,7 @@ SearchIndex.prototype._getResults = function(parts) {
                 // this is the title page of each module..
                 // try to make it the first match
                 all_score += 100;
-                type_name = "module";
+                type_name = version || "module";
             } else {
                 // all other titles get shown last, thus -100
                 all_score -= 100;
@@ -306,7 +303,7 @@ SearchIndex.prototype._getResults = function(parts) {
             }
 
             results.push([
-                filename, title + " <small>(" + type_name + ")</small>",
+                filename, title, type_name,
                 '', all_score]);
         }
     }
@@ -340,7 +337,7 @@ SearchIndex.prototype._getResults = function(parts) {
 
                 results.push([
                     filename,
-                    fullname + " <small>(" + type_name + ")</small>",
+                    fullname, type_name,
                     '#' + anchor, all_score]);
             }
         }

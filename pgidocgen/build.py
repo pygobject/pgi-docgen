@@ -100,8 +100,10 @@ def do_build(package):
 
 class Package(object):
 
-    def __init__(self, name, path, build_path, deps, devhelp=False):
+    def __init__(self, name, lib_version, path, build_path, deps,
+                 devhelp=False):
         self.name = name
+        self.lib_version = lib_version
         self.path = path
         self.build_path = build_path
         self.deps = deps
@@ -147,10 +149,11 @@ def main(argv):
             prefix = DEVHELP_PREFIX
         else:
             prefix = ""
+        lib_version = exec_env["LIB_VERSION"]
 
         build_path = os.path.join(target_path, prefix + entry)
 
-        package = Package(entry, path, build_path, deps, devhelp)
+        package = Package(entry, lib_version, path, build_path, deps, devhelp)
         to_build[package.name] = package
 
     if not to_build:
@@ -223,7 +226,8 @@ def main(argv):
             shutil.copyfile(src, dst)
 
         done_sorted = sorted(done, key=lambda d: d.name.lower())
-        results = [(d.name + "/index.html", d.name) for d in done_sorted]
+        results = [(d.name + "/index.html", d.name, d.lib_version)
+                   for d in done_sorted]
         with open(os.path.join(index_path, "sidebar.html"), "rb") as h:
             data = h.read()
         with open(os.path.join(target_path, "sidebar.html"), "wb") as t:

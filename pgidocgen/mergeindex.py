@@ -22,12 +22,10 @@ class SearchIndexMerger(object):
 
     def __init__(self):
         self._indices = {}
-        self._modules = []
 
     def add_index(self, namespace, index):
         if index is not None:
             self._indices[namespace] = index
-        self._modules.append(namespace)
 
     def merge(self):
 
@@ -35,9 +33,6 @@ class SearchIndexMerger(object):
             raise ValueError
 
         done = {}
-
-        # not sphinx..
-        done["modules"] = sorted(self._modules)
 
         # ENVVERSION (const)
         first = self._indices[self._indices.keys()[0]]
@@ -137,7 +132,7 @@ class SearchIndexMerger(object):
 
         done["objects"] = new_objects
 
-        assert (set(first.keys()) ^ set(done.keys())) == set(["modules"])
+        assert not (set(first.keys()) ^ set(done.keys()))
 
         return done
 

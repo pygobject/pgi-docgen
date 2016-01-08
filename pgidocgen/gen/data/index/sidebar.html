@@ -4,15 +4,14 @@
     <meta charset="utf-8">
     <title>Python GI API Reference</title>
 
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+    <link rel="stylesheet" href="_static/css/pgi.css" type="text/css" />
+
     <style>
 
     li {
         text-align: left;
         white-space: nowrap;
-    }
-
-    li small {
-        color: #888;
     }
 
     body {
@@ -26,10 +25,15 @@
     .wy-side-nav-search {
         position: fixed;
         width: 100%;
+        padding: 0.6em;
+    }
+
+    .wy-side-nav-search input[type="text"] {
+        padding: 6px 8px;
     }
 
     #search-results {
-        margin-top: 100px;
+        margin-top: 98px;
     }
 
     #settings-button {
@@ -45,10 +49,30 @@
         color: #fff;
     }
 
-    </style>
+    .wy-menu-vertical a {
+        padding: 0.4em 0.8em 0.4em 1em;
+    }
 
-    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-    <link rel="stylesheet" href="_static/css/pgi.css" type="text/css" />
+    .wy-menu-vertical a.message {
+        color: #888;
+    }
+
+    .left {
+        text-align:left;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+    }
+
+    .right {
+        float: right;
+        color: #888;
+        font-size: smaller;
+        text-align: right;
+        padding-left: 0.8em;
+    }
+
+    </style>
 
     <script src="_static/js/modernizr.min.js"></script>
 
@@ -75,8 +99,8 @@
 
     <div class="wy-menu wy-menu-vertical" style="text-align:center">
         <ul id="search-results">
-            {% for url, name in results %}
-                <li><a href="{{ url }}" target="Content">{{ name }}</a></li>
+            {% for url, name, version in results %}
+                <li><a href="{{ url }}" target="Content" title="{{ name }}"><div class="right">{{ version }}</div><div class="left">{{ name }}</div></a></li>
             {% endfor %}
         </ul>
     </div>
