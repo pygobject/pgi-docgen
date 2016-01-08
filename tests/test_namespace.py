@@ -96,11 +96,10 @@ class TNamespace(unittest.TestCase):
 
     def test_pango(self):
         ns = get_namespace("Pango", "1.0")
-        # types = ns.get_types()
+        types = ns.get_types()
         ns.parse_docs()
 
-        # FIXME
-        # self.assertEqual(types["pango_break"], ["Pango.break_"])
+        self.assertEqual(types["pango_break"], ["Pango.break_"])
 
     def test_ges(self):
         ns = get_namespace("GES", "1.0")
