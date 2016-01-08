@@ -202,8 +202,8 @@ SearchIndex.prototype._query = function(query) {
     // display function below uses pop() to retrieve items) and then
     // alphabetically
     results.sort(function(a, b) {
-      var left = a[3];
-      var right = b[3];
+      var left = a[4];
+      var right = b[4];
       if (left > right) {
         return 1;
       } else if (left < right) {
