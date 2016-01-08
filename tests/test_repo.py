@@ -8,7 +8,7 @@
 
 import unittest
 
-from pgidocgen.repo import Repository, fixup_added_since
+from pgidocgen.repo import Repository
 from pgidocgen.docobj import Class, Function, Flags, get_hierarchy
 from pgidocgen.overrides import parse_override_docs
 
@@ -155,12 +155,6 @@ class TRepository(unittest.TestCase):
         klass = Flags.from_object(repo, Atk.Role)
         info = find(klass.values, "APPLICATION").info
         self.assertEqual(info.version_added, "ATK-1.1.4")
-
-    def test_fixup_added_since(self):
-        self.assertEqual(
-            fixup_added_since("Foo\nSince: 3.14"), ("Foo", "3.14"))
-        self.assertEqual(
-            fixup_added_since("Foo\n@Since: ATK-3.14"), ("Foo", "ATK-3.14"))
 
     def test_gudev(self):
         repo = Repository("GUdev", "1.0")

@@ -8,7 +8,7 @@
 
 import unittest
 
-from pgidocgen.namespace import Namespace, get_cairo_types
+from pgidocgen.namespace import Namespace, get_cairo_types, fixup_added_since
 
 
 class TNamespace(unittest.TestCase):
@@ -113,3 +113,9 @@ class TNamespace(unittest.TestCase):
         deps = ns.get_all_dependencies()
         self.assertTrue(("GObject", "2.0") in deps)
         self.assertTrue(("GLib", "2.0") in deps)
+
+    def test_fixup_added_since(self):
+        self.assertEqual(
+            fixup_added_since("Foo\nSince: 3.14"), ("Foo", "3.14"))
+        self.assertEqual(
+            fixup_added_since("Foo\n@Since: ATK-3.14"), ("Foo", "ATK-3.14"))

@@ -69,6 +69,43 @@ def _get_dom(path, _cache={}):
     return _cache[path]
 
 
+def fixup_added_since(text):
+    """Split out the 'Since: X.YZ' text from the documentation and returns
+    the remaining documentation and the version string or an empty string
+    if not version was found.
+
+    This is needed since the gi parser doesn't extract the version info for
+    some types like enum values.
+
+    TODO: fix upstream
+    """
+
+    added_since = [""]
+
+    def fixup_added_since(match):
+        added_since[0] = match.group(2)
+        return ""
+
+    text = re.sub(
+        '(^|\s+)@?Since\s*\\\\?:?\s+([^\s]+)(\\n|$)', fixup_added_since, text)
+    return text, added_since[0]
+
+
+def _fixup_all_added_since(all_docs):
+    """Applies fixup_added_since() to all docs"""
+
+    for type_, type_docs in all_docs.iteritems():
+        for k, e in type_docs.iteritems():
+            if not e.version:
+                docs, version = fixup_added_since(e.docs)
+                type_docs[k] = DocEntry(docs, version,
+                                        e.deprecated_version, e.deprecated)
+
+
+DocEntry = collections.namedtuple(
+    "DocEntry", ["docs", "version", "deprecated_version", "deprecated"])
+
+
 class Namespace(object):
 
     def __init__(self, namespace, version):
@@ -147,7 +184,9 @@ class Namespace(object):
         return _parse_private(_get_dom(self.path), self.namespace)
 
     def parse_docs(self):
-        return _parse_docs(_get_dom(self.path))
+        docs = _parse_docs(_get_dom(self.path))
+        _fixup_all_added_since(docs)
+        return docs
 
     def get_types(self):
         return self._types
@@ -558,7 +597,7 @@ def _parse_docs(dom):
             if tag in ("method", "constructor"):
                 assert len(l) > 2
 
-            new = (docs, version, deprecated_version, deprecated)
+            new = DocEntry(docs, version, deprecated_version, deprecated)
             # Atspi-2.0 has some things declared twice, so
             # don't be too strict here.
 

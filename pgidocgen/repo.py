@@ -6,34 +6,10 @@
 # License as published by the Free Software Foundation; either
 # version 2.1 of the License, or (at your option) any later version.
 
-import re
-
 from .namespace import get_namespace
 from .overrides import parse_override_docs
 from .parser import docstring_to_rest
 from .docobj import Module
-
-
-def fixup_added_since(text):
-    """Split out the 'Since: X.YZ' text from the documentation and returns
-    the remaining documentation and the version string or an empty string
-    if not version was found.
-
-    This is needed since the gi parser doesn't extract the version info for
-    some types like enum values.
-
-    TODO: fix upstream
-    """
-
-    added_since = [""]
-
-    def fixup_added_since(match):
-        added_since[0] = match.group(2)
-        return ""
-
-    text = re.sub(
-        '(^|\s+)@?Since\s*\\\\?:?\s+([^\s]+)(\\n|$)', fixup_added_since, text)
-    return text, added_since[0]
 
 
 class Repository(object):
@@ -72,7 +48,6 @@ class Repository(object):
         source = self._docs[source]
         if name in source:
             docs = source[name][0]
-            docs = fixup_added_since(docs)[0]
             return self._fix_docs(docs, current)
         return u""
 
@@ -102,8 +77,6 @@ class Repository(object):
 
         if fullname in source:
             docs, version_added, dep_version, dep = source[fullname]
-            if not version_added:
-                version_added = fixup_added_since(docs)[1]
             dep = self._fix_docs(dep)
         else:
             version_added = dep_version = dep = u""
