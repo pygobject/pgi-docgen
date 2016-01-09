@@ -132,7 +132,7 @@ class Namespace(object):
 
         dom = _get_dom(self.path)
 
-        self._types = _parse_types(dom, namespace)
+        self._types, self._type_structs = _parse_types(dom, namespace)
         self._types.update(get_cairo_types())
         self._types.update(get_base_types())
 
@@ -208,6 +208,9 @@ class Namespace(object):
 
     def get_types(self):
         return self._types
+
+    def get_type_structs(self):
+        return self._type_structs
 
     @property
     def path(self):
@@ -288,6 +291,7 @@ def get_base_types():
 def _parse_types(dom, namespace):
     """Create a mapping of various C names to python names"""
 
+    type_structs = {}
     types = collections.defaultdict(set)
 
     def add(c_name, py_name):
@@ -365,7 +369,12 @@ def _parse_types(dom, namespace):
             continue
 
         type_name = t.getAttribute("name")
+        fullname = namespace + "." + type_name
         add(c_name, namespace + "." + type_name)
+
+        type_struct = t.getAttribute("glib:type-struct")
+        if type_struct:
+            type_structs[fullname] = namespace + "." + type_struct
 
     # cairo_t -> cairo.Context
     for t in dom.getElementsByTagName("record"):
@@ -403,7 +412,6 @@ def _parse_types(dom, namespace):
         if not names:
             del types[c_name]
 
-
     if namespace == "GObject":
         # these come from overrides and aren't in the gir
         # e.g. G_TYPE_INT -> GObject.TYPE_INT
@@ -425,11 +433,20 @@ def _parse_types(dom, namespace):
                 types["G_" + k].add("GLib." + k)
 
     # convert sets to lists and sort them so the best is first
-    # (prefer methods over funcitons)
+    # (prefer methods over functions)
+    reverse = {}
     types = dict(types)
     for key, values in types.items():
-        types[key] = sorted(values, key=lambda v: -v.count("."))
-    return types
+        values = sorted(values, key=lambda v: -v.count("."))
+        for value in values:
+            reverse[value] = key
+        types[key] = values
+
+    type_structs_c = {}
+    for type_, struct in type_structs.iteritems():
+        type_structs_c[reverse[type_]] = reverse[struct]
+
+    return types, type_structs_c
 
 
 def _parse_private(dom, namespace):

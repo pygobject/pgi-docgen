@@ -40,6 +40,9 @@ class TNamespace(unittest.TestCase):
         self.assertEqual(types["GtkAppChooser"], ["Gtk.AppChooser"])
         self.assertEqual(types["GtkArrowType"], ["Gtk.ArrowType"])
 
+        type_structs = ns.get_type_structs()
+        self.assertEqual(type_structs["GtkTreeStore"], "GtkTreeStoreClass")
+
     def test_gdk(self):
         ns = get_namespace("Gdk", "3.0")
         types = ns.get_types()
