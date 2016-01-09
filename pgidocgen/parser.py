@@ -15,7 +15,9 @@ from .util import escape_rest, force_unindent
 from .gtkdoc import ConvertMarkDown
 
 
-def _handle_data(types, current, d):
+def _handle_data(repo, current, d):
+
+    types = repo.get_types()
 
     scanner = re.Scanner([
         (r"\*?@[A-Za-z0-9_]+", lambda scanner, token:("PARAM", token)),
@@ -169,7 +171,7 @@ def docref_to_pyref(types, ref):
     return None
 
 
-def _handle_xml(types, docrefs, current, out, item):
+def _handle_xml(repo, current, out, item):
     if isinstance(item, Tag):
         if item.name == "literal" or item.name == "type":
             out.append("``%s``" % item.text)
@@ -179,7 +181,7 @@ def _handle_xml(types, docrefs, current, out, item):
                 if not isinstance(item, Tag):
                     continue
                 other_out = []
-                _handle_xml(types, docrefs, current, other_out, item)
+                _handle_xml(repo, current, other_out, item)
                 item_text = "".join(other_out).strip()
                 data = ""
                 for i, line in enumerate(item_text.splitlines()):
@@ -196,11 +198,11 @@ def _handle_xml(types, docrefs, current, out, item):
             if not linked:
                 out.append(item.getText())
             else:
-                pyref = docref_to_pyref(types, linked)
+                pyref = docref_to_pyref(repo.get_types(), linked)
                 if pyref is not None:
                     out.append(":obj:`%s`" % pyref)
-                elif linked in docrefs:
-                    url = docrefs[linked]
+                elif linked in repo.get_docrefs():
+                    url = repo.get_docrefs()[linked]
                     out.append("`%s <%s>`__" % (item.getText(), url))
                 else:
                     out.append("'%s [%s]'" % (item.getText(), linked))
@@ -214,7 +216,7 @@ def _handle_xml(types, docrefs, current, out, item):
                 out.append(code)
         elif item.name == "para":
             for item in item.contents:
-                _handle_xml(types, docrefs, current, out, item)
+                _handle_xml(repo, current, out, item)
             out.append("\n")
         elif item.name == "title":
             # fake a title by creating a "Definition List". It can contain
@@ -222,7 +224,7 @@ def _handle_xml(types, docrefs, current, out, item):
             # is it doesn't allow newlines, but we can live with that for
             # titles
             title_text = " ".join(
-                _handle_data(types, current, item.getText()).splitlines())
+                _handle_data(repo, current, item.getText()).splitlines())
             code = "\n%s\n    ..\n        .\n\n" % title_text
             out.append(code)
         elif item.name == "keycombo":
@@ -230,7 +232,7 @@ def _handle_xml(types, docrefs, current, out, item):
             for sub in item.contents:
                 if not isinstance(sub, Tag):
                     continue
-                subs.append(_handle_data(types, current, sub.getText()))
+                subs.append(_handle_data(repo, current, sub.getText()))
             out.append(" + ".join(subs))
         elif item.name == "varlistentry":
             terms = []
@@ -254,22 +256,22 @@ def _handle_xml(types, docrefs, current, out, item):
 
             lines = []
             terms_line = ", ".join(
-                [_handle_data(types, current, t) for t in terms])
+                [_handle_data(repo, current, t) for t in terms])
             lines.append("%s\n" % terms_line)
             listitem = force_unindent(listitem, ignore_first_line=True)
             lines.append(
-                util.indent(_handle_data(types, current, listitem)) + "\n")
+                util.indent(_handle_data(repo, current, listitem)) + "\n")
             out.append("\n")
             out.extend(lines)
         else:
             for sub in item.contents:
-                _handle_xml(types, docrefs, current, out, sub)
+                _handle_xml(repo, current, out, sub)
     else:
         if not out or out[-1].endswith("\n"):
             data = force_unindent(item.string, ignore_first_line=False)
         else:
             data = force_unindent(item.string, ignore_first_line=True)
-        out.append(_handle_data(types, current, data))
+        out.append(_handle_data(repo, current, data))
 
 
 def _docstring_to_docbook(docstring):
@@ -299,10 +301,8 @@ def _docbook_to_rest(repo, current, docbook):
     soup = BeautifulStoneSoup(docbook,
                               convertEntities=BeautifulStoneSoup.HTML_ENTITIES)
     out = []
-    types = repo.get_types()
-    docrefs = repo.get_docrefs()
     for item in soup.contents:
-        _handle_xml(types, docrefs, current, out, item)
+        _handle_xml(repo, current, out, item)
 
     # make sure to insert spaces between special reST chars
     rst = ""
