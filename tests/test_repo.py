@@ -154,7 +154,7 @@ class TRepository(unittest.TestCase):
 
         klass = Flags.from_object(repo, Atk.Role)
         info = find(klass.values, "APPLICATION").info
-        self.assertEqual(info.version_added, "ATK-1.1.4")
+        self.assertEqual(info.version_added, "1.1.4")
 
     def test_gudev(self):
         repo = Repository("GUdev", "1.0")
