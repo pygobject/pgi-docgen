@@ -369,12 +369,7 @@ def _parse_types(dom, namespace):
             continue
 
         type_name = t.getAttribute("name")
-        fullname = namespace + "." + type_name
         add(c_name, namespace + "." + type_name)
-
-        type_struct = t.getAttribute("glib:type-struct")
-        if type_struct:
-            type_structs[fullname] = namespace + "." + type_struct
 
     # cairo_t -> cairo.Context
     for t in dom.getElementsByTagName("record"):
@@ -382,6 +377,11 @@ def _parse_types(dom, namespace):
         # Gee-0.8 HazardPointer
         if not c_name:
             continue
+
+        type_for = t.getAttribute("glib:is-gtype-struct-for")
+        if type_for:
+            type_structs[c_name] = namespace + "." + type_for
+
         type_name = t.getAttribute("name")
         if type_name.startswith("_"):
             continue
@@ -434,19 +434,12 @@ def _parse_types(dom, namespace):
 
     # convert sets to lists and sort them so the best is first
     # (prefer methods over functions)
-    reverse = {}
     types = dict(types)
     for key, values in types.items():
         values = sorted(values, key=lambda v: -v.count("."))
-        for value in values:
-            reverse[value] = key
         types[key] = values
 
-    type_structs_c = {}
-    for type_, struct in type_structs.iteritems():
-        type_structs_c[reverse[type_]] = reverse[struct]
-
-    return types, type_structs_c
+    return types, type_structs
 
 
 def _parse_private(dom, namespace):

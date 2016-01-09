@@ -26,12 +26,14 @@ class Repository(object):
         # merge all type mappings and doc references
         self._types = {}
         self._refs = {}
+        self._type_structs = {}
         loaded = [ns] + [get_namespace(*x) for x in ns.get_all_dependencies()]
-        for sub_ns in loaded:
+        # prefer our own types in case there are conflicts
+        # (not sure if there can be..)
+        for sub_ns in reversed(loaded):
             self._types.update(sub_ns.get_types())
             self._refs.update(sub_ns.get_doc_references())
-        self._types.update(ns.get_types())
-        self._refs.update(ns.get_doc_references())
+            self._type_structs.update(sub_ns.get_type_structs())
 
         # remove all references which look like C types, we handle them
         # separately and link the API doc version instead
@@ -59,6 +61,9 @@ class Repository(object):
 
     def get_docrefs(self):
         return self._refs
+
+    def get_type_structs(self):
+        return self._type_structs
 
     def lookup_override_docs(self, fullname):
         return self._overrides_docs.get(fullname, u"")

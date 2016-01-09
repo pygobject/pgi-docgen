@@ -32,6 +32,7 @@ class TDocstring(unittest.TestCase):
             "GtkSettings": ["Gtk.Settings"],
             "GtkContainer": ["Gtk.Container"],
             "GdkFrameTimings": ["Gdk.FrameTimings"],
+            "GtkWidget": ["Gtk.Widget"],
         }
         self.types.update(get_base_types())
 
@@ -39,11 +40,18 @@ class TDocstring(unittest.TestCase):
             "im-a-ref": "http://example.com",
         }
 
+        self.type_structs = {
+            "GtkWidgetClass": "Gtk.Widget",
+        }
+
     def get_docrefs(self):
         return self.docrefs
 
     def get_types(self):
         return self.types
+
+    def get_type_structs(self):
+        return self.type_structs
 
     def _check(self, text, expected):
         out = docstring_to_rest(self, "Gtk.Widget", text)
@@ -160,12 +168,12 @@ foo
 </itemizedlist>
 """,
             """
-* #GtkWidgetClass.get\\_request\\_mode()
-* #GtkWidgetClass.get\\_preferred\\_width()
-* #GtkWidgetClass.get\\_preferred\\_height()
-* #GtkWidgetClass.get\\_preferred\\_height\\_for\\_width()
-* #GtkWidgetClass.get\\_preferred\\_width\\_for\\_height()
-* #GtkWidgetClass.get\\_preferred\\_height\\_and\\_baseline\\_for\\_width()
+* :obj:`Gtk.Widget.do_get_request_mode` ()
+* :obj:`Gtk.Widget.do_get_preferred_width` ()
+* :obj:`Gtk.Widget.do_get_preferred_height` ()
+* :obj:`Gtk.Widget.do_get_preferred_height_for_width` ()
+* :obj:`Gtk.Widget.do_get_preferred_width_for_height` ()
+* :obj:`Gtk.Widget.do_get_preferred_height_and_baseline_for_width` ()
 """
 ),(
     """\
@@ -183,7 +191,7 @@ to fewer lines, and therefore needs less height.
 """
     ,
     """\
-GtkWidget is the base class all widgets in GTK+ derive from. It manages the
+:obj:`Gtk.Widget` is the base class all widgets in GTK+ derive from. It manages the
 widget lifecycle, states and style.
 
 

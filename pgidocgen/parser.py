@@ -21,6 +21,7 @@ def _handle_data(repo, current, d):
 
     scanner = re.Scanner([
         (r"\*?@[A-Za-z0-9_]+", lambda scanner, token:("PARAM", token)),
+        (r"[#%]?[A-Za-z0-9_:\-]+\.[A-Za-z0-9_:\-]+\(\)", lambda scanner, token:("VFUNC", token)),
         (r"[#%]?[A-Za-z0-9_:\-]+\**", lambda scanner, token:("ID", token)),
         (r"\(", lambda scanner, token:("OTHER", token)),
         (r"\)", lambda scanner, token:("OTHER", token)),
@@ -77,6 +78,16 @@ def _handle_data(repo, current, d):
             else:
                 # some docs use it to reference constants..
                 token = id_ref(token)
+        elif type_ == "VFUNC":
+            assert token[-2:] == "()"
+            vfunc = token[:-2]
+            if vfunc.startswith(("#", "%")):
+                vfunc = vfunc[1:]
+            class_, field = vfunc.split(".", 1)
+            type_structs = repo.get_type_structs()
+            if class_ in type_structs:
+                pytype = type_structs[class_]
+                token = ":obj:`%s.do_%s` ()" % (pytype, field)
         elif type_ == "ID":
             parts = re.split("(::?)", token)
             fallback = True
