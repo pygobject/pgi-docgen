@@ -138,12 +138,14 @@ class Namespace(object):
 
         self._types = None
         self._type_structs = None
+        self._shadow_map = None
 
     def _ensure_types(self):
         if self._types is not None:
             return
         dom = _get_dom(self.path)
-        self._types, self._type_structs = _parse_types(dom, self.namespace)
+        self._types, self._type_structs, self._shadow_map = \
+            _parse_types(dom, self.import_module(), self.namespace)
         self._types.update(get_cairo_types())
         self._types.update(get_base_types())
 
@@ -153,6 +155,11 @@ class Namespace(object):
         namespace_elm = dom.getElementsByTagName("namespace")[0]
         shared_library = namespace_elm.getAttribute("shared-library")
         return shared_library.split(",") if shared_library else []
+
+    @util.cached_property
+    def shadow_map(self):
+        self._ensure_types()
+        return self._shadow_map
 
     @util.cached_property
     def doc_references(self):
@@ -323,7 +330,7 @@ def get_base_types():
     }
 
 
-def _parse_types(dom, namespace):
+def _parse_types(dom, module, namespace):
     """Create a mapping of various C names to python names"""
 
     type_structs = {}
@@ -336,8 +343,13 @@ def _parse_types(dom, namespace):
             map(util.escape_parameter, py_name.split(".")))
         types[c_name].add(py_name)
 
-    # {key of the to be replaces function: c def of the replacement}
-    shadowed = {}
+    # key is the shadowed function name (gir name)
+    all_shadows = {}
+    all_shadowed_by = {}
+
+    # c symbols we want to skip, but we need them for shadowed func, so remove
+    # them later
+    skipped = set()
 
     # gtk_main -> Gtk.main
     # gtk_dialog_get_response_for_widget ->
@@ -347,6 +359,8 @@ def _parse_types(dom, namespace):
     elements += dom.getElementsByTagName("method")
     for t in elements:
         shadows = t.getAttribute("shadows")
+        shadowed_by = t.getAttribute("shadowed-by")
+        introspectable = bool(int(t.getAttribute("introspectable") or "1"))
         local_name = t.getAttribute("name")
         c_name = t.getAttribute("c:identifier")
         assert c_name
@@ -364,12 +378,21 @@ def _parse_types(dom, namespace):
             parent = parent.parentNode
 
         if shadows:
-            shadowed_name = ".".join(full_name.split(".")[:-1] + [shadows])
-            shadowed_name = ".".join(
-                map(util.escape_parameter, shadowed_name.split(".")))
-            shadowed[shadowed_name] = c_name
+            all_shadows[shadows] = c_name
+        if shadowed_by:
+            all_shadowed_by[local_name] = c_name
+
+        if not introspectable or shadowed_by:
+            skipped.add(c_name)
 
         add(c_name, full_name)
+
+    shadow_map = {}
+    for key, value in all_shadows.iteritems():
+        shadow_map[all_shadowed_by.pop(key)] = value
+    assert not all_shadowed_by
+    del all_shadowed_by
+    del all_shadows
 
     # enums etc. GTK_SOME_FLAG_FOO -> Gtk.SomeFlag.FOO
     for t in dom.getElementsByTagName("member"):
@@ -429,21 +452,29 @@ def _parse_types(dom, namespace):
             name = namespace + "." + t.getAttribute("name")
             add(c_name, name)
 
-    # the keys we want to replace should exist
-    values = []
-    for v in types.values():
-        values.extend(v)
-    assert not (set(shadowed.keys()) - set(values))
-
     # make c defs which are replaced point to the key of the replacement
     # so that: "gdk_threads_add_timeout_full" -> Gdk.threads_add_timeout
-    for c_name, names in types.items():
-        for name in list(names):
-            if name in shadowed:
-                names.remove(name)
-                replacement = shadowed[name]
-                types[replacement].clear()
-                types[replacement].add(name)
+    for shadowed, shadowing in shadow_map.iteritems():
+        types[shadowing] = set(types[shadowed])
+        types[shadowed].clear()
+
+    # We wont have a Python function for these, so don't expose them
+    for c_name in skipped:
+
+        def is_available(mod, name):
+            m = mod
+            for attr in name.split(".")[1:]:
+                try:
+                    m = getattr(m, attr)
+                except AttributeError:
+                    return False
+            return True
+
+        # shadowed get cleared above so this should be non-introspectable.
+        # but overrides might make them available using other API, so check
+        # for that before deciding that it isn't available to Python
+        types[c_name] = set(
+            filter(lambda n: is_available(module, n), types[c_name]))
 
     if namespace == "GObject":
         # these come from overrides and aren't in the gir
@@ -472,7 +503,7 @@ def _parse_types(dom, namespace):
         values = sorted(values, key=lambda v: -v.count("."))
         types[key] = values
 
-    return types, type_structs
+    return types, type_structs, shadow_map
 
 
 def _parse_private(dom, namespace):

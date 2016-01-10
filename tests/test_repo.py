@@ -88,6 +88,8 @@ class TRepository(unittest.TestCase):
         func = find(klass.methods, "_")
         self.assertTrue(func.info.desc)
 
+        self.assertEqual(repo.get_shadowed("g_idle_add"), "g_idle_add_full")
+
     def test_gio(self):
         repo = Repository("Gio", "2.0")
         Gio = repo.import_module()

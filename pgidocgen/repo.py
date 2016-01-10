@@ -112,6 +112,11 @@ class Repository(object):
 
         return version_added, dep_version, dep
 
+    def get_shadowed(self, c_id):
+        for ns in self._namespaces:
+            if c_id in ns.shadow_map:
+                return ns.shadow_map[c_id]
+
     def get_all_dependencies(self):
         """Returns a list of (namespace, version) tuples for all transitive
         dependencies.

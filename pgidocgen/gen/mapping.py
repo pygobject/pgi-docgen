@@ -49,14 +49,19 @@ class MappingGenerator(genutil.Generator):
         path = os.path.join(dir_, "mapping.rst")
 
         lines = []
-        for key, url, value in self._mapping.symbol_map:
+        for key, url, value, is_shadowed in self._mapping.symbol_map:
             value = util.escape_rest(value)
             if url:
                 key = "`%s <%s>`__" % (util.escape_rest(key), url)
             else:
                 key = util.escape_rest(key)
-            line = util.get_csv_line(
-                [key, ":py:data:`%s`" % value if value else ""])
+            if value:
+                pycol = ":py:data:`%s`" % value
+            elif is_shadowed:
+                pycol = "shadowed: %s" % util.escape_rest(is_shadowed)
+            else:
+                pycol = "unavailable"
+            line = util.get_csv_line([key, pycol])
             lines.append(line)
 
         with open(path, "wb") as h:

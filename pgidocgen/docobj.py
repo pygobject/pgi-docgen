@@ -756,7 +756,7 @@ class Constant(BaseDocObject):
 class SymbolMapping(object):
 
     def __init__(self, symbol_map, source_map):
-        self.symbol_map = symbol_map  # [(c sym, url, py sym)]
+        self.symbol_map = symbol_map  # [(c sym, url, py sym, is_shadowed)]
         self.source_map = source_map  # {py sym: git url}
 
     @classmethod
@@ -782,9 +782,10 @@ class SymbolMapping(object):
                     continue
                 if repo.is_private(value):
                     continue
-                symbol_map.append((key, source_url, value))
+                symbol_map.append((key, source_url, value, u""))
             if not values:
-                symbol_map.append((key, source_url, u""))
+                is_shadowed = repo.get_shadowed(key)
+                symbol_map.append((key, source_url, u"", is_shadowed))
         return cls(symbol_map, pysource_map)
 
 
