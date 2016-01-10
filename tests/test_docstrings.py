@@ -44,14 +44,14 @@ class TDocstring(unittest.TestCase):
             "GtkWidgetClass": "Gtk.Widget",
         }
 
-    def get_docrefs(self):
-        return self.docrefs
+    def lookup_gtkdoc_ref(self, doc_ref):
+        return self.docrefs.get(doc_ref)
 
-    def get_types(self):
-        return self.types
+    def lookup_py_id(self, c_id):
+        return self.types.get(c_id, [None])[0]
 
-    def get_type_structs(self):
-        return self.type_structs
+    def lookup_py_id_for_type_struct(self, c_id):
+        return self.type_structs.get(c_id)
 
     def _check(self, text, expected):
         out = docstring_to_rest(self, "Gtk.Widget", text)

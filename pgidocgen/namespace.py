@@ -211,16 +211,30 @@ class Namespace(object):
 
     @util.cached_property
     def type_structs(self):
+        """A mapping of C type struct IDs to Python type IDs.
+
+        e.g. GObjectClass -> GObject.Object
+        """
+
         self._ensure_types()
         return self._type_structs
 
     @util.cached_property
     def path(self):
+        """The absolute path to the gir file.
+
+        e.g. "/usr/share/gir-1.0/GObject-2.0.gir"
+        """
+
         key = "%s-%s" % (self.namespace, self.version)
         return util.get_gir_files()[key]
 
     @util.cached_property
     def dependencies(self):
+        """A list of (namespace, version) tuples for all direct dependencies
+        of this namespace.
+        """
+
         dom = _get_dom(self.path)
 
         # dependencies
@@ -240,6 +254,10 @@ class Namespace(object):
 
     @util.cached_property
     def all_dependencies(self):
+        """A list of (namespace, version) tuples for all transitive
+        dependencies of this namespace.
+        """
+
         loaded = []
         to_load = list(self.dependencies)
         while to_load:

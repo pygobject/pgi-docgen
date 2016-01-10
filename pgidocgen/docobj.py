@@ -18,6 +18,7 @@ from .funcsig import FuncSignature, py_type_to_class_ref, get_type_name
 from .girdata import get_source_to_url_func, get_project_version, \
     get_project_summary, get_class_image_path
 from .util import escape_parameter
+from .parser import docstring_to_rest
 
 
 def get_signature_string(callable_):
@@ -268,8 +269,8 @@ class Property(BaseDocObject):
             prop.info.deprecated = True
 
         if spec.get_blurb() is not None:
-            short_desc = repo._fix_docs(
-                spec.get_blurb().decode("utf-8"), current=prop.fullname)
+            short_desc = docstring_to_rest(
+                repo, prop.fullname, spec.get_blurb().decode("utf-8"))
         else:
             short_desc = u""
 
@@ -287,8 +288,8 @@ class Property(BaseDocObject):
                    type_desc, value_desc)
 
         if spec.blurb is not None:
-            short_desc = repo._fix_docs(
-                spec.blurb.decode("utf-8"), current=prop.fullname)
+            short_desc = docstring_to_rest(
+                repo, prop.fullname, spec.blurb.decode("utf-8"))
         else:
             short_desc = u""
 

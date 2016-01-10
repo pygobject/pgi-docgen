@@ -131,7 +131,11 @@ class TRepository(unittest.TestCase):
             LookupError, find, mod.structures, "WidgetClass")
 
     def test_gobject(self):
-        Repository("GObject", "2.0")
+        repo = Repository("GObject", "2.0")
+
+        self.assertEqual(
+            repo.lookup_py_id_for_type_struct("GObjectClass"),
+            "GObject.Object")
 
     def test_atk(self):
         repo = Repository("Atk", "1.0")

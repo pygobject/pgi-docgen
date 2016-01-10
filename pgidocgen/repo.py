@@ -7,65 +7,77 @@
 # version 2.1 of the License, or (at your option) any later version.
 
 from .namespace import get_namespace
-from .overrides import parse_override_docs
 from .parser import docstring_to_rest
 from .docobj import Module
 
 
 class Repository(object):
-    """Takes gi objects and gives documentation objects"""
+    """Produces and provides information for documentation objects"""
 
     def __init__(self, namespace, version):
         self.namespace = namespace
         self.version = version
 
         self._ns = ns = get_namespace(namespace, version)
-        self._docs = ns.docs
 
         # merge all type mappings and doc references
         self._types = {}
-        self._refs = {}
-        self._type_structs = {}
         loaded = [ns] + [get_namespace(*x) for x in ns.all_dependencies]
+        self._namespaces = loaded
+
         # prefer our own types in case there are conflicts
         # (not sure if there can be..)
-        for sub_ns in reversed(loaded):
+        for sub_ns in reversed(self._namespaces):
             self._types.update(sub_ns.types)
-            self._refs.update(sub_ns.doc_references)
-            self._type_structs.update(sub_ns.type_structs)
-
-        # remove all references which look like C types, we handle them
-        # separately and link the API doc version instead
-        for k, v in self._refs.items():
-            if k in self._types:
-                del self._refs[k]
-
-        self._overrides_docs = parse_override_docs(namespace, version)
-
-    def _fix_docs(self, d, current=None):
-        return docstring_to_rest(self, current, d or u"")
-
-    def _lookup_docs(self, source, name, current=None):
-        source = self._docs[source]
-        if name in source:
-            docs = source[name][0]
-            return self._fix_docs(docs, current)
-        return u""
 
     def parse(self):
+        """Returns a Module instance containing the whole documentation tree"""
+
         return Module.from_repo(self)
 
-    def get_types(self):
-        return self._types
+    def lookup_py_id(self, c_id):
+        """Given a C identifier will return a Python identifier which
+        exposes the underlying type/function/etc or None in case the C
+        identifier isn't known.
 
-    def get_docrefs(self):
-        return self._refs
+        e.g. "GtkWidget" -> "Gtk.Widget"
+        """
 
-    def get_type_structs(self):
-        return self._type_structs
+        for ns in self._namespaces:
+            if c_id in ns.types:
+                return ns.types[c_id][0]
 
-    def lookup_override_docs(self, fullname):
-        return self._overrides_docs.get(fullname, u"")
+    def lookup_gtkdoc_ref(self, doc_ref):
+        """Given a gtk-doc reference will try to find an URL to external
+        resources. If none is found returns None.
+
+        e.g. "gtk-x11" ->
+            "https://developer.gnome.org/gtk3/stable/gtk-x11.html#gtk-x11""
+        """
+
+        for ns in self._namespaces:
+            if doc_ref in ns.doc_references:
+                # We don't want to give out URLs for things we should
+                # have locally.
+                assert self.lookup_py_id(doc_ref) is None
+                return ns.doc_references[doc_ref]
+
+    def lookup_py_id_for_type_struct(self, struct_c_id):
+        """Given a C identifier of a type struct returns the Python ID
+        of the corresponding Python type. Returns None if none was found.
+
+        e.g. GObjectClass -> GObject.Object
+        """
+
+        for ns in self._namespaces:
+            if struct_c_id in ns.type_structs:
+                return ns.type_structs[struct_c_id]
+
+    def _lookup_docs(self, type_, name, current=None):
+        source = self._ns.docs[type_]
+        if name in source:
+            return docstring_to_rest(self, current, source[name].docs)
+        return u""
 
     def lookup_docs(self, type_, *args, **kwargs):
         docs = self._lookup_docs(type_, *args, **kwargs)
@@ -77,28 +89,42 @@ class Repository(object):
         return docs, shadowed
 
     def lookup_meta(self, type_, fullname):
-        source = self._docs[type_]
+        source = self._ns.docs[type_]
 
         if fullname in source:
             docs, version_added, dep_version, dep = source[fullname]
-            dep = self._fix_docs(dep)
+            dep = docstring_to_rest(self, "", dep)
         else:
             version_added = dep_version = dep = u""
 
         return version_added, dep_version, dep
 
     def get_all_dependencies(self):
+        """Returns a list of (namespace, version) tuples for all transitive
+        dependencies.
+        """
+
         return self._ns.all_dependencies
 
     def import_module(self):
+        """Imports and returns the Python module.
+
+        Can raise ImportError.
+        """
+
         return self._ns.import_module()
 
     def get_source(self):
         return self._ns.source_map
 
-    def is_private(self, name):
-        """is_private('Gtk.ViewportPrivate')"""
+    def get_types(self):
+        return self._types
 
-        assert "." in name
+    def is_private(self, py_id):
+        """Returns True if a Python type is considered private i.e. should
+        not be included in the documentation in any way.
 
-        return name in self._ns.private
+        e.g. is_private('Gtk.ViewportPrivate') -> True
+        """
+
+        return py_id in self._ns.private

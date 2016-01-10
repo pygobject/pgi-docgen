@@ -17,8 +17,6 @@ from .gtkdoc import ConvertMarkDown
 
 def _handle_data(repo, current, d):
 
-    types = repo.get_types()
-
     scanner = re.Scanner([
         (r"\*?@[A-Za-z0-9_]+", lambda scanner, token:("PARAM", token)),
         (r"[#%]?[A-Za-z0-9_:\-]+\.[A-Za-z0-9_:\-]+\(\)", lambda scanner, token:("VFUNC", token)),
@@ -42,23 +40,24 @@ def _handle_data(repo, current, d):
         if sub.startswith(("#", "%")):
             sub = sub[1:]
 
-        if sub in types:
-            pytype = types[sub][0]
+        pytype = repo.lookup_py_id(sub)
+
+        if pytype is not None:
             return ":obj:`%s`" % pytype
         elif token.startswith(("#", "%")):
             if token.endswith("s"):
                 # if we are sure it's a reference and it ends with 's'
                 # like "a list of #GtkWindows", we also try "#GtkWindow"
                 sub = token[1:-1]
-                if sub in types:
-                    pytype = types[sub][0]
+                pytype = repo.lookup_py_id(sub)
+                if pytype is not None:
                     assert "." in pytype
                     return ":obj:`%s <%s>`" % (pytype + "s", pytype)
             else:
                 # also try to add "s", GdkFrameTiming(s)
                 sub = token[1:] + "s"
-                if sub in types:
-                    pytype = types[sub][0]
+                pytype = repo.lookup_py_id(sub)
+                if pytype is not None:
                     py_no_s = pytype[:-1] if pytype[-1] == "s" else pytype
                     return ":obj:`%s <%s>`" % (py_no_s, pytype)
 
@@ -83,15 +82,12 @@ def _handle_data(repo, current, d):
             vfunc = token[:-2]
             if vfunc.startswith(("#", "%")):
                 vfunc = vfunc[1:]
-            class_, field = vfunc.split(".", 1)
-            type_structs = repo.get_type_structs()
-            types = repo.get_types()
-            if class_ in type_structs:
-                pytype = type_structs[class_]
-                token = ":obj:`%s.do_%s` ()" % (pytype, field)
-            elif class_ in types:
+            class_id, field = vfunc.split(".", 1)
+            pytype = repo.lookup_py_id_for_type_struct(class_id)
+            if pytype is None:
                 # fall back to the class, for #GObject.constructed()
-                pytype = types[class_][0]
+                pytype = repo.lookup_py_id(class_id)
+            if pytype is not None:
                 token = ":obj:`%s.do_%s` ()" % (pytype, field)
         elif type_ == "ID":
             parts = re.split("(::?)", token)
@@ -99,8 +95,9 @@ def _handle_data(repo, current, d):
             if len(parts) > 2:
                 obj, sep, sigprop = parts[0], parts[1], "".join(parts[2:])
                 obj_id = obj.lstrip("#")
-                if obj_id in types:
-                    obj_rst_id = types[obj_id][0]
+                objtype = repo.lookup_py_id(obj_id)
+                if objtype is not None:
+                    obj_rst_id = objtype
                 elif current:
                     obj_rst_id = ".".join(current.split(".")[:2])
                 else:
@@ -161,28 +158,31 @@ def _handle_data(repo, current, d):
     return "".join(out)
 
 
-def docref_to_pyref(types, ref):
+def docref_to_pyref(repo, ref):
     """Take a gtk-doc reference and try to convert it to a Python reference.
 
     If that fails returns None.
     """
 
     # GtkEntryCompletion
-    if ref in types:
-        return types[ref][0]
+    pyref = repo.lookup_py_id(ref)
+    if pyref is not None:
+        return pyref
 
     # gtk-assistant-commit -> gtk_assistant_commit -> Gtk.Assistant.commit
     func = ref.replace("-", "_")
-    if func in types:
-        return types[func][0]
+    pyref = repo.lookup_py_id(func)
+    if pyref is not None:
+        return pyref
 
     # GtkEntryCompletion--inline-completion ->
     #   Gtk.EntryCompletion.props.inline_completion
     if "--" in ref:
         type_, prop = ref.split("--", 1)
         prop = prop.replace("-", "_")
-        if type_ in types:
-            return "%s.props.%s" % (types[type_][0], prop)
+        pyref = repo.lookup_py_id(type_)
+        if pyref is not None:
+            return "%s.props.%s" % (pyref, prop)
 
     return None
 
@@ -214,14 +214,15 @@ def _handle_xml(repo, current, out, item):
             if not linked:
                 out.append(item.getText())
             else:
-                pyref = docref_to_pyref(repo.get_types(), linked)
+                pyref = docref_to_pyref(repo, linked)
                 if pyref is not None:
                     out.append(":obj:`%s`" % pyref)
-                elif linked in repo.get_docrefs():
-                    url = repo.get_docrefs()[linked]
-                    out.append("`%s <%s>`__" % (item.getText(), url))
                 else:
-                    out.append("'%s [%s]'" % (item.getText(), linked))
+                    url = repo.lookup_gtkdoc_ref(linked)
+                    if url is not None:
+                        out.append("`%s <%s>`__" % (item.getText(), url))
+                    else:
+                        out.append("'%s [%s]'" % (item.getText(), linked))
         elif item.name == "programlisting":
             text = item.getText()
             if not text.count("\n"):
