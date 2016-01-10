@@ -334,6 +334,12 @@ def _parse_types(dom, namespace):
                 map(util.escape_parameter, shadowed_name.split(".")))
             shadowed[shadowed_name] = c_name
 
+        # these wont be in the typelib. set an empty python id
+        introspectable = bool(int(t.getAttribute("introspectable") or "1"))
+        if not introspectable:
+            types[c_name].add("")
+            continue
+
         add(c_name, full_name)
 
     # enums etc. GTK_SOME_FLAG_FOO -> Gtk.SomeFlag.FOO
@@ -393,12 +399,6 @@ def _parse_types(dom, namespace):
         if t.parentNode.tagName == "namespace":
             name = namespace + "." + t.getAttribute("name")
             add(c_name, name)
-
-    # the keys we want to replace should exist
-    values = []
-    for v in types.values():
-        values.extend(v)
-    assert not (set(shadowed.keys()) - set(values))
 
     # make c defs which are replaced point to the key of the replacement
     # so that: "gdk_threads_add_timeout_full" -> Gdk.threads_add_timeout

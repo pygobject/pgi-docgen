@@ -44,6 +44,8 @@ def _handle_data(repo, current, d):
 
         if sub in types:
             pytype = types[sub][0]
+            if not pytype:
+                return token
             return ":obj:`%s`" % pytype
         elif token.startswith(("#", "%")):
             if token.endswith("s"):

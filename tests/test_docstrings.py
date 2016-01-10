@@ -33,6 +33,7 @@ class TDocstring(unittest.TestCase):
             "GtkContainer": ["Gtk.Container"],
             "GdkFrameTimings": ["Gdk.FrameTimings"],
             "GtkWidget": ["Gtk.Widget"],
+            "g_print": [""],
         }
         self.types.update(get_base_types())
 
@@ -257,6 +258,9 @@ bar.
 ),(
         "a #gint** that",
         "a :obj:`int` that"
+),(
+        "call g_print()",
+        "call g\\_print()"
 ),(
         "Since: this is",
         "Since\\: this is",

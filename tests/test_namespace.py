@@ -73,6 +73,9 @@ class TNamespace(unittest.TestCase):
 
         self.assertEqual(types["G_MININT8"], ["GLib.MININT8"])
 
+        # g_print is not introspectable
+        self.assertEqual(types["g_print"], [""])
+
     def test_atk(self):
         ns = get_namespace("Atk", "1.0")
         types = ns.get_types()
