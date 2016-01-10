@@ -769,7 +769,7 @@ class SymbolMapping(object):
         if func:
             for key, value in source_map.iteritems():
                 value = func(value)
-                for pyid in repo.lookup_all_py_id(key):
+                for pyid in repo.lookup_all_py_id(key, shadowed=False):
                     pysource_map[pyid] = value
 
         symbol_map = []

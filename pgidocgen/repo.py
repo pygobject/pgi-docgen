@@ -35,25 +35,33 @@ class Repository(object):
 
         return Module.from_repo(self)
 
-    def lookup_py_id(self, c_id):
+    def lookup_py_id(self, c_id, shadowed=True):
         """Given a C identifier will return a Python identifier which
         exposes the underlying type/function/etc or None in case the C
         identifier isn't known.
 
+        if shadowed is True and the c_id is shadowed will return the
+        Python id of the shadowing function instead.
+
         e.g. "GtkWidget" -> "Gtk.Widget"
         """
 
-        py_id = self.lookup_all_py_id(c_id)
+        py_id = self.lookup_all_py_id(c_id, shadowed)
         if py_id:
             return py_id[0]
 
-    def lookup_all_py_id(self, c_id):
+    def lookup_all_py_id(self, c_id, shadowed=True):
         """Given a C identifier will return a list of Python identifier which
         expose the underlying type/function/etc or an empty list in case the C
         identifier isn't known or it isn't exposed in Python.
 
         e.g. "GtkWidget" -> ["Gtk.Widget"]
         """
+
+        if shadowed:
+            shadowed_c_id = self.get_shadowed(c_id)
+            if shadowed_c_id is not None:
+                c_id = shadowed_c_id
 
         for ns in self._namespaces:
             if c_id in ns.types:

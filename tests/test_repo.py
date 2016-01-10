@@ -90,6 +90,9 @@ class TRepository(unittest.TestCase):
 
         self.assertEqual(repo.get_shadowed("g_idle_add"), "g_idle_add_full")
 
+        self.assertEqual(repo.lookup_py_id("g_idle_add"), "GLib.idle_add")
+        self.assertEqual(repo.lookup_py_id("g_idle_add", shadowed=False), None)
+
     def test_gio(self):
         repo = Repository("Gio", "2.0")
         Gio = repo.import_module()
