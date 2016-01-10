@@ -167,3 +167,11 @@ table.navigation a .fa
 .rst-content table.field-list table.field-list .field-name {
     text-align: left;
 }
+
+cite {
+    font-weight: bold;
+    font-style: normal;
+    border: 1px solid #E1E4E5;
+    padding: 0px 5px;
+    font-family: monospace;
+}
