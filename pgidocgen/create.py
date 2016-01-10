@@ -65,6 +65,5 @@ def main(argv):
         raise SystemExit(1)
 
     namespace, version = namespace.split("-", 1)
-    print "Create docs: Namespace=%s, Version=%s" % (namespace, version)
     gen = ModuleGenerator(namespace, version)
     gen.write(args.target)

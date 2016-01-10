@@ -114,8 +114,10 @@ class ModuleGenerator(object):
 
     def _write(self, sub_dir, namespace, version):
         if os.path.exists(sub_dir):
-            print "skipping %s-%s, already exists" % (namespace, version)
+            print "%s-%s: skipping, already exists" % (namespace, version)
             return
+
+        print "%s-%s: building..." % (namespace, version)
 
         os.mkdir(sub_dir)
         dir_ = sub_dir
@@ -225,7 +227,6 @@ class ModuleGenerator(object):
 
             try:
                 inv_url = url + "/objects.inv"
-                print "..loading %r" % inv_url
                 h = urlopen(inv_url)
                 with open(inv_path, "wb") as f:
                     f.write(h.read())
