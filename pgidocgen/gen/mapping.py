@@ -49,14 +49,14 @@ class MappingGenerator(genutil.Generator):
         path = os.path.join(dir_, "mapping.rst")
 
         lines = []
-        for key, value in self._mapping.symbol_map:
-            url = self._mapping.source_map.get(value, u"")
+        for key, url, value in self._mapping.symbol_map:
             value = util.escape_rest(value)
             if url:
                 key = "`%s <%s>`__" % (util.escape_rest(key), url)
             else:
                 key = util.escape_rest(key)
-            line = util.get_csv_line([key, ":py:data:`%s`" % value])
+            line = util.get_csv_line(
+                [key, ":py:data:`%s`" % value if value else ""])
             lines.append(line)
 
         with open(path, "wb") as h:

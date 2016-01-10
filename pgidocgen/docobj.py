@@ -756,29 +756,36 @@ class Constant(BaseDocObject):
 class SymbolMapping(object):
 
     def __init__(self, symbol_map, source_map):
-        self.symbol_map = symbol_map  # [(c sym, py sym)]
+        self.symbol_map = symbol_map  # [(c sym, url, py sym)]
         self.source_map = source_map  # {py sym: git url}
 
     @classmethod
     def from_module(cls, repo, module):
         lib_version = get_project_version(module)
         func = get_source_to_url_func(repo.namespace, lib_version)
-        source_map = {}
+
+        source_map = repo.get_source_map()
+        pysource_map = {}
         if func:
-            source = repo.get_source()
-            for key, value in source.iteritems():
-                source_map[key] = func(value)
+            for key, value in source_map.iteritems():
+                value = func(value)
+                for pyid in repo.lookup_all_py_id(key):
+                    pysource_map[pyid] = value
 
         symbol_map = []
         items = repo.get_types().iteritems()
         for key, values in sorted(items, key=lambda x: x[0].lower()):
+            source_path = source_map.get(key, u"")
+            source_url = func(source_path) if source_path else u""
             for value in values:
                 if not value.startswith(repo.namespace + "."):
                     continue
                 if repo.is_private(value):
                     continue
-                symbol_map.append((key, value))
-        return cls(symbol_map, source_map)
+                symbol_map.append((key, source_url, value))
+            if not values:
+                symbol_map.append((key, source_url, u""))
+        return cls(symbol_map, pysource_map)
 
 
 class Module(BaseDocObject):

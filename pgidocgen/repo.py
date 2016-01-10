@@ -43,9 +43,22 @@ class Repository(object):
         e.g. "GtkWidget" -> "Gtk.Widget"
         """
 
+        py_id = self.lookup_all_py_id(c_id)
+        if py_id:
+            return py_id[0]
+
+    def lookup_all_py_id(self, c_id):
+        """Given a C identifier will return a list of Python identifier which
+        expose the underlying type/function/etc or an empty list in case the C
+        identifier isn't known or it isn't exposed in Python.
+
+        e.g. "GtkWidget" -> ["Gtk.Widget"]
+        """
+
         for ns in self._namespaces:
             if c_id in ns.types:
-                return ns.types[c_id][0]
+                return ns.types[c_id]
+        return []
 
     def lookup_gtkdoc_ref(self, doc_ref):
         """Given a gtk-doc reference will try to find an URL to external
@@ -114,7 +127,14 @@ class Repository(object):
 
         return self._ns.import_module()
 
-    def get_source(self):
+    def get_source_map(self):
+        """Returns a dict mapping C symbols to an external url showing
+        the code of that symbol.
+
+        e.g. "g_idle_add" ->
+            https://git.gnome.org/browse/glib/tree/glib/gmain.c?h=2.46.2#n5538
+        """
+
         return self._ns.source_map
 
     def get_types(self):

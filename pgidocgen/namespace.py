@@ -168,9 +168,7 @@ class Namespace(object):
         source = {}
         for lib in self.shared_libraries:
             for symbol, path in get_line_numbers_for_name(lib).iteritems():
-                if symbol in self.types:
-                    for key in self.types[symbol]:
-                        source[key] = path
+                source[symbol] = path
         return source
 
     def import_module(self):
@@ -446,8 +444,6 @@ def _parse_types(dom, namespace):
                 replacement = shadowed[name]
                 types[replacement].clear()
                 types[replacement].add(name)
-        if not names:
-            del types[c_name]
 
     if namespace == "GObject":
         # these come from overrides and aren't in the gir
