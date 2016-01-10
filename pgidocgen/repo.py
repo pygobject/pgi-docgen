@@ -20,20 +20,19 @@ class Repository(object):
         self.version = version
 
         self._ns = ns = get_namespace(namespace, version)
-        self._docs = ns.parse_docs()
-        self._private = ns.parse_private()
+        self._docs = ns.docs
 
         # merge all type mappings and doc references
         self._types = {}
         self._refs = {}
         self._type_structs = {}
-        loaded = [ns] + [get_namespace(*x) for x in ns.get_all_dependencies()]
+        loaded = [ns] + [get_namespace(*x) for x in ns.all_dependencies]
         # prefer our own types in case there are conflicts
         # (not sure if there can be..)
         for sub_ns in reversed(loaded):
-            self._types.update(sub_ns.get_types())
-            self._refs.update(sub_ns.get_doc_references())
-            self._type_structs.update(sub_ns.get_type_structs())
+            self._types.update(sub_ns.types)
+            self._refs.update(sub_ns.doc_references)
+            self._type_structs.update(sub_ns.type_structs)
 
         # remove all references which look like C types, we handle them
         # separately and link the API doc version instead
@@ -89,18 +88,17 @@ class Repository(object):
         return version_added, dep_version, dep
 
     def get_all_dependencies(self):
-        return self._ns.get_all_dependencies()
+        return self._ns.all_dependencies
 
     def import_module(self):
         return self._ns.import_module()
 
     def get_source(self):
-        source = self._ns.get_source()
-        return source
+        return self._ns.source_map
 
     def is_private(self, name):
         """is_private('Gtk.ViewportPrivate')"""
 
         assert "." in name
 
-        return name in self._private
+        return name in self._ns.private

@@ -16,8 +16,8 @@ class TNamespace(unittest.TestCase):
 
     def test_soup(self):
         ns = get_namespace("Soup", "2.4")
-        types = ns.get_types()
-        ns.parse_docs()
+        types = ns.types
+        ns.docs
 
         self.assertEqual(types["SOUP_STATUS_CANCELLED"],
                          ["Soup.Status.CANCELLED"])
@@ -33,20 +33,20 @@ class TNamespace(unittest.TestCase):
 
     def test_gtk(self):
         ns = get_namespace("Gtk", "3.0")
-        types = ns.get_types()
-        ns.parse_docs()
+        types = ns.types
+        ns.docs
 
         self.assertEqual(types["GtkWindow"], ["Gtk.Window"])
         self.assertEqual(types["GtkAppChooser"], ["Gtk.AppChooser"])
         self.assertEqual(types["GtkArrowType"], ["Gtk.ArrowType"])
 
-        type_structs = ns.get_type_structs()
+        type_structs = ns.type_structs
         self.assertEqual(type_structs["GtkTreeStoreClass"], "Gtk.TreeStore")
 
     def test_gdk(self):
         ns = get_namespace("Gdk", "3.0")
-        types = ns.get_types()
-        docs = ns.parse_docs()
+        types = ns.types
+        docs = ns.docs
         versions = get_versions(docs)
         self.assertTrue("2.0" in versions)
         self.assertTrue("3.0" in versions)
@@ -55,8 +55,8 @@ class TNamespace(unittest.TestCase):
 
     def test_gobject(self):
         ns = get_namespace("GObject", "2.0")
-        types = ns.get_types()
-        ns.parse_docs()
+        types = ns.types
+        ns.docs
 
         self.assertEqual(types["GTypeCValue"], ["GObject.TypeCValue"])
         self.assertEqual(types["GBoxed"], ["GObject.GBoxed"])
@@ -66,8 +66,8 @@ class TNamespace(unittest.TestCase):
 
     def test_glib(self):
         ns = get_namespace("GLib", "2.0")
-        types = ns.get_types()
-        ns.parse_docs()
+        types = ns.types
+        ns.docs
 
         self.assertEqual(types["GBookmarkFileError"],
                          ["GLib.BookmarkFileError"])
@@ -78,8 +78,8 @@ class TNamespace(unittest.TestCase):
 
     def test_atk(self):
         ns = get_namespace("Atk", "1.0")
-        types = ns.get_types()
-        docs = ns.parse_docs()
+        types = ns.types
+        docs = ns.docs
         versions = get_versions(docs)
         self.assertTrue("ATK-0.7" not in versions)
         self.assertTrue("0.7" in versions)
@@ -87,8 +87,8 @@ class TNamespace(unittest.TestCase):
 
     def test_cairo(self):
         ns = get_namespace("cairo", "1.0")
-        types = ns.get_types()
-        ns.parse_docs()
+        types = ns.types
+        ns.docs
 
         self.assertEqual(types["cairo_t"], ["cairo.Context"])
 
@@ -102,33 +102,33 @@ class TNamespace(unittest.TestCase):
 
     def test_pango(self):
         ns = get_namespace("Pango", "1.0")
-        types = ns.get_types()
-        ns.parse_docs()
+        types = ns.types
+        ns.docs
 
         self.assertEqual(types["pango_break"], ["Pango.break_"])
 
     def test_ges(self):
         ns = get_namespace("GES", "1.0")
-        ns.parse_docs()
-        types = ns.get_types()
+        ns.docs
+        types = ns.types
         self.assertTrue("position" not in types)
 
     def test_deps(self):
         ns = get_namespace("DBus", "1.0")
-        deps = ns.get_dependencies()
+        deps = ns.dependencies
         self.assertTrue(("GObject", "2.0") in deps)
 
         ns = get_namespace("GLib", "2.0")
-        deps = ns.get_dependencies()
+        deps = ns.dependencies
         self.assertFalse(deps)
 
         ns = get_namespace("GObject", "2.0")
-        deps = ns.get_dependencies()
+        deps = ns.dependencies
         self.assertEqual(deps, [("GLib", "2.0")])
 
     def test_all_deps(self):
         ns = get_namespace("DBus", "1.0")
-        deps = ns.get_all_dependencies()
+        deps = ns.all_dependencies
         self.assertTrue(("GObject", "2.0") in deps)
         self.assertTrue(("GLib", "2.0") in deps)
 

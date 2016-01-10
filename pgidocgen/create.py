@@ -18,7 +18,6 @@ from .util import get_gir_files
 
 
 def _main_many(prog, target, namespaces):
-    print prog
     fd, temp_cache = tempfile.mkstemp("pgidocgen-cache")
     os.close(fd)
     try:

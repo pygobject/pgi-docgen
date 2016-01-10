@@ -28,31 +28,37 @@ RE_XML_ILLEGAL = "(&#x1c;)"
 
 
 def get_namespace(namespace, version, _cache={}):
-    key = str(namespace + "." + version)
-    if key in _cache:
-        return _cache[key]
-    if SHELVE_CACHE:
-        try:
-            if os.path.getsize(SHELVE_CACHE) == 0:
-                # created by tempfile, replace here
-                os.remove(SHELVE_CACHE)
-        except OSError:
-            pass
 
-        d = shelve.open(SHELVE_CACHE, protocol=2)
-        if key in d:
-            res = d[key]
-            d.close()
-            return res
+    key = str(namespace + "-" + version)
 
-    ns = Namespace(namespace, version)
+    if key not in _cache:
+        if SHELVE_CACHE:
+            try:
+                if os.path.getsize(SHELVE_CACHE) == 0:
+                    # created by tempfile, replace here
+                    os.remove(SHELVE_CACHE)
+            except OSError:
+                pass
 
-    if SHELVE_CACHE:
-        d[key] = ns
-        d.close()
+            d = shelve.open(SHELVE_CACHE, protocol=2)
+            if key in d:
+                _cache[key] = d[key]
+                d.close()
+            else:
+                d.close()
+                ns = Namespace(namespace, version)
+                # make sure we save a fully populated instance
+                for k, v in type(ns).__dict__.items():
+                    if isinstance(v, util.cached_property):
+                        getattr(ns, k)
+                d = shelve.open(SHELVE_CACHE, protocol=2)
+                d[key] = ns
+                d.close()
+                _cache[key] = ns
+        else:
+            _cache[key] = Namespace(namespace, version)
 
-    _cache[key] = ns
-    return ns
+    return _cache[key]
 
 
 def _get_dom(path, _cache={}):
@@ -130,49 +136,40 @@ class Namespace(object):
         self.namespace = namespace
         self.version = version
 
-        dom = _get_dom(self.path)
+        self._types = None
+        self._type_structs = None
 
-        self._types, self._type_structs = _parse_types(dom, namespace)
+    def _ensure_types(self):
+        if self._types is not None:
+            return
+        dom = _get_dom(self.path)
+        self._types, self._type_structs = _parse_types(dom, self.namespace)
         self._types.update(get_cairo_types())
         self._types.update(get_base_types())
 
-        # dependencies
-        deps = []
-        for include in dom.getElementsByTagName("include"):
-            name = include.getAttribute("name")
-            version = include.getAttribute("version")
-            deps.append((name, version))
-
-        # line number mapping
+    @util.cached_property
+    def shared_libraries(self):
+        dom = _get_dom(self.path)
         namespace_elm = dom.getElementsByTagName("namespace")[0]
         shared_library = namespace_elm.getAttribute("shared-library")
-        self._shared_libraries = \
-            shared_library.split(",") if shared_library else []
+        return shared_library.split(",") if shared_library else []
 
-        # these are not always included, but we need them
-        # for base types
-        if not deps:
-            if self.namespace not in ("GObject", "GLib"):
-                deps.append(("GObject", "2.0"))
-
-        self._dependencies = deps
-
-    @util.cache_calls
-    def get_doc_references(self):
+    @util.cached_property
+    def doc_references(self):
         return load_doc_references(self.namespace, self.version)
 
-    @util.cache_calls
-    def get_source(self):
+    @util.cached_property
+    def source_map(self):
         """Returns a dict mapping C symbols to relative source paths and line
         numbers. In case no debug symbols are present the returned dict will
         be empty.
         """
 
         source = {}
-        for lib in self._shared_libraries:
+        for lib in self.shared_libraries:
             for symbol, path in get_line_numbers_for_name(lib).iteritems():
-                if symbol in self._types:
-                    for key in self._types[symbol]:
+                if symbol in self.types:
+                    for key in self.types[symbol]:
                         source[key] = path
         return source
 
@@ -184,13 +181,12 @@ class Namespace(object):
 
         # This is all needed because some modules depending on GStreamer
         # segfaults if Gst.init() isn't called before introspecting them
-        to_load = list(reversed(self.get_all_dependencies()))
+        to_load = list(reversed(self.all_dependencies))
         to_load += [(self.namespace, self.version)]
 
         for (namespace, version) in to_load:
             module = util.import_namespace(namespace, version)
 
-            # this needs to be synced with module._import_dependency
             if namespace in ("Clutter", "ClutterGst", "Gst", "Grl"):
                 module.init([])
             elif namespace in ("Gsf", "IBus"):
@@ -198,38 +194,61 @@ class Namespace(object):
 
         return module
 
-    def parse_private(self):
+    @util.cached_property
+    def private(self):
         return _parse_private(_get_dom(self.path), self.namespace)
 
-    def parse_docs(self):
+    @util.cached_property
+    def docs(self):
         docs = _parse_docs(_get_dom(self.path))
         _fixup_all_added_since(docs)
         return docs
 
-    def get_types(self):
+    @util.cached_property
+    def types(self):
+        self._ensure_types()
         return self._types
 
-    def get_type_structs(self):
+    @util.cached_property
+    def type_structs(self):
+        self._ensure_types()
         return self._type_structs
 
-    @property
+    @util.cached_property
     def path(self):
         key = "%s-%s" % (self.namespace, self.version)
         return util.get_gir_files()[key]
 
-    def get_dependencies(self):
-        return list(self._dependencies)
+    @util.cached_property
+    def dependencies(self):
+        dom = _get_dom(self.path)
 
-    def get_all_dependencies(self):
+        # dependencies
+        deps = []
+        for include in dom.getElementsByTagName("include"):
+            name = include.getAttribute("name")
+            version = include.getAttribute("version")
+            deps.append((name, version))
+
+        # these are not always included, but we need them
+        # for base types
+        if not deps:
+            if self.namespace not in ("GObject", "GLib"):
+                deps.append(("GObject", "2.0"))
+
+        return deps
+
+    @util.cached_property
+    def all_dependencies(self):
         loaded = []
-        to_load = self.get_dependencies()
+        to_load = list(self.dependencies)
         while to_load:
             key = to_load.pop()
             if key in loaded:
                 continue
             sub_ns = get_namespace(*key)
             loaded.append(key)
-            to_load.extend(sub_ns.get_dependencies())
+            to_load.extend(sub_ns.dependencies)
 
         return loaded
 

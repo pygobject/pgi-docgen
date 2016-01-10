@@ -101,7 +101,7 @@ class ModuleGenerator(object):
             mods.append((namespace, version))
 
             ns = get_namespace(namespace, version)
-            for dep in ns.get_dependencies():
+            for dep in ns.dependencies:
                 mods.extend(get_to_write(dir_, *dep))
 
             return mods
@@ -118,10 +118,6 @@ class ModuleGenerator(object):
             return
 
         print "%s-%s: building..." % (namespace, version)
-
-        os.mkdir(sub_dir)
-        dir_ = sub_dir
-
         module = Repository(namespace, version).parse()
 
         class_gen = ClassGenerator()
@@ -172,6 +168,9 @@ class ModuleGenerator(object):
 
         map_gen = MappingGenerator()
         map_gen.set_mapping(module.symbol_mapping)
+
+        os.mkdir(sub_dir)
+        dir_ = sub_dir
 
         with open(os.path.join(sub_dir, "index.rst"),  "wb") as h:
 
