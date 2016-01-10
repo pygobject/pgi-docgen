@@ -423,8 +423,8 @@ def _parse_types(dom, namespace):
             elif key.startswith(("G_MAX", "G_MIN")):
                 types[key].add("GObject." + key)
 
-        types["GBoxed"].add("GObject.GBoxed")
-        types["GType"].add("GObject.GType")
+        types["GBoxed"] = set(["GObject.GBoxed"])
+        types["GType"] = set(["GObject.GType"])
     elif namespace == "GLib":
         from gi.repository import GLib
 

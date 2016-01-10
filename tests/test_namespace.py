@@ -62,6 +62,7 @@ class TNamespace(unittest.TestCase):
         self.assertEqual(types["GBoxed"], ["GObject.GBoxed"])
 
         self.assertEqual(types["G_MAXSSIZE"], ["GObject.G_MAXSSIZE"])
+        self.assertEqual(types["GType"], ["GObject.GType"])
 
     def test_glib(self):
         ns = get_namespace("GLib", "2.0")
