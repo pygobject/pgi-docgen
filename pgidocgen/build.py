@@ -243,14 +243,13 @@ def main(argv):
             t.write(env.render(body=rest2html(main_rst)))
 
         share_static(target_path)
-
-    # for devhelp to pick things up the dir name has to match the
-    # devhelp file name (without the extension)
-    if devhelp:
+    else:
+        # for devhelp to pick things up the dir name has to match the
+        # devhelp file name (without the extension)
         for package in done:
             path = package.build_path
-            os.remove(os.path.join(path, "objects.inv"))
             dh = glob.glob(os.path.join(path, "*.devhelp.gz"))[0]
             dh_name = os.path.join(
                 os.path.dirname(dh), os.path.basename(path) + ".devhelp.gz")
-            os.rename(dh, dh_name)
+            if not os.path.exists(dh_name):
+                os.rename(dh, dh_name)
