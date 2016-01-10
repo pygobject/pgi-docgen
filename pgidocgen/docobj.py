@@ -775,8 +775,11 @@ class SymbolMapping(object):
         symbol_map = []
         items = repo.get_types().iteritems()
         for key, values in sorted(items, key=lambda x: x[0].lower()):
-            source_path = source_map.get(key, u"")
-            source_url = func(source_path) if source_path else u""
+            if func:
+                source_path = source_map.get(key, u"")
+                source_url = func(source_path) if source_path else u""
+            else:
+                source_url = u""
             for value in values:
                 if not value.startswith(repo.namespace + "."):
                     continue
