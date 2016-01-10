@@ -84,8 +84,9 @@ def do_build(package):
     copy_env["PGIDOCGEN_TARGET_BASE_PATH"] = \
         os.path.dirname(package.build_path)
 
-    subprocess.check_call(["sphinx-build", "-a", "-E"] + sphinx_args,
-                          env=copy_env)
+    subprocess.check_call(
+        ["sphinx-build", "-n", "-q", "-a", "-E"] + sphinx_args,
+        env=copy_env)
 
     # we don't rebuild, remove all caches
     shutil.rmtree(os.path.join(package.build_path, ".doctrees"))
@@ -212,11 +213,7 @@ def main(argv):
     pool.close()
     pool.join()
 
-    print "#" * 37
-    print "Creating index + search..."
-
     if not devhelp:
-        print repr(target_path)
         merge(target_path, include_terms=False, exclude_old=True)
 
         index_path = os.path.join(get_data_dir(), "index")
