@@ -338,6 +338,9 @@ bar\
         "`bla[0][1] = 3`",
         "``bla[0][1] = 3``",
 ),(
+        "#GtkWidget.get_request_mode()",
+        ":obj:`Gtk.Widget.do_get_request_mode` ()",
+),(
         """\
 |[<!-- language="C" -->
     GdkEvent *event;

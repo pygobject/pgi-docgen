@@ -85,8 +85,13 @@ def _handle_data(repo, current, d):
                 vfunc = vfunc[1:]
             class_, field = vfunc.split(".", 1)
             type_structs = repo.get_type_structs()
+            types = repo.get_types()
             if class_ in type_structs:
                 pytype = type_structs[class_]
+                token = ":obj:`%s.do_%s` ()" % (pytype, field)
+            elif class_ in types:
+                # fall back to the class, for #GObject.constructed()
+                pytype = types[class_][0]
                 token = ":obj:`%s.do_%s` ()" % (pytype, field)
         elif type_ == "ID":
             parts = re.split("(::?)", token)
