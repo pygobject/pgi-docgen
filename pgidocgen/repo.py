@@ -20,15 +20,8 @@ class Repository(object):
 
         self._ns = ns = get_namespace(namespace, version)
 
-        # merge all type mappings and doc references
-        self._types = {}
         loaded = [ns] + [get_namespace(*x) for x in ns.all_dependencies]
         self._namespaces = loaded
-
-        # prefer our own types in case there are conflicts
-        # (not sure if there can be..)
-        for sub_ns in reversed(self._namespaces):
-            self._types.update(sub_ns.types)
 
     def parse(self):
         """Returns a Module instance containing the whole documentation tree"""
@@ -151,7 +144,7 @@ class Repository(object):
         return self._ns.source_map
 
     def get_types(self):
-        return self._types
+        return self._ns.types
 
     def is_private(self, py_id):
         """Returns True if a Python type is considered private i.e. should
