@@ -157,8 +157,6 @@ def get_typelibs():
                 continue
             if not cache[package].is_installed:
                 to_install.add(package)
-            if not os.path.exists(path):
-                continue
             name = os.path.splitext(os.path.basename(path))[0]
             l = typelibs.setdefault(package, [])
             if name not in l:
