@@ -7,6 +7,7 @@
 
 import os
 import glob
+import re
 import argparse
 import subprocess
 from multiprocessing.pool import ThreadPool
@@ -32,11 +33,53 @@ def get_cpu_count():
         return 2
 
 
+def rewrite_static_links(main):
+    """Rerites the html <link> tags to reference the shared static dir.
+
+    This helps to reduce http requests in the online case.
+    """
+
+    def rewrite(path, depth):
+        with open(path, "rb") as h:
+            data = h.read()
+
+        def repl(match):
+            href = match.group(2)
+            if href.startswith("_static/"):
+                start = 0
+            elif "/_static/" in href:
+                start = href.index("/_static/") + 1
+            else:
+                return "".join(match.groups())
+
+            href = "../" * depth + href[start:]
+            return match.group(1) + href
+
+        new_data = re.sub("(<link .*? href=[\"'])([^\"']+)", repl, data)
+        if data != new_data:
+            with open(path, "wb") as h:
+                h.write(new_data)
+
+    for root, dirs, files in os.walk(main):
+        if root == main:
+            # ignore anything in the toplevel path
+            continue
+        for name in files:
+            path = os.path.join(root, name)
+            ext = os.path.splitext(path)[1]
+            if ext != ".html":
+                continue
+            depth = os.path.relpath(main, path).count(os.sep)
+            rewrite(path, depth)
+
+
 def share_static(main):
-    """Makes the sphinx _static folder shared by symlinking it.
+    """Makes the sphinx _static folder shared.
 
     Can be run multiple times to dedup newly added modules.
     """
+
+    rewrite_static_links(main)
 
     roots = []
     for entry in os.listdir(main):
@@ -49,23 +92,15 @@ def share_static(main):
 
     shared = os.path.join(main, "_static")
 
-    if os.name == "nt" and roots:
-        # on windows just make sure we copy one to the root for the
-        # index
+    if not os.path.exists(shared):
+        # copy one to the root
         shutil.rmtree(shared, ignore_errors=True)
         shutil.copytree(os.path.join(roots[0], "_static"), shared)
-        return
 
+    # remove all others
     for root in roots:
         static = os.path.join(root, "_static")
-        if os.path.islink(static):
-            continue
-        if not os.path.exists(shared):
-            shutil.move(static, shared)
-        else:
-            shutil.rmtree(static)
-        rel_target = os.path.relpath(shared, os.path.dirname(static))
-        os.symlink(rel_target, static)
+        shutil.rmtree(static, ignore_errors=True)
 
 
 def do_build(package):
