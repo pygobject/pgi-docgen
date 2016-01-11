@@ -175,3 +175,21 @@ cite {
     padding: 0px 5px;
     font-family: monospace;
 }
+
+.pgi-docs-external::after {
+  content: "\f08e";
+  font-family: FontAwesome;
+  font-weight: normal;
+  font-style: normal;
+  padding-left: 0.4em;
+  font-size: 0.7em;
+}
+
+a[href^="mailto:"]::after {
+  content: "\f003";
+  font-family: FontAwesome;
+  font-weight: normal;
+  font-style: normal;
+  padding-left: 0.4em;
+  font-size: 0.7em;
+}

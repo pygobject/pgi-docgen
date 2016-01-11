@@ -107,17 +107,28 @@ function frameOnLoad() {
     // them to replace the main window. This also fixes a the problem
     // when a link points to http and the frameset is https leading to
     // the browser blocking the action.
+    // Note: We can't use a.reference.external here as documentation
+    // of other packages pulled in through intersphinx is considered external
+    // as well and we want them to open in the frame.
     var links = elm.contentDocument.getElementsByTagName('a')
     for(var i=0; i < links.length; i++) {
         var link_ = links[i];
         if(!link_.host || !link_.pathname)
             continue
-        if (link_.host.indexOf(location.host) != 0) {
-            // online version
-            links[i].setAttribute('target', '_parent');
-        } else if (!location.host && link_.host) {
-            // offline version
-            links[i].setAttribute('target', '_parent');
+
+        // triggers in the online version over http://
+        var is_ext_online = (link_.host.indexOf(location.host) != 0);
+        // triggers locally over file://
+        var is_ext_offline = (!location.host && link_.host);
+
+        if (is_ext_online || is_ext_offline) {
+            link_.setAttribute('target', '_parent');
+            // set class to the first child if possible (so that borders around
+            // links also enclose the "external" icon.
+            if (link_.lastChild.classList === undefined)
+                link_.classList.add('pgi-docs-external');
+            else
+                link_.lastChild.classList.add('pgi-docs-external');
         }
     }
 
