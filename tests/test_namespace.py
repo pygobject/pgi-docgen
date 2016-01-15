@@ -36,6 +36,10 @@ class TNamespace(unittest.TestCase):
         types = ns.types
         ns.docs
 
+        for key, values in types.iteritems():
+            for v in values:
+                self.assertTrue(v.startswith("Gtk."), msg=v)
+
         self.assertEqual(types["GtkWindow"], ["Gtk.Window"])
         self.assertEqual(types["GtkAppChooser"], ["Gtk.AppChooser"])
         self.assertEqual(types["GtkArrowType"], ["Gtk.ArrowType"])

@@ -146,8 +146,6 @@ class Namespace(object):
         dom = _get_dom(self.path)
         self._types, self._type_structs, self._shadow_map = \
             _parse_types(dom, self.import_module(), self.namespace)
-        self._types.update(get_cairo_types())
-        self._types.update(get_base_types())
 
     @util.cached_property
     def shared_libraries(self):
@@ -300,6 +298,8 @@ def get_cairo_types():
             c_name = "_".join(filter(None, ["cairo", prefix, arg]))
             if hasattr(lib, c_name):
                 map_[c_name] = ["cairo." + obj.__name__ + "." + arg]
+        type_name = "_".join(filter(None,  ["cairo", prefix, "t"]))
+        map_[type_name] = ["cairo." + obj.__name__]
         return map_
 
     types = {}
@@ -335,6 +335,7 @@ def _parse_types(dom, module, namespace):
 
     type_structs = {}
     types = collections.defaultdict(set)
+    shadow_map = {}
 
     def add(c_name, py_name):
         assert py_name.count("."), py_name
@@ -387,7 +388,6 @@ def _parse_types(dom, module, namespace):
 
         add(c_name, full_name)
 
-    shadow_map = {}
     for key, value in all_shadows.iteritems():
         shadow_map[all_shadowed_by.pop(key)] = value
     assert not all_shadowed_by
@@ -413,7 +413,6 @@ def _parse_types(dom, module, namespace):
     elements += dom.getElementsByTagName("bitfield")
     elements += dom.getElementsByTagName("callback")
     elements += dom.getElementsByTagName("union")
-    elements += dom.getElementsByTagName("alias")
     for t in elements:
         # only top level
         if t.parentNode.tagName != "namespace":
@@ -492,9 +491,13 @@ def _parse_types(dom, module, namespace):
     elif namespace == "GLib":
         from gi.repository import GLib
 
+        types.update(get_base_types())
+
         for k in dir(GLib):
             if re.match("MINU?INT\d+", k) or re.match("MAXU?INT\d+", k):
                 types["G_" + k].add("GLib." + k)
+    elif namespace == "cairo":
+        types.update(get_cairo_types())
 
     # convert sets to lists and sort them so the best is first
     # (prefer methods over functions)
