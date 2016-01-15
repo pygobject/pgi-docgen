@@ -139,12 +139,13 @@ class Namespace(object):
         self._types = None
         self._type_structs = None
         self._shadow_map = None
+        self._iparams = None
 
     def _ensure_types(self):
         if self._types is not None:
             return
         dom = _get_dom(self.path)
-        self._types, self._type_structs, self._shadow_map = \
+        self._types, self._type_structs, self._shadow_map, self._iparams = \
             _parse_types(dom, self.import_module(), self.namespace)
 
     @util.cached_property
@@ -221,6 +222,12 @@ class Namespace(object):
 
         self._ensure_types()
         return self._type_structs
+
+    @util.cached_property
+    def instance_params(self):
+
+        self._ensure_types()
+        return self._iparams
 
     @util.cached_property
     def path(self):
@@ -336,6 +343,7 @@ def _parse_types(dom, module, namespace):
     type_structs = {}
     types = collections.defaultdict(set)
     shadow_map = {}
+    instance_params = {}
 
     def add(c_name, py_name):
         assert py_name.count("."), py_name
@@ -343,6 +351,7 @@ def _parse_types(dom, module, namespace):
         py_name = ".".join(
             map(util.escape_parameter, py_name.split(".")))
         types[c_name].add(py_name)
+        return py_name
 
     # key is the shadowed function name (gir name)
     all_shadows = {}
@@ -366,6 +375,9 @@ def _parse_types(dom, module, namespace):
         c_name = t.getAttribute("c:identifier")
         assert c_name
 
+        ip = t.getElementsByTagName("instance-parameter")
+        instance_param = ip[0].getAttribute("name") if ip else ""
+
         # Copy escaping from gi: Foo.break -> Foo.break_
         full_name = local_name
         parent = t.parentNode
@@ -386,7 +398,10 @@ def _parse_types(dom, module, namespace):
         if not introspectable or shadowed_by:
             skipped.add(c_name)
 
-        add(c_name, full_name)
+        set_name = add(c_name, full_name)
+        if instance_param:
+            # TODO: shadowed..?
+            instance_params[set_name] = instance_param
 
     for key, value in all_shadows.iteritems():
         shadow_map[all_shadowed_by.pop(key)] = value
@@ -506,7 +521,7 @@ def _parse_types(dom, module, namespace):
         values = sorted(values, key=lambda v: -v.count("."))
         types[key] = values
 
-    return types, type_structs, shadow_map
+    return types, type_structs, shadow_map, instance_params
 
 
 def _parse_private(dom, namespace):

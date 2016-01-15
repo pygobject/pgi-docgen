@@ -56,6 +56,8 @@ class TNamespace(unittest.TestCase):
         self.assertTrue("3.0" in versions)
 
         self.assertEqual(types["GdkModifierType"], ["Gdk.ModifierType"])
+        self.assertEqual(
+            ns.instance_params["Gdk.Window.begin_paint_region"], "window")
 
     def test_gobject(self):
         ns = get_namespace("GObject", "2.0")
