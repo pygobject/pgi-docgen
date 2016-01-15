@@ -52,19 +52,24 @@ SearchResults.prototype.hide = function() {
 SearchResults.prototype.fill = function(results, show_max, show_first) {
     assert(show_first <= show_max);
 
+    var not_shown = 0;
+
     this.abortFill();
 
-    if (results.length > show_max && show_max != -1)
+    if (results.length > show_max && show_max != -1) {
+        not_shown = results.length - show_max;
         results = results.slice(results.length - show_max, results.length);
+    }
 
     var that = this;
 
     function displayNextItem(current_id, entry_index) {
-        if (current_id !== that._current_id || !results.length)
+        if (current_id !== that._current_id)
             return;
 
         if (!results.length) {
-            that.showMessage("No Results");
+            if (not_shown > 0)
+                that.appendMessage("and " + not_shown + " more...");
             return;
         }
 
@@ -101,6 +106,13 @@ SearchResults.prototype.fill = function(results, show_max, show_first) {
  */
 SearchResults.prototype.showMessage = function(text) {
     this._obj.empty();
+    this.appendMessage(text);
+}
+
+/**
+ * Shows a status message at the end of the current list
+ */
+SearchResults.prototype.appendMessage = function(text) {
     var listItem = $('<li></li>');
     listItem.append($('<a/>').attr('class', 'message').html(text));
     this._obj.append(listItem);
@@ -186,8 +198,8 @@ SearchIndex.prototype._query = function(query) {
     // filter out empty ones
     parts = parts.filter(function(e){return e}); 
 
-    var max_entries = 300;
-    var show_first = 20;
+    var max_entries = 200;
+    var show_first = 30;
     var results = [];
 
     if(!parts.length) {
