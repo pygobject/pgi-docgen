@@ -86,7 +86,7 @@
             <input id="search-field" placeholder="Search" type="text" autocomplete="off">
         </td>
         <td>
-            <a id="settings-button"><i class="fa fa-cog"></i></a>
+            <a id="settings-button" target="Content" href="config.html"><i class="fa fa-cog"></i></a>
         </td>
         </tr>
         </table>
@@ -102,7 +102,9 @@
         </ul>
     </div>
 
-    <script src="jquery.js"></script>
+    <script type="text/javascript" src="jquery-2.2.0.min.js"></script>
+    <script type="text/javascript" src="js.cookie-2.1.0.min.js"></script>
+    <script type="text/javascript" src="pgi-config.js"></script>
     <script type="text/javascript" src="pgi-searchtools.js"></script>
     <script type="text/javascript" id="searchindexloader"></script>
 
@@ -119,11 +121,6 @@
     jQuery(function () {
         Search = new SearchIndex();
         Search.loadIndex("searchindex.js", "searchindexloader");
-
-        $('#settings-button').click(function(){
-            $(this).toggleClass("down");
-            alert("not implemented..");
-        });
 
         $('#search-field').focus();
 

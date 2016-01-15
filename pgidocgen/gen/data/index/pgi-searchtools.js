@@ -232,12 +232,22 @@ SearchIndex.prototype._getResults = function(parts) {
     var titles = index.titles;
 
     var results = [];
+    var case_sensitive = PGIConfig.getCaseSensitive();
 
     var do_score = function (text, part) {
         // returns -1 if not found, or a score >= 0
 
-        var lower_text = text.toLowerCase();
-        var lower_part = part.toLowerCase();
+        var lower_text;
+        var lower_part;
+
+        if (case_sensitive) {
+            lower_text = text;
+            lower_part = part;
+        } else {
+            lower_text = text.toLowerCase();
+            lower_part = part.toLowerCase();
+        }
+
         var index = lower_text.indexOf(lower_part);
 
         // it's not in there
