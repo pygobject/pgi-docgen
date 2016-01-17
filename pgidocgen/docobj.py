@@ -415,6 +415,7 @@ class Class(BaseDocObject, MethodsMixin, PropertiesMixin, SignalsMixin,
 
         self.is_interface = False
         self.is_abstract = False
+        self.is_gobject = False
         self.signature = None
         self.image_path = None
 
@@ -499,6 +500,8 @@ class Class(BaseDocObject, MethodsMixin, PropertiesMixin, SignalsMixin,
             if class_struct:
                 cs = type(class_struct)
                 klass.gtype_struct = class_name(cs)
+
+        klass.is_gobject = util.is_object(obj)
 
         def iter_gtype_structs(obj):
             for base in util.fake_mro(obj):

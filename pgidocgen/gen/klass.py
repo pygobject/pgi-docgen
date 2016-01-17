@@ -156,6 +156,8 @@ None
 
 {# ################################################ #}
 
+{% if cls.is_gobject %}
+
 .. _{{ cls.fullname }}.props:
 
 Properties
@@ -179,6 +181,8 @@ Properties
     {% endfor %}
 {% elif not cls.properties_inherited %}
 None
+{% endif %}
+
 {% endif %}
 
 {# ################################################ #}
@@ -243,6 +247,8 @@ Style Properties
 
 {# ################################################ #}
 
+{% if cls.is_gobject %}
+
 .. _{{ cls.fullname }}.signals:
 
 Signals
@@ -266,6 +272,8 @@ Signals
     {% endfor %}
 {% elif not cls.signals_inherited %}
 None
+{% endif %}
+
 {% endif %}
 
 {# ################################################ #}
