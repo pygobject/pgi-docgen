@@ -66,8 +66,8 @@ class TDocstring(unittest.TestCase):
     def setUp(self):
         self._repo = DummyRepo()
 
-    def _check(self, text, expected, current=None):
-        out = docstring_to_rest(self._repo, current, text)
+    def _check(self, text, expected, current_type=None, current_func=None):
+        out = docstring_to_rest(self._repo, text, current_type, current_func)
         self.assertEqual(out, expected)
 
     def check(self, *args, **kwargs):
@@ -121,6 +121,13 @@ class TDocstring(unittest.TestCase):
         self.check(
             "in *@dest_x and ",
             "in `dest_x` and ")
+
+    def test_instance_params(self):
+        self.check(
+            "a @tree_model and a @foo",
+            "a `self` and a `foo`",
+            "Gtk.TreeModel",
+            "Gtk.TreeModel.get")
 
     def test_inline_code(self):
         self.check(

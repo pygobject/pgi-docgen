@@ -96,7 +96,7 @@ class TFuncSigs(unittest.TestCase):
 
         class FakeRepo(object):
 
-            def lookup_docs(self, type_, name, current=None, signal=False):
+            def lookup_docs(self, type_, name, *args, **kwargs):
                 if "para" in type_:
                     return escape_rest("PARADOC(%s)" % name), ""
                 return escape_rest("RETURNDOC(%s)" % name), ""

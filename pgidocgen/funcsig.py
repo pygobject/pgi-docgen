@@ -154,6 +154,12 @@ class FuncSignature(object):
         else:
             assert full_name.split(".")[-1] == self.name
 
+        current_func = full_name
+        if full_name.count(".") == 2:
+            current_type = full_name.rsplit(".", 1)[0]
+        else:
+            current_type = None
+
         docs = []
         for i, (key, value) in enumerate(self.args):
             # strip * from *args
@@ -164,7 +170,8 @@ class FuncSignature(object):
             else:
                 text = doc_repo.lookup_docs(
                     "signal-parameters" if signal else "parameters",
-                    param_key, current=current)[0]
+                    param_key, current_type=current_type,
+                    current_func=full_name)[0]
             key = escape_rest(key)
             docs.append(":param %s:\n%s\n" % (key, indent(text)))
             docs.append(":type %s: %s" % (key, arg_to_class_ref(value)))
@@ -179,7 +186,8 @@ class FuncSignature(object):
                 # normal return value
                 text = doc_repo.lookup_docs(
                     "signal-returns" if signal else "returns",
-                    full_name, current=current)[0]
+                    full_name, current_type=current_type,
+                    current_func=current_func)[0]
                 if text:
                     return_docs.append(text)
             else:
@@ -188,7 +196,8 @@ class FuncSignature(object):
                 pkey = full_name + "." + name
                 text = doc_repo.lookup_docs(
                     "signal-parameters" if signal else "parameters",
-                    pkey, current=current)[0]
+                    pkey, current_type=current_type,
+                    current_func=current_func)[0]
                 if text:
                     if len(self.res) != 1:
                         text = ":%s:\n%s" % (escape_rest(name), indent(text))

@@ -15,7 +15,7 @@ from .util import escape_rest, force_unindent
 from .gtkdoc import ConvertMarkDown
 
 
-def _handle_data(repo, current, d):
+def _handle_data(repo, current_type, current_func, d):
 
     scanner = re.Scanner([
         (r"\*?@[A-Za-z0-9_]+", lambda scanner, token:("PARAM", token)),
@@ -76,9 +76,10 @@ def _handle_data(repo, current, d):
                 # some docs use it to reference constants..
                 token = id_ref(token)
             else:
-                instance_param = repo.lookup_instance_param(current)
-                if token == instance_param:
-                    token = "self"
+                if current_func is not None:
+                    instance_param = repo.lookup_instance_param(current_func)
+                    if token == instance_param:
+                        token = "self"
                 token = "`%s`" % token
         elif type_ == "VFUNC":
             assert token[-2:] == "()"
@@ -101,8 +102,8 @@ def _handle_data(repo, current, d):
                 objtype = repo.lookup_py_id(obj_id)
                 if objtype is not None:
                     obj_rst_id = objtype
-                elif current:
-                    obj_rst_id = ".".join(current.split(".")[:2])
+                elif current_type:
+                    obj_rst_id = ".".join(current_type.split(".")[:2])
                 else:
                     obj_rst_id = None
 
@@ -190,7 +191,14 @@ def docref_to_pyref(repo, ref):
     return None
 
 
-def _handle_xml(repo, current, out, item):
+def _handle_xml(repo, current_type, current_func, out, item):
+
+    def handle_next(out, item):
+        return _handle_xml(repo, current_type, current_func, out, item)
+
+    def handle_data(text):
+        return _handle_data(repo, current_type, current_func, text)
+
     if isinstance(item, Tag):
         if item.name == "literal" or item.name == "type":
             out.append("``%s``" % item.text)
@@ -200,7 +208,7 @@ def _handle_xml(repo, current, out, item):
                 if not isinstance(item, Tag):
                     continue
                 other_out = []
-                _handle_xml(repo, current, other_out, item)
+                handle_next(other_out, item)
                 item_text = "".join(other_out).strip()
                 data = ""
                 for i, line in enumerate(item_text.splitlines()):
@@ -236,7 +244,7 @@ def _handle_xml(repo, current, out, item):
                 out.append(code)
         elif item.name == "para":
             for item in item.contents:
-                _handle_xml(repo, current, out, item)
+                handle_next(out, item)
             out.append("\n")
         elif item.name == "title":
             # fake a title by creating a "Definition List". It can contain
@@ -244,7 +252,7 @@ def _handle_xml(repo, current, out, item):
             # is it doesn't allow newlines, but we can live with that for
             # titles
             title_text = " ".join(
-                _handle_data(repo, current, item.getText()).splitlines())
+                handle_data(item.getText()).splitlines())
             code = "\n%s\n    ..\n        .\n\n" % title_text
             out.append(code)
         elif item.name == "keycombo":
@@ -252,7 +260,7 @@ def _handle_xml(repo, current, out, item):
             for sub in item.contents:
                 if not isinstance(sub, Tag):
                     continue
-                subs.append(_handle_data(repo, current, sub.getText()))
+                subs.append(handle_data(sub.getText()))
             out.append(" + ".join(subs))
         elif item.name == "varlistentry":
             terms = []
@@ -276,22 +284,22 @@ def _handle_xml(repo, current, out, item):
 
             lines = []
             terms_line = ", ".join(
-                [_handle_data(repo, current, t) for t in terms])
+                [handle_data(t) for t in terms])
             lines.append("%s\n" % terms_line)
             listitem = force_unindent(listitem, ignore_first_line=True)
             lines.append(
-                util.indent(_handle_data(repo, current, listitem)) + "\n")
+                util.indent(handle_data(listitem)) + "\n")
             out.append("\n")
             out.extend(lines)
         else:
             for sub in item.contents:
-                _handle_xml(repo, current, out, sub)
+                handle_next(out, sub)
     else:
         if not out or out[-1].endswith("\n"):
             data = force_unindent(item.string, ignore_first_line=False)
         else:
             data = force_unindent(item.string, ignore_first_line=True)
-        out.append(_handle_data(repo, current, data))
+        out.append(handle_data(data))
 
 
 def _docstring_to_docbook(docstring):
@@ -317,12 +325,12 @@ def _docstring_to_docbook(docstring):
     return docstring
 
 
-def _docbook_to_rest(repo, current, docbook):
+def _docbook_to_rest(repo, docbook, current_type, current_func):
     soup = BeautifulStoneSoup(docbook,
                               convertEntities=BeautifulStoneSoup.HTML_ENTITIES)
     out = []
     for item in soup.contents:
-        _handle_xml(repo, current, out, item)
+        _handle_xml(repo, current_type, current_func, out, item)
 
     # make sure to insert spaces between special reST chars
     rst = ""
@@ -338,23 +346,34 @@ def _docbook_to_rest(repo, current, docbook):
     return rst
 
 
-def docstring_to_rest(repo, current, docstring):
+def docstring_to_rest(repo, docstring, current_type=None, current_func=None):
     """Converts `docstring` to reST.
 
     Args:
         repo (Repository): the repo that produced the docstring
-        current (str): the Python identifier for the docstring.
+        docstring (str): the docstring
+        current_type (str or None): the Python identifier for the docstring.
             In case the docstring comes from Gtk.Widget.some_func, the parser
             can use "Gtk.Widget" in case a signal without a class name is
             referenced.
-        docstring (str): the docstring
+        current_func (str or None): The Python identifier for the docstring.
+            In case the docstring comes from Gtk.Widget.some_func, the parser
+            can use "Gtk.Widget.some_func" to rewrite instance parameters.
 
     Returns:
         str: the docstring converted to reST
     """
 
+    if current_type is not None:
+        # types
+        assert current_type.count(".") == 1
+
+    if current_func is not None:
+        # functions or methods
+        assert current_func.count(".") in (1, 2)
+
     docbook = _docstring_to_docbook(docstring)
-    rst = _docbook_to_rest(repo, current, docbook)
+    rst = _docbook_to_rest(repo, docbook, current_type, current_func)
 
     if not docstring.endswith("\n"):
         rst = rst.rstrip("\n")

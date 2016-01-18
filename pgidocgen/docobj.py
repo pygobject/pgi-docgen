@@ -270,7 +270,8 @@ class Property(BaseDocObject):
 
         if spec.get_blurb() is not None:
             short_desc = docstring_to_rest(
-                repo, prop.fullname, spec.get_blurb().decode("utf-8"))
+                repo, spec.get_blurb().decode("utf-8"),
+                current_type=parent_fullname)
         else:
             short_desc = u""
 
@@ -289,11 +290,13 @@ class Property(BaseDocObject):
 
         if spec.blurb is not None:
             short_desc = docstring_to_rest(
-                repo, prop.fullname, spec.blurb.decode("utf-8"))
+                repo, spec.blurb.decode("utf-8"),
+                current_type=parent_fullname)
         else:
             short_desc = u""
 
-        prop.info = DocInfo.from_object(repo, "properties", prop)
+        prop.info = DocInfo.from_object(repo, "properties", prop,
+                                        current_type=parent_fullname)
         if spec.flags & GObject.ParamFlags.DEPRECATED:
             prop.info.deprecated = True
         if not prop.info.desc:
@@ -333,14 +336,15 @@ class Signal(BaseDocObject):
 
         if fsig:
             signature_desc = fsig.to_rest_listing(
-                repo, inst.fullname, current=inst.fullname, signal=True)
+                repo, inst.fullname, signal=True)
         else:
             # FIXME pgi
             print "FIXME: signal: %s " % inst.fullname
             signature_desc = "(FIXME pgi-docgen: arguments are missing here)"
 
         inst.signature_desc = signature_desc
-        inst.info = DocInfo.from_object(repo, "signals", inst)
+        inst.info = DocInfo.from_object(repo, "signals", inst,
+                                        current_type=parent_fullname)
         if sig.flags & GObject.SignalFlags.DEPRECATED:
             inst.info.deprecated = True
         inst.short_desc = to_short_desc(inst.info.desc)
@@ -484,7 +488,8 @@ class Class(BaseDocObject, MethodsMixin, PropertiesMixin, SignalsMixin,
         klass._parse_signals(repo, obj)
         klass._parse_fields(repo, obj)
 
-        klass.info = DocInfo.from_object(repo, "all", klass)
+        klass.info = DocInfo.from_object(repo, "all", klass,
+                                         current_type=klass.fullname)
 
         if util.is_iface(obj):
             klass.is_interface = True
@@ -584,7 +589,8 @@ class Field(BaseDocObject):
         field.readable = field_info.readable
         field.writable = field_info.writeable
 
-        field.info = DocInfo.from_object(repo, "fields", field)
+        field.info = DocInfo.from_object(repo, "fields", field,
+                                         current_type=parent_fullname)
 
         return field
 
@@ -643,7 +649,10 @@ class Function(BaseDocObject):
         def get_instance():
             instance = cls(
                 parent_fullname, name, is_method, is_static, is_vfunc)
-            instance.info = DocInfo.from_object(repo, "all", instance)
+            current_type = parent_fullname if is_method else None
+            instance.info = DocInfo.from_object(
+                repo, "all", instance,
+                current_type=current_type, current_func=instance.fullname)
             return instance
 
         sig = FuncSignature.from_string(name, first_line)
@@ -663,8 +672,7 @@ class Function(BaseDocObject):
         instance = get_instance()
 
         # create sphinx lists for the signature we found
-        instance.signature_desc = sig.to_rest_listing(
-            repo, fullname, current=instance.fullname)
+        instance.signature_desc = sig.to_rest_listing(repo, fullname)
         instance.signature = sig.to_simple_signature()
 
         return instance
@@ -691,7 +699,8 @@ class Structure(BaseDocObject, MethodsMixin, FieldsMixin):
 
         signature = get_signature_string(obj.__init__)
         instance = cls(obj.__module__, obj.__name__, signature)
-        instance.info = DocInfo.from_object(repo, "all", instance)
+        instance.info = DocInfo.from_object(repo, "all", instance,
+                                            current_type=instance.fullname)
         instance._parse_methods(repo, obj)
         instance._parse_fields(repo, obj)
 
@@ -734,7 +743,8 @@ class Flags(BaseDocObject, MethodsMixin):
     @classmethod
     def from_object(cls, repo, obj):
         instance = cls(obj.__module__, obj.__name__)
-        instance.info = DocInfo.from_object(repo, "all", instance)
+        instance.info = DocInfo.from_object(repo, "all", instance,
+                                            current_type=instance.fullname)
         instance._parse_values(repo, obj)
         instance._parse_methods(repo, obj)
         return instance
@@ -928,10 +938,12 @@ class DocInfo(BaseDocObject):
         self.deprecation_desc = u""
 
     @classmethod
-    def from_object(cls, repo, type_, doc_object):
+    def from_object(cls, repo, type_, doc_object,
+                    current_type=None, current_func=None):
         info = cls(doc_object.fullname, doc_object.name)
         info.desc, info.shadowed_desc = repo.lookup_docs(
-            type_, info.fullname, current=info.fullname)
+            type_, info.fullname,
+            current_type=current_type, current_func=current_func)
         info.version_added, info.version_deprecated, info.deprecation_desc = \
             repo.lookup_meta(type_, info.fullname)
         info.deprecated = bool(

@@ -87,10 +87,11 @@ class Repository(object):
             if struct_c_id in ns.type_structs:
                 return ns.type_structs[struct_c_id]
 
-    def _lookup_docs(self, type_, name, current=None):
+    def _lookup_docs(self, type_, name, current_type=None, current_func=None):
         source = self._ns.docs[type_]
         if name in source:
-            return docstring_to_rest(self, current, source[name].docs)
+            return docstring_to_rest(self, source[name].docs,
+                                     current_type, current_func)
         return u""
 
     def lookup_docs(self, type_, *args, **kwargs):
@@ -107,7 +108,7 @@ class Repository(object):
 
         if fullname in source:
             docs, version_added, dep_version, dep = source[fullname]
-            dep = docstring_to_rest(self, "", dep)
+            dep = docstring_to_rest(self, dep)
         else:
             version_added = dep_version = dep = u""
 
