@@ -113,6 +113,15 @@ class Repository(object):
 
         return version_added, dep_version, dep
 
+    def lookup_instance_param(self, py_id):
+        """Returns the name of the instance parameter for the Python identifier
+        or None.
+        """
+
+        for ns in self._namespaces:
+            if py_id in ns.instance_params:
+                return ns.instance_params[py_id]
+
     def get_shadowed(self, c_id):
         for ns in self._namespaces:
             if c_id in ns.shadow_map:

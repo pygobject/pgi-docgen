@@ -72,11 +72,14 @@ def _handle_data(repo, current, d):
             # paremeter reference
             assert token[0] == "@"
             token = token[1:]
-            if token.lower() == token:
-                token = "`%s`" % token
-            else:
+            if token.upper() == token:
                 # some docs use it to reference constants..
                 token = id_ref(token)
+            else:
+                instance_param = repo.lookup_instance_param(current)
+                if token == instance_param:
+                    token = "self"
+                token = "`%s`" % token
         elif type_ == "VFUNC":
             assert token[-2:] == "()"
             vfunc = token[:-2]

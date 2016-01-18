@@ -11,9 +11,9 @@ from pgidocgen.repo import docstring_to_rest
 from pgidocgen.namespace import get_base_types
 
 
-class TDocstring(unittest.TestCase):
+class DummyRepo(object):
 
-    def setUp(self):
+    def __init__(self):
         self.types = {
             "g_rand_new_with_seed": ["GLib.Rand.new_with_seed"],
             "GQuark": ["GLib.Quark"],
@@ -44,6 +44,10 @@ class TDocstring(unittest.TestCase):
             "GtkWidgetClass": "Gtk.Widget",
         }
 
+        self.instance_params = {
+            "Gtk.TreeModel.get": "tree_model"
+        }
+
     def lookup_gtkdoc_ref(self, doc_ref):
         return self.docrefs.get(doc_ref)
 
@@ -53,88 +57,175 @@ class TDocstring(unittest.TestCase):
     def lookup_py_id_for_type_struct(self, c_id):
         return self.type_structs.get(c_id)
 
-    def _check(self, text, expected):
-        out = docstring_to_rest(self, "Gtk.Widget", text)
+    def lookup_instance_param(self, py_id):
+        return self.instance_params.get(py_id)
+
+
+class TDocstring(unittest.TestCase):
+
+    def setUp(self):
+        self._repo = DummyRepo()
+
+    def _check(self, text, expected, current=None):
+        out = docstring_to_rest(self._repo, current, text)
         self.assertEqual(out, expected)
 
-    def test_various(self):
-        data = [(
+    def check(self, *args, **kwargs):
+        return self._check(*args, **kwargs)
+
+    def test_booleans(self):
+        self.check(
             "%TRUE foo bar, %FALSE bar.",
-            ":obj:`True` foo bar, :obj:`False` bar.",
-        ),(
+            ":obj:`True` foo bar, :obj:`False` bar.")
+
+        self.check(
+            "always returns %FALSE.",
+            "always returns :obj:`False`.")
+
+    def test_type(self):
+        self.check(
             "a #GQuark id to identify the data",
-            "a :obj:`GLib.Quark` id to identify the data",
-        ),(
+            "a :obj:`GLib.Quark` id to identify the data")
+
+        self.check(
+            "implementing a #GtkContainer: a",
+            "implementing a :obj:`Gtk.Container`: a")
+
+    def test_method(self):
+        self.check(
             "g_rand_new_with_seed()",
-            ":obj:`GLib.Rand.new_with_seed` ()",
-        ),(
+            ":obj:`GLib.Rand.new_with_seed` ()")
+
+    def test_type_unmarked(self):
+        self.check(
             "The GTypeInterface structure",
-            "The :obj:`GObject.TypeInterface` structure",
-        ),(
+            "The :obj:`GObject.TypeInterface` structure")
+
+        self.check(
+            "GQuark",
+            ":obj:`GLib.Quark`")
+
+    def test_params(self):
+        self.check(
             "%TRUE if g_value_copy() with @src_type and @dest_type.",
-            ":obj:`True` if :obj:`GObject.Value.copy` () with `src_type` and `dest_type`.",
-        ),(
+            ":obj:`True` if :obj:`GObject.Value.copy` () with `src_type` and `dest_type`.")
+
+        self.check(
+            "@icon_set.",
+            "`icon_set`.")
+
+        self.check(
+            "if @page is complete.",
+            "if `page` is complete.")
+
+        self.check(
+            "in *@dest_x and ",
+            "in `dest_x` and ")
+
+    def test_inline_code(self):
+        self.check(
             "To free this list, you can use |[ g_slist_free_full (list, (GDestroyNotify) g_object_unref); ]|",
-            "To free this list, you can use ``g_slist_free_full (list, (GDestroyNotify) g_object_unref);``",
-        ),(
+            "To free this list, you can use ``g_slist_free_full (list, (GDestroyNotify) g_object_unref);``")
+
+        self.check(
+            "a |[ blaa()\n ]| adsad",
+            "a ``blaa()`` adsad")
+
+    def test_escaped_xml(self):
+        self.check(
             "target attribute on &lt;a&gt; elements.",
-            "target attribute on <a> elements.",
-        ),(
-            """\
-Retrieves the current length of the text in
-@entry. 
+            "target attribute on <a> elements.")
 
-This is equivalent to:
+        self.check(
+            "This is called for each unknown element under &lt;child&gt;.",
+            "This is called for each unknown element under <child>.")
 
+    def test_docbook_programlisting(self):
+        self.check("""
 <informalexample><programlisting>
 gtk_entry_buffer_get_length (gtk_entry_get_buffer (entry));
-</programlisting></informalexample>\
+</programlisting></informalexample>""",
+        "``gtk_entry_buffer_get_length (gtk_entry_get_buffer (entry));``")
+
+        self.check(
+            """\
+foo
+<programlisting>
+foo;
+bar;
+</programlisting>
+bar\
 """,
             """\
-Retrieves the current length of the text in
-`entry`. 
+foo
 
-This is equivalent to\\:
 
-``gtk_entry_buffer_get_length (gtk_entry_get_buffer (entry));``\
-""",
-        ),(
-            "the unique ID for @window, or <literal>0</literal> if the window has not yet been added to a #GtkApplication",
-            "the unique ID for `window`, or ``0`` if the window has not yet been added to a :obj:`Gtk.Application`",
-        ),(
-            "This is called for each unknown element under &lt;child&gt;.",
-            "This is called for each unknown element under <child>."
-        ),(
-            "GQuark",
-            ":obj:`GLib.Quark`"
-        ),(
-            "@icon_set.",
-            "`icon_set`.",
-        ),(
+.. code-block:: c
+
+    foo;
+    bar;
+
+bar\
+""")
+
+    def test_docbook_literal(self):
+        self.check(
+            "the unique ID for @window, or <literal>0</literal> if the",
+            "the unique ID for `window`, or ``0`` if the")
+
+        self.check(
+            "you would\nwrite: <literal>;gtk_tree_model_get (model, iter, 0, &amp;place_string_here, -1)</literal>,\nwhere",
+            "you would\nwrite\\: ``;gtk_tree_model_get (model, iter, 0, &place_string_here, -1)``,\nwhere")
+
+        self.check(
+            "where <literal>place_string_here</literal> is a",
+            "where ``place_string_here`` is a")
+
+        self.check(
+            "a style class named <literal>level-</literal>@name",
+            "a style class named ``level-`` `name`")
+
+    def test_signal(self):
+        self.check(
             "Emits the #GtkCellEditable::editing-done signal.",
-            "Emits the :obj:`Gtk.CellEditable` :py:func:`::editing-done<Gtk.CellEditable.signals.editing_done>` signal.",
-        ),(
+            "Emits the :obj:`Gtk.CellEditable` :py:func:`::editing-done<Gtk.CellEditable.signals.editing_done>` signal.")
+
+    def test_signal_no_type(self):
+        self.check(
             "Returns the value of the ::columns signal.",
             "Returns the value of the :py:func:`::columns<Gtk.Widget.signals.columns>` signal.",
-        ),(
+            "Gtk.Widget")
+
+        self.check(
+            "this is some ::signal-foo blah",
+            "this is some :py:func:`::signal-foo<Gtk.Widget.signals.signal_foo>` blah",
+            "Gtk.Widget")
+
+    def test_null(self):
+        self.check(
             "a filename or %NULL",
-            "a filename or :obj:`None`",
-        ),(
-            "%TRUE if @page is complete.",
-            ":obj:`True` if `page` is complete.",
-        ),(
-            "always returns %FALSE.",
-            "always returns :obj:`False`."
-        ),(
-            "you would\nwrite: <literal>;gtk_tree_model_get (model, iter, 0, &amp;place_string_here, -1)</literal>,\nwhere <literal>place_string_here</literal> is a <type>gchar*</type>\nto be filled with the string.",
-            "you would\nwrite\\: ``;gtk_tree_model_get (model, iter, 0, &place_string_here, -1)``,\nwhere ``place_string_here`` is a ``gchar*``\nto be filled with the string.",
-        ),(
-            "Please note\nthat @GTK_TREE_VIEW_COLUMN_AUTOSIZE are inefficient",
-            "Please note\nthat :obj:`Gtk.TreeViewColumnSizing.AUTOSIZE` are inefficient"
-        ),(
+            "a filename or :obj:`None`")
+
+        self.check(
             "the NULL state or initial state",
-            "the :obj:`None` state or initial state"
-        ),(
+            "the :obj:`None` state or initial state")
+
+        self.check(
+            "%NULL-terminated",
+            ":obj:`None`-terminated")
+
+    def test_docbook_type(self):
+        self.check(
+            "is a <type>gchar*</type>\nto be filled",
+            "is a ``gchar*``\nto be filled")
+
+    def test_constant(self):
+        self.check(
+            "Please note\nthat @GTK_TREE_VIEW_COLUMN_AUTOSIZE are inefficient",
+            "Please note\nthat :obj:`Gtk.TreeViewColumnSizing.AUTOSIZE` are inefficient")
+
+    def test_list(self):
+        self.check(
             """\
 bla bla
 bla:
@@ -155,8 +246,10 @@ bla\:
 * The channel is write-only.
 
 foo
-"""
-        ),(
+""")
+
+    def test_docbook_itemizedlist(self):
+        self.check(
             """\
 <itemizedlist>
   <listitem>#GtkWidgetClass.get_request_mode()</listitem>
@@ -174,9 +267,11 @@ foo
 * :obj:`Gtk.Widget.do_get_preferred_height_for_width` ()
 * :obj:`Gtk.Widget.do_get_preferred_width_for_height` ()
 * :obj:`Gtk.Widget.do_get_preferred_height_and_baseline_for_width` ()
-"""
-),(
-    """\
+""")
+
+    def test_header(self):
+        self.check(
+            """\
 GtkWidget is the base class all widgets in GTK+ derive from. It manages the
 widget lifecycle, states and style.
 
@@ -188,9 +283,8 @@ vertical space it needs, depending on the amount of horizontal space
 that it is given (and similar for width-for-height). The most common
 example is a label that reflows to fill up the available width, wraps
 to fewer lines, and therefore needs less height.
-"""
-    ,
-    """\
+""",
+            """\
 :obj:`Gtk.Widget` is the base class all widgets in GTK+ derive from. It manages the
 widget lifecycle, states and style.
 
@@ -205,76 +299,72 @@ vertical space it needs, depending on the amount of horizontal space
 that it is given (and similar for width-for-height). The most common
 example is a label that reflows to fill up the available width, wraps
 to fewer lines, and therefore needs less height.
-"""
-),(
-        """\
-foo,
-bar.
+""")
 
-foo,
-bar.
+    def test_paragraphs(self):
+        self.check(
+            "foo,\nbar.\n\nfoo,\nbar.\n\nfoo,\nbar.\n",
+            "foo,\nbar.\n\nfoo,\nbar.\n\nfoo,\nbar.\n")
 
-foo,
-bar.
-""",
-        """\
-foo,
-bar.
+    def test_unknown(self):
+        self.check(
+            " or #ATK_TEXT_ATTRIBUTE_INVALID if no match",
+            "or #ATK\\_TEXT\\_ATTRIBUTE\\_INVALID if no match")
 
-foo,
-bar.
+    def test_enum(self):
+        self.check(
+            "or #ATK_RELATION_NULL if",
+            "or :obj:`Atk.RelationType.NULL` if")
 
-foo,
-bar.
-""",
-),(
-            "the #AtkTextAttribute enumerated type corresponding to the specified name, or #ATK_TEXT_ATTRIBUTE_INVALID if no matching text attribute is found.",
-            "the :obj:`Atk.TextAttribute` enumerated type corresponding to the specified name, or #ATK\\_TEXT\\_ATTRIBUTE\\_INVALID if no matching text attribute is found."
-),(
-        "a |[ blaa()\n ]| adsad",
-        "a ``blaa()`` adsad",
-),(
-        "or #ATK_RELATION_NULL if",
-        "or :obj:`Atk.RelationType.NULL` if"
-),(
-        "table by initializing **selected",
-        "table by initializing \\*\\*selected",
-),(
-        "captions are #AtkObjects",
-        "captions are :obj:`Atk.Objects <Atk.Object>`"
-),(
-        "appropriate.  #AtkTable summaries may themselves be (simplified) #AtkTables, etc.",
-        "appropriate.  :obj:`Atk.Table` summaries may themselves be (simplified) :obj:`Atk.Tables <Atk.Table>`, etc.",
-),(
-        "the #GtkSettings:gtk-error-bell setting",
-        "the :obj:`Gtk.Settings` :py:data:`:gtk-error-bell<Gtk.Settings.props.gtk_error_bell>` setting",
-),(
-        "implementing a #GtkContainer: a",
-        "implementing a :obj:`Gtk.Container`: a",
-),(
-        "returns a gint*.",
-        "returns a :obj:`int`."
-),(
-        "a #gint** that",
-        "a :obj:`int` that"
-),(
-        "Since: this is",
-        "Since\\: this is",
-),(
-        "foo #GdkFrameTiming",
-        "foo :obj:`Gdk.FrameTiming <Gdk.FrameTimings>`",
-),(
-        "%NULL-terminated",
-        ":obj:`None`-terminated",  # kinda useless, but hey
-),(
-        "returns a #gpointer",
-        "returns a :obj:`object`"
-),(
-        "<keycombo><keycap>Control</keycap><keycap>L</keycap></keycombo>",
-        "Control + L",
-),(
-        '<variablelist role="params">\n\t  <varlistentry>\n\t    <term><parameter>chooser</parameter>&nbsp;:</term>\n\t    <listitem>\n\t      <simpara>\n\t\tthe object which received the signal.\n\t      </simpara>\n\t    </listitem>\n\t  </varlistentry>\n\t  <varlistentry>\n\t    <term><parameter>path</parameter>&nbsp;:</term>\n\t    <listitem>\n\t      <simpara>\n\t\tdefault contents for the text entry for the file name\n\t      </simpara>\n\t    </listitem>\n\t  </varlistentry>\n\t  <varlistentry>\n\t    <term><parameter>user_data</parameter>&nbsp;:</term>\n\t    <listitem>\n\t      <simpara>\n\t\tuser data set when the signal handler was connected.\n\t      </simpara>\n\t    </listitem>\n\t  </varlistentry>\n\t</variablelist>',
-        """
+    def test_escape_rest(self):
+        self.check(
+            "table by initializing **selected",
+            "table by initializing \\*\\*selected")
+
+        self.check(
+            "Since: this is",
+            "Since\\: this is")
+
+        self.check(
+            "unless it has handled or blocked `SIGPIPE'.",
+            "unless it has handled or blocked \\`SIGPIPE'.")
+
+    def test_type_plural(self):
+        self.check(
+            "captions are #AtkObjects",
+            "captions are :obj:`Atk.Objects <Atk.Object>`")
+
+        self.check(
+            "foo #GdkFrameTiming",
+            "foo :obj:`Gdk.FrameTiming <Gdk.FrameTimings>`")
+
+    def test_property(self):
+        self.check(
+            "the #GtkSettings:gtk-error-bell setting",
+            "the :obj:`Gtk.Settings` :py:data:`:gtk-error-bell<Gtk.Settings.props.gtk_error_bell>` setting")
+
+    def test_base_types(self):
+        self.check(
+            "returns a gint*.",
+            "returns a :obj:`int`.")
+
+        self.check(
+            "a #gint** that",
+            "a :obj:`int` that")
+
+        self.check(
+            "returns a #gpointer",
+            "returns a :obj:`object`")
+
+    def test_docbook_keycombo(self):
+        self.check(
+            "<keycombo><keycap>Control</keycap><keycap>L</keycap></keycombo>",
+            "Control + L")
+
+    def test_docbook_variablelist(self):
+        self.check(
+            '<variablelist role="params">\n\t  <varlistentry>\n\t    <term><parameter>chooser</parameter>&nbsp;:</term>\n\t    <listitem>\n\t      <simpara>\n\t\tthe object which received the signal.\n\t      </simpara>\n\t    </listitem>\n\t  </varlistentry>\n\t  <varlistentry>\n\t    <term><parameter>path</parameter>&nbsp;:</term>\n\t    <listitem>\n\t      <simpara>\n\t\tdefault contents for the text entry for the file name\n\t      </simpara>\n\t    </listitem>\n\t  </varlistentry>\n\t  <varlistentry>\n\t    <term><parameter>user_data</parameter>&nbsp;:</term>\n\t    <listitem>\n\t      <simpara>\n\t\tuser data set when the signal handler was connected.\n\t      </simpara>\n\t    </listitem>\n\t  </varlistentry>\n\t</variablelist>',
+            """
 
 chooser\\:
     the object which received the signal.
@@ -286,62 +376,52 @@ path\\:
 
 user\\_data\\:
     user data set when the signal handler was connected.\
-""",
-),(
-        "<varlistentry><term>#POPPLER_ANNOT_TEXT_ICON_NOTE</term></varlistentry>",
-        "\n#POPPLER\\_ANNOT\\_TEXT\\_ICON\\_NOTE",
-),(
-        "this is some ::signal-foo blah",
-        "this is some :py:func:`::signal-foo<Gtk.Widget.signals.signal_foo>` blah",
-),(
-        "unless it has handled or blocked `SIGPIPE'.",
-        "unless it has handled or blocked \\`SIGPIPE'.",
-),(
-        """\
-foo
-<programlisting>
-foo;
-bar;
-</programlisting>
-bar\
-""",
-        """\
-foo
+""")
 
+    def test_varlistentry(self):
+        self.check(
+            "<varlistentry><term>#POPPLER_ANNOT_TEXT_ICON_NOTE</term></varlistentry>",
+            "\n#POPPLER\\_ANNOT\\_TEXT\\_ICON\\_NOTE")
 
-.. code-block:: c
+    def test_markdown_references(self):
+        self.check(
+            "a [foo][bar] b [quux][baz]",
+            "a 'foo [bar]' b 'quux [baz]'")
 
-    foo;
-    bar;
+        self.check(
+            "a [foo][AtkObject]",
+            "a :obj:`Atk.Object`")
 
-bar\
-""",
-),(
-        "a style class named <literal>level-</literal>@name",
-        "a style class named ``level-`` `name`",
-),(
-        "a [foo][bar] b [quux][baz]",
-        "a 'foo [bar]' b 'quux [baz]'",
-),(
-        "a [foo][AtkObject]",
-        "a :obj:`Atk.Object`",
-),(
-        "a [foo][im-a-ref]",
-        "a `foo <http://example.com>`__",
-),(
-        "a [foo][gtk-tree-model-get]",
-        "a :obj:`Gtk.TreeModel.get`",
-),(
-        "a [foo][GtkContainer--border-width]",
-        "a :obj:`Gtk.Container.props.border_width`",
-),(
-        "`bla[0][1] = 3`",
-        "``bla[0][1] = 3``",
-),(
-        "#GtkWidget.get_request_mode()",
-        ":obj:`Gtk.Widget.do_get_request_mode` ()",
-),(
-        """\
+        self.check(
+            "a [foo][im-a-ref]",
+            "a `foo <http://example.com>`__")
+
+        self.check(
+            "a [foo][gtk-tree-model-get]",
+            "a :obj:`Gtk.TreeModel.get`")
+
+        self.check(
+            "a [foo][GtkContainer--border-width]",
+            "a :obj:`Gtk.Container.props.border_width`")
+
+    def test_markdown_literal(self):
+        self.check(
+            "`bla[0][1] = 3`",
+            "``bla[0][1] = 3``")
+
+    def test_vfuncs(self):
+        self.check(
+            "#GtkWidget.get_request_mode()",
+            ":obj:`Gtk.Widget.do_get_request_mode` ()")
+
+    def test_various(self):
+        self.check(
+            "appropriate.  #AtkTable summaries may themselves be (simplified) #AtkTables, etc.",
+            "appropriate.  :obj:`Atk.Table` summaries may themselves be (simplified) :obj:`Atk.Tables <Atk.Table>`, etc.")
+
+    def test_markdown_code(self):
+        self.check(
+            """\
 |[<!-- language="C" -->
     GdkEvent *event;
     GdkEventType type;
@@ -349,18 +429,11 @@ bar\
     type = event->type;
 ]|
 """,
-        """
+            """
 .. code-block:: c
 
     GdkEvent *event;
     GdkEventType type;
     
     type = event->type;
-""",
-),(
-        "in *@dest_x and ",
-        "in `dest_x` and ",
-        )]
-
-        for in_, out in data:
-            self._check(in_, out)
+""")
