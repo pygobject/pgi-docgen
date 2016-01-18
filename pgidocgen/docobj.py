@@ -506,7 +506,7 @@ class Class(BaseDocObject, MethodsMixin, PropertiesMixin, SignalsMixin,
                 cs = type(class_struct)
                 klass.gtype_struct = class_name(cs)
 
-        klass.is_gobject = util.is_object(obj)
+        klass.is_gobject = util.is_object(obj) or util.is_iface(obj)
 
         def iter_gtype_structs(obj):
             for base in util.fake_mro(obj):
