@@ -34,6 +34,7 @@ class ProjectSummary(object):
     bugtracker = None
     repositories = []
     mailinglists = []
+    dependencies = []
 
 
 def get_project_summary(namespace):
@@ -43,7 +44,7 @@ def get_project_summary(namespace):
 
     doap_path = get_doap_path(namespace)
     if not os.path.exists(doap_path):
-        return
+        return ProjectSummary()
 
     with open(doap_path, "rb") as h:
         soup = BeautifulStoneSoup(h)

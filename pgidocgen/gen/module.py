@@ -26,11 +26,13 @@ from ..repo import Repository
 
 
 _template = genutil.get_template("""\
+
+.. _{{ namespace }}-{{ version }}:
+
 {{ "=" * title|length }}
 {{ title }}
 {{ "=" * title|length }}
 
-{% if ps %}
 {% if ps.name %}
 :Parent Project:
     {{ ps.name|erest|indent(4, False) }}
@@ -59,6 +61,11 @@ _template = genutil.get_template("""\
     | `{{ name|erest }} <{{ url }}>`__
     {% endfor %}
 {% endif %}
+{% if ps.dependencies %}
+:Dependencies:
+    {% for ns, v in ps.dependencies %}
+    | :ref:`{{ ns }} {{ v }} <{{ ns }}-{{ v }}>`
+    {% endfor %}
 {% endif %}
 
 API
@@ -190,7 +197,8 @@ class ModuleGenerator(object):
                 gen.write(sub_dir)
 
             text = _template.render(
-                title=title, ps=module.project_summary, names=names)
+                title=title, ps=module.project_summary, names=names,
+                namespace=namespace, version=version)
             h.write(text.encode("utf-8"))
 
         conf_path = os.path.join(dir_, "conf_data.py")

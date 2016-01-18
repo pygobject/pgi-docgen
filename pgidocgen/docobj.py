@@ -918,6 +918,7 @@ class Module(BaseDocObject):
 
         mod.hierarchy = to_names(get_hierarchy(hierarchy_classes))
         mod.project_summary = get_project_summary(repo.namespace)
+        mod.project_summary.dependencies = repo.get_dependencies()
 
         return mod
 

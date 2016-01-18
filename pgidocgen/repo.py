@@ -135,6 +135,13 @@ class Repository(object):
 
         return self._ns.all_dependencies
 
+    def get_dependencies(self):
+        """Returns a list of (namespace, version) tuples for all direct
+        dependencies.
+        """
+
+        return self._ns.dependencies
+
     def import_module(self):
         """Imports and returns the Python module.
 
