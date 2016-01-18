@@ -33,6 +33,7 @@ class DummyRepo(object):
             "GtkContainer": ["Gtk.Container"],
             "GdkFrameTimings": ["Gdk.FrameTimings"],
             "GtkWidget": ["Gtk.Widget"],
+            "GtkRecentFilterInfo": ["Gtk.RecentFilterInfo"],
         }
         self.types.update(get_base_types())
 
@@ -72,6 +73,11 @@ class TDocstring(unittest.TestCase):
 
     def check(self, *args, **kwargs):
         return self._check(*args, **kwargs)
+
+    def test_field(self):
+        self.check(
+            "#GtkRecentFilterInfo.contains",
+            ":ref:`Gtk.RecentFilterInfo.contains <Gtk.RecentFilterInfo.fields>`")
 
     def test_booleans(self):
         self.check(

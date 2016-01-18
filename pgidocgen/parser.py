@@ -20,6 +20,7 @@ def _handle_data(repo, current_type, current_func, d):
     scanner = re.Scanner([
         (r"\*?@[A-Za-z0-9_]+", lambda scanner, token:("PARAM", token)),
         (r"[#%]?[A-Za-z0-9_:\-]+\.[A-Za-z0-9_:\-]+\(\)", lambda scanner, token:("VFUNC", token)),
+        (r"[#%]?[A-Za-z0-9_:\-]+\.[A-Za-z0-9_:\-]+", lambda scanner, token:("FIELD", token)),
         (r"[#%]?[A-Za-z0-9_:\-]+\**", lambda scanner, token:("ID", token)),
         (r"\(", lambda scanner, token:("OTHER", token)),
         (r"\)", lambda scanner, token:("OTHER", token)),
@@ -93,6 +94,15 @@ def _handle_data(repo, current_type, current_func, d):
                 pytype = repo.lookup_py_id(class_id)
             if pytype is not None:
                 token = ":obj:`%s.do_%s` ()" % (pytype, field)
+        elif type_ == "FIELD":
+            field = token
+            if field.startswith(("#", "%")):
+                field = field[1:]
+            c_id, field_name = field.split(".", 1)
+            objtype = repo.lookup_py_id(c_id)
+            if objtype is not None:
+                token = ":ref:`%s.%s <%s.fields>`" % (
+                    objtype, field_name, objtype)
         elif type_ == "ID":
             parts = re.split("(::?)", token)
             fallback = True
