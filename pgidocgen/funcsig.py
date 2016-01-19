@@ -177,7 +177,7 @@ class FuncSignature(object):
             docs.append(":type %s: %s" % (key, arg_to_class_ref(value)))
 
         if self.raises:
-            docs.append(":raises: :class:`GLib.GError`")
+            docs.append(":raises: :class:`GLib.Error`")
 
         return_docs = []
 
