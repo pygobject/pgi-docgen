@@ -720,6 +720,7 @@ class Flags(BaseDocObject, MethodsMixin):
         self.name = name
         self.info = None
 
+        self.base = None
         self.desc = None
         self.values = []
         self.methods = []
@@ -747,6 +748,8 @@ class Flags(BaseDocObject, MethodsMixin):
                                             current_type=instance.fullname)
         instance._parse_values(repo, obj)
         instance._parse_methods(repo, obj)
+        if obj.__bases__[0] is not int:
+            instance.base = class_name(obj.__bases__[0])
         return instance
 
 

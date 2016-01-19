@@ -33,7 +33,9 @@ Details
     {% for enum in enums %}
 .. class:: {{ enum.fullname }}()
 
-    Bases: :class:`GObject.GEnum`
+    {% if enum.base %}
+    Bases: :class:`{{ enum.base }}`
+    {% endif %}
 
     {{ util.render_info(enum.info)|indent(4, False) }}
 

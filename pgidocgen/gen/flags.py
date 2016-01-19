@@ -33,7 +33,9 @@ Details
     {% for entry in entries %}
 .. class:: {{ entry.fullname }}()
 
-    Bases: :class:`GObject.GFlags`
+    {% if entry.base %}
+    Bases: :class:`{{ entry.base }}`
+    {% endif %}
 
     {{ util.render_info(entry.info)|indent(4, False) }}
 

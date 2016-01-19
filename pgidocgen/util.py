@@ -195,8 +195,8 @@ def is_flags(obj):
     if not inspect.isclass(obj):
         return False
 
-    from gi.repository import GObject
-    return issubclass(obj, GObject.GFlags)
+    from gi.repository import GLib
+    return issubclass(obj, GLib.Flags)
 
 
 def is_struct(obj):
@@ -221,9 +221,8 @@ def is_enum(obj):
     if not inspect.isclass(obj):
         return False
 
-    from gi.repository import GObject
-    enum_base = GObject.GEnum
-    return issubclass(obj, enum_base)
+    from gi.repository import GLib
+    return issubclass(obj, GLib.Enum)
 
 
 def is_field(obj):
