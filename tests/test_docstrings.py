@@ -206,6 +206,14 @@ bar\
             "Emits the #GtkCellEditable::editing-done signal.",
             "Emits the :obj:`Gtk.CellEditable` :py:func:`::editing-done<Gtk.CellEditable.signals.editing_done>` signal.")
 
+        self.check(
+            "GtkWidget::foo_bar vfunc",
+            "GtkWidget\\:\\:foo\\_bar vfunc")
+
+        self.check(
+            "GtkWidgetClass::foo",
+            "GtkWidgetClass\\:\\:foo")
+
     def test_signal_no_type(self):
         self.check(
             "Returns the value of the ::columns signal.",

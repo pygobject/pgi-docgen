@@ -21,10 +21,10 @@ def _handle_data(repo, current_type, current_func, d):
         (r"\*?@[A-Za-z0-9_]+", lambda scanner, token:("PARAM", token)),
         (r"[#%]?[A-Za-z0-9_:\-]+\.[A-Za-z0-9_:\-]+\(\)", lambda scanner, token:("VFUNC", token)),
         (r"[#%]?[A-Za-z0-9_:\-]+\.[A-Za-z0-9_:\-]+", lambda scanner, token:("FIELD", token)),
-        (r"[#%]?[A-Za-z_]+[A-Za-z0-9_]*::[A-Za-z\-]+[A-Za-z0-9\-]*", lambda scanner, token:("FULLSIG", token)),
-        (r"::[A-Za-z\-]+[A-Za-z0-9\-]*", lambda scanner, token:("SIG", token)),
-        (r"[#%]?[A-Za-z_]+[A-Za-z0-9_]*:[A-Za-z\-]+[A-Za-z0-9\-]*", lambda scanner, token:("FULLPROP", token)),
-        (r":[A-Za-z\-]+[A-Za-z0-9\-]*", lambda scanner, token:("PROP", token)),
+        (r"[#%]?[A-Za-z_]+[A-Za-z0-9_]*::[A-Za-z\-]+[A-Za-z0-9\-_]*", lambda scanner, token:("FULLSIG", token)),
+        (r"::[A-Za-z\-]+[A-Za-z0-9\-_]*", lambda scanner, token:("SIG", token)),
+        (r"[#%]?[A-Za-z_]+[A-Za-z0-9_]*:[A-Za-z\-]+[A-Za-z0-9\-_]*", lambda scanner, token:("FULLPROP", token)),
+        (r":[A-Za-z\-]+[A-Za-z0-9\-_]*", lambda scanner, token:("PROP", token)),
         (r"[#%]?[A-Za-z0-9_]+\**", lambda scanner, token:("ID", token)),
         (r"[^\s]+", lambda scanner, token:("OTHER", token)),
         (r"\s+", lambda scanner, token:("SPACE", token)),
@@ -114,7 +114,7 @@ def _handle_data(repo, current_type, current_func, d):
             else:
                 py_id = repo.lookup_py_id(c_id)
 
-            if py_id:
+            if py_id and "_" not in prop_name:
                 prop_attr = prop_name.replace("-", "_")
 
                 token = id_ref(c_id)
@@ -129,12 +129,17 @@ def _handle_data(repo, current_type, current_func, d):
             if c_id.startswith(("#", "%")):
                 c_id = c_id[1:]
 
+            # Some docs use GtkWidegetClass::foo to reference vfuncs. We
+            # can skip them when we find out that it is a type struct as they
+            # can't have signals
+            is_type_struct = bool(repo.lookup_py_id_for_type_struct(c_id))
+
             if not c_id:
                 py_id = current_type
             else:
                 py_id = repo.lookup_py_id(c_id)
 
-            if py_id:
+            if py_id and "_" not in sig_name and not is_type_struct:
                 sig_attr = sig_name.replace("-", "_")
 
                 token = id_ref(c_id)
