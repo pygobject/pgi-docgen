@@ -47,6 +47,9 @@ class TNamespace(unittest.TestCase):
         type_structs = ns.type_structs
         self.assertEqual(type_structs["GtkTreeStoreClass"], "Gtk.TreeStore")
 
+        self.assertEqual(types["gtk_list_store_newv"], ["Gtk.ListStore.new"])
+        self.assertEqual(types["gtk_list_store_new"], [])
+
     def test_gdk(self):
         ns = get_namespace("Gdk", "3.0")
         types = ns.types

@@ -392,9 +392,10 @@ def _parse_types(dom, module, namespace):
             parent = parent.parentNode
 
         if shadows:
-            all_shadows[shadows] = c_name
+            parent_name = full_name.rsplit(".", 1)[0]
+            all_shadows[parent_name + "." + shadows] = c_name
         if shadowed_by:
-            all_shadowed_by[local_name] = c_name
+            all_shadowed_by[full_name] = c_name
 
         if not introspectable or shadowed_by:
             skipped.add(c_name)
