@@ -14,8 +14,6 @@ from pgidocgen.girdata import get_project_summary, get_doap_dir
 class TDoap(unittest.TestCase):
 
     def test_doap(self):
-        self.assertFalse(get_project_summary("Nope"))
-
         for entry in os.listdir(get_doap_dir()):
             name = os.path.splitext(entry)[0]
             self.assertTrue(get_project_summary(name), msg=name)
