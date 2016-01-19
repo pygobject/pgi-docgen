@@ -93,6 +93,18 @@ class TRepository(unittest.TestCase):
         self.assertEqual(repo.lookup_py_id("g_idle_add"), "GLib.idle_add")
         self.assertEqual(repo.lookup_py_id("g_idle_add", shadowed=False), None)
 
+        klass = find(mod.enums, "BookmarkFileError")
+        self.assertEqual(klass.base, "GLib.Enum")
+
+        klass = find(mod.enums, "Enum")
+        self.assertEqual(klass.base, None)
+
+        klass = find(mod.flags, "FileTest")
+        self.assertEqual(klass.base, "GLib.Flags")
+
+        klass = find(mod.flags, "Flags")
+        self.assertEqual(klass.base, None)
+
     def test_gio(self):
         repo = Repository("Gio", "2.0")
         Gio = repo.import_module()
@@ -137,10 +149,20 @@ class TRepository(unittest.TestCase):
 
     def test_gobject(self):
         repo = Repository("GObject", "2.0")
+        mod = repo.parse()
 
         self.assertEqual(
             repo.lookup_py_id_for_type_struct("GObjectClass"),
             "GObject.Object")
+
+        klass = find(mod.enums, "GEnum")
+        self.assertEqual(klass.base, "GLib.Enum")
+
+        klass = find(mod.flags, "GFlags")
+        self.assertEqual(klass.base, "GLib.Flags")
+
+        klass = find(mod.flags, "ParamFlags")
+        self.assertEqual(klass.base, "GLib.Flags")
 
     def test_atk(self):
         repo = Repository("Atk", "1.0")
