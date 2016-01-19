@@ -144,8 +144,8 @@ class StructGenerator(genutil.Generator):
         field_rows = []
         for field in struct.fields:
             field_rows.append(util.get_csv_line([
-                field.name, field.type_desc, field.flags_string,
-                field.info.desc]))
+                util.escape_rest(field.name), field.type_desc,
+                field.flags_string, field.info.desc]))
 
         with open(rst_path, "wb") as h:
             text = _sub_template.render(
