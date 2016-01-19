@@ -435,9 +435,14 @@ def _parse_types(dom, module, namespace):
 
         c_name = t.getAttribute("c:type")
         c_name = c_name or t.getAttribute("glib:type-name")
+        introspectable = bool(int(t.getAttribute("introspectable") or "1"))
 
         # e.g. GObject _Value__data__union
         if not c_name:
+            continue
+
+        if not introspectable:
+            skipped.add(c_name)
             continue
 
         type_name = t.getAttribute("name")

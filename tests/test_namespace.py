@@ -82,6 +82,9 @@ class TNamespace(unittest.TestCase):
 
         self.assertEqual(types["g_idle_add_full"], ["GLib.idle_add"])
 
+        # non-introspectable callback func
+        self.assertEqual(ns.types["GCopyFunc"], [])
+
     def test_atk(self):
         ns = get_namespace("Atk", "1.0")
         types = ns.types
