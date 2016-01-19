@@ -531,7 +531,8 @@ def _parse_private(dom, namespace):
     # we have no other way
     for record in dom.getElementsByTagName("record"):
         disguised = bool(int(record.getAttribute("disguised") or "0"))
-        if disguised:
+        is_gtype_struct = bool(record.getAttribute("glib:is-gtype-struct-for"))
+        if disguised and not is_gtype_struct:
             children = record.childNodes
             if len(children) == 1 and \
                     children[0].nodeType == children[0].TEXT_NODE:
