@@ -10,6 +10,7 @@ import gc
 import ctypes
 import re
 import shelve
+import inspect
 import collections
 from xml.dom import minidom
 
@@ -481,13 +482,19 @@ def _parse_types(dom, module, namespace):
     for c_name in skipped:
 
         def is_available(mod, name):
+            path, final = name.rsplit(".", 1)
             m = mod
-            for attr in name.split(".")[1:]:
+            for attr in path.split(".")[1:]:
                 try:
                     m = getattr(m, attr)
                 except AttributeError:
                     return False
-            return True
+            if not inspect.isclass(m):
+                return hasattr(m, final)
+            try:
+                return util.is_attribute_owner(m, final)
+            except AttributeError:
+                return False
 
         # shadowed get cleared above so this should be non-introspectable.
         # but overrides might make them available using other API, so check

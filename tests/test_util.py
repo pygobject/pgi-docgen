@@ -8,11 +8,10 @@
 import os
 import unittest
 
-from pgidocgen.util import is_staticmethod, is_classmethod, is_normalmethod
-from pgidocgen.util import is_method_owner, is_fundamental, is_object
-from pgidocgen.util import instance_to_rest, get_child_properties
-from pgidocgen.util import fake_subclasses, get_style_properties
-from pgidocgen.util import unescape_parameter, fake_bases
+from pgidocgen.util import is_staticmethod, is_classmethod, is_normalmethod, \
+    is_method_owner, is_fundamental, is_object, instance_to_rest, \
+    get_child_properties, fake_subclasses, get_style_properties, \
+    unescape_parameter, fake_bases, is_attribute_owner
 
 
 class TUtil(unittest.TestCase):
@@ -54,6 +53,13 @@ class TUtil(unittest.TestCase):
         self.assertTrue(is_method_owner(Gtk.Viewport, "get_vadjustment"))
         self.assertTrue(is_method_owner(Gtk.AccelGroup, "connect"))
         self.assertFalse(is_method_owner(Gtk.AboutDialog, "get_focus_on_map"))
+
+    def test_is_attribute_owner(self):
+        from pgi.repository import GdkPixbuf
+
+        getattr(GdkPixbuf.PixbufAnimation, "ref")
+        self.assertFalse(
+            is_attribute_owner(GdkPixbuf.PixbufAnimation, "ref"))
 
     def test_class_checks(self):
         from pgi.repository import GObject

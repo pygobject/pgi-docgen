@@ -59,6 +59,11 @@ class TNamespace(unittest.TestCase):
         self.assertEqual(
             ns.instance_params["Gdk.Window.begin_paint_region"], "window")
 
+    def test_gdkpixbuf(self):
+        ns = get_namespace("GdkPixbuf", "2.0")
+
+        self.assertEqual(ns.types["gdk_pixbuf_animation_ref"], [])
+
     def test_gobject(self):
         ns = get_namespace("GObject", "2.0")
         types = ns.types

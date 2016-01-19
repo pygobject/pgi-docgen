@@ -134,7 +134,13 @@ def escape_parameter(text):
 
 
 def get_overridden_class(obj):
-    assert inspect.isclass(obj)
+    """Given a class returns the overridden one or None
+
+    If we have a Gtk.Widget override class which is a subclass of the original
+    Gtk.Widget class passing in the former will return the later.
+    """
+
+    assert inspect.isclass(obj), obj
 
     if not hasattr(obj, "__gtype__"):
         return
@@ -148,22 +154,34 @@ def get_overridden_class(obj):
     return
 
 
-def is_method_owner(cls, method_name):
-    obj = getattr(cls, method_name)
-    assert obj
+def is_attribute_owner(cls, attr_name):
+    """Given a class returns True if the attribute name is owned by the
+    class itself or its base if it is an override class.
+
+    If the attribute isn't found returns False
+    """
+
+    try:
+        obj = getattr(cls, attr_name)
+    except AttributeError:
+        return False
 
     ovr = get_overridden_class(cls)
-    if ovr and method_name in ovr.__dict__:
+    if ovr and attr_name in ovr.__dict__:
         return True
 
     for base in fake_bases(cls):
-        if getattr(base, method_name, None) == obj:
+        if getattr(base, attr_name, None) == obj:
             return False
     return True
 
 
+def is_method_owner(cls, method_name):
+    return is_attribute_owner(cls, method_name)
+
+
 def is_field_owner(cls, field_name):
-    return is_method_owner(cls, field_name)
+    return is_attribute_owner(cls, field_name)
 
 
 def is_fundamental(obj):
