@@ -95,12 +95,12 @@ class TDocstring(unittest.TestCase):
 
         self.check(
             "implementing a #GtkContainer: a",
-            "implementing a :obj:`Gtk.Container`: a")
+            "implementing a :obj:`Gtk.Container`\\: a")
 
     def test_method(self):
         self.check(
             "g_rand_new_with_seed()",
-            ":obj:`GLib.Rand.new_with_seed` ()")
+            ":obj:`GLib.Rand.new_with_seed`\\()")
 
     def test_type_unmarked(self):
         self.check(
@@ -114,7 +114,7 @@ class TDocstring(unittest.TestCase):
     def test_params(self):
         self.check(
             "%TRUE if g_value_copy() with @src_type and @dest_type.",
-            ":obj:`True` if :obj:`GObject.Value.copy` () with `src_type` and `dest_type`.")
+            ":obj:`True` if :obj:`GObject.Value.copy`\\() with `src_type` and `dest_type`.")
 
         self.check(
             "@icon_set.",
@@ -274,12 +274,12 @@ foo
 </itemizedlist>
 """,
             """
-* :obj:`Gtk.Widget.do_get_request_mode` ()
-* :obj:`Gtk.Widget.do_get_preferred_width` ()
-* :obj:`Gtk.Widget.do_get_preferred_height` ()
-* :obj:`Gtk.Widget.do_get_preferred_height_for_width` ()
-* :obj:`Gtk.Widget.do_get_preferred_width_for_height` ()
-* :obj:`Gtk.Widget.do_get_preferred_height_and_baseline_for_width` ()
+* :obj:`Gtk.Widget.do_get_request_mode`\\()
+* :obj:`Gtk.Widget.do_get_preferred_width`\\()
+* :obj:`Gtk.Widget.do_get_preferred_height`\\()
+* :obj:`Gtk.Widget.do_get_preferred_height_for_width`\\()
+* :obj:`Gtk.Widget.do_get_preferred_width_for_height`\\()
+* :obj:`Gtk.Widget.do_get_preferred_height_and_baseline_for_width`\\()
 """)
 
     def test_header(self):
@@ -425,12 +425,17 @@ user\\_data\\:
     def test_vfuncs(self):
         self.check(
             "#GtkWidget.get_request_mode()",
-            ":obj:`Gtk.Widget.do_get_request_mode` ()")
+            ":obj:`Gtk.Widget.do_get_request_mode`\\()")
 
     def test_various(self):
         self.check(
             "appropriate.  #AtkTable summaries may themselves be (simplified) #AtkTables, etc.",
             "appropriate.  :obj:`Atk.Table` summaries may themselves be (simplified) :obj:`Atk.Tables <Atk.Table>`, etc.")
+
+        self.check(
+            "02:30 on March 14th 2010",
+            "02\\:30 on March 14th 2010",
+            "Gtk.Widget")
 
     def test_markdown_code(self):
         self.check(

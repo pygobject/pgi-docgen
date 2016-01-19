@@ -21,16 +21,17 @@ def _handle_data(repo, current_type, current_func, d):
         (r"\*?@[A-Za-z0-9_]+", lambda scanner, token:("PARAM", token)),
         (r"[#%]?[A-Za-z0-9_:\-]+\.[A-Za-z0-9_:\-]+\(\)", lambda scanner, token:("VFUNC", token)),
         (r"[#%]?[A-Za-z0-9_:\-]+\.[A-Za-z0-9_:\-]+", lambda scanner, token:("FIELD", token)),
-        (r"[#%]?[A-Za-z0-9_:\-]+\**", lambda scanner, token:("ID", token)),
-        (r"\(", lambda scanner, token:("OTHER", token)),
-        (r"\)", lambda scanner, token:("OTHER", token)),
-        (r",", lambda scanner, token:("OTHER", token)),
-        (r"\s", lambda scanner, token:("SPACE", token)),
+        (r"[#%]?[A-Za-z_]+[A-Za-z0-9_]*::[A-Za-z\-]+[A-Za-z0-9\-]*", lambda scanner, token:("FULLSIG", token)),
+        (r"::[A-Za-z\-]+[A-Za-z0-9\-]*", lambda scanner, token:("SIG", token)),
+        (r"[#%]?[A-Za-z_]+[A-Za-z0-9_]*:[A-Za-z\-]+[A-Za-z0-9\-]*", lambda scanner, token:("FULLPROP", token)),
+        (r":[A-Za-z\-]+[A-Za-z0-9\-]*", lambda scanner, token:("PROP", token)),
+        (r"[#%]?[A-Za-z0-9_]+\**", lambda scanner, token:("ID", token)),
         (r"[^\s]+", lambda scanner, token:("OTHER", token)),
+        (r"\s+", lambda scanner, token:("SPACE", token)),
     ])
 
     results, remainder = scanner.scan(d)
-    assert not remainder
+    assert not remainder, repr(remainder)
 
     def id_ref(token):
         # possible identifier reference
@@ -93,7 +94,7 @@ def _handle_data(repo, current_type, current_func, d):
                 # fall back to the class, for #GObject.constructed()
                 pytype = repo.lookup_py_id(class_id)
             if pytype is not None:
-                token = ":obj:`%s.do_%s` ()" % (pytype, field)
+                token = ":obj:`%s.do_%s`\\()" % (pytype, field)
         elif type_ == "FIELD":
             field = token
             if field.startswith(("#", "%")):
@@ -103,47 +104,48 @@ def _handle_data(repo, current_type, current_func, d):
             if objtype is not None:
                 token = ":ref:`%s.%s <%s.fields>`" % (
                     objtype, field_name, objtype)
+        elif type_ == "FULLPROP" or type_ == "PROP":
+            c_id, prop_name = token.split(":")
+            if c_id.startswith(("#", "%")):
+                c_id = c_id[1:]
+
+            if not c_id:
+                py_id = current_type
+            else:
+                py_id = repo.lookup_py_id(c_id)
+
+            if py_id:
+                prop_attr = prop_name.replace("-", "_")
+
+                token = id_ref(c_id)
+                if token:
+                    token += " "
+
+                rst_target = py_id + ".props." + prop_attr
+                token += ":py:data:`:%s<%s>`" % (
+                    prop_name, rst_target)
+        elif type_ == "FULLSIG" or type_ == "SIG":
+            c_id, sig_name = token.split("::")
+            if c_id.startswith(("#", "%")):
+                c_id = c_id[1:]
+
+            if not c_id:
+                py_id = current_type
+            else:
+                py_id = repo.lookup_py_id(c_id)
+
+            if py_id:
+                sig_attr = sig_name.replace("-", "_")
+
+                token = id_ref(c_id)
+                if token:
+                    token += " "
+
+                rst_target = py_id + ".signals." + sig_attr
+                token += ":py:func:`::%s<%s>`" % (
+                    sig_name, rst_target)
         elif type_ == "ID":
-            parts = re.split("(::?)", token)
-            fallback = True
-            if len(parts) > 2:
-                obj, sep, sigprop = parts[0], parts[1], "".join(parts[2:])
-                obj_id = obj.lstrip("#")
-                objtype = repo.lookup_py_id(obj_id)
-                if objtype is not None:
-                    obj_rst_id = objtype
-                elif current_type:
-                    obj_rst_id = ".".join(current_type.split(".")[:2])
-                else:
-                    obj_rst_id = None
-
-                if sigprop and obj_rst_id:
-                    fallback = False
-                    token = id_ref(obj)
-                    is_prop = len(sep) == 1
-
-                    if token:
-                        token += " "
-
-                    prop_name = sigprop.replace("_", "-")
-                    prop_attr = sigprop.replace("-", "_")
-                    if is_prop:
-                        rst_target = obj_rst_id + ".props." + prop_attr
-                        token += ":py:data:`:%s<%s>`" % (
-                            prop_name, rst_target)
-                    else:
-                        rst_target = obj_rst_id + ".signals." + prop_attr
-                        token += ":py:func:`::%s<%s>`" % (
-                            prop_name, rst_target)
-
-            if fallback:
-                if "-" in token:
-                    first, rest = token.split("-", 1)
-                    token = id_ref(first) + "-" + rest
-                elif token.endswith(":"):
-                    token = id_ref(token[:-1]) + ":"
-                else:
-                    token = id_ref(token)
+            token = id_ref(token)
 
         changed = orig_token != token
 
@@ -156,12 +158,11 @@ def _handle_data(repo, current_type, current_func, d):
             if not token:
                 pass
             else:
-                # ., is also OK
-                if not token.startswith((" ", ".", ",")):
-                    token = " " + token
+                if not token.startswith((" ", "\\", ",", ".", ":", "-")):
+                    token = "\\" + token
                 need_space_at_start = False
 
-        if changed:
+        if changed and token and escape_rest(token[-1]) != token[-1]:
             # something changed, we have to make sure that
             # the previous and next character is a space so
             # docutils doesn't get confused wit references
