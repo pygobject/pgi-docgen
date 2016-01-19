@@ -158,8 +158,11 @@ def _handle_data(repo, current_type, current_func, d):
             if not token:
                 pass
             else:
-                if not token.startswith((" ", "\\", ",", ".", ":", "-")):
-                    token = "\\" + token
+                if not token.startswith((" ", "\\", ",", ".", ":", "-", "\n")):
+                    if changed:
+                        token = " " + token
+                    else:
+                        token = "\\" + token
                 need_space_at_start = False
 
         if changed and token and escape_rest(token[-1]) != token[-1]:
@@ -212,7 +215,9 @@ def _handle_xml(repo, current_type, current_func, out, item):
 
     if isinstance(item, Tag):
         if item.name == "literal" or item.name == "type":
-            out.append("``%s``" % item.text)
+            if item.text:
+                # docutils doesn't like empty literals..
+                out.append("``%s``" % item.text)
         elif item.name == "itemizedlist":
             lines = []
             for item in item.contents:

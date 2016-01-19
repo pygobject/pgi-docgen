@@ -128,6 +128,9 @@ class TDocstring(unittest.TestCase):
             "in *@dest_x and ",
             "in `dest_x` and ")
 
+        self.check("and a @foo\nbla", "and a `foo`\nbla")
+        self.check("@one@two", "`one` `two`")
+
     def test_instance_params(self):
         self.check(
             "a @tree_model and a @foo",
@@ -421,6 +424,11 @@ user\\_data\\:
         self.check(
             "`bla[0][1] = 3`",
             "``bla[0][1] = 3``")
+
+        # FIXME
+        self.check(
+            "`<sadaf>`",
+            "")
 
     def test_vfuncs(self):
         self.check(
