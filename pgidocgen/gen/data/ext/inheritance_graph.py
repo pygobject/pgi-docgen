@@ -92,6 +92,8 @@ class InheritanceGraph(Directive):
         node.document = self.state.document
         env = self.state.document.settings.env
         class_role = env.get_domain('py').role('class')
+        classes = sorted(classes)
+
         for name in classes:
             refnodes, x = class_role(
                 'class', ':class:`%s`' % name, name, 0, self.state)
