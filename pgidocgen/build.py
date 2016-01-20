@@ -18,7 +18,7 @@ import shutil
 import jinja2
 import sphinx
 
-from .mergeindex import merge
+from .mergeindex import mergeindex
 from .util import rest2html
 from .gen.genutil import get_data_dir
 
@@ -249,7 +249,7 @@ def main(argv):
     pool.join()
 
     if not devhelp:
-        merge(target_path, include_terms=False, exclude_old=True)
+        mergeindex(target_path)
 
         index_path = os.path.join(get_data_dir(), "index")
         for entry in os.listdir(index_path):

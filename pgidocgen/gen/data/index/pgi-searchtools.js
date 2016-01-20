@@ -17,6 +17,20 @@ function assert(condition, message) {
     }
 }
 
+/** Sort function using default operators */
+function cmp(x, y) {
+        return x > y? 1 : x < y ? -1 : 0;
+}
+
+/** Returns a list of object values, similar to Object.keys() */
+function objectValues(obj) {
+    var values = [];
+    var keys = Object.keys(obj);
+    for (var i=0; i < keys.length; i++)
+        values.push(obj[keys[i]]);
+    return values;
+}
+
 // SearchResults ------------------------
 
 /**
@@ -196,7 +210,7 @@ SearchIndex.prototype._query = function(query) {
 
     var parts = query.split(/\s+/);
     // filter out empty ones
-    parts = parts.filter(function(e){return e}); 
+    parts = parts.filter(function(e){return e});
 
     var max_entries = 200;
     var show_first = 30;
@@ -232,16 +246,61 @@ SearchIndex.prototype._query = function(query) {
 }
 
 /**
+ * Returns the namespace objects to search in
+ */
+SearchIndex.prototype._getNamespaces = function() {
+    assert(this._index !== null);
+
+    var index = this._index;
+    var namespaces = Object.keys(index.namespaces);
+
+    var get_name = function(text) {
+        var res = text.split("-");
+        return res[0];
+    };
+
+    var sort_key = function(text) {
+        var res = text.split("-");
+        var name = res[0];
+        var version = res[1];
+        var vparts = version.split(".");
+        vparts = vparts.map(function (x) {
+            return parseInt(x, 10);
+        });
+        return [name, vparts];
+    };
+
+    // only select the newest one; sort by name and version and hash by name
+    // in that order
+    namespaces.sort(function(a, b) {
+        return cmp(sort_key(a), sort_key(b));
+    });
+
+    var result = {}
+    for(var i=0; i < namespaces.length; i++) {
+        var ns = namespaces[i];
+        var name = get_name(ns);
+        result[name] = ns;
+    }
+
+    var namespaces = {}
+    for (var name in result) {
+        var ns = result[name];
+        namespaces[ns] = index.namespaces[ns];
+    }
+
+    return namespaces;
+}
+
+/**
  * Given a search term list returns a list of unsorted results from the index.
  */
 SearchIndex.prototype._getResults = function(parts) {
     assert(this._index !== null);
 
     var index = this._index;
-    var filenames = index.filenames;
-    var objects = index.objects;
     var objnames = index.objnames;
-    var titles = index.titles;
+    var namespaces = this._getNamespaces();
 
     var results = [];
     var case_sensitive = PGIConfig.getCaseSensitive();
@@ -286,58 +345,33 @@ SearchIndex.prototype._getResults = function(parts) {
         return score;
     };
 
-    var partsLength = parts.length;
-    var titleLength = titles.length;
-    for (var i = 0; i < titleLength; i++) {
-        var title = titles[i];
-        var version = "";
+    for (var ns in namespaces) {
+        var namespace = namespaces[ns];
+        var objects = namespace.objects;
+        var titles = namespace.titles;
+        var filenames = namespace.filenames;
+        var module = ns.split("-")[0];
+        var partsLength = parts.length;
 
-        // strip away the library version
-        if(title.indexOf(" (") != -1) {
-            version = title.slice(title.indexOf(" (") + 2, title.length - 1);
-            title = title.slice(0, title.indexOf(" ("));
-        }
+        var get_fn = function(index) {
+            return ns + "/" + filenames[index];
+        };
 
-        var all_score = 0;
-        for(var j = 0; j < partsLength; j++) {
-            var part = parts[j];
-            var score = do_score(title, part);
-            if(score < 0) {
-                all_score = -1;
-                break;
-            } else {
-                all_score += score;
+        var titleLength = titles.length;
+        for (var i = 0; i < titleLength; i++) {
+            var title = titles[i];
+            var version = "";
+
+            // strip away the library version
+            if(title.indexOf(" (") != -1) {
+                version = title.slice(title.indexOf(" (") + 2, title.length - 1);
+                title = title.slice(0, title.indexOf(" ("));
             }
-        }
-
-        if(all_score >= 0) {
-            var type_name;
-            var filename = filenames[i];
-            if (endsWith(filename, "index") && count(filename, "/") < 2) {
-                // this is the title page of each module..
-                // try to make it the first match
-                all_score += 100;
-                type_name = version || "module";
-            } else {
-                // all other titles get shown last, thus -100
-                all_score -= 100;
-                type_name = "page";
-            }
-
-            results.push([
-                filename, title, type_name,
-                '', all_score]);
-        }
-    }
-
-    for (var prefix in objects) {
-        for (var name in objects[prefix]) {
-            var fullname = (prefix ? prefix + '.' : '') + name;
 
             var all_score = 0;
             for(var j = 0; j < partsLength; j++) {
                 var part = parts[j];
-                var score = do_score(fullname, part);
+                var score = do_score(title, part);
                 if(score < 0) {
                     all_score = -1;
                     break;
@@ -347,20 +381,58 @@ SearchIndex.prototype._getResults = function(parts) {
             }
 
             if(all_score >= 0) {
-                var match = objects[prefix][name];
-                var type_name = objnames[match[1]][1];
-                var filename = filenames[match[0]];
-                var anchor = match[3];
-
-                if (anchor === '')
-                    anchor = fullname;
-                else if (anchor == '-')
-                    anchor = objnames[match[1]][1] + '-' + fullname;
+                var type_name;
+                var filename = get_fn(i);
+                if (endsWith(filename, "index") && count(filename, "/") < 2) {
+                    console.log(filename);
+                    // this is the title page of each module..
+                    // try to make it the first match
+                    all_score += 100;
+                    type_name = version || "module";
+                } else {
+                    // all other titles get shown last, thus -100
+                    all_score -= 100;
+                    type_name = "page";
+                }
 
                 results.push([
-                    filename,
-                    fullname, type_name,
-                    '#' + anchor, all_score]);
+                    filename, title, type_name,
+                    '', all_score]);
+            }
+        }
+
+        for (var prefix in objects) {
+            for (var name in objects[prefix]) {
+                var fullname = module + "." + (prefix ? prefix + '.' : '') + name;
+
+                var all_score = 0;
+                for(var j = 0; j < partsLength; j++) {
+                    var part = parts[j];
+                    var score = do_score(fullname, part);
+                    if(score < 0) {
+                        all_score = -1;
+                        break;
+                    } else {
+                        all_score += score;
+                    }
+                }
+
+                if(all_score >= 0) {
+                    var match = objects[prefix][name];
+                    var type_name = objnames[match[1]][1];
+                    var filename = get_fn(match[0]);
+                    var anchor = match[3];
+
+                    if (anchor == "")
+                        anchor = fullname;
+                    else
+                        anchor = module + "." + anchor;
+
+                    results.push([
+                        filename,
+                        fullname, type_name,
+                        '#' + anchor, all_score]);
+                }
             }
         }
     }

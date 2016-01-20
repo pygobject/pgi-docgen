@@ -1,5 +1,5 @@
 #!/usr/bin/python
-# Copyright 2014 Christoph Reiter
+# Copyright 2014,2016 Christoph Reiter
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -8,7 +8,8 @@
 
 """
 Takes multiple sphinx search index files in subdirectories and
-merges them into one, adjusting the paths in the final index accordingly
+creates a new custom search index (with a different structure) containing
+all symbols.
 """
 
 import os
@@ -25,7 +26,14 @@ class SearchIndexMerger(object):
 
     def add_index(self, namespace, index):
         if index is not None:
+            assert namespace not in self._indices
             self._indices[namespace] = index
+
+    def load_index(self, namespace, index_path):
+        with open(index_path, "rb") as h:
+            data = h.read()
+            mod = js_index.loads(data)
+            self.add_index(namespace, mod)
 
     def merge(self):
 
@@ -33,58 +41,7 @@ class SearchIndexMerger(object):
             raise ValueError
 
         done = {}
-
-        # ENVVERSION (const)
-        first = self._indices[self._indices.keys()[0]]
-        done["envversion"] = first["envversion"]
-
-        # FILENAMES/TITLES (list)
-        def prefix_fn(ns, fn):
-            return ns + "/" + fn
-
-        new_titles = []
-        new_filenames = []
-        for ns, index in self._indices.iteritems():
-            for fn, title in zip(index["filenames"], index["titles"]):
-                new_filenames.append(prefix_fn(ns, fn))
-                # add the namespace to title not containing the module name
-                if "." not in title:
-                    title = "%s - %s" % (ns.replace("-", " "), title)
-                new_titles.append(title)
-        done["filenames"] = new_filenames
-        done["titles"] = new_titles
-
-        fn_index_lookup = dict((fn, i) for i, fn in enumerate(new_filenames))
-
-        def get_fn_index(ns, old_index):
-            value = self._indices[ns]["filenames"][old_index]
-            value = prefix_fn(ns, value)
-            return fn_index_lookup[value]
-
-        def merge_term_mapping(key):
-            new_terms = {}
-            for ns, index in self._indices.iteritems():
-                for k, old_refs in index[key].iteritems():
-                    if not isinstance(old_refs, list):
-                        old_refs = [old_refs]
-                    if k not in new_terms:
-                        new_terms[k] = []
-                    new_refs = new_terms[k]
-                    for ref in old_refs:
-                        new_refs.append(get_fn_index(ns, ref))
-
-            for k, v in new_terms.iteritems():
-                # remove lists again for only one entry
-                if len(v) == 1:
-                    new_terms[k] = v[0]
-
-            return new_terms
-
-        # TERMS (word -> fn index list, or one index)
-        done["terms"] = merge_term_mapping("terms")
-
-        # TITLETERMS: (word -> fn index list)
-        done["titleterms"] = merge_term_mapping("titleterms")
+        namespaces = {}
 
         pairs = []
         for ns, index in self._indices.iteritems():
@@ -93,13 +50,22 @@ class SearchIndexMerger(object):
                 if pair not in pairs:
                     pairs.append(pair)
 
+        pairs.append(
+            ("gobject:vfunc", ["gobject", "vfunc", "Virtual Function"]))
+        pairs.append(
+            ("gobject:signal", ["gobject", "signal", "GObject Signal"]))
+        pairs.append(
+            ("gobject:property", ["gobject", "property", "GObject Property"]))
+
         # OBJNAMES/OBJTYPES
         new_objnames = {}
         new_objtypes = {}
 
+        objtype_indizes = {}
         for i, (type_, name) in enumerate(pairs):
             new_objnames[str(i)] = name
             new_objtypes[str(i)] = type_
+            objtype_indizes[type_] = i
 
         done["objnames"] = new_objnames
         done["objtypes"] = new_objtypes
@@ -108,97 +74,83 @@ class SearchIndexMerger(object):
             old_index = str(old_index)
             index = self._indices[ns]
             value = index["objtypes"][old_index]
-            for k, v in done["objtypes"].items():
+            for k, v in done["objtypes"].iteritems():
                 if value == v:
                     return int(k)
             assert 0
 
         # OBJECTS
-        new_objects = {}
         for ns, index in self._indices.iteritems():
+            namespaces[ns] = {}
+
+            new_titles = []
+            new_filenames = []
+            for fn, title in zip(index["filenames"], index["titles"]):
+                new_filenames.append(fn)
+                # add the namespace to title not containing the module name
+                if "." not in title:
+                    title = "%s - %s" % (ns.replace("-", " "), title)
+                new_titles.append(title)
+            namespaces[ns]["titles"] = new_titles
+            namespaces[ns]["filenames"] = new_filenames
+
+            new_objects = {}
             for k, attributes in index["objects"].iteritems():
+                if "." in k:
+                    k = k.split(".", 1)[-1]
+                else:
+                    k = ""
+
+                orig_k = k
+                is_props = False
+                is_signals = False
+                if k.endswith(".props"):
+                    k = ""
+                    is_props = True
+                elif k.endswith(".signals"):
+                    k = ""
+                    is_signals = True
+
                 if k not in new_objects:
                     new_objects[k] = {}
                 new_attributes = new_objects[k]
 
                 for attr, v in attributes.items():
                     fn_index, objtype_index, prio, shortanchor = v
-                    fn_index = get_fn_index(ns, fn_index)
                     objtype_index = get_obj_index(ns, objtype_index)
                     new_v = [fn_index, objtype_index, prio, shortanchor]
-                    # FIXME: there are clashes, last thing wins for now
-                    # .. because of multiple versions
+
+                    # Move things around so that signals and properties
+                    # better match devhelp output.
+                    if is_props:
+                        new_v[1] = objtype_indizes["gobject:property"]
+                        new_v[3] = orig_k + "." + attr
+                        attr = "%s:%s" % (
+                            orig_k.rsplit(".", 1)[0], unescape_parameter(attr))
+                    elif is_signals:
+                        new_v[1] = objtype_indizes["gobject:signal"]
+                        new_v[3] = orig_k + "." + attr
+                        attr = "%s::%s" % (
+                            orig_k.rsplit(".", 1)[0], unescape_parameter(attr))
+                    elif attr.startswith("do_"):
+                        # change vfunc object type
+                        # XXX: there could be methods called "do_XXX"..
+                        new_v[1] = objtype_indizes["gobject:vfunc"]
+
+                    assert attr not in new_attributes
                     new_attributes[attr] = new_v
 
-        done["objects"] = new_objects
+            namespaces[ns]["objects"] = new_objects
 
-        assert not (set(first.keys()) ^ set(done.keys()))
+        done["namespaces"] = namespaces
 
         return done
 
 
-def fixup_vfuncs(index):
-    """Mark vfuncs as vfuncs"""
-
-    vfunc_index = len(index["objnames"]) + 1
-    index["objnames"][str(vfunc_index)] = [
-        "gobject", "vfunc", "Virtual Function"]
-    index["objtypes"][str(vfunc_index)] = "gobject:vfunc"
-
-    objects = index["objects"]
-    for attr_key, attributes in objects.items():
-        if "." not in attr_key:
-            continue
-        for k, v in attributes.iteritems():
-            # XXX: there could be methods called "do_XXX"..
-            if k.startswith("do_"):
-                v[1] = vfunc_index
-
-
-def fixup_props_signals(index):
-    """Move things around so that signals and properties
-    better match devhelp output.
-    """
-
-    objects = index["objects"]
-
-    if "" not in objects:
-        objects[""] = {}
-
-    sig_index = len(index["objnames"]) + 1
-    index["objnames"][str(sig_index)] = ["gobject", "signal", "GObject Signal"]
-    index["objtypes"][str(sig_index)] = "gobject:signal"
-
-    prop_index = len(index["objnames"]) + 1
-    index["objnames"][str(prop_index)] = [
-        "gobject", "property", "GObject Property"]
-    index["objtypes"][str(prop_index)] = "gobject:property"
-
-    for attr_key, attributes in objects.items():
-        if attr_key.endswith(".props"):
-            ns = attr_key.rsplit(".", 1)[0]
-            for k, v in attributes.iteritems():
-                v[1] = prop_index
-                v[3] = attr_key + "." + k
-                k = "%s:%s" % (ns, unescape_parameter(k))
-                objects[""][k] = v
-            del objects[attr_key]
-        elif attr_key.endswith(".signals"):
-            ns = attr_key.rsplit(".", 1)[0]
-            for k, v in attributes.iteritems():
-                v[1] = sig_index
-                v[3] = attr_key + "." + k
-                k = "%s::%s" % (ns, unescape_parameter(k))
-                objects[""][k] = v
-            del objects[attr_key]
-
-
-def merge(path, include_terms=False, exclude_old=True):
+def mergeindex(path):
     """Merge searchindex files in subdirectories of `path` and
     create a searchindex files under `path`
     """
-
-    groups = {}
 
     merger = SearchIndexMerger()
     for entry in os.listdir(path):
@@ -206,31 +158,8 @@ def merge(path, include_terms=False, exclude_old=True):
         if not os.path.exists(index_path):
             continue
 
-        namespace, version = os.path.basename(
-            os.path.dirname(index_path)).split("-")
-        with open(index_path, "rb") as h:
-            data = h.read()
-            mod = js_index.loads(data)
-            groups.setdefault(namespace, []).append((version, mod))
-
-    def sort_version_key(version):
-        return tuple(map(int, version.split(".")))
-
-    for namespace, entries in sorted(groups.items()):
-        # newest first, for name clashes
-        entries.sort(key=lambda x: sort_version_key(x[0]), reverse=True)
-
-        for i, (version, mod) in enumerate(entries):
-            key = namespace + "-" + version
-            if exclude_old and i > 0:
-                merger.add_index(key, None)
-                continue
-            fixup_props_signals(mod)
-            fixup_vfuncs(mod)
-            if not include_terms:
-                mod["terms"].clear()
-                mod["titleterms"].clear()
-            merger.add_index(key, mod)
+        key = os.path.basename(os.path.dirname(index_path))
+        merger.load_index(key, index_path)
 
     with open(os.path.join(path, "searchindex.js"), "wb") as h:
         output = merger.merge()
