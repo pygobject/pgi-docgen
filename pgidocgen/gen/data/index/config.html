@@ -32,6 +32,10 @@
 <h1>Search Configuration</h1>
 
 <dl class="docutils">
+    <dt><label><input type="button" id="config-restore" value="Restore Default Configuration"></label></dt>
+</dl>
+
+<dl class="docutils">
     <dt>General</dt>
     <dd>
         <label><input type="checkbox" id="case-insensitive"> Case Insensitive Search</label>
@@ -50,13 +54,6 @@
         {% for url, name, version in results %}
         <label><input type="checkbox" class="module-checkbox" value="{{ name }}">{{ name }}</label>
         {% endfor %}
-    </dd>
-</dl>
-
-<dl class="docutils">
-    <dt>Default Configuration</dt>
-    <dd>
-        <label><input type="button" id="config-restore" value="Restore Default"></label>
     </dd>
 </dl>
 
