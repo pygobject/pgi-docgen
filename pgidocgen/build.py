@@ -258,11 +258,17 @@ def main(argv):
             shutil.copyfile(src, dst)
 
         done_sorted = sorted(done, key=lambda d: d.name.lower())
-        results = [(d.name + "/index.html", d.name, d.lib_version)
+        results = [(d.name + "/index.html", d.name.replace("-", " "), d.lib_version)
                    for d in done_sorted]
         with open(os.path.join(index_path, "sidebar.html"), "rb") as h:
             data = h.read()
         with open(os.path.join(target_path, "sidebar.html"), "wb") as t:
+            env = jinja2.Environment().from_string(data)
+            t.write(env.render(results=results))
+
+        with open(os.path.join(index_path, "config.html"), "rb") as h:
+            data = h.read()
+        with open(os.path.join(target_path, "config.html"), "wb") as t:
             env = jinja2.Environment().from_string(data)
             t.write(env.render(results=results))
 

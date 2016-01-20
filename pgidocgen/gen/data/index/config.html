@@ -13,6 +13,10 @@
         margin: 15px 0px 25px 20px !important;
     }
 
+    dl {
+        margin-left: 15px;
+    }
+
     </style>
 
 </head>
@@ -25,12 +29,34 @@
             <div class="rst-content">
                 <div class="section">
 
-<h1>Configuration</h1>
+<h1>Search Configuration</h1>
 
 <dl class="docutils">
-    <dt>Search</dt>
+    <dt>General</dt>
     <dd>
-        <label><input type="checkbox" id="case-sensitive"> Case sensitive</label>
+        <label><input type="checkbox" id="case-insensitive"> Case Insensitive Search</label>
+    </dd>
+</dl>
+
+<dl class="docutils">
+    <dt>Included Modules</dt>
+    <dd>
+        <label><input type="checkbox" id="include-all"> Include All Modules <small>(only the newest versions)</small></label>
+    </dd>
+    <dd class="module-selection">
+        <label><input type="button" id="select-all" value="Select All">&#160;&#160;&#160;<input type="button" id="unselect-all" value="Unselect All"></label>
+    </dd>
+    <dd class="module-selection">
+        {% for url, name, version in results %}
+        <label><input type="checkbox" class="module-checkbox" value="{{ name }}">{{ name }}</label>
+        {% endfor %}
+    </dd>
+</dl>
+
+<dl class="docutils">
+    <dt>Default Configuration</dt>
+    <dd>
+        <label><input type="button" id="config-restore" value="Restore Default"></label>
     </dd>
 </dl>
 
@@ -47,10 +73,72 @@
 
     <script type="text/javascript">
     jQuery(function () {
-        $("#case-sensitive").prop('checked', PGIConfig.getCaseSensitive());
-        $("#case-sensitive").change(function() {
+        // Case Insensitive
+        $("#case-insensitive").prop('checked', PGIConfig.getCaseInsensitive());
+        $("#case-insensitive").change(function() {
             var checked = $(this).prop('checked');
-            PGIConfig.setCaseSensitive(checked);
+            PGIConfig.setCaseInsensitive(checked);
+        });
+
+        // Config Restore
+        $("#config-restore").click(function() {
+            PGIConfig.reset();
+            location.reload();
+        });
+
+        var saveModuleSelection = function() {
+            var selected = [];
+            $(".module-checkbox").each(function (index, elm) {
+                var name = $(elm).val().replace(" ", "-");
+                if ($(elm).prop('checked')) {
+                    selected.push(name);
+                }
+            });
+            PGIConfig.setModules(selected);
+        }
+
+        var restoreModuleSelection = function() {
+            var selected = PGIConfig.getModules();
+            $(".module-checkbox").each(function (index, elm) {
+                var name = $(elm).val().replace(" ", "-");
+                $(elm).prop('checked', selected.indexOf(name) >= 0);
+            });
+        }
+
+        // Select All
+        $("#select-all").click(function() {
+            $(".module-checkbox").each(function (index, elm) {
+                $(elm).prop('checked', true);
+            });
+            saveModuleSelection();
+        });
+
+        // Unselect All
+        $("#unselect-all").click(function() {
+            $(".module-checkbox").each(function (index, elm) {
+                $(elm).prop('checked', false);
+            });
+            saveModuleSelection();
+        });
+
+        // Include All
+        $("#include-all").change(function() {
+            var checked = $(this).prop('checked');
+
+            $(".module-selection input").each(function (index, elm) {
+                $(elm).prop('disabled', checked);
+            });
+
+            PGIConfig.setIncludeAll(checked);
+        });
+        $("#include-all").prop('checked', PGIConfig.getIncludeAll());
+        $("#include-all").change();  // trigger change event
+
+        // Module Selection
+        restoreModuleSelection();
+        saveModuleSelection();
+        $(".module-checkbox").change(function() {
+            saveModuleSelection();
         });
     });
     </script>

@@ -252,7 +252,7 @@ SearchIndex.prototype._getNamespaces = function() {
     assert(this._index !== null);
 
     var index = this._index;
-    var namespaces = Object.keys(index.namespaces);
+    var ns_keys = Object.keys(index.namespaces);
 
     var get_name = function(text) {
         var res = text.split("-");
@@ -270,23 +270,35 @@ SearchIndex.prototype._getNamespaces = function() {
         return [name, vparts];
     };
 
-    // only select the newest one; sort by name and version and hash by name
-    // in that order
-    namespaces.sort(function(a, b) {
-        return cmp(sort_key(a), sort_key(b));
-    });
-
-    var result = {}
-    for(var i=0; i < namespaces.length; i++) {
-        var ns = namespaces[i];
-        var name = get_name(ns);
-        result[name] = ns;
-    }
-
+    var include_all = PGIConfig.getIncludeAll();
     var namespaces = {}
-    for (var name in result) {
-        var ns = result[name];
-        namespaces[ns] = index.namespaces[ns];
+
+    if (include_all) {
+        // only select the newest one; sort by name and version and hash by name
+        // in that order
+        ns_keys.sort(function(a, b) {
+            return cmp(sort_key(a), sort_key(b));
+        });
+
+        var result = {}
+        for(var i=0; i < ns_keys.length; i++) {
+            var ns = ns_keys[i];
+            var name = get_name(ns);
+            result[name] = ns;
+        }
+
+        for (var name in result) {
+            var ns = result[name];
+            namespaces[ns] = index.namespaces[ns];
+        }
+    } else {
+        var include_modules = PGIConfig.getModules();
+
+        for(var i=0; i < ns_keys.length; i++) {
+            var ns = ns_keys[i];
+            if (include_modules.indexOf(ns) >= 0)
+                namespaces[ns] = index.namespaces[ns];
+        }
     }
 
     return namespaces;
@@ -303,7 +315,7 @@ SearchIndex.prototype._getResults = function(parts) {
     var namespaces = this._getNamespaces();
 
     var results = [];
-    var case_sensitive = PGIConfig.getCaseSensitive();
+    var case_insensitive = PGIConfig.getCaseInsensitive();
 
     var do_score = function (text, part) {
         // returns -1 if not found, or a score >= 0
@@ -311,7 +323,7 @@ SearchIndex.prototype._getResults = function(parts) {
         var lower_text;
         var lower_part;
 
-        if (case_sensitive) {
+        if (!case_insensitive) {
             lower_text = text;
             lower_part = part;
         } else {
@@ -384,7 +396,6 @@ SearchIndex.prototype._getResults = function(parts) {
                 var type_name;
                 var filename = get_fn(i);
                 if (endsWith(filename, "index") && count(filename, "/") < 2) {
-                    console.log(filename);
                     // this is the title page of each module..
                     // try to make it the first match
                     all_score += 100;
