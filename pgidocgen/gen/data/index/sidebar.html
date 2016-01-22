@@ -94,49 +94,44 @@
 
     </div>
 
-    <div class="wy-menu wy-menu-vertical" style="text-align:center">
-        <ul id="search-results">
-            {% for url, name, version in results %}
+    <div class="wy-menu wy-menu-vertical">
+        <div id="search-results">
+            <ul>
+                {% for url, name, version in results %}
                 <li><a href="{{ url }}" target="Content" title="{{ name }}"><div class="right">{{ version }}</div><div class="left">{{ name }}</div></a></li>
-            {% endfor %}
-        </ul>
+                {% endfor %}
+            </ul>
+        </div>
     </div>
 
-    <script type="text/javascript" src="jquery-2.2.0.min.js"></script>
     <script type="text/javascript" src="js.cookie-2.1.0.min.js"></script>
     <script type="text/javascript" src="pgi-config.js"></script>
     <script type="text/javascript" src="pgi-searchtools.js"></script>
-    <script type="text/javascript" id="searchindexloader"></script>
 
     <script type="text/javascript">
 
-    var delay = (function(){
-      var timer = 0;
-      return function(callback, ms){
-        clearTimeout (timer);
-        timer = setTimeout(callback, ms);
-      };
+    var delay = (function() {
+        var timer = 0;
+        return function(callback, ms) {
+            clearTimeout(timer);
+            timer = setTimeout(callback, ms);
+        };
     })();
 
-    jQuery(function () {
-        Search = new SearchIndex();
-        Search.loadIndex("searchindex.js", "searchindexloader");
+    var Search = new SearchIndex();
+    var searchField = document.getElementById('search-field');
 
-        $('#search-field').focus();
-
-        $('#search-field').keydown(function(){
-            Search.abortSearch();
-        });
-
-        $('#search-field').keyup(function(){
-            Search.abortSearch();
-            var val = $(this).val()
-            delay(function(){
-                Search.performSearch(val);
-            }, 150);
-        });
+    searchField.focus();
+    searchField.addEventListener('keyup', function() {
+        var val = this.value;
+        delay(function() {
+            Search.performSearch(val);
+        }, 250);
     });
+
     </script>
+
+    <script type="text/javascript" src="searchindex.js" async></script>
 
 </body>
 </html>

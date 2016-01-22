@@ -19,17 +19,9 @@ function assert(condition, message) {
 
 /** Sort function using default operators */
 function cmp(x, y) {
-        return x > y? 1 : x < y ? -1 : 0;
+    return x > y? 1 : x < y ? -1 : 0;
 }
 
-/** Returns a list of object values, similar to Object.keys() */
-function objectValues(obj) {
-    var values = [];
-    var keys = Object.keys(obj);
-    for (var i=0; i < keys.length; i++)
-        values.push(obj[keys[i]]);
-    return values;
-}
 
 // SearchResults ------------------------
 
@@ -38,98 +30,59 @@ function objectValues(obj) {
  * @class
  */
 SearchResults = function(id) {
-    this._obj = $(document.getElementById(id));
-    this._original = this._obj.html();
-    this._current_id = 0;
-}
-
-/**
- * Stops any currently occurring fill operation
- */
-SearchResults.prototype.abortFill = function() {
-    this._current_id++;
+    this._obj = document.getElementById(id);
+    this._original = this._obj.innerHTML;
 }
 
 /**
  * Hide the search results and restores the original list
  */
 SearchResults.prototype.hide = function() {
-    this.abortFill();
-    this._obj.html(this._original);
+    this._obj.innerHTML = this._original;
 }
 
 /**
  * Fills the results list with the provided results.
  * `show_max` is the number or entries shown in the end (-1 means unlimited)
- * `show_first` is the number which will be inserted immediately (-1 means all)
  */
-SearchResults.prototype.fill = function(results, show_max, show_first) {
-    assert(show_first <= show_max);
+SearchResults.prototype.fill = function(results, show_max) {
+    var html = [];
 
-    var not_shown = 0;
+    html.push("<ul>");
 
-    this.abortFill();
-
-    if (results.length > show_max && show_max != -1) {
-        not_shown = results.length - show_max;
-        results = results.slice(results.length - show_max, results.length);
-    }
-
-    var that = this;
-
-    function displayNextItem(current_id, entry_index) {
-        if (current_id !== that._current_id)
-            return;
-
-        if (!results.length) {
-            if (not_shown > 0)
-                that.appendMessage("and " + not_shown + " more...");
-            return;
+    if (!results.length) {
+        html.push(this._getMessage("No Results"));
+    } else {
+        for(var i=0; i < results.length && i < show_max; i++) {
+            var item = results[i];
+            html.push("<li>\
+                <a href='" + item[0] + ".html" + item[3] + "' target='Content' title='" + item[1] + "'>\
+                <div class='right'>" + item[2] + "</div>\
+                <div class='left'>" + item[1] + "</div>\
+                </a>\
+                </li>");
         }
 
-        var item = results.pop();
-        var listItem = $('<li style="display:none"></li>');
-        var a = $('<a/>').attr('href',
-            item[0] + ".html" +
-            item[3]).attr('target', 'Content').attr("title", item[1]);
-        a.append($('<div/>').attr("class", "right").html(item[2]));
-        a.append($('<div/>').attr("class", "left").html(item[1]));
-        listItem.append(a);
-        that._obj.append(listItem);
-
-        // show the first `entry_index` immediately, then delay updates
-        if (entry_index <= show_first || show_first == -1) {
-            listItem.show();
-            displayNextItem(current_id, entry_index + 1);
-        } else {
-            listItem.slideDown(5, function() {
-                displayNextItem(current_id, entry_index + 1);
-            });
+        if (i < results.length) {
+            html.push(
+                this._getMessage("and " + (results.length - i) + " more..."));
         }
     }
 
-    this._obj.empty();
-    if (!results.length)
-        that.showMessage("No Results");
-    else
-        displayNextItem(this._current_id, 0);
+    html.push("</ul>");
+    this._obj.innerHTML = html.join("");
+}
+
+SearchResults.prototype._getMessage = function(text) {
+    return "<li><a class='message'>" + text + "</a></li>";
 }
 
 /**
  * Clears the result list and shows a status message
  */
 SearchResults.prototype.showMessage = function(text) {
-    this._obj.empty();
-    this.appendMessage(text);
-}
-
-/**
- * Shows a status message at the end of the current list
- */
-SearchResults.prototype.appendMessage = function(text) {
-    var listItem = $('<li></li>');
-    listItem.append($('<a/>').attr('class', 'message').html(text));
-    this._obj.append(listItem);
+    var html = "<ul>" + this._getMessage(text) + "</ul>";
+    this._obj.innerHTML = html;
 }
 
 
@@ -145,19 +98,6 @@ SearchIndex = function() {
 
     this._queued_query = null;
     this._active_query = null;
-}
-
-/** Load the search index located at `url`. Pass an ID for an empty script tag
- * as `target_id`.
- */
-SearchIndex.prototype.loadIndex = function(url, target_id) {
-    $.ajax({type: "GET", url: url, data: null,
-            dataType: "script", cache: true,
-            complete: function(jqxhr, textstatus) {
-              if (textstatus != "success") {
-                document.getElementById(target_id).src = url;
-              }
-            }});
 }
 
 /**
@@ -183,7 +123,6 @@ SearchIndex.prototype.performSearch = function(query) {
         return;
     this._active_query = query;
 
-    this.abortSearch();
     window.scrollTo(0, 0);
 
     if (this._index !== null)
@@ -195,14 +134,6 @@ SearchIndex.prototype.performSearch = function(query) {
 }
 
 /**
- * Abort the search. This should be followed by an performSearch() otherwise
- * the search is in an inconsistent state
- */
-SearchIndex.prototype.abortSearch = function() {
-    this._results.abortFill();
-}
-
-/**
  * Starts the actual search. Needs an index already set.
  */
 SearchIndex.prototype._query = function(query) {
@@ -210,10 +141,11 @@ SearchIndex.prototype._query = function(query) {
 
     var parts = query.split(/\s+/);
     // filter out empty ones
-    parts = parts.filter(function(e){return e});
+    parts = parts.filter(function(e) {
+        return e;
+    });
 
     var max_entries = 200;
-    var show_first = 30;
     var results = [];
 
     if(!parts.length) {
@@ -221,28 +153,22 @@ SearchIndex.prototype._query = function(query) {
         return;
     }
 
-    // array of [filename, title, anchor, score]
     results = this._getResults(parts);
 
-    // now sort the results by score (in opposite order of appearance, since the
-    // display function below uses pop() to retrieve items) and then
-    // alphabetically
     results.sort(function(a, b) {
-      var left = a[4];
-      var right = b[4];
-      if (left > right) {
-        return 1;
-      } else if (left < right) {
-        return -1;
-      } else {
-        // same score: sort alphabetically
-        left = a[1].toLowerCase();
-        right = b[1].toLowerCase();
-        return (left > right) ? -1 : ((left < right) ? 1 : 0);
-      }
+        var left = b[4];
+        var right = a[4];
+        if (left > right) {
+            return 1;
+        } else if (left < right) {
+            return -1;
+        } else {
+            // same score: sort alphabetically
+            return cmp(a[1].toLowerCase(), b[1].toLowerCase());
+        }
     });
 
-    this._results.fill(results, max_entries, show_first);
+    this._results.fill(results, max_entries);
 }
 
 /**
@@ -413,8 +339,11 @@ SearchIndex.prototype._getResults = function(parts) {
         }
 
         for (var prefix in objects) {
-            for (var name in objects[prefix]) {
-                var fullname = module + "." + (prefix ? prefix + '.' : '') + name;
+            var fullname_prefix = module + "." + (prefix ? prefix + '.' : '');
+            var object = objects[prefix];
+
+            for (var name in object) {
+                var fullname = fullname_prefix + name;
 
                 var all_score = 0;
                 for(var j = 0; j < partsLength; j++) {
@@ -429,7 +358,7 @@ SearchIndex.prototype._getResults = function(parts) {
                 }
 
                 if(all_score >= 0) {
-                    var match = objects[prefix][name];
+                    var match = object[name];
                     var type_name = objnames[match[1]][1];
                     var filename = get_fn(match[0]);
                     var anchor = match[3];
