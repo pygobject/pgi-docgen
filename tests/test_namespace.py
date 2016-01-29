@@ -9,7 +9,7 @@
 import unittest
 
 from pgidocgen.namespace import Namespace, get_cairo_types, \
-    fixup_added_since, get_versions, get_namespace
+    fixup_since, get_versions, get_namespace
 
 
 class TNamespace(unittest.TestCase):
@@ -151,9 +151,14 @@ class TNamespace(unittest.TestCase):
 
     def test_fixup_added_since(self):
         self.assertEqual(
-            fixup_added_since("Foo\nSince: 3.14"), ("Foo", "3.14"))
+            fixup_since("Foo\nSince: 3.14"), ("Foo", "3.14"))
         self.assertEqual(
-            fixup_added_since("Foo\n@Since: ATK-3.14"), ("Foo", "3.14"))
+            fixup_since("Foo\n@Since: ATK-3.14"), ("Foo", "3.14"))
         self.assertEqual(
-            fixup_added_since("to the baseline. Since 3.10."),
+            fixup_since("to the baseline. Since 3.10."),
             ("to the baseline.", "3.10"))
+
+    def test_fixup_deprecated_since(self):
+        self.assertEqual(
+            fixup_since("Since 2.12. Use atk_component_get_extents()."),
+            ("Use atk_component_get_extents().", "2.12"))

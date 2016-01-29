@@ -76,7 +76,7 @@ def _get_dom(path, _cache={}):
     return _cache[path]
 
 
-def fixup_added_since(text):
+def fixup_since(text):
     """Split out the 'Since: X.YZ' text from the documentation and returns
     the remaining documentation and the version string or an empty string
     if not version was found.
@@ -89,7 +89,7 @@ def fixup_added_since(text):
 
     added_since = [""]
 
-    def fixup_added_since(match):
+    def fixup_since(match):
         version = match.group(2)
         # e.g. "3.10."
         version = version.rstrip(".")
@@ -99,19 +99,33 @@ def fixup_added_since(text):
         return ""
 
     text = re.sub(
-        '(^|\s+)@?Since\s*\\\\?:?\s+([^\s]+)(\\n|$)', fixup_added_since, text)
+        '(^|\s+)@?Since\s*\\\\?:?\s+([^\s]+)(\\n|$|\. )', fixup_since, text)
+
     return text, added_since[0]
 
 
 def _fixup_all_added_since(all_docs):
-    """Applies fixup_added_since() to all docs"""
+    """Applies fixup_since() to all docs"""
 
     for type_, type_docs in all_docs.iteritems():
         for k, e in type_docs.iteritems():
-            if not e.version:
-                docs, version = fixup_added_since(e.docs)
+            docs = e.docs
+            version = e.version
+            deprecated_version = e.deprecated_version
+            deprecated = e.deprecated
+            changed = False
+
+            if not version:
+                docs, version = fixup_since(docs)
+                changed = True
+
+            if not deprecated_version:
+                deprecated, deprecated_version = fixup_since(deprecated)
+                changed = True
+
+            if changed:
                 type_docs[k] = DocEntry(docs, version,
-                                        e.deprecated_version, e.deprecated)
+                                        deprecated_version, deprecated)
 
 
 def get_versions(all_docs):
