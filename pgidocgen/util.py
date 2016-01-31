@@ -511,6 +511,10 @@ def import_namespace(namespace, version=None):
         __import__("gi.repository." + namespace).repository, namespace)
 
 
+def get_module_version(module):
+    return module._version
+
+
 class cached_property(object):
     """A read-only @property that is only evaluated once."""
 
@@ -528,3 +532,14 @@ class cached_property(object):
             return self
         obj.__dict__[self.__name__] = result = self.fget(obj)
         return result
+
+
+class VersionedNamespace(str):
+
+    @property
+    def name(self):
+        return self.split("-", 1)[0]
+
+    @property
+    def version(self):
+        return self.split("-", 1)[-1]

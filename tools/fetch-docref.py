@@ -14,13 +14,14 @@ import requests
 from BeautifulSoup import BeautifulSoup
 from multiprocessing import Pool
 
-from pgidocgen.girdata import GTK_DOCS, get_docref_path
+from pgidocgen.girdata import get_docref_path
+from pgidocgen.girdata.library import LIBRARIES
 
 
-def fetch_pages(doc):
+def fetch_pages(lib):
     pages = set()
     keywords = set()
-    r = requests.get(doc.devhelp_url)
+    r = requests.get(lib.devhelp_url)
     soup = BeautifulSoup(r.text)
 
     for tag in soup.findAll("sub"):
@@ -40,34 +41,34 @@ def fetch_pages(doc):
 
 
 def fetch_page(arg):
-    doc, page, keywords = arg
+    lib, page, keywords = arg
 
     names = {}
-    r = requests.get(doc.url + page)
+    r = requests.get(lib.url + page)
     soup = BeautifulSoup(r.text)
     for link in soup.findAll("a"):
         if link.get("name") and "." not in link["name"]:
             url = page + "#" + link["name"]
             if url not in keywords:
-                names[urllib.unquote(link["name"])] = doc.url + url
+                names[urllib.unquote(link["name"])] = lib.url + url
     return names, page
 
 
 def main(argv):
     pool = Pool(20)
 
-    for doc in GTK_DOCS:
-        pages, keywords = fetch_pages(doc)
+    for lib in LIBRARIES:
+        pages, keywords = fetch_pages(lib)
         mapping = {}
         for names, page in pool.imap_unordered(
-                fetch_page, [(doc, p, keywords) for p in pages]):
+                fetch_page, [(lib, p, keywords) for p in pages]):
             print page
             mapping.update(names)
 
-        for ns in doc.namespaces:
-            namespace, version = ns.split("-")
-            with open(get_docref_path(namespace, version), "wb") as h:
-                h.write(json.dumps(mapping, sort_keys=True, indent=4))
+        ns = lib.namespace
+        namespace, version = ns.split("-")
+        with open(get_docref_path(namespace, version), "wb") as h:
+            h.write(json.dumps(mapping, sort_keys=True, indent=4))
 
 
 if __name__ == "__main__":

@@ -7,7 +7,8 @@
 
 import re
 
-from .library import get_library_version
+from .. import util
+from .library import Library
 
 
 class Project(object):
@@ -21,6 +22,99 @@ class Project(object):
     def __init__(self, namespaces, doap=None):
         self.namespaces = namespaces
         self.doap = doap or ""
+
+    @classmethod
+    def for_namespace(cls, namespace):
+        """Returns a Project instance for a given namespace"""
+
+        for p in PROJECTS:
+            if namespace in p.namespaces:
+                return p
+        return Project([namespace])
+
+    @util.cached_property
+    def version(self):
+        """Returns the version of the current module or some related module in
+        the same project, or an empty string
+        """
+
+        version = ""
+        for namespace in self.namespaces:
+            try:
+                rmod = util.import_namespace(namespace)
+            except ImportError:
+                continue
+            l = Library.for_namespace(namespace, util.get_module_version(rmod))
+            version = l.version
+            if version:
+                break
+
+        return version
+
+    @property
+    def tag(self):
+        """Returns the VCS tag for the given `namespace` and the library
+        version retrieved using Project.version.
+
+        In case not tag can be found returns an empty string.
+        """
+
+        version = self.version
+
+        def matches(ns):
+            return ns in self.namespaces
+
+        if matches("Atk"):
+            return "ATK_" + version.replace(".", "_")
+        elif matches("Gtk") or matches("GLib") or matches("Pango"):
+            return version
+        elif "/gstreamer/" in self.doap:
+            return ".".join(version.split(".")[:3])
+        else:
+            return ""
+
+    def get_source_func(self, namespace):
+        """Returns a function for mapping the line number paths to web links
+        or None.
+        """
+
+        assert namespace in self.namespaces
+
+        tag = self.tag
+        if not tag:
+            return None
+
+        if "git.gnome.org" in self.doap:
+            match = re.search("/browse/(.*?)/", self.doap)
+            if match is None:
+                return
+            git_name = match.group(1)
+
+            def gnome_func(path):
+                path, line = path.rsplit(":", 1)
+                return "https://git.gnome.org/browse/%s/tree/%s?h=%s#n%s" % (
+                    git_name, path, tag, line)
+
+            return gnome_func
+        elif "cgit.freedesktop.org/gstreamer/" in self.doap:
+            match = re.search("/gstreamer/(.*?)/", self.doap)
+            if match is None:
+                return
+            git_name = match.group(1)
+
+            path_prefix = ""
+            if namespace.startswith("Gst") and \
+                    "/gst-plugins-base/" in self.doap:
+                path_prefix = "gst-libs/gst/"
+            elif "Gst" in self.namespaces and namespace != "Gst":
+                path_prefix = "libs/gst/"
+
+            def gst_func(path):
+                path, line = path.rsplit(":", 1)
+                return ("http://cgit.freedesktop.org/gstreamer/%s/tree/%s%s"
+                        "?h=%s#n%s" % (git_name, path_prefix, path, tag, line))
+
+            return gst_func
 
 
 PROJECTS = [
@@ -110,125 +204,3 @@ PROJECTS = [
     Project(['Gom'], 'https://git.gnome.org/browse/gom/plain/gom.doap'),
     Project(['Gnm'], 'https://git.gnome.org/browse/gnumeric/plain/gnumeric.doap'),
 ]
-
-
-def get_project(namespace):
-    """Returns a Project instance for a given namespace or raises KeyError
-    if the passed namespace is not part of a known project.
-    """
-
-    for p in PROJECTS:
-        if namespace in p.namespaces:
-            return p
-    raise KeyError
-
-
-def get_project_version(mod):
-    """Returns the version of the current module or some related module in
-    the same project, or an empty string
-    """
-
-    from .. import util
-
-    version = get_library_version(mod)
-    if version:
-        return version
-
-    namespace = mod.__name__.rsplit(".")[-1]
-    for related in get_related_namespaces(namespace):
-        try:
-            rmod = util.import_namespace(related)
-        except ImportError:
-            continue
-        version = get_library_version(rmod)
-        if version:
-            break
-
-    return version
-
-
-def get_tag(namespace, project_version):
-    """Returns the VCS tag for the given `namespace` and the library
-    version retrieved using get_project_version().
-
-    In case not tag can be found returns an empty string.
-    """
-
-    def matches(ns):
-        return namespace == ns or namespace in get_related_namespaces(ns)
-
-    try:
-        p = get_project(namespace)
-    except KeyError:
-        p = None
-
-    if matches("Atk"):
-        return "ATK_" + project_version.replace(".", "_")
-    elif matches("Gtk") or matches("GLib") or matches("Pango"):
-        return project_version
-    elif p and "/gstreamer/" in p.doap:
-        return ".".join(project_version.split(".")[:3])
-    else:
-        return ""
-
-
-def get_source_to_url_func(namespace, project_version):
-    """Returns a function for mapping the line number paths to web links
-    or None.
-    """
-
-    try:
-        project = get_project(namespace)
-    except KeyError:
-        return
-
-    tag = get_tag(namespace, project_version)
-    if not tag:
-        return None
-
-    if "git.gnome.org" in project.doap:
-        match = re.search("/browse/(.*?)/", project.doap)
-        if match is None:
-            return
-        git_name = match.group(1)
-
-        def gnome_func(path):
-            path, line = path.rsplit(":", 1)
-            return "https://git.gnome.org/browse/%s/tree/%s?h=%s#n%s" % (
-                git_name, path, tag, line)
-
-        return gnome_func
-    elif "cgit.freedesktop.org/gstreamer/" in project.doap:
-        match = re.search("/gstreamer/(.*?)/", project.doap)
-        if match is None:
-            return
-        git_name = match.group(1)
-
-        path_prefix = ""
-        if namespace.startswith("Gst") and \
-                "/gst-plugins-base/" in project.doap:
-            path_prefix = "gst-libs/gst/"
-        elif "Gst" in project.namespaces and namespace != "Gst":
-            path_prefix = "libs/gst/"
-
-        def gst_func(path):
-            path, line = path.rsplit(":", 1)
-            return ("http://cgit.freedesktop.org/gstreamer/%s/tree/%s%s"
-                    "?h=%s#n%s" % (git_name, path_prefix, path, tag, line))
-
-        return gst_func
-
-
-def get_related_namespaces(ns):
-    """Returns a list of related namespaces which are part of the
-    same project excluding the passed namespace.
-    """
-
-    try:
-        p = get_project(ns)
-    except KeyError:
-        return []
-    else:
-        l = p.namespaces[:]
-        l.remove(ns)
-        return l

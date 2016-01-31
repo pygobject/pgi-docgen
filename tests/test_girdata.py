@@ -6,12 +6,13 @@
 # version 2.1 of the License, or (at your option) any later version.
 
 import os
+import re
 import unittest
 
-from pgidocgen.util import import_namespace
-from pgidocgen.girdata import get_library_version, get_project_version, \
-    get_tag, get_docref_dir, get_docref_path, get_class_image_dir, \
-    get_class_image_path, get_source_to_url_func
+from pgidocgen.util import import_namespace, get_module_version
+from pgidocgen.girdata import Library, Project, \
+    get_docref_dir, get_docref_path, get_class_image_dir, \
+    get_class_image_path
 
 
 class TGIRData(unittest.TestCase):
@@ -22,21 +23,26 @@ class TGIRData(unittest.TestCase):
 
         for m in mods:
             try:
-                m = import_namespace(m)
+                mod = import_namespace(m)
             except ImportError:
                 continue
-            self.assertTrue(get_library_version(m))
+            lib = Library.for_namespace(m, get_module_version(mod))
+            assert lib.version
 
     def test_get_project_version(self):
         self.assertEqual(
-            get_project_version(import_namespace("GObject", "2.0")),
-            get_library_version(import_namespace("GLib", "2.0")))
+            Project.for_namespace("GObject").version,
+            Project.for_namespace("GLib").version)
 
     def test_get_tag(self):
-        self.assertEqual(get_tag("Gtk", "3.18.8"), "3.18.8")
-        self.assertEqual(get_tag("Atk", "1.14.8"), "ATK_1_14_8")
-        self.assertEqual(get_tag("Gst", "1.6.2.0"), "1.6.2")
-        self.assertEqual(get_tag("Nope", "1.6.2.0"), "")
+
+        def get_tag(namespace):
+            return Project.for_namespace(namespace).tag
+
+        self.assertTrue(re.match(r"\d+\.\d+\.\d+", get_tag("Gtk")))
+        self.assertTrue(re.match(r"ATK_\d+_\d+_\d+", get_tag("Atk")))
+        self.assertTrue(re.match(r"\d+\.\d+\.\d+", get_tag("Gst")))
+        self.assertFalse(get_tag("Nope"))
 
     def test_get_docref_dir(self):
         self.assertTrue(os.path.isdir(get_docref_dir()))
@@ -51,27 +57,33 @@ class TGIRData(unittest.TestCase):
         self.assertTrue(
             os.path.isfile(get_class_image_path("Gtk", "3.0", "Window")))
 
-    def test_get_source_to_url_func(self):
-        func = get_source_to_url_func("Gtk", "3.18.0")
-        self.assertEqual(
-            func("gtk/gtktoolshell.c:30"),
-            ("https://git.gnome.org/browse/gtk+/tree/gtk/gtktoolshell.c"
-             "?h=3.18.0#n30"))
+    def test_get_source_func(self):
 
-        func = get_source_to_url_func("Gst", "1.6.2.0")
-        self.assertEqual(
-            func("gst/gstelementfactory.c:430"),
-            ("http://cgit.freedesktop.org/gstreamer/gstreamer/tree/gst/"
-             "gstelementfactory.c?h=1.6.2#n430"))
+        def get_url(namespace, path):
+            project = Project.for_namespace(namespace)
+            func = project.get_source_func(namespace)
+            if not func:
+                return ""
+            return func(path)
 
-        func = get_source_to_url_func("GstApp", "1.6.2.0")
-        self.assertEqual(
-            func("app/gstappsrc.c:1237"),
-            ("http://cgit.freedesktop.org/gstreamer/gst-plugins-base/tree/"
-             "gst-libs/gst/app/gstappsrc.c?h=1.6.2#n1237"))
+        url = get_url("Gtk", "gtk/gtktoolshell.c:30")
+        self.assertTrue(
+            re.match(r"https://git\.gnome\.org/browse/gtk\+/tree/gtk/"
+                     r"gtktoolshell\.c\?h=\d+\.\d+\.\d+#n\d+", url))
 
-        func = get_source_to_url_func("GstRtsp", "1.6.2.0")
-        self.assertEqual(
-            func("rtsp/gstrtspurl.c:97"),
-            ("http://cgit.freedesktop.org/gstreamer/gst-plugins-base/tree/"
-             "gst-libs/gst/rtsp/gstrtspurl.c?h=1.6.2#n97"))
+        url = get_url("Gst", "gst/gstelementfactory.c:430")
+        self.assertTrue(
+            re.match(r"http://cgit\.freedesktop\.org/gstreamer/gstreamer/tree"
+                     r"/gst/gstelementfactory\.c\?h=\d+\.\d+\.\d+#n\d+", url))
+
+        url = get_url("GstApp", "app/gstappsrc.c:1237")
+        self.assertTrue(
+            re.match(r"http://cgit\.freedesktop\.org/gstreamer/"
+                     r"gst-plugins-base/tree/gst-libs/gst/app/"
+                     r"gstappsrc\.c\?h=\d+\.\d+\.\d+#n\d+", url))
+
+        url = get_url("GstRtsp", "rtsp/gstrtspurl.c:97")
+        self.assertTrue(
+            re.match(r"http://cgit\.freedesktop\.org/gstreamer/"
+                     r"gst-plugins-base/tree/gst-libs/gst/rtsp/"
+                     r"gstrtspurl\.c\?h=\d+\.\d+\.\d+#n\d+", url))

@@ -15,8 +15,7 @@ from gi.repository import GObject
 
 from . import util
 from .funcsig import FuncSignature, py_type_to_class_ref, get_type_name
-from .girdata import get_source_to_url_func, get_project_version, \
-    get_project_summary, get_class_image_path
+from .girdata import get_project_summary, get_class_image_path, Project
 from .util import escape_parameter
 from .parser import docstring_to_rest
 
@@ -777,8 +776,8 @@ class SymbolMapping(object):
 
     @classmethod
     def from_module(cls, repo, module):
-        lib_version = get_project_version(module)
-        func = get_source_to_url_func(repo.namespace, lib_version)
+        project = Project.for_namespace(repo.namespace)
+        func = project.get_source_func(repo.namespace)
 
         source_map = repo.get_source_map()
         pysource_map = {}
@@ -837,9 +836,10 @@ class Module(BaseDocObject):
         mod = Module(repo.namespace)
         mod.dependencies = repo.get_all_dependencies()
 
-        pymod = repo.import_module()
-        mod.library_version = get_project_version(pymod)
+        project = Project.for_namespace(repo.namespace)
+        mod.library_version = project.version
         hierarchy_classes = set()
+        pymod = repo.import_module()
 
         for key in dir(pymod):
             if key.startswith("_"):
