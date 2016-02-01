@@ -30,33 +30,39 @@ echo -e ");
 " >> "$TARGET";
 rm DvlFBScY1r-FMtZSYIYoYw.ttf
 
-# Source Code Pro regular
-wget https://fonts.gstatic.com/s/sourcecodepro/v6/mrl8jkM18OlOQN8JLgasD9zbP97U9sKh0jjxbPbfOKg.ttf
+# Dejavu Sans Mono
+wget http://sourceforge.net/projects/dejavu/files/dejavu/2.35/dejavu-fonts-ttf-2.35.tar.bz2
+tar jxf dejavu-fonts-ttf-2.35.tar.bz2
+cp dejavu-fonts-ttf-2.35/ttf/DejaVuSansMono.ttf .
+cp dejavu-fonts-ttf-2.35/ttf/DejaVuSansMono-Bold.ttf .
+pyftsubset DejaVuSansMono.ttf --unicodes=00-7f,100-17f
+pyftsubset DejaVuSansMono-Bold.ttf --unicodes=00-7f,100-17f
+mv DejaVuSansMono.ttf.subset DejaVuSansMono.ttf
+mv DejaVuSansMono-Bold.ttf.subset DejaVuSansMono-Bold.ttf
+rm -Rf dejavu-fonts-ttf-2.35
+rm dejavu-fonts-ttf-2.35.tar.bz2
 
 echo -en "@font-face {
-    font-family: 'Source Code Pro';
+    font-family: 'DejaVu Sans Mono';
     font-style: normal;
     font-weight: 400;
     src: url(data:application/x-font-ttf;charset=utf-8;base64," >> "$TARGET";
-base64 -w0 mrl8jkM18OlOQN8JLgasD9zbP97U9sKh0jjxbPbfOKg.ttf >> "$TARGET";
+base64 -w0 DejaVuSansMono.ttf >> "$TARGET";
 echo -e ");
 }
 " >> "$TARGET";
-rm mrl8jkM18OlOQN8JLgasD9zbP97U9sKh0jjxbPbfOKg.ttf
-
-# Source Code Pro bold
-wget https://fonts.gstatic.com/s/sourcecodepro/v6/leqv3v-yTsJNC7nFznSMqbsbIrGiHa6JIepkyt5c0A0.ttf
+rm DejaVuSansMono.ttf
 
 echo -en "@font-face {
-    font-family: 'Source Code Pro';
+    font-family: 'DejaVu Sans Mono';
     font-style: normal;
     font-weight: 700;
     src: url(data:application/x-font-ttf;charset=utf-8;base64," >> "$TARGET";
-base64 -w0 leqv3v-yTsJNC7nFznSMqbsbIrGiHa6JIepkyt5c0A0.ttf >> "$TARGET";
+base64 -w0 DejaVuSansMono-Bold.ttf >> "$TARGET";
 echo -e ");
 }
 " >> "$TARGET";
-rm leqv3v-yTsJNC7nFznSMqbsbIrGiHa6JIepkyt5c0A0.ttf
+rm DejaVuSansMono-Bold.ttf
 
 # Font Awesome
 wget https://fortawesome.github.io/Font-Awesome/assets/font-awesome-4.5.0.zip
