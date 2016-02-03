@@ -26,6 +26,10 @@ class Repository(object):
     def parse(self):
         """Returns a Module instance containing the whole documentation tree"""
 
+        # import the right versions first so we don't have to pass the version
+        # in from now on
+
+        self.import_module()
         return Module.from_repo(self)
 
     def lookup_py_id(self, c_id, shadowed=True):

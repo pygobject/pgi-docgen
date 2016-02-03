@@ -499,13 +499,15 @@ def import_namespace(namespace, version=None):
     Raises ImportError in case the import fails.
     """
 
-    if version is not None:
-        import gi
+    import gi
 
+    if version is not None:
         try:
             gi.require_version(namespace, version)
         except ValueError as e:
             raise ImportError(e, version)
+
+    assert gi.get_required_version(namespace)
 
     return getattr(
         __import__("gi.repository." + namespace).repository, namespace)
