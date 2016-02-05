@@ -131,6 +131,8 @@ class TDocstring(unittest.TestCase):
         self.check("and a @foo\nbla", "and a `foo`\nbla")
         self.check("@one@two", "`one` `two`")
 
+        self.check("at (@x, @y) bla", "at (`x`, `y`) bla")
+
     def test_instance_params(self):
         self.check(
             "a @tree_model and a @foo",
