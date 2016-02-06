@@ -496,7 +496,7 @@ def instance_to_rest(cls, inst):
     return "``%s``" % repr(inst)
 
 
-def import_namespace(namespace, version=None):
+def import_namespace(namespace, version=None, ignore_version=False):
     """Equivalent to 'from gi.repository import <ns>'
 
     Returns the namespace module.
@@ -514,7 +514,8 @@ def import_namespace(namespace, version=None):
     with warnings.catch_warnings(record=True) as w:
         mod = getattr(
                 __import__("gi.repository." + namespace).repository, namespace)
-        assert not w, namespace
+        if not ignore_version:
+            assert not w, namespace
         return mod
 
 

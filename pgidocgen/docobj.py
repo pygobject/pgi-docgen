@@ -647,7 +647,7 @@ class Function(BaseDocObject):
                     else:
                         docs.append(str(base_obj.__doc__ or u""))
             else:
-                im = getattr(owner, "_introspection_module")
+                im = getattr(owner, "_introspection_module", None)
                 if im:
                     try:
                         base_obj = getattr(im, name, None)

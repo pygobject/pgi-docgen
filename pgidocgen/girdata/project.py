@@ -41,7 +41,7 @@ class Project(object):
         version = ""
         for namespace in self.namespaces:
             try:
-                rmod = util.import_namespace(namespace)
+                rmod = util.import_namespace(namespace, ignore_version=True)
             except ImportError:
                 continue
             l = Library.for_namespace(namespace, util.get_module_version(rmod))
