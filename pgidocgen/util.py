@@ -12,6 +12,7 @@ import inspect
 import keyword
 import csv
 import cStringIO
+import warnings
 
 from docutils.core import publish_parts
 
@@ -287,6 +288,9 @@ def unindent(text, ignore_first_line=False):
         else:
             common_indent = min(indent, common_indent)
 
+    if common_indent == -1:
+        common_indent = 0
+
     new = []
     for l in lines:
         indent = min(len(l) - len(l.lstrip()), common_indent)
@@ -507,10 +511,11 @@ def import_namespace(namespace, version=None):
         except ValueError as e:
             raise ImportError(e, version)
 
-    assert gi.get_required_version(namespace)
-
-    return getattr(
-        __import__("gi.repository." + namespace).repository, namespace)
+    with warnings.catch_warnings(record=True) as w:
+        mod = getattr(
+                __import__("gi.repository." + namespace).repository, namespace)
+        assert not w, namespace
+        return mod
 
 
 def get_module_version(module):

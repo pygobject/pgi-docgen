@@ -67,7 +67,7 @@ class TRepository(unittest.TestCase):
         self.assertTrue(":param text:" in func.signature_desc)
 
         func = find(find(mod.structures, "TabArray").methods, "new")
-        self.assertTrue(":param initial\\_size:" in func.signature_desc)
+        self.assertTrue(":param initial_size:" in func.signature_desc)
 
         self.assertTrue(repo.is_private("Pango.RendererPrivate"))
         self.assertFalse(repo.is_private("Pango.AttrIterator"))
@@ -118,11 +118,22 @@ class TRepository(unittest.TestCase):
         self.assertNotEqual(method.info.desc, signal.info.desc)
 
         signal = find(klass.signals, "command_line")
-        self.assertTrue(":param command\\_line:" in signal.signature_desc)
+        self.assertTrue(":param command_line:" in signal.signature_desc)
 
         klass = Class.from_object(repo, Gio.File)
         method = find(klass.methods, "load_contents_finish")
         self.assertTrue(":returns:" in method.signature_desc)
+
+    def test_gtk_overrides(self):
+        repo = Repository("Gtk", "3.0")
+        Gtk = repo.import_module()
+
+        func = Function.from_object("Gtk.Container", Gtk.Container.child_get, repo, Gtk.Container)
+        self.assertEqual(func.info.desc, "Returns a list of child property values for the given names.")
+        self.assertEqual(func.signature, "(child, *prop_names)")
+
+        func = Function.from_object("Gtk", Gtk.stock_lookup, repo, Gtk)
+        self.assertEqual(func.signature, "(stock_id)")
 
     def test_gtk(self):
         repo = Repository("Gtk", "3.0")

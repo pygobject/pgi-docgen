@@ -7,7 +7,8 @@
 
 import re
 
-from .util import escape_rest, indent
+from .util import indent
+from .rstutil import field_name, bold
 
 
 def get_type_name(type_):
@@ -172,9 +173,8 @@ class FuncSignature(object):
                     "signal-parameters" if signal else "parameters",
                     param_key, current_type=current_type,
                     current_func=full_name)[0]
-            key = escape_rest(key)
-            docs.append(":param %s:\n%s\n" % (key, indent(text)))
-            docs.append(":type %s: %s" % (key, arg_to_class_ref(value)))
+            docs.append("%s\n%s" % (field_name("param", key), indent(text)))
+            docs.append("%s %s\n" % (field_name("type", key), arg_to_class_ref(value)))
 
         if self.raises:
             docs.append(":raises: :class:`GLib.Error`")
@@ -200,7 +200,7 @@ class FuncSignature(object):
                     current_func=current_func)[0]
                 if text:
                     if len(self.res) != 1:
-                        text = ":%s:\n%s" % (escape_rest(name), indent(text))
+                        text = "%s\n%s" % (field_name(name), indent(text))
                     return_docs.append(text)
 
         if return_docs:
@@ -210,8 +210,7 @@ class FuncSignature(object):
         for r in self.res:
             if len(r) > 1:
                 res_list.append(
-                    "**%s**: %s" % (escape_rest(r[0]),
-                                    arg_to_class_ref(r[1])))
+                    "%s: %s" % (bold(r[0]), arg_to_class_ref(r[1])))
             else:
                 res_list.append(arg_to_class_ref(r[0]))
 

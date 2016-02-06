@@ -555,6 +555,12 @@ class Class(BaseDocObject, MethodsMixin, PropertiesMixin, SignalsMixin,
         klass.signature = get_signature_string(obj.__init__)
         klass.image_path = image_path
 
+        # override docs
+        if obj.__doc__:
+            all_ = docs = klass.info.desc
+            klass.info.desc = repo.render_override_docs(
+                util.unindent(obj.__doc__, True), all=all_, docs=docs)
+
         cls._cache[obj] = klass
         return klass
 
@@ -610,10 +616,12 @@ class Function(BaseDocObject):
 
     @classmethod
     def from_object(cls, parent_fullname, obj, repo, owner):
+        assert owner
+        owner_is_module = isinstance(owner, types.ModuleType)
 
         name = obj.__name__
         fullname = parent_fullname + "." + name
-        is_method = owner is not None
+        is_method = not owner_is_module
 
         if is_method:
             is_static = util.is_staticmethod(obj)
@@ -622,13 +630,14 @@ class Function(BaseDocObject):
             is_static = False
             is_vfunc = False
 
-        def get_docstring():
-            """Get first non-empty docstring following the MRO"""
+        def get_docstrings():
+            """Get all non-empty docstring following the MRO"""
 
-            doc = str(obj.__doc__ or u"")
+            docs = [repo.lookup_override_docs(fullname)]
+            docs.append(str(obj.__doc__ or u""))
 
             # no docstring, try to get it from base classes
-            if not doc and owner:
+            if not owner_is_module:
                 for base in owner.__mro__[1:]:
                     try:
                         base_obj = getattr(base, name, None)
@@ -636,14 +645,29 @@ class Function(BaseDocObject):
                         # function not implemented in pgi
                         continue
                     else:
-                        doc = str(base_obj.__doc__ or u"")
-                    if doc:
-                        break
+                        docs.append(str(base_obj.__doc__ or u""))
+            else:
+                im = getattr(owner, "_introspection_module")
+                if im:
+                    try:
+                        base_obj = getattr(im, name, None)
+                    except NotImplementedError:
+                        # function not implemented in pgi
+                        pass
+                    else:
+                        docs.append(str(base_obj.__doc__ or u""))
 
-            return doc
+            return filter(None, docs)
 
-        docstring = get_docstring()
-        first_line = docstring and docstring.splitlines()[0] or u""
+        def split_firstline(docstring):
+            """Returns a tuple of the first line and the rest"""
+
+            lines = docstring.split("\n")
+            if not lines:
+                return "", ""
+            return lines[0], "\n".join(lines[1:])
+
+        docstrings = get_docstrings()
 
         def get_instance():
             instance = cls(
@@ -654,25 +678,56 @@ class Function(BaseDocObject):
                 current_type=current_type, current_func=instance.fullname)
             return instance
 
-        sig = FuncSignature.from_string(name, first_line)
-
-        # no valid sig, but still a docstring, probably new function
-        # or an override with a new docstring
-        if not sig:
-            instance = get_instance()
-            if docstring:
-                instance.info.desc = docstring
-            instance.signature = get_signature_string(obj)
-            return instance
-
-        # we got a valid signature here
-        assert sig
-
         instance = get_instance()
 
-        # create sphinx lists for the signature we found
-        instance.signature_desc = sig.to_rest_listing(repo, fullname)
-        instance.signature = sig.to_simple_signature()
+        # adjust according to the overrides
+        signature_desc = instance.signature_desc
+        signature = instance.signature
+        desc = instance.info.desc
+
+        # get the gir one
+        func_sig = None
+        for d in docstrings:
+            first_line, rest = split_firstline(d)
+            func_sig = FuncSignature.from_string(name, first_line)
+            if not rest and func_sig:
+                signature = func_sig.to_simple_signature()
+                signature_desc = func_sig.to_rest_listing(repo, fullname)
+                break
+
+        def render(docs):
+            all_ = signature_desc + "\n\n" + desc
+            return repo.render_override_docs(docs, all=all_, docs=desc)
+
+        if not docstrings:
+            # nothing; maybe an override that's no in the gir
+            signature = get_signature_string(obj)
+        else:
+            first_line, rest = split_firstline(docstrings[0])
+            if rest:
+                # multiple lines, should be an override docstring
+                if first_line.startswith("%s(" % name):
+                    desc = render(util.unindent(rest, False))
+                    signature_desc = ""
+                    signature = first_line[len(name):]
+                else:
+                    desc = render(util.unindent(docstrings[0], True))
+                    signature_desc = ""
+                    sig = FuncSignature.from_string(name, docstrings[-1])
+                    if not sig:
+                        signature = get_signature_string(obj)
+                    else:
+                        signature = sig.to_simple_signature()
+            else:
+                if not func_sig:
+                    desc = render(util.unindent(docstrings[0], True))
+                    signature_desc = ""
+                    signature = get_signature_string(obj)
+
+        assert signature
+        instance.signature_desc = signature_desc
+        instance.signature = signature
+        instance.info.desc = desc
 
         return instance
 
@@ -851,7 +906,7 @@ class Module(BaseDocObject):
                     # originated from other namespace
                     continue
 
-                func = Function.from_object(repo.namespace, obj, repo, None)
+                func = Function.from_object(repo.namespace, obj, repo, pymod)
                 if util.is_callback(obj):
                     mod.callbacks.append(func)
                 else:

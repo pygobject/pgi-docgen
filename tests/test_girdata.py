@@ -9,7 +9,7 @@ import os
 import re
 import unittest
 
-from pgidocgen.util import import_namespace, get_module_version
+from pgidocgen.util import import_namespace
 from pgidocgen.girdata import Library, Project, \
     get_docref_dir, get_docref_path, get_class_image_dir, \
     get_class_image_path
@@ -18,15 +18,17 @@ from pgidocgen.girdata import Library, Project, \
 class TGIRData(unittest.TestCase):
 
     def test_get_library_version(self):
-        mods = ["Gtk", "Atk", "Gst", "Poppler", "Anthy", "InputPad", "Pango",
-                "WebKit2", "GdkPixbuf", "LunarDate", "TotemPlParser", "GVnc"]
+        mods = ["Gtk-3.0", "Atk-1.0", "Gst-1.0", "Poppler-0.18", "Anthy-9000",
+                "InputPad-1.0", "Pango-1.0", "WebKit2-4.0", "GdkPixbuf-2.0",
+                "LunarDate-2.0", "TotemPlParser-1.0", "GVnc-1.0"]
 
         for m in mods:
+            ns, version = m.split("-", 1)
             try:
-                mod = import_namespace(m)
+                mod = import_namespace(ns, version)
             except ImportError:
                 continue
-            lib = Library.for_namespace(m, get_module_version(mod))
+            lib = Library.for_namespace(ns, version)
             assert lib.version
 
     def test_get_project_version(self):
@@ -65,6 +67,12 @@ class TGIRData(unittest.TestCase):
             if not func:
                 return ""
             return func(path)
+
+        import_namespace("GstApp", "1.0")
+        import_namespace("GstAllocators", "1.0")
+        import_namespace("GstAudio", "1.0")
+        import_namespace("GstFft", "1.0")
+        import_namespace("GstPbutils", "1.0")
 
         url = get_url("Gtk", "gtk/gtktoolshell.c:30")
         self.assertTrue(

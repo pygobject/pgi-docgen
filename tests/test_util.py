@@ -11,10 +11,14 @@ import unittest
 from pgidocgen.util import is_staticmethod, is_classmethod, is_normalmethod, \
     is_method_owner, is_fundamental, is_object, instance_to_rest, \
     get_child_properties, fake_subclasses, get_style_properties, \
-    unescape_parameter, fake_bases, is_attribute_owner
+    unescape_parameter, fake_bases, is_attribute_owner, unindent
 
 
 class TUtil(unittest.TestCase):
+
+    def test_unindent(self):
+        self.assertEqual(unindent("foo bar.", True), "foo bar.")
+        self.assertEqual(unindent("foo bar.", False), "foo bar.")
 
     def test_method_checks(self):
 

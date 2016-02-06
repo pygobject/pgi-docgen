@@ -6,9 +6,12 @@
 # License as published by the Free Software Foundation; either
 # version 2.1 of the License, or (at your option) any later version.
 
+import jinja2
+
 from .namespace import get_namespace
 from .parser import docstring_to_rest
 from .docobj import Module
+from .overrides import parse_override_docs
 
 
 class Repository(object):
@@ -23,6 +26,9 @@ class Repository(object):
         loaded = [ns] + [get_namespace(*x) for x in ns.all_dependencies]
         self._namespaces = loaded
 
+        self._override_docs = parse_override_docs(namespace, version)
+        self._rst_env = jinja2.Environment(undefined=jinja2.StrictUndefined)
+
     def parse(self):
         """Returns a Module instance containing the whole documentation tree"""
 
@@ -31,6 +37,12 @@ class Repository(object):
 
         self.import_module()
         return Module.from_repo(self)
+
+    def render_override_docs(self, text, **kwargs):
+        return self._rst_env.from_string(text).render(**kwargs)
+
+    def lookup_override_docs(self, fullname):
+        return self._override_docs.get(fullname, u"")
 
     def lookup_py_id(self, c_id, shadowed=True):
         """Given a C identifier will return a Python identifier which
