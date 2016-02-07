@@ -137,6 +137,11 @@
             icons[i].style.display = 'table-cell';
         }
     }
+
+    /* Workaround Firefox scrolling to anchor bugs.. */
+    window.setTimeout(function() {
+        document.location.href += '';
+    }, 50);
   </script>
   {%- endif %}
 
