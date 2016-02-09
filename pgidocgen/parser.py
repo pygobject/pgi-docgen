@@ -27,9 +27,8 @@ def _handle_data(repo, current_type, current_func, d):
         (r"[#%]?[A-Za-z_]+[A-Za-z0-9_]*:[A-Za-z\-]+[A-Za-z0-9\-_]*", lambda scanner, token:("FULLPROP", token)),
         (r":[A-Za-z\-]+[A-Za-z0-9\-_]*", lambda scanner, token:("PROP", token)),
         (r"[#%]?[A-Za-z0-9_]+\**", lambda scanner, token:("ID", token)),
-        (r"[\(\)]", lambda scanner, token:("OTHER", token)),
-        (r"[^\s]+", lambda scanner, token:("OTHER", token)),
         (r"\s+", lambda scanner, token:("SPACE", token)),
+        (r".", lambda scanner, token:("OTHER", token)),
     ])
 
     results, remainder = scanner.scan(d)
