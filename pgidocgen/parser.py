@@ -13,6 +13,7 @@ from BeautifulSoup import BeautifulStoneSoup, Tag
 from . import util
 from .util import escape_rest, force_unindent
 from .gtkdoc import ConvertMarkDown
+from .docbook_escape import docbook_escape
 
 
 def _handle_data(repo, current_type, current_func, d):
@@ -332,6 +333,7 @@ def _docstring_to_docbook(docstring):
     Things like "#GtkWidget" will remain as is.
     """
 
+    docstring = docbook_escape(docstring)
     docstring = ConvertMarkDown("", docstring)
 
     # ConvertMarkDown doesn't handle inline markup yet... so at least convert

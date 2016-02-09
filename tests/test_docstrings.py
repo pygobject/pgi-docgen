@@ -435,10 +435,9 @@ user\\_data\\:
             "`bla[0][1] = 3`",
             "``bla[0][1] = 3``")
 
-        # FIXME
         self.check(
             "`<sadaf>`",
-            "")
+            "``<sadaf>``")
 
     def test_vfuncs(self):
         self.check(
@@ -446,6 +445,9 @@ user\\_data\\:
             ":obj:`Gtk.Widget.do_get_request_mode`\\()")
 
     def test_various(self):
+
+        self.check("foo <bar> bla <baz> g", "foo <bar> bla <baz> g")
+
         self.check(
             "appropriate.  #AtkTable summaries may themselves be (simplified) #AtkTables, etc.",
             "appropriate.  :obj:`Atk.Table` summaries may themselves be (simplified) :obj:`Atk.Tables <Atk.Table>`, etc.")
