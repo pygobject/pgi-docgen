@@ -261,8 +261,13 @@ def _handle_xml(repo, current_type, current_func, out, item):
             if not text.count("\n"):
                 out.append("``%s``" % item.getText())
             else:
-                code = "\n.. code-block:: c\n\n%s\n" % util.indent(
-                    util.unindent(item.getText(), ignore_first_line=True))
+                language = item.get("language", "").lower()
+                if language:
+                    language =  " " + language
+                code = "\n.. code-block::%s\n\n%s\n" % (
+                    language,
+                    util.indent(
+                        util.unindent(item.getText(), ignore_first_line=True)))
                 out.append(code)
         elif item.name == "para":
             for item in item.contents:

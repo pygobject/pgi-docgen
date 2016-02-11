@@ -178,7 +178,7 @@ bar\
 foo
 
 
-.. code-block:: c
+.. code-block::
 
     foo;
     bar;
