@@ -949,8 +949,9 @@ class Module(BaseDocObject):
 
             if isinstance(obj, types.FunctionType):
                 if obj.__module__.split(".")[-1] != repo.namespace:
-                    # originated from other namespace
-                    continue
+                    if "." not in obj.__module__:
+                        # originated from other namespace
+                        continue
 
                 func = Function.from_object(
                     repo.namespace, key, obj, repo, pymod)
