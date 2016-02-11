@@ -9,7 +9,7 @@
 import unittest
 
 from pgidocgen.repo import Repository
-from pgidocgen.docobj import Class, Function, Flags, get_hierarchy
+from pgidocgen.docobj import Class, Function, Flags, get_hierarchy, PyClass
 from pgidocgen.overrides import parse_override_docs
 
 
@@ -31,7 +31,7 @@ class TRepository(unittest.TestCase):
         repo = Repository("Gtk", "3.0")
         Gtk = repo.import_module()
         func = Function.from_object(
-            "Gtk.Widget", Gtk.Widget.translate_coordinates, repo, Gtk.Widget)
+            "Gtk.Widget", "translate_coordinates", Gtk.Widget.translate_coordinates, repo, Gtk.Widget)
         self.assertEqual(func.signature, "(dest_widget, src_x, src_y)")
 
     def test_method_inheritance(self):
@@ -128,11 +128,14 @@ class TRepository(unittest.TestCase):
         repo = Repository("Gtk", "3.0")
         Gtk = repo.import_module()
 
-        func = Function.from_object("Gtk.Container", Gtk.Container.child_get, repo, Gtk.Container)
+        PyClass.from_object(repo, Gtk.TreeModelRow)
+        PyClass.from_object(repo, Gtk.TreeModelRowIter)
+
+        func = Function.from_object("Gtk.Container", "child_get", Gtk.Container.child_get, repo, Gtk.Container)
         self.assertEqual(func.info.desc, "Returns a list of child property values for the given names.")
         self.assertEqual(func.signature, "(child, *prop_names)")
 
-        func = Function.from_object("Gtk", Gtk.stock_lookup, repo, Gtk)
+        func = Function.from_object("Gtk", "stock_lookup", Gtk.stock_lookup, repo, Gtk)
         self.assertEqual(func.signature, "(stock_id)")
 
     def test_gtk(self):

@@ -36,15 +36,43 @@ Classes
 
 
 _py_template = genutil.get_template("""\
+{% import '.genutil.UTIL' as util %}
 {{ "=" * cls.fullname|length }}
 {{ cls.fullname }}
 {{ "=" * cls.fullname|length }}
 
+
 Class Details
 -------------
 
-.. class:: {{ cls.fullname }}
+.. class:: {{ cls.fullname }}{{ cls.signature }}
 
+    {{ util.render_info(cls.info)|indent(4, False) }}
+
+    {% for pyprop in cls.pyprops %}
+    .. py:attribute:: {{ pyprop.fullname }}
+
+        {{ util.render_info(pyprop.info)|indent(8, False) }}
+
+    {% endfor %}
+
+    {% for method in cls.get_methods(static=True) %}
+    .. staticmethod:: {{ method.fullname }}{{ method.signature }}
+
+        {{ method.signature_desc|indent(8, False) }}
+
+        {{ util.render_info(method.info)|indent(8, False) }}
+
+    {% endfor %}
+
+    {% for method in cls.get_methods(static=False) %}
+    .. method:: {{ method.fullname }}{{ method.signature }}
+
+        {{ method.signature_desc|indent(8, False) }}
+
+        {{ util.render_info(method.info)|indent(8, False) }}
+
+    {% endfor %}
 
 """)
 
@@ -457,19 +485,31 @@ class ClassGenerator(genutil.Generator):
 
         for cls in classes:
             with open(os.path.join(sub_dir, cls.name) + ".rst", "wb") as h:
-                self._write_class(h, cls)
+                if cls in self._pyclasses:
+                    self._write_pyclass(h, cls)
+                else:
+                    self._write_class(h, cls)
+
+    def _write_pyclass(self, h, cls):
+
+        methods = cls.get_methods(static=True)
+        methods += cls.get_methods(static=False)
+
+        summary_rows = []
+        for func in methods:
+            summary_rows.append(util.get_csv_line([
+                "*static*" if func.is_static else "",
+                ":py:func:`%s<%s>` %s" % (func.name, func.fullname,
+                                          util.escape_rest(func.signature))]))
+        methods_summary_rows = summary_rows
+
+        text = _py_template.render(
+            cls=cls,
+        )
+
+        h.write(text.encode("utf-8"))
 
     def _write_class(self, h, cls):
-        pyclass = cls in self._pyclasses
-
-        if pyclass:
-            text = _py_template.render(
-                cls=cls,
-            )
-
-            h.write(text.encode("utf-8"))
-            return
-
         # methods
         methods = cls.get_methods(static=True)
         methods += cls.get_methods(static=False)

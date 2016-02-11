@@ -38,7 +38,7 @@ def cache_calls(func):
 def get_child_properties(cls):
     """Returns a list of GParamSpecs or an empty list"""
 
-    from pgi.repository import Gtk
+    Gtk = import_namespace("Gtk", "3.0")
 
     if not issubclass(cls, Gtk.Container):
         return []
@@ -63,7 +63,7 @@ def get_child_properties(cls):
 def get_style_properties(cls):
     """Returns a list of GParamSpecs or an empty list"""
 
-    from pgi.repository import Gtk
+    Gtk = import_namespace("Gtk", "3.0")
 
     if not issubclass(cls, Gtk.Widget):
         return []
@@ -403,6 +403,11 @@ def is_callback(obj):
     assert callable(obj)
 
     return hasattr(obj, "_is_callback")
+
+
+def is_property(obj):
+    return isinstance(obj, property) or (
+        hasattr(obj, "__get__") and not callable(obj))
 
 
 def is_normalmethod(obj):

@@ -117,7 +117,8 @@ class MethodsMixin(object):
             if not util.is_method_owner(obj, attr):
                 continue
 
-            func = Function.from_object(self.fullname, attr_obj, repo, obj)
+            func = Function.from_object(
+                self.fullname, attr, attr_obj, repo, obj)
             if func.is_vfunc:
                 vfuncs.append(func)
             else:
@@ -364,18 +365,64 @@ class Signal(BaseDocObject):
         return ", ".join([x[1] for x in sorted(descs)])
 
 
+class PyProperty(BaseDocObject):
+
+    def __init__(self, parent_fullname, name):
+        self.fullname = parent_fullname + "." + name
+        self.name = name
+        self.info = DocInfo(self.fullname, self.name)
+
+    @classmethod
+    def from_object(cls, repo, parent_fullname, name, obj):
+        klass = cls(parent_fullname, name)
+
+        # don't take __doc__ from any value
+        obj_doc = u""
+        if util.is_property(obj):
+            obj_doc = obj.__doc__
+
+        # override docs
+        docs = repo.lookup_override_docs(klass.fullname) or obj_doc
+        if docs:
+            klass.info.desc = repo.render_override_docs(
+                util.unindent(docs, True), all="", docs="")
+
+        return klass
+
+
 class PyClass(BaseDocObject, MethodsMixin):
 
     def __init__(self, namespace, name):
         self.fullname = namespace + "." + name
         self.name = name
 
+        self.signature = u"()"
+        self.info = DocInfo(self.fullname, self.name)
+        self.methods = []
+        self.pyprops = []
+
     @classmethod
     def from_object(cls, repo, obj):
         namespace = obj.__module__
         name = obj.__name__
 
-        return cls(namespace, name)
+        klass = cls(namespace, name)
+        klass._parse_methods(repo, obj)
+        klass.signature = get_signature_string(obj.__init__)
+
+        for attr, attr_obj in util.iter_public_attr(obj):
+            if util.is_property(attr_obj) or not callable(attr_obj):
+                klass.pyprops.append(
+                    PyProperty.from_object(
+                        repo, klass.fullname, attr, attr_obj))
+        klass.pyprops.sort(key=lambda p: p.name)
+
+        # override docs
+        if obj.__doc__:
+            klass.info.desc = repo.render_override_docs(
+                util.unindent(obj.__doc__, True), all="", docs="")
+
+        return klass
 
 
 class ClassNode(object):
@@ -615,11 +662,10 @@ class Function(BaseDocObject):
         self.signature_desc = u""
 
     @classmethod
-    def from_object(cls, parent_fullname, obj, repo, owner):
+    def from_object(cls, parent_fullname, name, obj, repo, owner):
         assert owner
         owner_is_module = isinstance(owner, types.ModuleType)
 
-        name = obj.__name__
         fullname = parent_fullname + "." + name
         is_method = not owner_is_module
 
@@ -906,7 +952,8 @@ class Module(BaseDocObject):
                     # originated from other namespace
                     continue
 
-                func = Function.from_object(repo.namespace, obj, repo, pymod)
+                func = Function.from_object(
+                    repo.namespace, key, obj, repo, pymod)
                 if util.is_callback(obj):
                     mod.callbacks.append(func)
                 else:
