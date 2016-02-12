@@ -41,6 +41,7 @@
 
     #search-results {
         margin-top: 98px;
+         margin-bottom: 70px;
     }
 
     #settings-button {
@@ -79,6 +80,24 @@
         padding-left: 0.8em;
     }
 
+    #favourites {
+        position: fixed;
+        bottom: 0;
+        right: 0;
+        left: 0;
+        background-color: #353535;
+        border-top: 1px solid #888;
+    }
+
+    #favourites a::after {
+        content: "\f08e";
+        font-family: FontAwesome;
+        font-weight: normal;
+        font-style: normal;
+        padding-left: 0.4em;
+        font-size: 0.7em;
+    }
+
     </style>
 </head>
 <body>
@@ -107,6 +126,12 @@
                 {% for url, name, version in results %}
                 <li><a href="{{ url }}" target="Content" title="{{ name }}"><div class="right">{{ version }}</div><div class="left">{{ name }}</div></a></li>
                 {% endfor %}
+            </ul>
+        </div>
+        <div id="favourites">
+            <ul>
+                <li><a href="https://python-gtk-3-tutorial.readthedocs.org/" target="_parent" title="Python GTK+ 3 Tutorial">Python GTK+ 3 Tutorial</a></li>
+                <li><a href="https://pygobject.readthedocs.org/" target="_parent" title="PyGObject Tutorial">PyGObject Tutorial</a></li>
             </ul>
         </div>
     </div>
