@@ -140,7 +140,6 @@ class TRepository(unittest.TestCase):
 
     def test_gtk(self):
         repo = Repository("Gtk", "3.0")
-        mod = repo.parse()
         Gtk = repo.import_module()
 
         klass = Class.from_object(repo, Gtk.TreeModel)
@@ -154,6 +153,12 @@ class TRepository(unittest.TestCase):
         klass = Class.from_object(repo, Gtk.TextView)
         self.assertTrue(klass.image_path)
 
+        klass = Class.from_object(repo, Gtk.Widget)
+        translate_coordinates = find(klass.methods, "translate_coordinates")
+        # make sure we replace src_widget with self
+        self.assertTrue("src_widget" not in translate_coordinates.info.desc)
+
+        mod = repo.parse()
         find(mod.class_structures, "WidgetClass")
         find(mod.structures, "TableChild")
         self.assertRaises(
