@@ -66,7 +66,8 @@ class Project(object):
 
         if matches("Atk"):
             return "ATK_" + version.replace(".", "_")
-        elif matches("Gtk") or matches("GLib") or matches("Pango"):
+        elif matches("Gtk") or matches("GLib") or matches("Pango") or \
+                matches("GdkPixbuf"):
             return version
         elif "/gstreamer/" in self.doap:
             return ".".join(version.split(".")[:3])
