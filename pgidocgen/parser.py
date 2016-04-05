@@ -188,22 +188,23 @@ def docref_to_pyref(repo, ref, text):
     If that fails returns None.
     """
 
-    text = escape_rest(text)
-
     # GtkEntryCompletion
     pyref = repo.lookup_py_id(ref)
     if pyref is not None:
-        if text == ref:
-            # if the text is the same as ref it is likely a C type which
-            # we don't want in the Python docs. Just omit it in that case.
+        # if the link text is a C type, try to convert it
+        textref = repo.lookup_py_id(text)
+        if not textref:
+            textref = escape_rest(text)
+        if textref != pyref:
+            return ":obj:`%s <%s>`" % (textref, pyref)
+        else:
             return ":obj:`%s`" % pyref
-        return ":obj:`%s <%s>`" % (text, pyref)
 
     # gtk-assistant-commit -> gtk_assistant_commit -> Gtk.Assistant.commit
     func = ref.replace("-", "_")
     pyref = repo.lookup_py_id(func)
     if pyref is not None:
-        return ":obj:`%s <%s>`" % (text, pyref)
+        return ":obj:`%s <%s>`" % (escape_rest(text), pyref)
 
     # GtkEntryCompletion--inline-completion ->
     #   Gtk.EntryCompletion.props.inline_completion
@@ -212,7 +213,7 @@ def docref_to_pyref(repo, ref, text):
         prop = prop.replace("-", "_")
         pyref = repo.lookup_py_id(type_)
         if pyref is not None:
-            return ":obj:`%s <%s.props.%s>`" % (text, pyref, prop)
+            return ":obj:`%s <%s.props.%s>`" % (escape_rest(text), pyref, prop)
 
     return None
 

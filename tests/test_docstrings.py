@@ -158,10 +158,23 @@ class TDocstring(unittest.TestCase):
             "This is called for each unknown element under &lt;child&gt;.",
             "This is called for each unknown element under <child>.")
 
+    def test_double(self):
+        self.check('to double something', 'to double something')
+
     def test_docbook_linked_maybe_prop(self):
         self.check(
             '<link linkend="AtkObject--posy">posy</link>',
             ':obj:`posy <Atk.Object.props.posy>`')
+
+    def test_docbook_linked(self):
+        self.check(
+            '<link linkend="gdouble"><type>double</type></link>',
+            ':obj:`double <float>`')
+
+        self.check(
+            '<link linkend="GtkWidget"><type>AtkTable</type></link>',
+            ':obj:`Atk.Table <Gtk.Widget>`')
+
 
     def test_docbook_programlisting(self):
         self.check("""
