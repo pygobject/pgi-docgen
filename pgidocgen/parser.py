@@ -182,22 +182,28 @@ def _handle_data(repo, current_type, current_func, d):
     return "".join(out)
 
 
-def docref_to_pyref(repo, ref):
+def docref_to_pyref(repo, ref, text):
     """Take a gtk-doc reference and try to convert it to a Python reference.
 
     If that fails returns None.
     """
 
+    text = escape_rest(text)
+
     # GtkEntryCompletion
     pyref = repo.lookup_py_id(ref)
     if pyref is not None:
-        return pyref
+        if text == ref:
+            # if the text is the same as ref it is likely a C type which
+            # we don't want in the Python docs. Just omit it in that case.
+            return ":obj:`%s`" % pyref
+        return ":obj:`%s <%s>`" % (text, pyref)
 
     # gtk-assistant-commit -> gtk_assistant_commit -> Gtk.Assistant.commit
     func = ref.replace("-", "_")
     pyref = repo.lookup_py_id(func)
     if pyref is not None:
-        return pyref
+        return ":obj:`%s <%s>`" % (text, pyref)
 
     # GtkEntryCompletion--inline-completion ->
     #   Gtk.EntryCompletion.props.inline_completion
@@ -206,7 +212,7 @@ def docref_to_pyref(repo, ref):
         prop = prop.replace("-", "_")
         pyref = repo.lookup_py_id(type_)
         if pyref is not None:
-            return "%s.props.%s" % (pyref, prop)
+            return ":obj:`%s <%s.props.%s>`" % (text, pyref, prop)
 
     return None
 
@@ -247,9 +253,9 @@ def _handle_xml(repo, current_type, current_func, out, item):
             if not linked:
                 out.append(item.getText())
             else:
-                pyref = docref_to_pyref(repo, linked)
+                pyref = docref_to_pyref(repo, linked, item.getText())
                 if pyref is not None:
-                    out.append(":obj:`%s`" % pyref)
+                    out.append(pyref)
                 else:
                     url = repo.lookup_gtkdoc_ref(linked)
                     if url is not None:

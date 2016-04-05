@@ -158,6 +158,11 @@ class TDocstring(unittest.TestCase):
             "This is called for each unknown element under &lt;child&gt;.",
             "This is called for each unknown element under <child>.")
 
+    def test_docbook_linked_maybe_prop(self):
+        self.check(
+            '<link linkend="AtkObject--posy">posy</link>',
+            ':obj:`posy <Atk.Object.props.posy>`')
+
     def test_docbook_programlisting(self):
         self.check("""
 <informalexample><programlisting>
@@ -416,7 +421,11 @@ user\\_data\\:
 
         self.check(
             "a [foo][AtkObject]",
-            "a :obj:`Atk.Object`")
+            "a :obj:`foo <Atk.Object>`")
+
+        self.check(
+            "[gint][gint]",
+            ":obj:`int`")
 
         self.check(
             "a [foo][im-a-ref]",
@@ -424,11 +433,11 @@ user\\_data\\:
 
         self.check(
             "a [foo][gtk-tree-model-get]",
-            "a :obj:`Gtk.TreeModel.get`")
+            "a :obj:`foo <Gtk.TreeModel.get>`")
 
         self.check(
             "a [foo][GtkContainer--border-width]",
-            "a :obj:`Gtk.Container.props.border_width`")
+            "a :obj:`foo <Gtk.Container.props.border_width>`")
 
     def test_markdown_literal(self):
         self.check(
