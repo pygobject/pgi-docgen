@@ -178,7 +178,7 @@ bar\
 foo
 
 
-.. code-block::
+.. code-block:: none
 
     foo;
     bar;
