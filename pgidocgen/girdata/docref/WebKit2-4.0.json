@@ -3,6 +3,7 @@
     "WebKitBackForwardList": "http://webkitgtk.org/reference/webkit2gtk/stable/WebKitBackForwardList.html#WebKitBackForwardList", 
     "WebKitBackForwardListItem": "http://webkitgtk.org/reference/webkit2gtk/stable/WebKitBackForwardListItem.html#WebKitBackForwardListItem", 
     "WebKitColorChooserRequest": "http://webkitgtk.org/reference/webkit2gtk/stable/WebKitColorChooserRequest.html#WebKitColorChooserRequest", 
+    "WebKitConsoleMessage": "http://webkitgtk.org/reference/webkit2gtk/stable/WebKitConsoleMessage.html#WebKitConsoleMessage", 
     "WebKitContextMenu": "http://webkitgtk.org/reference/webkit2gtk/stable/WebKitContextMenu.html#WebKitContextMenu", 
     "WebKitContextMenuItem": "http://webkitgtk.org/reference/webkit2gtk/stable/WebKitContextMenuItem.html#WebKitContextMenuItem", 
     "WebKitCookieManager": "http://webkitgtk.org/reference/webkit2gtk/stable/WebKitCookieManager.html#WebKitCookieManager", 
@@ -47,6 +48,7 @@
     "WebKitWebPage": "http://webkitgtk.org/reference/webkit2gtk/stable/WebKitWebPage.html#WebKitWebPage", 
     "WebKitWebResource": "http://webkitgtk.org/reference/webkit2gtk/stable/WebKitWebResource.html#WebKitWebResource", 
     "WebKitWebView": "http://webkitgtk.org/reference/webkit2gtk/stable/WebKitWebView.html#WebKitWebView", 
+    "WebKitWebViewSessionState": "http://webkitgtk.org/reference/webkit2gtk/stable/WebKitWebView.html#WebKitWebViewSessionState", 
     "WebKitWebsiteDataManager": "http://webkitgtk.org/reference/webkit2gtk/stable/WebKitWebsiteDataManager.html#WebKitWebsiteDataManager", 
     "WebKitWindowProperties": "http://webkitgtk.org/reference/webkit2gtk/stable/WebKitWindowProperties.html#WebKitWindowProperties"
 }

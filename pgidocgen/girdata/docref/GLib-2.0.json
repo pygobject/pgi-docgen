@@ -25,6 +25,7 @@
     "glib-Base64-Encoding": "https://developer.gnome.org/glib/stable/glib-Base64-Encoding.html#glib-Base64-Encoding", 
     "glib-Basic-Types": "https://developer.gnome.org/glib/stable/glib-Basic-Types.html#glib-Basic-Types", 
     "glib-Bookmark-file-parser": "https://developer.gnome.org/glib/stable/glib-Bookmark-file-parser.html#glib-Bookmark-file-parser", 
+    "glib-Bounds-checked-integer-arithmetic": "https://developer.gnome.org/glib/stable/glib-Bounds-checked-integer-arithmetic.html#glib-Bounds-checked-integer-arithmetic", 
     "glib-Byte-Arrays": "https://developer.gnome.org/glib/stable/glib-Byte-Arrays.html#glib-Byte-Arrays", 
     "glib-Byte-Order-Macros": "https://developer.gnome.org/glib/stable/glib-Byte-Order-Macros.html#glib-Byte-Order-Macros", 
     "glib-Caches": "https://developer.gnome.org/glib/stable/glib-Caches.html#glib-Caches", 
