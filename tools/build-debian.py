@@ -29,11 +29,11 @@ from pgidocgen.debug import get_debug_files_for_name, get_line_numbers_for_name
 DEB_BLACKLIST = [
     "gir1.2-panelapplet-4.0",
     "gir1.2-gpaste-2.0",
+    "gir1.2-gpaste-4.0",
     "gir1.2-gdm3",
     "gir1.2-webkit2-3.0",
     "gir1.2-gst-plugins-base-0.10",
     "gir1.2-gstreamer-0.10",
-    "gir1.2-hkl-5.0",  # temporary, not installable
 ]
 
 BLACKLIST = [
@@ -131,7 +131,9 @@ BUILD = ['AccountsService-1.0', 'Anjuta-3.0', 'AppIndicator3-0.1', 'Atk-1.0',
 'ClutterGst-3.0', 'Gom-1.0', 'Limba-1.0', 'PanelApplet-5.0',
 'Abi-3.0', 'Gnm-1.12', 'Libmsi-1.0', 'Vips-8.0', 'GooCanvas-2.0',
 'GSound-1.0', 'Accounts-1.0', 'Signon-1.0', 'Fwupd-1.0', 'Grss-0.7',
-'AppStream-1.0', 'Dfu-1.0',
+'AppStream-1.0', 'Dfu-1.0', 'LibvirtSandbox-1.0', 'GrlNet-0.3', 'Grl-0.3',
+'Hinawa-1.0', 'Hkl-4.0', 'Wnck-1.0', 'GstPlayer-1.0', 'LOKDocView-0.1',
+'NMA-1.0', 'GrlPls-0.3',
 ]
 
 
