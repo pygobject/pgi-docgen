@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Copyright 2015 Christoph Reiter
 #
 # This library is free software; you can redistribute it and/or
@@ -216,5 +217,28 @@ accessed via the following functions.</para>
 ]]></programlisting></informalexample>
 <para></para>
 '''
+        output = ConvertMarkDown("", input_)
+        self.assertEqual(expected, output)
+
+    def test_plain(self):
+        input_ = u"""\
+|[<!-- language="plain" -->
+frame
+├── border
+├── <label widget>
+╰── <child>
+]|
+"""
+
+        expected = u"""\
+<informalexample><screen><![CDATA[
+frame
+├── border
+├── <label widget>
+╰── <child>
+]]></screen></informalexample>
+<para></para>
+"""
+
         output = ConvertMarkDown("", input_)
         self.assertEqual(expected, output)

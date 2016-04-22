@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Copyright 2013 Christoph Reiter
 #
 # This library is free software; you can redistribute it and/or
@@ -496,4 +497,20 @@ user\\_data\\:
     GdkEventType type;
     
     type = event->type;
+""")
+
+        self.check(u"""\
+|[<!-- language="plain" -->
+frame
+├── border
+├── <label widget>
+╰── <child>
+]|
+""", u"""
+.. code-block:: none
+
+    frame
+    ├── border
+    ├── <label widget>
+    ╰── <child>
 """)

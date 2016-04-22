@@ -263,7 +263,7 @@ def _handle_xml(repo, current_type, current_func, out, item):
                         out.append("`%s <%s>`__" % (item.getText(), url))
                     else:
                         out.append("'%s [%s]'" % (item.getText(), linked))
-        elif item.name == "programlisting":
+        elif item.name == "programlisting" or item.name == "screen":
             text = item.getText()
             if not text.count("\n"):
                 out.append("``%s``" % item.getText())
