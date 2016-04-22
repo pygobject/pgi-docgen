@@ -19,11 +19,11 @@ import os
 import json
 
 from .doap import get_project_summary, get_doap_dir, get_doap_path
-from .project import Project
+from .project import Project, PROJECTS
 from .library import Library
 
 
-get_project_summary, get_doap_dir, get_doap_path, Project, Library
+get_project_summary, get_doap_dir, get_doap_path, Project, Library, PROJECTS
 
 _BASEDIR = os.path.dirname(os.path.realpath(__file__))
 
