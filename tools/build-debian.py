@@ -19,6 +19,8 @@ import sys
 import subprocess
 import shutil
 import argparse
+import requests
+from multiprocessing.pool import ThreadPool
 
 import apt
 import apt_pkg
@@ -67,6 +69,9 @@ BLACKLIST = [
     'Nice-0.1',
     "Geoclue-2.0",
 
+    # hangs?
+    'NMA-1.0',
+
     # criticals.. better skip
     "NMClient-1.0",
     "NMGtk-1.0",
@@ -83,6 +88,7 @@ BLACKLIST = [
     "BraseroBurn-3.1",
     "v_sim-3.7",
     "FolksDummy-0.6",
+    "Wnck-1.0",
 ]
 
 BUILD = ['AccountsService-1.0', 'Anjuta-3.0', 'AppIndicator3-0.1', 'Atk-1.0',
@@ -132,8 +138,8 @@ BUILD = ['AccountsService-1.0', 'Anjuta-3.0', 'AppIndicator3-0.1', 'Atk-1.0',
 'Abi-3.0', 'Gnm-1.12', 'Libmsi-1.0', 'Vips-8.0', 'GooCanvas-2.0',
 'GSound-1.0', 'Accounts-1.0', 'Signon-1.0', 'Fwupd-1.0', 'Grss-0.7',
 'AppStream-1.0', 'Dfu-1.0', 'LibvirtSandbox-1.0', 'GrlNet-0.3', 'Grl-0.3',
-'Hinawa-1.0', 'Hkl-4.0', 'Wnck-1.0', 'GstPlayer-1.0', 'LOKDocView-0.1',
-'NMA-1.0', 'GrlPls-0.3',
+'Hinawa-1.0', 'Hkl-4.0', 'GstPlayer-1.0', 'LOKDocView-0.1', 'GrlPls-0.3',
+'Gtd-1.0', 'GoVirt-1.0',
 ]
 
 
@@ -168,7 +174,7 @@ def get_typelibs():
 
     if to_install:
         print "Not all typelibs installed:\n"
-        print "sudo aptitude install " + " ".join(sorted(to_install))
+        print "sudo apt install " + " ".join(sorted(to_install))
         raise SystemExit(1)
 
     return typelibs
@@ -212,6 +218,15 @@ def compare_deb_packages(a, b):
     return apt_pkg.version_compare(va, vb)
 
 
+def _fetch(args):
+    dest, uri = args
+    print uri
+    r = requests.get(uri)
+    filename = uri.rsplit("/", 1)[-1]
+    with open(os.path.join(dest, filename), "wb") as h:
+        h.write(r.content)
+
+
 def fetch_girs(girs, dest):
     dest = os.path.abspath(dest)
     assert not os.path.exists(dest)
@@ -222,6 +237,7 @@ def fetch_girs(girs, dest):
     dst = os.path.join(dest, "gir-1.0")
 
     print "Download packages.."
+    uris = []
     cache = apt.Cache()
     cache.open(None)
     os.mkdir(tmp_download)
@@ -233,13 +249,14 @@ def fetch_girs(girs, dest):
         for version in package.versions:
             if ok or package.candidate == version:
                 ok = True
-                try:
-                    # XXX: This fails in various ways unrelated to the actual
-                    # download action
-                    version.fetch_binary(tmp_download)
-                except Exception as error:
-                    print error
+                if version.uri:
+                    uris.append(version.uri)
     cache.close()
+
+    pool = ThreadPool(processes=10)
+    pool.map_async(_fetch, [(tmp_download, uri) for uri in uris])
+    pool.close()
+    pool.join()
 
     print "Extracting packages.."
 
@@ -324,7 +341,7 @@ def check_debug_packages(gir_dir, can_build):
 
     if to_install:
         print "Not all debug packages installed:\n"
-        print "sudo aptitude install " + " ".join(sorted(to_install))
+        print "sudo apt install " + " ".join(sorted(to_install))
         raise SystemExit(1)
 
 
