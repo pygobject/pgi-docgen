@@ -608,7 +608,9 @@ class Class(BaseDocObject, MethodsMixin, PropertiesMixin, SignalsMixin,
             klass.info.desc = repo.render_override_docs(
                 util.unindent(obj.__doc__, True), all=all_, docs=docs)
 
-        cls._cache[obj] = klass
+        if namespace == repo.namespace:
+            cls._cache[obj] = klass
+
         return klass
 
 
@@ -797,14 +799,17 @@ class Structure(BaseDocObject, MethodsMixin, FieldsMixin):
         if obj in cls._cache:
             return cls._cache[obj]
 
+        namespace = obj.__module__
+
         signature = get_signature_string(obj.__init__)
-        instance = cls(obj.__module__, obj.__name__, signature)
+        instance = cls(namespace, obj.__name__, signature)
         instance.info = DocInfo.from_object(repo, "all", instance,
                                             current_type=instance.fullname)
         instance._parse_methods(repo, obj)
         instance._parse_fields(repo, obj)
 
-        cls._cache[obj] = instance
+        if repo.namespace == namespace:
+            cls._cache[obj] = instance
 
         return instance
 
