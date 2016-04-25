@@ -869,7 +869,15 @@ class Constant(BaseDocObject):
 
     @classmethod
     def from_object(cls, repo, parent_fullname, name, obj):
-        instance = Constant(parent_fullname, name, repr(obj))
+
+        # the repr also contains the gtype value which changes between runs
+        # and just adds noise to the diff
+        if isinstance(obj, GObject.GType):
+            value = "<GType %s>" % (obj.name)
+        else:
+            value = repr(obj)
+
+        instance = Constant(parent_fullname, name, value)
         instance.info = DocInfo.from_object(repo, "all", instance)
         return instance
 

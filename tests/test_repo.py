@@ -9,7 +9,8 @@
 import unittest
 
 from pgidocgen.repo import Repository
-from pgidocgen.docobj import Class, Function, Flags, get_hierarchy, PyClass
+from pgidocgen.docobj import Class, Function, Flags, get_hierarchy, PyClass, \
+    Constant
 from pgidocgen.overrides import parse_override_docs
 
 
@@ -186,6 +187,9 @@ class TRepository(unittest.TestCase):
     def test_atk(self):
         repo = Repository("Atk", "1.0")
         Atk = repo.import_module()
+
+        c = Constant.from_object(repo, "", "FOO", Atk.Document.__gtype__)
+        self.assertEqual(str(c.value), "<GType AtkDocument>")
 
         klass = Class.from_object(repo, Atk.Document)
         method = find(klass.methods, "get_attributes")
