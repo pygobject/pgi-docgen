@@ -471,6 +471,11 @@ def _parse_types(dom, module, namespace):
         if not c_name:
             continue
 
+        introspectable = bool(int(t.getAttribute("introspectable") or "1"))
+        if not introspectable:
+            skipped.add(c_name)
+            continue
+
         type_for = t.getAttribute("glib:is-gtype-struct-for")
         if type_for:
             type_structs[c_name] = namespace + "." + type_for
