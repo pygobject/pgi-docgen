@@ -836,10 +836,10 @@ class Flags(BaseDocObject, MethodsMixin):
 
             flag_value = Constant.from_object(
                 repo, self.fullname, attr_name, int(attr))
-            values.append((int(attr), flag_value))
+            values.append(flag_value)
 
-        values.sort()
-        self.values = [v[1] for v in values]
+        values.sort(key=lambda c: (c.value, c.fullname))
+        self.values = values
 
     @classmethod
     def from_object(cls, repo, obj):
