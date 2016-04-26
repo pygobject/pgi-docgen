@@ -486,13 +486,13 @@ def instance_to_rest(cls, inst):
         for k, v in cls.__dict__.items():
             if isinstance(v, cls) and v == inst:
                 return  ":obj:`%s`" % (
-                    cls.__module__ + "." + cls.__name__ + "." + k)
+                    get_namespace(cls) + "." + cls.__name__ + "." + k)
     elif is_flags(cls):
         bits = []
         for k, v in cls.__dict__.items():
             if isinstance(v, cls) and (v & inst or (v == 0 and v == inst)):
                 bits.append(":obj:`%s`" % (
-                    cls.__module__ + "." + cls.__name__ + "." + k))
+                    get_namespace(cls) + "." + cls.__name__ + "." + k))
         if bits:
             return " | ".join(bits)
         else:
@@ -526,6 +526,15 @@ def import_namespace(namespace, version=None, ignore_version=False):
 
 def get_module_version(module):
     return module._version
+
+
+def get_namespace(obj):
+    """Returns the gi namespace for an instance or type
+
+    get_namespace(Gtk.Widget) -> "Gtk"
+    """
+
+    return obj.__module__.split(".")[-1]
 
 
 class cached_property(object):

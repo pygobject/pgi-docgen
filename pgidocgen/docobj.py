@@ -54,7 +54,7 @@ def get_hierarchy(type_seq):
 
 
 def class_name(cls):
-    return cls.__module__.split(".")[-1] + "." + cls.__name__
+    return util.get_namespace(cls) + "." + cls.__name__
 
 
 def to_names(hierarchy):
@@ -403,7 +403,7 @@ class PyClass(BaseDocObject, MethodsMixin):
 
     @classmethod
     def from_object(cls, repo, obj):
-        namespace = obj.__module__
+        namespace = util.get_namespace(obj)
         name = obj.__name__
 
         klass = cls(namespace, name)
@@ -508,10 +508,11 @@ class Class(BaseDocObject, MethodsMixin, PropertiesMixin, SignalsMixin,
         if obj in cls._cache:
             return cls._cache[obj]
 
-        namespace = obj.__module__
+        namespace = util.get_namespace(obj)
         name = obj.__name__
+        version = util.get_module_version(util.import_namespace(namespace))
 
-        image_path = get_class_image_path(repo.namespace, repo.version, name)
+        image_path = get_class_image_path(namespace, version, name)
         if not os.path.exists(image_path):
             image_path = None
 
@@ -595,7 +596,7 @@ class Class(BaseDocObject, MethodsMixin, PropertiesMixin, SignalsMixin,
 
         subclasses = []
         for subc in util.fake_subclasses(obj):
-            if subc.__module__ == namespace:
+            if util.get_namespace(subc) == namespace:
                 subclasses.append(class_name(subc))
         subclasses.sort()
         klass.subclasses = subclasses
@@ -799,7 +800,7 @@ class Structure(BaseDocObject, MethodsMixin, FieldsMixin):
         if obj in cls._cache:
             return cls._cache[obj]
 
-        namespace = obj.__module__
+        namespace = util.get_namespace(obj)
 
         signature = get_signature_string(obj.__init__)
         instance = cls(namespace, obj.__name__, signature)
@@ -848,7 +849,7 @@ class Flags(BaseDocObject, MethodsMixin):
 
     @classmethod
     def from_object(cls, repo, obj):
-        instance = cls(obj.__module__, obj.__name__)
+        instance = cls(util.get_namespace(obj), obj.__name__)
         instance.info = DocInfo.from_object(repo, "all", instance,
                                             current_type=instance.fullname)
         instance._parse_values(repo, obj)
@@ -961,7 +962,7 @@ class Module(BaseDocObject):
             obj = getattr(pymod, key)
 
             if isinstance(obj, types.FunctionType):
-                if obj.__module__.split(".")[-1] != repo.namespace:
+                if util.get_namespace(obj) != repo.namespace:
                     if "." not in obj.__module__:
                         # originated from other namespace
                         continue
@@ -976,7 +977,7 @@ class Module(BaseDocObject):
                 if obj.__name__ != key:
                     # renamed class
                     continue
-                if obj.__module__.split(".")[-1] != repo.namespace:
+                if util.get_namespace(obj) != repo.namespace:
                     # originated from other namespace
                     continue
 
