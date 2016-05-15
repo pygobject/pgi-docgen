@@ -68,6 +68,7 @@ BLACKLIST = [
     "libisocodes-1.2.2",
     'Nice-0.1',
     "Geoclue-2.0",
+    "Gtd-1.0",
 
     # hangs?
     'NMA-1.0',
@@ -139,7 +140,7 @@ BUILD = ['AccountsService-1.0', 'Anjuta-3.0', 'AppIndicator3-0.1', 'Atk-1.0',
 'GSound-1.0', 'Accounts-1.0', 'Signon-1.0', 'Fwupd-1.0', 'Grss-0.7',
 'AppStream-1.0', 'Dfu-1.0', 'LibvirtSandbox-1.0', 'GrlNet-0.3', 'Grl-0.3',
 'Hinawa-1.0', 'Hkl-4.0', 'GstPlayer-1.0', 'LOKDocView-0.1', 'GrlPls-0.3',
-'Gtd-1.0', 'GoVirt-1.0',
+'GoVirt-1.0',
 ]
 
 
