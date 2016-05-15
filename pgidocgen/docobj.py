@@ -501,6 +501,7 @@ class Class(BaseDocObject, MethodsMixin, PropertiesMixin, SignalsMixin,
         return [c[0] for c in self.base_tree[0][1]]
 
     _cache = {}
+    _inspected = set()
 
     @classmethod
     def from_object(cls, repo, obj):
@@ -596,8 +597,10 @@ class Class(BaseDocObject, MethodsMixin, PropertiesMixin, SignalsMixin,
             setattr(klass, type_ + "_inherited", inherited.get(type_, []))
 
         # ensure all subclasses are created first
-        for name in dir(module):
-            getattr(module, name, None)
+        if module not in cls._inspected:
+            for name in dir(module):
+                getattr(module, name, None)
+            cls._inspected.add(module)
 
         subclasses = []
         for subc in util.fake_subclasses(obj):
