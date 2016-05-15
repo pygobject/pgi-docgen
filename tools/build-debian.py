@@ -139,8 +139,8 @@ BUILD = ['AccountsService-1.0', 'Anjuta-3.0', 'AppIndicator3-0.1', 'Atk-1.0',
 'Abi-3.0', 'Gnm-1.12', 'Libmsi-1.0', 'Vips-8.0', 'GooCanvas-2.0',
 'GSound-1.0', 'Accounts-1.0', 'Signon-1.0', 'Fwupd-1.0', 'Grss-0.7',
 'AppStream-1.0', 'Dfu-1.0', 'LibvirtSandbox-1.0', 'GrlNet-0.3', 'Grl-0.3',
-'Hinawa-1.0', 'Hkl-4.0', 'GstPlayer-1.0', 'LOKDocView-0.1', 'GrlPls-0.3',
-'GoVirt-1.0',
+'Hinawa-1.0', 'GstPlayer-1.0', 'LOKDocView-0.1', 'GrlPls-0.3',
+'GoVirt-1.0', 'Cvc-1.0', 'Hkl-5.0', 'Workrave-1.0',
 ]
 
 
