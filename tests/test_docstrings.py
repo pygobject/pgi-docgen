@@ -89,6 +89,11 @@ class TDocstring(unittest.TestCase):
             "always returns %FALSE.",
             "always returns :obj:`False`.")
 
+        # FIXME, should have a space after "="
+        self.check(
+            "a expand=TRUE b",
+            "a expand=:obj:`True` b")
+
     def test_type(self):
         self.check(
             "a #GQuark id to identify the data",
