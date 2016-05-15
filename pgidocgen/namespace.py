@@ -17,6 +17,7 @@ from xml.dom import minidom
 from . import util
 from .debug import get_line_numbers_for_name
 from .girdata import load_doc_references
+from .overrides import parse_override_docs
 
 
 # Enable caching during building multiples modules if PGIDOCGEN_CACHE is set
@@ -216,6 +217,10 @@ class Namespace(object):
     @util.cached_property
     def private(self):
         return _parse_private(_get_dom(self.path), self.namespace)
+
+    @util.cached_property
+    def override_docs(self):
+        return parse_override_docs(self.namespace, self.version)
 
     @util.cached_property
     def docs(self):

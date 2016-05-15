@@ -510,7 +510,8 @@ class Class(BaseDocObject, MethodsMixin, PropertiesMixin, SignalsMixin,
 
         namespace = util.get_namespace(obj)
         name = obj.__name__
-        version = util.get_module_version(util.import_namespace(namespace))
+        module = util.import_namespace(namespace)
+        version = util.get_module_version(module)
 
         image_path = get_class_image_path(namespace, version, name)
         if not os.path.exists(image_path):
@@ -594,6 +595,10 @@ class Class(BaseDocObject, MethodsMixin, PropertiesMixin, SignalsMixin,
         for type_ in inherit_types:
             setattr(klass, type_ + "_inherited", inherited.get(type_, []))
 
+        # ensure all subclasses are created first
+        for name in dir(module):
+            getattr(module, name, None)
+
         subclasses = []
         for subc in util.fake_subclasses(obj):
             if util.get_namespace(subc) == namespace:
@@ -609,9 +614,7 @@ class Class(BaseDocObject, MethodsMixin, PropertiesMixin, SignalsMixin,
             klass.info.desc = repo.render_override_docs(
                 util.unindent(obj.__doc__, True), all=all_, docs=docs)
 
-        if namespace == repo.namespace:
-            cls._cache[obj] = klass
-
+        cls._cache[obj] = klass
         return klass
 
 
@@ -809,9 +812,7 @@ class Structure(BaseDocObject, MethodsMixin, FieldsMixin):
         instance._parse_methods(repo, obj)
         instance._parse_fields(repo, obj)
 
-        if repo.namespace == namespace:
-            cls._cache[obj] = instance
-
+        cls._cache[obj] = instance
         return instance
 
 

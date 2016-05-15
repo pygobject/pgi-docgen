@@ -11,7 +11,6 @@ import jinja2
 from .namespace import get_namespace
 from .parser import docstring_to_rest
 from .docobj import Module
-from .overrides import parse_override_docs
 
 
 class Repository(object):
@@ -26,7 +25,6 @@ class Repository(object):
         loaded = [ns] + [get_namespace(*x) for x in ns.all_dependencies]
         self._namespaces = loaded
 
-        self._override_docs = parse_override_docs(namespace, version)
         self._rst_env = jinja2.Environment(undefined=jinja2.StrictUndefined)
 
     def parse(self):
@@ -42,7 +40,10 @@ class Repository(object):
         return self._rst_env.from_string(text).render(**kwargs)
 
     def lookup_override_docs(self, fullname):
-        return self._override_docs.get(fullname, u"")
+        for ns in self._namespaces:
+            if fullname in ns.override_docs:
+                return ns.override_docs[fullname]
+        return u""
 
     def lookup_py_id(self, c_id, shadowed=True):
         """Given a C identifier will return a Python identifier which
@@ -104,10 +105,11 @@ class Repository(object):
                 return ns.type_structs[struct_c_id]
 
     def _lookup_docs(self, type_, name, current_type=None, current_func=None):
-        source = self._ns.docs[type_]
-        if name in source:
-            return docstring_to_rest(self, source[name].docs,
-                                     current_type, current_func)
+        for ns in self._namespaces:
+            source = ns.docs[type_]
+            if name in source:
+                return docstring_to_rest(self, source[name].docs,
+                                         current_type, current_func)
         return u""
 
     def lookup_docs(self, type_, *args, **kwargs):
@@ -120,15 +122,15 @@ class Repository(object):
         return docs, shadowed
 
     def lookup_meta(self, type_, fullname):
-        source = self._ns.docs[type_]
+        for ns in self._namespaces:
+            source = ns.docs[type_]
 
-        if fullname in source:
-            docs, version_added, dep_version, dep = source[fullname]
-            dep = docstring_to_rest(self, dep)
-        else:
-            version_added = dep_version = dep = u""
+            if fullname in source:
+                docs, version_added, dep_version, dep = source[fullname]
+                dep = docstring_to_rest(self, dep)
+                return version_added, dep_version, dep
 
-        return version_added, dep_version, dep
+        return u"", u"", u""
 
     def lookup_instance_param(self, py_id):
         """Returns the name of the instance parameter for the Python identifier
@@ -143,6 +145,18 @@ class Repository(object):
         for ns in self._namespaces:
             if c_id in ns.shadow_map:
                 return ns.shadow_map[c_id]
+
+    def is_private(self, py_id):
+        """Returns True if a Python type is considered private i.e. should
+        not be included in the documentation in any way.
+
+        e.g. is_private('Gtk.ViewportPrivate') -> True
+        """
+
+        for ns in self._namespaces:
+            if py_id in ns.private:
+                return True
+        return False
 
     def get_all_dependencies(self):
         """Returns a list of (namespace, version) tuples for all transitive
@@ -178,12 +192,3 @@ class Repository(object):
 
     def get_types(self):
         return self._ns.types
-
-    def is_private(self, py_id):
-        """Returns True if a Python type is considered private i.e. should
-        not be included in the documentation in any way.
-
-        e.g. is_private('Gtk.ViewportPrivate') -> True
-        """
-
-        return py_id in self._ns.private
