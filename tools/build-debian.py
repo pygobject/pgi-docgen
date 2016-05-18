@@ -25,7 +25,8 @@ from multiprocessing.pool import ThreadPool
 import apt
 import apt_pkg
 
-from pgidocgen.debug import get_debug_files_for_name, get_line_numbers_for_name
+from pgidocgen.debug import get_debug_files_for_name, \
+    get_debug_build_id_for_name
 
 
 DEB_BLACKLIST = [
@@ -106,7 +107,7 @@ BUILD = ['AccountsService-1.0', 'Anjuta-3.0', 'AppIndicator3-0.1', 'Atk-1.0',
 'GUPnPIgd-1.0', 'GUdev-1.0', 'GUsb-1.0', 'GWeather-3.0', 'GXPS-0.1', 'Gck-1',
 'Gda-5.0', 'Gdk-3.0', 'GdkPixbuf-2.0', 'GdkX11-3.0', 'Gdl-3', 'Gdm-1.0',
 'GeocodeGlib-1.0', 'Gio-2.0', 'Gkbd-3.0', 'Gladeui-2.0', 'GnomeBluetooth-1.0',
-'GnomeDesktop-3.0', 'GnomeKeyring-1.0', 'Goa-1.0', 'Grl-0.2', 'GrlNet-0.2',
+'GnomeDesktop-3.0', 'GnomeKeyring-1.0', 'Goa-1.0',
 'Gsf-1', 'Gst-1.0', 'GstAllocators-1.0', 'GstApp-1.0', 'GstAudio-1.0',
 'GstBase-1.0', 'GstCheck-1.0', 'GstController-1.0', 'GstFft-1.0',
 'GstNet-1.0', 'GstPbutils-1.0', 'GstRtp-1.0', 'GstRtsp-1.0', 'GstSdp-1.0',
@@ -126,7 +127,7 @@ BUILD = ['AccountsService-1.0', 'Anjuta-3.0', 'AppIndicator3-0.1', 'Atk-1.0',
 'UPowerGlib-1.0', 'Vte-2.91', 'WebKit-3.0', 'Wnck-3.0',
 'Xkl-1.0', 'Zeitgeist-2.0', 'Zpj-0.0', 'cairo-1.0', 'fontconfig-2.0',
 'freetype2-2.0', 'libxml2-2.0', 'xfixes-4.0', 'xft-2.0', 'xlib-2.0',
-'xrandr-1.3', "CoglPango-2.0", "GFBGraph-0.2", "GrlPls-0.2", "Guestfs-1.0",
+'xrandr-1.3', "CoglPango-2.0", "GFBGraph-0.2", "Guestfs-1.0",
 "HarfBuzz-0.0", "InputPad-1.0", "Keybinder-3.0", "LightDM-1", "MateMenu-2.0",
 "Midgard-10.05", "OsmGpsMap-1.0", "Totem-1.0", "Uhm-0.0",
 "AppStreamGlib-1.0", "CDesktopEnums-3.0", "CMenu-3.0", "CinnamonDesktop-3.0",
@@ -142,6 +143,41 @@ BUILD = ['AccountsService-1.0', 'Anjuta-3.0', 'AppIndicator3-0.1', 'Atk-1.0',
 'Hinawa-1.0', 'GstPlayer-1.0', 'LOKDocView-0.1', 'GrlPls-0.3',
 'GoVirt-1.0', 'Cvc-1.0', 'Hkl-5.0', 'Workrave-1.0',
 ]
+
+
+def cmd(cmd):
+    """Executes a command in a shell"""
+
+    pipe = subprocess.PIPE
+    p = subprocess.Popen(cmd, shell=True, stdout=pipe, stderr=pipe, stdin=pipe)
+    stdout, stderr = p.communicate()
+    return p.returncode, stdout.strip(), stderr.strip()
+
+
+def get_debian_build_ids():
+    """Returns a mapping of all available build IDs in debian to the debug
+    packages that contain the debug data.
+    """
+
+    ret, out, err = cmd(
+        "/usr/lib/apt/apt-helper cat-file "
+        "$(apt-get indextargets --format '$(FILENAME)' | grep '.*Packages') | "
+        "grep-dctrl -sPackage,Build-Ids --field=Build-Ids ''")
+
+    build_ids = {}
+
+    package = None
+    for line in out.splitlines():
+        if line.startswith("Package: "):
+            package = line.split(":", 1)[-1].strip()
+        elif line.startswith("Build-Ids: "):
+            buildids = line.split(":", 1)[-1].strip()
+            if not package:
+                raise ValueError("no active package")
+            for id_ in buildids.split():
+                build_ids[id_] = package
+
+    return build_ids
 
 
 def get_typelibs():
@@ -307,19 +343,15 @@ def get_gir_shared_libraries(gir_dir, can_build):
     return libs
 
 
-def check_debug_packages(gir_dir, can_build):
+def get_debug_packages(gir_dir, can_build):
     shared_libs = get_gir_shared_libraries(gir_dir, can_build)
 
-    namespaces_with_debug = set()
+    # first get all possible debug file paths and look for them using
+    # apt-file
     debug_files = set()
     for namespace, libs in shared_libs.items():
         for lib in libs:
             debug_files.update(get_debug_files_for_name(lib))
-            symbols = get_line_numbers_for_name(lib)
-            if symbols:
-                namespaces_with_debug.add(namespace)
-
-    print "Namespaces with dbg: " + " ".join(sorted(namespaces_with_debug))
 
     debug_packages = set()
     data = subprocess.check_output(["apt-file", "search", ".so"])
@@ -328,6 +360,22 @@ def check_debug_packages(gir_dir, can_build):
         package, path = line.split(": ", 1)
         if path in debug_files:
             debug_packages.add(package)
+
+    # Since the new dbgsym repos in debian don't have Content files and
+    # can't be searched using apt-file we have to parse the "Build-Ids"
+    # value in the repo archives
+    build_ids = get_debian_build_ids()
+    for namespace, libs in shared_libs.items():
+        for lib in libs:
+            build_id = get_debug_build_id_for_name(lib)
+            if build_id is not None and build_id in build_ids:
+                debug_packages.add(build_ids[build_id])
+
+    return debug_packages
+
+
+def check_debug_packages(gir_dir, can_build):
+    debug_packages = get_debug_packages(gir_dir, can_build)
 
     cache = apt.Cache()
     cache.open(None)
@@ -344,7 +392,6 @@ def check_debug_packages(gir_dir, can_build):
         print "Not all debug packages installed:\n"
         print "sudo apt install " + " ".join(sorted(to_install))
         raise SystemExit(1)
-
 
 
 def main(argv):

@@ -64,8 +64,8 @@ def read_elf_section(library_path, name):
     return tobin(content)
 
 
-def get_debug_build_id_file(library_path):
-    """Returns the path of the linked debug library or None"""
+def get_debug_build_id(library_path):
+    """Returns the build id for the library path or None"""
 
     data = read_elf_section(library_path, ".note.gnu.build-id")
     if not data:
@@ -73,10 +73,25 @@ def get_debug_build_id_file(library_path):
     index = data.find("GNU")
     assert index != -1
     index += 4
-    id_ = "".join(["%02x" % ord(c) for c in data[index:]])
+    return "".join(["%02x" % ord(c) for c in data[index:]])
+
+
+def get_debug_build_id_for_name(library_name):
+    """Returns the build id for the library name or None"""
+    if not sys.platform.startswith("linux"):
+        return None
+    library_path = get_abs_library_path(library_name)
+    return get_debug_build_id(library_path)
+
+
+def get_debug_build_id_file(library_path):
+    """Returns the path of the linked debug library or None"""
+
+    id_ = get_debug_build_id(library_path)
+    if id_ is None:
+        return None
     debug_dir = get_debug_file_directory()
     return os.path.join(debug_dir, ".build-id", id_[:2], id_[2:] + ".debug")
-
 
 
 def get_debug_files(library_path):
