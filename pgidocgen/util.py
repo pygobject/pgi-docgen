@@ -13,6 +13,7 @@ import keyword
 import csv
 import cStringIO
 import warnings
+import subprocess
 
 from docutils.core import publish_parts
 
@@ -22,6 +23,31 @@ _KWD_RE = re.compile("^(%s)$" % "|".join(keyword.kwlist))
 
 def rest2html(text):
     return publish_parts(text, writer_name='html')['html_body']
+
+
+def shell(cmd):
+    """Executes a command in a shell"""
+
+    pipe = subprocess.PIPE
+    p = subprocess.Popen(cmd, shell=True, stdout=pipe, stderr=pipe, stdin=pipe)
+    stdout, stderr = p.communicate()
+    return p.returncode, stdout.strip(), stderr.strip()
+
+
+def parse_gir_shared_libs(gir_path):
+    """Returns a list of shared libraries for a .gir file.
+
+    XXX: This doesn't parse the file properly.. but it's fast.
+    """
+
+    shared_libs = []
+    with open(gir_path, "rb") as h:
+        for line in h.read().splitlines():
+            line = line.strip()
+            if line.startswith("shared-library="):
+                shared_libs.extend(line.split("=")[-1].strip("\"").split(","))
+                break
+    return shared_libs
 
 
 def cache_calls(func):

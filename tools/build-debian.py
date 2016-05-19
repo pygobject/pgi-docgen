@@ -25,8 +25,9 @@ from multiprocessing.pool import ThreadPool
 import apt
 import apt_pkg
 
-from pgidocgen.debug import get_debug_files_for_name, \
-    get_debug_build_id_for_name
+from pgidocgen.debian import get_repo_girs, get_debug_packages_for_libs, \
+    get_repo_typelibs
+from pgidocgen.util import parse_gir_shared_libs, shell
 
 
 DEB_BLACKLIST = [
@@ -37,6 +38,7 @@ DEB_BLACKLIST = [
     "gir1.2-webkit2-3.0",
     "gir1.2-gst-plugins-base-0.10",
     "gir1.2-gstreamer-0.10",
+    "evolution-data-server-dbg",
 ]
 
 BLACKLIST = [
@@ -145,67 +147,18 @@ BUILD = ['AccountsService-1.0', 'Anjuta-3.0', 'AppIndicator3-0.1', 'Atk-1.0',
 ]
 
 
-def cmd(cmd):
-    """Executes a command in a shell"""
-
-    pipe = subprocess.PIPE
-    p = subprocess.Popen(cmd, shell=True, stdout=pipe, stderr=pipe, stdin=pipe)
-    stdout, stderr = p.communicate()
-    return p.returncode, stdout.strip(), stderr.strip()
-
-
-def get_debian_build_ids():
-    """Returns a mapping of all available build IDs in debian to the debug
-    packages that contain the debug data.
-    """
-
-    ret, out, err = cmd(
-        "/usr/lib/apt/apt-helper cat-file "
-        "$(apt-get indextargets --format '$(FILENAME)' | grep '.*Packages') | "
-        "grep-dctrl -sPackage,Build-Ids --field=Build-Ids ''")
-
-    build_ids = {}
-
-    package = None
-    for line in out.splitlines():
-        if line.startswith("Package: "):
-            package = line.split(":", 1)[-1].strip()
-        elif line.startswith("Build-Ids: "):
-            buildids = line.split(":", 1)[-1].strip()
-            if not package:
-                raise ValueError("no active package")
-            for id_ in buildids.split():
-                build_ids[id_] = package
-
-    return build_ids
-
-
-def get_typelibs():
-    """Note that this also finds things in stable/experimental, so
-    apt-get downloading these might not give you a typelib file.
-    """
-
+def check_typelibs(typelibs):
     cache = apt.Cache()
     cache.open(None)
 
-    typelibs = {}
     to_install = set()
-
-    data = subprocess.check_output(["apt-file", "search", ".typelib"])
-    for line in data.strip().splitlines():
-        package, path = line.split(": ", 1)
+    for package in typelibs:
         if package in DEB_BLACKLIST:
             continue
-        if path.startswith("/usr/lib/x86_64-linux-gnu/girepository-1.0/") or \
-                path.startswith("/usr/lib/girepository-1.0/"):
-            if cache[package].candidate is None:
-                continue
-            if not cache[package].is_installed:
-                to_install.add(package)
-            name = os.path.splitext(os.path.basename(path))[0]
-            l = typelibs.setdefault(package, [])
-            if name not in l:
-                l.append(name)
+        if cache[package].candidate is None:
+            continue
+        if not cache[package].is_installed:
+            to_install.add(package)
 
     cache.close()
 
@@ -213,40 +166,6 @@ def get_typelibs():
         print "Not all typelibs installed:\n"
         print "sudo apt install " + " ".join(sorted(to_install))
         raise SystemExit(1)
-
-    return typelibs
-
-
-def get_girs():
-    """Note that this also finds things in stable/experimental, so
-    apt-get downloading these might not give you a gir file.
-    """
-
-    cache = apt.Cache()
-    cache.open(None)
-
-    girs = {}
-    data = subprocess.check_output(["apt-file", "search", ".gir"])
-    for line in data.strip().splitlines():
-        package, path = line.split(": ", 1)
-        if cache[package].candidate is None:
-            continue
-        if path.startswith("/usr/share/gir-1.0/"):
-            name = os.path.splitext(os.path.basename(path))[0]
-            l = girs.setdefault(package, [])
-            if name not in l:
-                l.append(name)
-    cache.close()
-    return girs
-
-
-def reverse_mapping(d):
-    r = {}
-    for key, values in d.iteritems():
-        for value in values:
-            assert value not in r
-            r[value] = key
-    return r
 
 
 def compare_deb_packages(a, b):
@@ -318,64 +237,26 @@ def fetch_girs_cached():
         os.path.dirname(os.path.realpath(__file__)), "_temp_data_dir")
     if not os.path.exists(temp_data):
         print "find girs.."
-        girs = get_girs()
+        girs = get_repo_girs()
         print "fetch and extract debian packages.."
         fetch_girs(girs, temp_data)
     return temp_data
 
 
 def get_gir_shared_libraries(gir_dir, can_build):
-    libs = {}
+    all_libs = set()
     for entry in os.listdir(gir_dir):
         name, ext = os.path.splitext(entry)
         if name not in can_build:
             continue
-        with open(os.path.join(gir_dir, entry), "rb") as h:
-            data = h.read()
-            for line in data.splitlines():
-                line = line.strip()
-                if line.startswith("shared-library="):
-                    libs.setdefault(name, [])
-                    libs[name].extend(
-                        (line.split("=")[-1].strip("\"").split(",")))
-                    break
-
-    return libs
-
-
-def get_debug_packages(gir_dir, can_build):
-    shared_libs = get_gir_shared_libraries(gir_dir, can_build)
-
-    # first get all possible debug file paths and look for them using
-    # apt-file
-    debug_files = set()
-    for namespace, libs in shared_libs.items():
-        for lib in libs:
-            debug_files.update(get_debug_files_for_name(lib))
-
-    debug_packages = set()
-    data = subprocess.check_output(["apt-file", "search", ".so"])
-    data += subprocess.check_output(["apt-file", "search", ".debug"])
-    for line in data.splitlines():
-        package, path = line.split(": ", 1)
-        if path in debug_files:
-            debug_packages.add(package)
-
-    # Since the new dbgsym repos in debian don't have Content files and
-    # can't be searched using apt-file we have to parse the "Build-Ids"
-    # value in the repo archives
-    build_ids = get_debian_build_ids()
-    for namespace, libs in shared_libs.items():
-        for lib in libs:
-            build_id = get_debug_build_id_for_name(lib)
-            if build_id is not None and build_id in build_ids:
-                debug_packages.add(build_ids[build_id])
-
-    return debug_packages
+        libs = parse_gir_shared_libs(os.path.join(gir_dir, entry))
+        all_libs.update(libs)
+    return all_libs
 
 
 def check_debug_packages(gir_dir, can_build):
-    debug_packages = get_debug_packages(gir_dir, can_build)
+    shared_libs = get_gir_shared_libraries(gir_dir, can_build)
+    debug_packages = get_debug_packages_for_libs(shared_libs)
 
     cache = apt.Cache()
     cache.open(None)
@@ -384,6 +265,8 @@ def check_debug_packages(gir_dir, can_build):
         if not cache[package].is_installed:
             if package.startswith(("libwebkit", "libjavascriptcore")):
                 # 5GB of debug data.. nope
+                continue
+            if package in DEB_BLACKLIST:
                 continue
             to_install.add(package)
     cache.close()
@@ -402,16 +285,21 @@ def main(argv):
     print "[don't forget to apt-file update/apt-get update!]"
 
     print "searching for typelibs.."
-    typelibs = get_typelibs()
+    typelibs = get_repo_typelibs()
+    print "searching for uninstalled typelibs"
+    check_typelibs(typelibs)
 
     data_dir = fetch_girs_cached()
     gir_dir = os.path.join(data_dir, "gir-1.0")
     gir_list = [os.path.splitext(e)[0] for e in os.listdir(gir_dir)]
 
-    rtypelibs = reverse_mapping(typelibs)
-    print "Missing gir files: %r" % sorted(set(rtypelibs) - set(gir_list))
-    print "Missing typelib files: %r" % sorted(set(gir_list) - set(rtypelibs))
-    can_build = sorted(set(gir_list) & set(rtypelibs))
+    typelib_ns = set()
+    for namespaces in typelibs.itervalues():
+        typelib_ns.update(namespaces)
+
+    print "Missing gir files: %r" % sorted(typelib_ns - set(gir_list))
+    print "Missing typelib files: %r" % sorted(set(gir_list) - typelib_ns)
+    can_build = sorted(set(gir_list) & typelib_ns)
     print "%d ready to build" % len(can_build)
 
     assert not (set(BLACKLIST) & set(BUILD))
