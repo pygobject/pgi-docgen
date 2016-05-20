@@ -28,6 +28,10 @@ get_project_summary, get_doap_dir, get_doap_path, Project, Library, PROJECTS
 _BASEDIR = os.path.dirname(os.path.realpath(__file__))
 
 
+def get_debian_path():
+    return os.path.join(_BASEDIR, "debian-packages.json")
+
+
 def get_class_image_dir(namespace, version):
     """The image directory for a given `namespace` and `version`.
 

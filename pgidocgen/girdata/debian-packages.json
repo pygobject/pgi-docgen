@@ -1,0 +1,1556 @@
+{
+    "Abi-3.0": {
+        "debian_package": "gir1.2-abiword-3.0", 
+        "description": "AbiWord is a full-featured, efficient word processing application. It is suitable for a wide variety of word processing tasks, and is extensible with a variety of plugins.", 
+        "homepage": "http://www.abisource.com/", 
+        "summary": "efficient, featureful word processor with collaboration -- shared library"
+    }, 
+    "Accounts-1.0": {
+        "debian_package": "gir1.2-accounts-1.0", 
+        "description": "Accounts and SSO (Single Sign-On) framework for Linux and POSIX based platforms.", 
+        "homepage": "https://gitlab.com/accounts-sso/libaccounts-glib", 
+        "summary": "Accounts database access"
+    }, 
+    "AccountsService-1.0": {
+        "debian_package": "gir1.2-accountsservice-1.0", 
+        "description": "The AccountService project provides a set of D-Bus interfaces for querying and manipulating user account information and an implementation of these interfaces, based on the useradd, usermod and userdel commands.", 
+        "homepage": "http://www.freedesktop.org/wiki/Software/AccountsService/", 
+        "summary": "query and manipulate user account information"
+    }, 
+    "Anjuta-3.0": {
+        "debian_package": "gir1.2-anjuta-3.0", 
+        "description": "This IDE for C/C++ and GNOME/Gtk+ applications has features that enable easy debugging, management of code and GUI design by providing a simple and usable user interface. It also integrates with version control systems like CVS, Git or Subversion.", 
+        "homepage": "http://www.anjuta.org/", 
+        "summary": "GNOME development IDE, for C/C++"
+    }, 
+    "Anthy-9000": {
+        "debian_package": "ibus-anthy", 
+        "description": "IBus is an Intelligent Input Bus. It is a new input framework for Linux OS. It provides full featured and user friendly input method user interface. It also may help developers to develop input method easily.\n\nIBus-Anthy is an input method (IM) for Japanese, based on IBus.", 
+        "homepage": "http://code.google.com/p/ibus", 
+        "summary": "anthy engine for IBus"
+    }, 
+    "AppIndicator-0.1": {
+        "debian_package": "gir1.2-appindicator-0.1", 
+        "description": "A library to allow applications to export a menu into the panel. Based on KSNI it also works in KDE and will fallback to generic Systray support if none of those are available.", 
+        "homepage": "https://launchpad.net/libappindicator", 
+        "summary": "allow applications to export a menu into the panel"
+    }, 
+    "AppIndicator3-0.1": {
+        "debian_package": "gir1.2-appindicator3-0.1", 
+        "description": "A library to allow applications to export a menu into the panel. Based on KSNI it also works in KDE and will fallback to generic Systray support if none of those are available.", 
+        "homepage": "https://launchpad.net/libappindicator", 
+        "summary": "allow applications to export a menu into the panel -- GTK3 version"
+    }, 
+    "AppStream-1.0": {
+        "debian_package": "gir1.2-appstream", 
+        "description": "AppStream is a cross-distribution effort for creating and sharing metadata of software components available in the package repositories of a distribution. It provides specifications for an unified software component metadata format and provides tools to read, write and validate the metadata.", 
+        "homepage": "http://www.freedesktop.org/wiki/Distributions/AppStream/", 
+        "summary": "Library to access AppStream services"
+    }, 
+    "AppStreamGlib-1.0": {
+        "debian_package": "gir1.2-appstreamglib-1.0", 
+        "description": "AppStream is a cross-distribution effort for creating and sharing metadata about software components available in the package repositories of a distribution.", 
+        "homepage": "http://people.freedesktop.org/~hughsient/appstream-glib/", 
+        "summary": "GObject introspection data for the libappstream-glib library"
+    }, 
+    "Atk-1.0": {
+        "debian_package": "gir1.2-atk-1.0", 
+        "description": "ATK is a toolkit providing accessibility interfaces for applications or other toolkits. By implementing these interfaces, those other toolkits or applications can be used with tools such as screen readers, magnifiers, and other alternative input devices.\n\nThis is the runtime part of ATK, needed to run applications built with it.", 
+        "homepage": "https://wiki.gnome.org/Accessibility", 
+        "summary": "ATK accessibility toolkit"
+    }, 
+    "AtrilDocument-1.5.0": {
+        "debian_package": "gir1.2-atril", 
+        "description": "Atril is a simple multi-page document viewer.  It can display and print PostScript (PS), Encapsulated PostScript (EPS), DJVU, DVI and Portable Document Format (PDF) files.", 
+        "homepage": "http://www.mate-desktop.org/", 
+        "summary": "MATE document rendering library"
+    }, 
+    "AtrilView-1.5.0": {
+        "debian_package": "gir1.2-atril", 
+        "description": "Atril is a simple multi-page document viewer.  It can display and print PostScript (PS), Encapsulated PostScript (EPS), DJVU, DVI and Portable Document Format (PDF) files.", 
+        "homepage": "http://www.mate-desktop.org/", 
+        "summary": "MATE document rendering library"
+    }, 
+    "Atspi-2.0": {
+        "debian_package": "gir1.2-atspi-2.0", 
+        "description": "", 
+        "homepage": "https://wiki.gnome.org/Accessibility", 
+        "summary": "Assistive Technology Service Provider Interface"
+    }, 
+    "BraseroBurn-3.1": {
+        "debian_package": "gir1.2-brasero-3.0", 
+        "description": "Libbrasero is a simple library to burn, copy and erase CD and DVD media.", 
+        "homepage": "https://wiki.gnome.org/Apps/Brasero", 
+        "summary": "CD/DVD burning library for GNOME"
+    }, 
+    "BraseroMedia-3.1": {
+        "debian_package": "gir1.2-brasero-3.0", 
+        "description": "Libbrasero is a simple library to burn, copy and erase CD and DVD media.", 
+        "homepage": "https://wiki.gnome.org/Apps/Brasero", 
+        "summary": "CD/DVD burning library for GNOME"
+    }, 
+    "CDesktopEnums-3.0": {
+        "debian_package": "gir1.2-cinnamondesktop-3.0", 
+        "description": "This library is used by Cinnamon to load the .desktop files.", 
+        "homepage": "http://cinnamon.linuxmint.com/", 
+        "summary": "Cinnamon library for loading .desktop files"
+    }, 
+    "CMenu-3.0": {
+        "debian_package": "gir1.2-cmenu-3.0", 
+        "description": "It can be used by languages supporting dynamic bindings with the GIRepository format.", 
+        "homepage": "http://cinnamon.linuxmint.com", 
+        "summary": "GObject introspection data for the Cinnamon menu library"
+    }, 
+    "Caja-2.0": {
+        "debian_package": "gir1.2-caja", 
+        "description": "Caja is the official file manager for the MATE desktop. It allows one to browse directories, preview files and launch applications associated with them. It is also responsible for handling the icons on the MATE desktop. It works on local and remote filesystems.\n\n\nIt can be used by packages using the GIRepository format to generate dynamic bindings.", 
+        "homepage": "http://www.mate-desktop.org/", 
+        "summary": "GObject introspection data for Caja"
+    }, 
+    "Cally-1.0": {
+        "debian_package": "gir1.2-clutter-1.0", 
+        "description": "Clutter is an Open GL based interactive canvas library, designed for creating fast, mainly 2D single window applications such as media box UIs, presentations, kiosk style applications and so on.", 
+        "homepage": "http://www.clutter-project.org/", 
+        "summary": "Open GL based interactive canvas library"
+    }, 
+    "Caribou-1.0": {
+        "debian_package": "gir1.2-caribou-1.0", 
+        "description": "An input assistive technology intended for switch and pointer users.", 
+        "homepage": "https://wiki.gnome.org/Projects/Caribou", 
+        "summary": "Configurable on screen keyboard with scanning mode"
+    }, 
+    "Cattle-1.0": {
+        "debian_package": "gir1.2-cattle-1.0", 
+        "description": "Cattle is a GObject-based library that allows one to inspect Brainfuck programs in various ways, and to easily embed a full-featured Brainfuck interpreter into any application.", 
+        "homepage": "http://kiyuko.org/software/cattle", 
+        "summary": "Brainfuck language toolkit"
+    }, 
+    "Champlain-0.12": {
+        "debian_package": "gir1.2-champlain-0.12", 
+        "description": "Libchamplain is a C library providing a ClutterActor to display maps.\n\nIt supports numerous free map sources such as OpenStreetMap (default), OpenArialMap and Maps for free.", 
+        "homepage": "https://wiki.gnome.org/Projects/libchamplain", 
+        "summary": "C library providing ClutterActor to display maps"
+    }, 
+    "Cheese-3.0": {
+        "debian_package": "gir1.2-cheese-3.0", 
+        "description": "A webcam application that supports image and video capture. Makes it easy to take photos and videos of you, your friends, pets or whatever you want. Allows you to apply fancy visual effects, fine-control image settings and has features such as Multi-Burst mode, Countdown timer for photos.", 
+        "homepage": "https://wiki.gnome.org/Apps/Cheese", 
+        "summary": "tool to take pictures and videos from your webcam"
+    }, 
+    "CinnamonDesktop-3.0": {
+        "debian_package": "gir1.2-cinnamondesktop-3.0", 
+        "description": "This library is used by Cinnamon to load the .desktop files.", 
+        "homepage": "http://cinnamon.linuxmint.com/", 
+        "summary": "Cinnamon library for loading .desktop files"
+    }, 
+    "Clutter-1.0": {
+        "debian_package": "gir1.2-clutter-1.0", 
+        "description": "Clutter is an Open GL based interactive canvas library, designed for creating fast, mainly 2D single window applications such as media box UIs, presentations, kiosk style applications and so on.", 
+        "homepage": "http://www.clutter-project.org/", 
+        "summary": "Open GL based interactive canvas library"
+    }, 
+    "ClutterGdk-1.0": {
+        "debian_package": "gir1.2-clutter-1.0", 
+        "description": "Clutter is an Open GL based interactive canvas library, designed for creating fast, mainly 2D single window applications such as media box UIs, presentations, kiosk style applications and so on.", 
+        "homepage": "http://www.clutter-project.org/", 
+        "summary": "Open GL based interactive canvas library"
+    }, 
+    "ClutterGst-2.0": {
+        "debian_package": "gir1.2-clutter-gst-2.0", 
+        "description": "Clutter is an Open GL based interactive canvas library, designed for creating fast, mainly 2D single window applications such as media box UIs, presentations, kiosk style applications and so on.", 
+        "homepage": "http://www.clutter-project.org/", 
+        "summary": "Open GL based interactive canvas library GStreamer elements"
+    }, 
+    "ClutterGst-3.0": {
+        "debian_package": "gir1.2-clutter-gst-3.0", 
+        "description": "Clutter is an Open GL based interactive canvas library, designed for creating fast, mainly 2D single window applications such as media box UIs, presentations, kiosk style applications and so on.", 
+        "homepage": "http://www.clutter-project.org/", 
+        "summary": "Open GL based interactive canvas library GStreamer elements"
+    }, 
+    "ClutterX11-1.0": {
+        "debian_package": "gir1.2-clutter-1.0", 
+        "description": "Clutter is an Open GL based interactive canvas library, designed for creating fast, mainly 2D single window applications such as media box UIs, presentations, kiosk style applications and so on.", 
+        "homepage": "http://www.clutter-project.org/", 
+        "summary": "Open GL based interactive canvas library"
+    }, 
+    "Cogl-1.0": {
+        "debian_package": "gir1.2-cogl-1.0", 
+        "description": "Cogl is a small open source library for using 3D graphics hardware to draw pretty pictures. The API departs from the flat state machine style of OpenGL and is designed to make it easy to write orthogonal components that can render without stepping on each others toes.", 
+        "homepage": "", 
+        "summary": "Object oriented GL/GLES Abstraction/Utility Layer"
+    }, 
+    "Cogl-2.0": {
+        "debian_package": "gir1.2-cogl-1.0", 
+        "description": "Cogl is a small open source library for using 3D graphics hardware to draw pretty pictures. The API departs from the flat state machine style of OpenGL and is designed to make it easy to write orthogonal components that can render without stepping on each others toes.", 
+        "homepage": "", 
+        "summary": "Object oriented GL/GLES Abstraction/Utility Layer"
+    }, 
+    "CoglGst-2.0": {
+        "debian_package": "gir1.2-coglgst-2.0", 
+        "description": "Cogl is a small open source library for using 3D graphics hardware to draw pretty pictures. The API departs from the flat state machine style of OpenGL and is designed to make it easy to write orthogonal components that can render without stepping on each others toes.", 
+        "homepage": "", 
+        "summary": "Object oriented GL/GLES Abstraction/Utility Layer"
+    }, 
+    "CoglPango-1.0": {
+        "debian_package": "gir1.2-coglpango-1.0", 
+        "description": "Cogl is a small open source library for using 3D graphics hardware to draw pretty pictures. The API departs from the flat state machine style of OpenGL and is designed to make it easy to write orthogonal components that can render without stepping on each others toes.", 
+        "homepage": "", 
+        "summary": "Object oriented GL/GLES Abstraction/Utility Layer"
+    }, 
+    "CoglPango-2.0": {
+        "debian_package": "gir1.2-coglpango-1.0", 
+        "description": "Cogl is a small open source library for using 3D graphics hardware to draw pretty pictures. The API departs from the flat state machine style of OpenGL and is designed to make it easy to write orthogonal components that can render without stepping on each others toes.", 
+        "homepage": "", 
+        "summary": "Object oriented GL/GLES Abstraction/Utility Layer"
+    }, 
+    "ColorHug-1.0": {
+        "debian_package": "gir1.2-colorhug-1.0", 
+        "description": "libcolorhug is a gobject-based library for using the ColorHug display colourimeter. It supports both reading values from the colourimeter and device administration, such as firmware updates.", 
+        "homepage": "http://www.freedesktop.org/software/colord/", 
+        "summary": "library to access the ColorHug colourimeter -- runtime"
+    }, 
+    "Colord-1.0": {
+        "debian_package": "gir1.2-colord-1.0", 
+        "description": "colord is a system service that makes it easy to manage, install and generate colour profiles to accurately colour manage input and output devices.\n\nIt provides a D-Bus API for system frameworks to query, a persistent data store, and a mechanism for session applications to set system policy.", 
+        "homepage": "http://www.freedesktop.org/software/colord/", 
+        "summary": "system service to manage device colour profiles -- runtime"
+    }, 
+    "ColordGtk-1.0": {
+        "debian_package": "gir1.2-colordgtk-1.0", 
+        "description": "colord is a system service that makes it easy to manage, install and generate colour profiles to accurately colour manage input and output devices.\n\nThis is a GTK+ convenience library for interacting with colord. It is useful for both applications which need colour management and applications that wish to perform colour calibration.", 
+        "homepage": "http://www.freedesktop.org/software/colord/", 
+        "summary": "GTK+ convenience library for interacting with colord"
+    }, 
+    "CryptUI-0.0": {
+        "debian_package": "gir1.2-cryptui-0.0", 
+        "description": "CryptUI is a library to manage OpenPGP prompts on GUI applications.", 
+        "homepage": "http://developer.gnome.org/libcryptui/", 
+        "summary": "UI library for OpenPGP prompts"
+    }, 
+    "Cvc-1.0": {
+        "debian_package": "gir1.2-cvc-1.0", 
+        "description": "This library contains code to access PulseAudio using a GObject based library, shared between cinnamon-control-center, cinnamon-settings-daemon and cinnamon. It is not API stable, and it is meant to be used as a submodule.", 
+        "homepage": "http://cinnamon.linuxmint.com/", 
+        "summary": "Cinnamon pulseaudio abstraction library"
+    }, 
+    "DBus-1.0": {
+        "debian_package": "gir1.2-freedesktop", 
+        "description": "GObject Introspection is a project for providing machine readable introspection data of the API of C libraries. This introspection data can be used in several different use cases, for example automatic code generation for bindings, API verification and documentation generation.\n\nGObject Introspection contains tools to generate and handle the introspection data.", 
+        "homepage": "https://wiki.gnome.org/GObjectIntrospection", 
+        "summary": "Library for handling GObject introspection data (runtime library)"
+    }, 
+    "DBusGLib-1.0": {
+        "debian_package": "gir1.2-freedesktop", 
+        "description": "GObject Introspection is a project for providing machine readable introspection data of the API of C libraries. This introspection data can be used in several different use cases, for example automatic code generation for bindings, API verification and documentation generation.\n\nGObject Introspection contains tools to generate and handle the introspection data.", 
+        "homepage": "https://wiki.gnome.org/GObjectIntrospection", 
+        "summary": "Library for handling GObject introspection data (runtime library)"
+    }, 
+    "Dbusmenu-0.4": {
+        "debian_package": "gir1.2-dbusmenu-glib-0.4", 
+        "description": "libdbusmenu passes a menu structure across DBus so that a program can create a menu simply without worrying about how it is displayed on the other side of the bus.", 
+        "homepage": "https://launchpad.net/dbusmenu", 
+        "summary": "library for passing menus over DBus"
+    }, 
+    "DbusmenuGtk-0.4": {
+        "debian_package": "gir1.2-dbusmenu-gtk-0.4", 
+        "description": "libdbusmenu passes a menu structure across DBus so that a program can create a menu simply without worrying about how it is displayed on the other side of the bus.", 
+        "homepage": "https://launchpad.net/dbusmenu", 
+        "summary": "library for passing menus over DBus"
+    }, 
+    "DbusmenuGtk3-0.4": {
+        "debian_package": "gir1.2-dbusmenu-gtk3-0.4", 
+        "description": "libdbusmenu passes a menu structure across DBus so that a program can create a menu simply without worrying about how it is displayed on the other side of the bus.", 
+        "homepage": "https://launchpad.net/dbusmenu", 
+        "summary": "library for passing menus over DBus"
+    }, 
+    "Dee-1.0": {
+        "debian_package": "gir1.2-dee-1.0", 
+        "description": "libdee is a shared library that provides objects that help having multiple instances communicating over DBus.", 
+        "homepage": "https://launchpad.net/dee", 
+        "summary": "model to synchronize mutiple instances over DBus"
+    }, 
+    "Dfu-1.0": {
+        "debian_package": "libdfu1", 
+        "description": "fwupd is a daemon to allow session software to update device firmware. You can either use a GUI software manager like GNOME Software to view and apply updates, the command-line tool or the system D-Bus interface directly. Currently, firmware updates using the UEFI capsule format and for the ColorHug are supported. More formats may be supported in the future. See <https://github.com/hughsie/fwupd> for details", 
+        "homepage": "https://github.com/hughsie/fwupd", 
+        "summary": "Firmware update daemon library for DFU support"
+    }, 
+    "Diodon-1.0": {
+        "debian_package": "gir1.2-diodon-1.0", 
+        "description": "Diodon is a lightweight clipboard manager for Linux written in Vala which \"aims to be the best integrated clipboard manager for the Gnome/Unity desktop\".\n\nDiodon features include Ubuntu indicator, clipboard sync (primary selection and Ctrl+C / Ctrl+V clipboard) and a zeitgeist integration for an infinite clipboard history.\n\n\nIt can be used by packages using the GIRepository format to generate dynamic bindings.", 
+        "homepage": "https://launchpad.net/diodon", 
+        "summary": "GTK+ Clipboard manager (GObject introspection data)"
+    }, 
+    "EBook-1.2": {
+        "debian_package": "gir1.2-ebook-1.2", 
+        "description": "This package is a client library for evolution addressbooks.\n\nEvolution is the integrated mail, calendar, task and address book distributed suite from Novell, Inc.", 
+        "homepage": "https://wiki.gnome.org/Apps/Evolution", 
+        "summary": "Client library for evolution address books"
+    }, 
+    "EBookContacts-1.2": {
+        "debian_package": "gir1.2-ebookcontacts-1.2", 
+        "description": "This package is a client library for evolution addressbooks.\n\nEvolution is the integrated mail, calendar, task and address book distributed suite from Novell, Inc.", 
+        "homepage": "https://wiki.gnome.org/Apps/Evolution", 
+        "summary": "Client library for evolution contacts books"
+    }, 
+    "EDataServer-1.2": {
+        "debian_package": "gir1.2-edataserver-1.2", 
+        "description": "Camel is a generic messaging library. It supports the standard messaging system for receiving and sending messages. It is the messaging backend for Evolution.\n\nEvolution is the integrated mail, calendar, task and address book distributed suite from Novell, Inc.", 
+        "homepage": "https://wiki.gnome.org/Apps/Evolution", 
+        "summary": "Evolution MIME message handling library"
+    }, 
+    "Entangle-0.1": {
+        "debian_package": "gir1.2-entangle-0.1", 
+        "description": "Entangle provides a graphical interface for \"tethered shooting\", aka taking photographs with a digital camera completely controlled from the computer.\n\nThis package can be used by other packages using the GIRepository format to generate dynamic bindings.", 
+        "homepage": "http://entangle-photo.org/", 
+        "summary": "GObject introspection data for entangle"
+    }, 
+    "Eom-1.0": {
+        "debian_package": "gir1.2-eom", 
+        "description": "eom or the Eye of MATE is a simple graphics viewer for the MATE desktop which uses the gdk-pixbuf library.  It can deal with large images, and zoom and scroll with constant memory usage.  Its goals are simplicity and standards compliance.\n\n\nIt can be used by packages using the GIRepository format to generate dynamic bindings.", 
+        "homepage": "http://www.mate-desktop.org/", 
+        "summary": "GObject introspection data for the eom library"
+    }, 
+    "Evd-0.1": {
+        "debian_package": "gir1.2-evd-0.1", 
+        "description": "EventDance is an open source library for interconnecting heterogeneous applications in a simple, secure and scalable fashion. It provides a nice API to send and receive data among distributed applications over different types of transports. This and other features like cryptography, make EventDance a perfect choice for peer-to-peer application development.", 
+        "homepage": "https://gitorious.org/eventdance", 
+        "summary": "Peer-to-peer inter-process communication library"
+    }, 
+    "EvinceDocument-3.0": {
+        "debian_package": "gir1.2-evince-3.0", 
+        "description": "It ships with a ps, pdf, dvi, tiff, djvu, comics and xps backend.", 
+        "homepage": "https://wiki.gnome.org/Apps/Evince", 
+        "summary": "Document (PostScript, PDF) rendering library"
+    }, 
+    "EvinceView-3.0": {
+        "debian_package": "gir1.2-evince-3.0", 
+        "description": "It ships with a ps, pdf, dvi, tiff, djvu, comics and xps backend.", 
+        "homepage": "https://wiki.gnome.org/Apps/Evince", 
+        "summary": "Document (PostScript, PDF) rendering library"
+    }, 
+    "Farstream-0.2": {
+        "debian_package": "gir1.2-farstream-0.2", 
+        "description": "The Farstream project is an effort to create a framework to deal with all known audio/video conferencing protocols. On one side it offers a generic API that makes it possible to write plugins for different streaming protocols, on the other side it offers an API for clients to use those plugins.", 
+        "homepage": "http://www.freedesktop.org/software/farstream/releases/farstream/", 
+        "summary": "Audio/Video communications framework: core library"
+    }, 
+    "Fcitx-1.0": {
+        "debian_package": "gir1.2-fcitx-1.0", 
+        "description": "Fcitx is a input method framework with extension support, which provides an interface for entering characters of different scripts in applications using a variety of mapping systems.\n\nIt offers a pleasant and modern experience, with intuitive graphical configuration tools and customizable skins and mapping tables. It is highly modularized and extensible, with GTK+ 2/3 and Qt4 IM Modules, support for UIs based on Fbterm, pure Xlib, GTK+, or KDE, and a developer-friendly API.\n\n* libfcitx-gclient - D-Bus client library for Glib", 
+        "homepage": "https://github.com/fcitx/fcitx", 
+        "summary": "Flexible Input Method Framework"
+    }, 
+    "Folks-0.6": {
+        "debian_package": "gir1.2-folks-0.6", 
+        "description": "libfolks is a library that aggregates people from multiple sources (eg, Telepathy connection managers and eventually evolution data server, Facebook, etc.) to create metacontacts.\n\nIt can be used by packages using the GIRepository format to generate dynamic bindings.", 
+        "homepage": "https://wiki.gnome.org/Projects/Folks", 
+        "summary": "library to aggregates people into metacontacts"
+    }, 
+    "FolksDummy-0.6": {
+        "debian_package": "gir1.2-folks-0.6", 
+        "description": "libfolks is a library that aggregates people from multiple sources (eg, Telepathy connection managers and eventually evolution data server, Facebook, etc.) to create metacontacts.\n\nIt can be used by packages using the GIRepository format to generate dynamic bindings.", 
+        "homepage": "https://wiki.gnome.org/Projects/Folks", 
+        "summary": "library to aggregates people into metacontacts"
+    }, 
+    "FolksEds-0.6": {
+        "debian_package": "gir1.2-folks-0.6", 
+        "description": "libfolks is a library that aggregates people from multiple sources (eg, Telepathy connection managers and eventually evolution data server, Facebook, etc.) to create metacontacts.\n\nIt can be used by packages using the GIRepository format to generate dynamic bindings.", 
+        "homepage": "https://wiki.gnome.org/Projects/Folks", 
+        "summary": "library to aggregates people into metacontacts"
+    }, 
+    "FolksTelepathy-0.6": {
+        "debian_package": "gir1.2-folks-0.6", 
+        "description": "libfolks is a library that aggregates people from multiple sources (eg, Telepathy connection managers and eventually evolution data server, Facebook, etc.) to create metacontacts.\n\nIt can be used by packages using the GIRepository format to generate dynamic bindings.", 
+        "homepage": "https://wiki.gnome.org/Projects/Folks", 
+        "summary": "library to aggregates people into metacontacts"
+    }, 
+    "Fwupd-1.0": {
+        "debian_package": "libfwupd1", 
+        "description": "fwupd is a daemon to allow session software to update device firmware. You can either use a GUI software manager like GNOME Software to view and apply updates, the command-line tool or the system D-Bus interface directly. Currently, firmware updates using the UEFI capsule format and for the ColorHug are supported. More formats may be supported in the future. See <https://github.com/hughsie/fwupd> for details", 
+        "homepage": "https://github.com/hughsie/fwupd", 
+        "summary": "Firmware update daemon library"
+    }, 
+    "GCab-1.0": {
+        "debian_package": "gir1.2-libgcab-1.0", 
+        "description": "libgcab provides functions to manipulate cabinet (.cab) files, both for reading and writing their contents.", 
+        "homepage": "https://wiki.gnome.org/msitools", 
+        "summary": "Microsoft Cabinet file manipulation library"
+    }, 
+    "GConf-2.0": {
+        "debian_package": "gir1.2-gconf-2.0", 
+        "description": "GConf is a configuration database system for storing application preferences. It supports default or mandatory settings set by the administrator, and changes to the database are instantly applied to all running applications. It is written for the GNOME desktop but doesn't require it.", 
+        "homepage": "http://projects.gnome.org/gconf/", 
+        "summary": "GNOME configuration database system (D-Bus service)"
+    }, 
+    "GData-0.0": {
+        "debian_package": "gir1.2-gdata-0.0", 
+        "description": "libgdata is a GLib-based library for accessing online service APIs using the GData protocol ?? most notably, Google's services. It provides APIs to access the common Google services, and has full asynchronous support.", 
+        "homepage": "https://wiki.gnome.org/Projects/libgdata", 
+        "summary": "Library for accessing GData webservices"
+    }, 
+    "GDesktopEnums-3.0": {
+        "debian_package": "gir1.2-gdesktopenums-3.0", 
+        "description": "gsettings-desktop-schemas contains a collection of GSettings schemas for settings shared by various components of a desktop.", 
+        "homepage": "http://www.gnome.org/", 
+        "summary": "GObject introspection for GSettings desktop-wide schemas"
+    }, 
+    "GES-1.0": {
+        "debian_package": "gir1.2-ges-1.0", 
+        "description": "The GStreamer multimedia framework and the accompanying NLE set of plugins for non-linear editing offer all the building blocks for: * Decoding and encoding to a wide variety of formats, through all the\n available GStreamer plugins.\n* Easily choosing segments of streams and arranging them through time\n through the NLE set of plugins.\nBut all those building blocks only offer stream-level access, which results in developers who want to write non-linear editors to write a consequent amount of code to get to the level of non-linear editing notions which are closer and more meaningful for the end-user (and therefore the application).\n\nThe GStreamer Editing Services (GES) aims to fill the gap between GStreamer/NLE and the application developer by offering a series of classes to simplify the creation of many kind of editing-related applications.", 
+        "homepage": "http://gstreamer.freedesktop.org", 
+        "summary": "GStreamer editing services (shared library)"
+    }, 
+    "GExiv2-0.10": {
+        "debian_package": "gir1.2-gexiv2-0.10", 
+        "description": "gexiv2 is a GObject-based wrapper around the Exiv2 library. It makes the basic features of Exiv2 available to GNOME applications.", 
+        "homepage": "https://wiki.gnome.org/Projects/gexiv2", 
+        "summary": "GObject-based wrapper around the Exiv2 library"
+    }, 
+    "GFBGraph-0.2": {
+        "debian_package": "gir1.2-gfbgraph-0.2", 
+        "description": "GFBGraph is a GLib/GObject wrapper for the Facebook API.", 
+        "homepage": "https://wiki.gnome.org/Projects/GFBGraph", 
+        "summary": "GObject library for Facebook Graph API"
+    }, 
+    "GIRepository-2.0": {
+        "debian_package": "gir1.2-glib-2.0", 
+        "description": "GObject Introspection is a project for providing machine readable introspection data of the API of C libraries. This introspection data can be used in several different use cases, for example automatic code generation for bindings, API verification and documentation generation.\n\nGObject Introspection contains tools to generate and handle the introspection data.", 
+        "homepage": "https://wiki.gnome.org/GObjectIntrospection", 
+        "summary": "Library for handling GObject introspection data (runtime library)"
+    }, 
+    "GL-1.0": {
+        "debian_package": "gir1.2-freedesktop", 
+        "description": "GObject Introspection is a project for providing machine readable introspection data of the API of C libraries. This introspection data can be used in several different use cases, for example automatic code generation for bindings, API verification and documentation generation.\n\nGObject Introspection contains tools to generate and handle the introspection data.", 
+        "homepage": "https://wiki.gnome.org/GObjectIntrospection", 
+        "summary": "Library for handling GObject introspection data (runtime library)"
+    }, 
+    "GLib-2.0": {
+        "debian_package": "gir1.2-glib-2.0", 
+        "description": "GObject Introspection is a project for providing machine readable introspection data of the API of C libraries. This introspection data can be used in several different use cases, for example automatic code generation for bindings, API verification and documentation generation.\n\nGObject Introspection contains tools to generate and handle the introspection data.", 
+        "homepage": "https://wiki.gnome.org/GObjectIntrospection", 
+        "summary": "Library for handling GObject introspection data (runtime library)"
+    }, 
+    "GMenu-3.0": {
+        "debian_package": "gir1.2-gmenu-3.0", 
+        "description": "The package contains an implementation of the draft \"Desktop Menu Specification\" from freedesktop.org:\n\nhttp://www.freedesktop.org/Standards/menu-spec\n\nAlso contained here are the GNOME menu layout configuration files, .directory files and assorted menu related utility programs.", 
+        "homepage": "", 
+        "summary": "GNOME implementation of the freedesktop menu specification"
+    }, 
+    "GModule-2.0": {
+        "debian_package": "gir1.2-glib-2.0", 
+        "description": "GObject Introspection is a project for providing machine readable introspection data of the API of C libraries. This introspection data can be used in several different use cases, for example automatic code generation for bindings, API verification and documentation generation.\n\nGObject Introspection contains tools to generate and handle the introspection data.", 
+        "homepage": "https://wiki.gnome.org/GObjectIntrospection", 
+        "summary": "Library for handling GObject introspection data (runtime library)"
+    }, 
+    "GObject-2.0": {
+        "debian_package": "gir1.2-glib-2.0", 
+        "description": "GObject Introspection is a project for providing machine readable introspection data of the API of C libraries. This introspection data can be used in several different use cases, for example automatic code generation for bindings, API verification and documentation generation.\n\nGObject Introspection contains tools to generate and handle the introspection data.", 
+        "homepage": "https://wiki.gnome.org/GObjectIntrospection", 
+        "summary": "Library for handling GObject introspection data (runtime library)"
+    }, 
+    "GOffice-0.10": {
+        "debian_package": "gir1.2-goffice-0.10", 
+        "description": "GOffice is a library of document centric objects and utilities building on top of GLib and Gtk+.\n\nThese are the files needed to run applications that use GOffice.", 
+        "homepage": "http://wiki.gnome.org/GnomeOffice", 
+        "summary": "Document centric objects library"
+    }, 
+    "GPaste-1.0": {
+        "debian_package": "gir1.2-gpaste-6.0", 
+        "description": "GPaste manages clipboard history and allows easy access to it using keyboard shortcuts, gnome-shell extension, command-line tools, gir bindings.\n\n\nIt can be used by packages using the GIRepository format to generate dynamic bindings.", 
+        "homepage": "https://github.com/Keruspe/GPaste", 
+        "summary": "GObject introspection data for the libgpaste6 library"
+    }, 
+    "GSSDP-1.0": {
+        "debian_package": "gir1.2-gssdp-1.0", 
+        "description": "A GObject-based API for doing SSDP (Simple Service Discovery Protocol) transparently.", 
+        "homepage": "http://www.gupnp.org", 
+        "summary": "GObject-based library for SSDP"
+    }, 
+    "GSound-1.0": {
+        "debian_package": "gir1.2-gsound-1.0", 
+        "description": "GSound is a small library for playing system sounds. It's designed to be used via GObject Introspection, and is a thin wrapper around the libcanberra C library.", 
+        "homepage": "https://wiki.gnome.org/Projects/GSound", 
+        "summary": "small library for playing system sounds"
+    }, 
+    "GTop-2.0": {
+        "debian_package": "gir1.2-gtop-2.0", 
+        "description": "The gtop library reads information about processes and the state of the system. It is used by the GNOME desktop environment.", 
+        "homepage": "", 
+        "summary": "gtop system monitoring library (shared)"
+    }, 
+    "GUPnP-1.0": {
+        "debian_package": "gir1.2-gupnp-1.0", 
+        "description": "A GObject-based API for doing UPnP transparently.", 
+        "homepage": "http://www.gupnp.org", 
+        "summary": "GObject-based library for UPnP"
+    }, 
+    "GUPnPAV-1.0": {
+        "debian_package": "gir1.2-gupnp-av-1.0", 
+        "description": "An audio/visual utility library for GUPnP, providing DIDL parser/writer and search criteria parser objects.", 
+        "homepage": "http://www.gupnp.org", 
+        "summary": "Audio/Visual utility library for GUPnP"
+    }, 
+    "GUPnPDLNA-2.0": {
+        "debian_package": "gir1.2-gupnpdlna-2.0", 
+        "description": "A small utility library that aims to ease the DLNA-related tasks such as media profile guessing, transcoding to a given profile, etc.", 
+        "homepage": "http://www.gupnp.org", 
+        "summary": "DLNA utility library for GUPnP"
+    }, 
+    "GUPnPDLNAGst-2.0": {
+        "debian_package": "gir1.2-gupnpdlna-2.0", 
+        "description": "A small utility library that aims to ease the DLNA-related tasks such as media profile guessing, transcoding to a given profile, etc.", 
+        "homepage": "http://www.gupnp.org", 
+        "summary": "DLNA utility library for GUPnP"
+    }, 
+    "GUPnPIgd-1.0": {
+        "debian_package": "gir1.2-gupnpigd-1.0", 
+        "description": "A GObject-based API for controling UPnP Internet Gateway Devices port mapping.", 
+        "homepage": "http://www.gupnp.org/", 
+        "summary": "library to handle UPnP IGD port mapping"
+    }, 
+    "GUdev-1.0": {
+        "debian_package": "gir1.2-gudev-1.0", 
+        "description": "This library makes it much simpler to use libudev from programs already using GObject. It also makes it possible to easily use libudev from other programming languages, such as Javascript, because of GObject introspection support.", 
+        "homepage": "https://wiki.gnome.org/Projects/libgudev", 
+        "summary": "GObject-based wrapper library for libudev"
+    }, 
+    "GUsb-1.0": {
+        "debian_package": "gir1.2-gusb-1.0", 
+        "description": "GUsb is a GObject wrapper for libusb1 that makes it easy to do asynchronous control, bulk and interrupt transfers with proper cancellation and integration into a mainloop.", 
+        "homepage": "http://www.hughski.com/downloads.html", 
+        "summary": "GLib wrapper around libusb1"
+    }, 
+    "GVnc-1.0": {
+        "debian_package": "gir1.2-gtk-vnc-2.0", 
+        "description": "It is built using coroutines, allowing it to be completely asynchronous while remaining single threaded. It supports RFB protocols 3.3 through 3.8 and the VeNCrypt authentication extension providing SSL/TLS encryption with x509 certificate authentication.\n\nThe core library is written in C and a binding for Python using PyGTK is available. The networking layer supports connections over both IPv4 and IPv6.", 
+        "homepage": "", 
+        "summary": "VNC viewer widget for GTK+3 (runtime libraries)"
+    }, 
+    "GVncPulse-1.0": {
+        "debian_package": "gir1.2-gtk-vnc-2.0", 
+        "description": "It is built using coroutines, allowing it to be completely asynchronous while remaining single threaded. It supports RFB protocols 3.3 through 3.8 and the VeNCrypt authentication extension providing SSL/TLS encryption with x509 certificate authentication.\n\nThe core library is written in C and a binding for Python using PyGTK is available. The networking layer supports connections over both IPv4 and IPv6.", 
+        "homepage": "", 
+        "summary": "VNC viewer widget for GTK+3 (runtime libraries)"
+    }, 
+    "GWeather-3.0": {
+        "debian_package": "gir1.2-gweather-3.0", 
+        "description": "libgweather is a library to access weather information from online services for numerous locations.", 
+        "homepage": "https://wiki.gnome.org/Projects/LibGWeather", 
+        "summary": "GWeather shared library"
+    }, 
+    "GXPS-0.1": {
+        "debian_package": "gir1.2-gxps-0.1", 
+        "description": "OpenXPS or XPS stands for XML Paper Specification. It is based on XML and it's a new electronic paper format originally developed by Microsoft and it serves as a PDF alternative. XPS files are usually created using \"Microsoft XPS Document Writer\" in Windows environments. It is now standardized as an open standard document format.\n\nQuoting Wikipedia: An XPS file is in fact a Unicoded ZIP archive using the Open Packaging Conventions, containing the files which make up the document. These include an XML markup file for each page, text, embedded fonts, raster images, 2D vector graphics, as well as the digital rights management information. The contents of an XPS file can be examined simply by opening it in an application which supports ZIP files.\n\nThe OpenXPS document format specification supports features such as color gradients, transparencies, CMYK color spaces, printer calibration, multiple-ink systems and print schemas.", 
+        "homepage": "https://wiki.gnome.org/libgxps", 
+        "summary": "handling and rendering XPS documents (library)"
+    }, 
+    "Ganv-1.0": {
+        "debian_package": "gir1.2-ganv-1.0", 
+        "description": "Ganv is an interactive Gtk canvas widget for graph-based interfaces (patchers, modular synthesizers, finite state automata, interactive graphs, etc).\n\nGanv provides classes for \"Modules\" (boxes with \"Ports\"), Circles, and Edges (lines that connect either Ports or Circles).  The user can rearrange items, or Ganv can automatically arrange items using GraphViz. Edges can be made by the user one at a time with the mouse, or in groups using the mouse and keyboard.", 
+        "homepage": "http://dev.drobilla.net/browser/trunk/ganv", 
+        "summary": "canvas widget for graph-based interfaces"
+    }, 
+    "Gck-1": {
+        "debian_package": "gir1.2-gck-1", 
+        "description": "GCK is a wrapper based on GLib implementing the PKCS#11 (Cryptoki) interface.", 
+        "homepage": "https://wiki.gnome.org/Projects/GnomeKeyring", 
+        "summary": "Glib wrapper library for PKCS#11"
+    }, 
+    "Gcr-3": {
+        "debian_package": "gir1.2-gcr-3", 
+        "description": "GCR is a library for crypto UI and related tasks.", 
+        "homepage": "https://wiki.gnome.org/Projects/GnomeKeyring", 
+        "summary": "Library for Crypto related tasks"
+    }, 
+    "GcrUi-3": {
+        "debian_package": "gir1.2-gcr-3", 
+        "description": "GCR is a library for crypto UI and related tasks.", 
+        "homepage": "https://wiki.gnome.org/Projects/GnomeKeyring", 
+        "summary": "Library for Crypto related tasks"
+    }, 
+    "Gda-5.0": {
+        "debian_package": "gir1.2-gda-5.0", 
+        "description": "libgda is a (relatively small) database abstraction/access library integrated on the GLib object model. It can be used as a metadata extractor, to get information about all database objects in a common way, and as an ODBC-like wrapper to access data in different engines through an easier API.", 
+        "homepage": "http://www.gnome-db.org/", 
+        "summary": "data abstraction library based on GLib"
+    }, 
+    "Gdict-1.0": {
+        "debian_package": "gir1.2-gdict-1.0", 
+        "description": "", 
+        "homepage": "https://wiki.gnome.org/Apps/Dictionary", 
+        "summary": "GNOME Dictionary base library"
+    }, 
+    "Gdk-2.0": {
+        "debian_package": "gir1.2-gtk-2.0", 
+        "description": "GTK+ is a multi-platform toolkit for creating graphical user interfaces. Offering a complete set of widgets, GTK+ is suitable for projects ranging from small one-off tools to complete application suites.", 
+        "homepage": "http://www.gtk.org/", 
+        "summary": "GTK+ graphical user interface library"
+    }, 
+    "Gdk-3.0": {
+        "debian_package": "gir1.2-gtk-3.0", 
+        "description": "GTK+ is a multi-platform toolkit for creating graphical user interfaces. Offering a complete set of widgets, GTK+ is suitable for projects ranging from small one-off tools to complete application suites.", 
+        "homepage": "http://www.gtk.org/", 
+        "summary": "GTK+ graphical user interface library"
+    }, 
+    "GdkPixbuf-2.0": {
+        "debian_package": "gir1.2-gdkpixbuf-2.0", 
+        "description": "The GDK Pixbuf library provides:\n- Image loading and saving facilities.\n- Fast scaling and compositing of pixbufs.\n- Simple animation loading (ie. animated GIFs)", 
+        "homepage": "http://www.gtk.org/", 
+        "summary": "GDK Pixbuf library"
+    }, 
+    "GdkX11-2.0": {
+        "debian_package": "gir1.2-gtk-2.0", 
+        "description": "GTK+ is a multi-platform toolkit for creating graphical user interfaces. Offering a complete set of widgets, GTK+ is suitable for projects ranging from small one-off tools to complete application suites.", 
+        "homepage": "http://www.gtk.org/", 
+        "summary": "GTK+ graphical user interface library"
+    }, 
+    "GdkX11-3.0": {
+        "debian_package": "gir1.2-gtk-3.0", 
+        "description": "GTK+ is a multi-platform toolkit for creating graphical user interfaces. Offering a complete set of widgets, GTK+ is suitable for projects ranging from small one-off tools to complete application suites.", 
+        "homepage": "http://www.gtk.org/", 
+        "summary": "GTK+ graphical user interface library"
+    }, 
+    "Gdl-3": {
+        "debian_package": "gir1.2-gdl-3", 
+        "description": "Provides a support library for development tools from the GNOME environment. Including symbol browser, dock and editor components.", 
+        "homepage": "", 
+        "summary": "GNOME DevTool libraries"
+    }, 
+    "Gdm-1.0": {
+        "debian_package": "gir1.2-gdm-1.0", 
+        "description": "GDM provides the equivalent of a \"login:\" prompt for X displays: it asks for a login and starts graphical sessions.\n\nIt supports multiple seats and switching between multiple users.\n\nThe greeter is based on the GNOME libraries and applications, and its look and design are the same as those of a GNOME session.", 
+        "homepage": "", 
+        "summary": "GNOME Display Manager (shared library)"
+    }, 
+    "Gee-0.8": {
+        "debian_package": "gir1.2-gee-0.8", 
+        "description": "libgee is a collection and utility library providing GObject-based interfaces and classes for commonly used data structures.", 
+        "homepage": "https://wiki.gnome.org/Projects/Libgee", 
+        "summary": "GObject based collection and utility library (GObject-Introspection)"
+    }, 
+    "Geoclue-2.0": {
+        "debian_package": "gir1.2-geoclue-2.0", 
+        "description": "GeoClue is a D-Bus geoinformation service. The goal of the Geoclue project is to make creating location-aware applications as simple as possible.", 
+        "homepage": "http://www.freedesktop.org/wiki/Software/GeoClue", 
+        "summary": "convenience library to interact with geoinformation service"
+    }, 
+    "GeocodeGlib-1.0": {
+        "debian_package": "gir1.2-geocodeglib-1.0", 
+        "description": "Geocode-glib allows you to do geocoding (going from a place name, to a longitude/latitude pair) and reverse geocoding (finding a place name from coordinates) using the Nominatim service.\n\nThis library should be used in place of Geoclue's D-Bus API for geocoding and reverse geocoding.", 
+        "homepage": "", 
+        "summary": "geocoding and reverse geocoding GLib library using Nominatim"
+    }, 
+    "Ggit-1.0": {
+        "debian_package": "gir1.2-git2-glib-1.0", 
+        "description": "libgit2-glib is a glib wrapper library around the libgit2 git access library.", 
+        "homepage": "https://wiki.gnome.org/Projects/Libgit2-glib", 
+        "summary": "glib wrapper library around the libgit2 git access library"
+    }, 
+    "Gio-2.0": {
+        "debian_package": "gir1.2-glib-2.0", 
+        "description": "GObject Introspection is a project for providing machine readable introspection data of the API of C libraries. This introspection data can be used in several different use cases, for example automatic code generation for bindings, API verification and documentation generation.\n\nGObject Introspection contains tools to generate and handle the introspection data.", 
+        "homepage": "https://wiki.gnome.org/GObjectIntrospection", 
+        "summary": "Library for handling GObject introspection data (runtime library)"
+    }, 
+    "Gkbd-3.0": {
+        "debian_package": "gir1.2-gkbd-3.0", 
+        "description": "libgnomekbd offers an API to manage the keyboard in GNOME applications.\n\nlibgnomekbdui offers an API to display a graphical user interface for libgnomekbd operations.", 
+        "homepage": "", 
+        "summary": "GNOME library to manage keyboard configuration"
+    }, 
+    "Gladeui-2.0": {
+        "debian_package": "gir1.2-gladeui-2.0", 
+        "description": "Glade is a RAD tool to enable quick and easy development of user interfaces for the GTK+ toolkit.\n\nGlade is, since its \"3.0\" major version, highly modular, and composed of widgets which can be used by other applications to integrate functionality similar to the one provided by the Glade application itself.\n\nThis library provides all the widgets and core code, like parsing and saving files.", 
+        "homepage": "http://glade.gnome.org/", 
+        "summary": "GTK+ User Interface Build core library"
+    }, 
+    "Gnm-1.12": {
+        "debian_package": "gir1.2-gnumeric", 
+        "description": "It can be used by packages using the GIRepository format to generate dynamic bindings.", 
+        "homepage": "http://www.gnumeric.org/", 
+        "summary": "GObject introspection data for the Gnumeric spreadsheet"
+    }, 
+    "GnomeBluetooth-1.0": {
+        "debian_package": "gir1.2-gnomebluetooth-1.0", 
+        "description": "The libraries included provide support to gnome-bluetooth.", 
+        "homepage": "https://wiki.gnome.org/Projects/GnomeBluetooth", 
+        "summary": "GNOME Bluetooth tools"
+    }, 
+    "GnomeDesktop-3.0": {
+        "debian_package": "gir1.2-gnomedesktop-3.0", 
+        "description": "This library is used by GNOME to load the .desktop files.", 
+        "homepage": "", 
+        "summary": "Utility library for loading .desktop files"
+    }, 
+    "GnomeKeyring-1.0": {
+        "debian_package": "gir1.2-gnomekeyring-1.0", 
+        "description": "gnome-keyring is a daemon in the session, similar to ssh-agent, and other applications can use it to store passwords and other sensitive information.\n\nThe program can manage several keyrings, each with its own master password, and there is also a session keyring which is never stored to disk, but forgotten when the session ends.", 
+        "homepage": "https://wiki.gnome.org/GnomeKeyring", 
+        "summary": "GNOME keyring services library"
+    }, 
+    "GoVirt-1.0": {
+        "debian_package": "gir1.2-govirt-1.0", 
+        "description": "libgovirt is a library that allows applications to use oVirt REST API to list VMs managed by an oVirt instance, and to get the connection parameters needed to make a SPICE/VNC connection to them.", 
+        "homepage": "", 
+        "summary": "GObject-based library to access oVirt REST API"
+    }, 
+    "Goa-1.0": {
+        "debian_package": "gir1.2-goa-1.0", 
+        "description": "", 
+        "homepage": "https://wiki.gnome.org/Projects/GnomeOnlineAccounts", 
+        "summary": "library for GNOME Online Accounts"
+    }, 
+    "Gom-1.0": {
+        "debian_package": "gir1.2-gom-1.0", 
+        "description": "Gom provides an object mapper from GObjects to SQLite. It helps you write applications that need to store structured data as well as make complex queries upon that data.", 
+        "homepage": "https://wiki.gnome.org/Projects/Gom", 
+        "summary": "Object mapper from GObjects to SQLite"
+    }, 
+    "GooCanvas-2.0": {
+        "debian_package": "gir1.2-goocanvas-2.0", 
+        "description": "GooCanvas is a canvas widget for GTK+ that uses the Cairo 2D library for drawing. It has a model/view split, and uses interfaces for canvas items and views, so you can easily turn any application object into canvas items.", 
+        "homepage": "https://wiki.gnome.org/action/show/Projects/GooCanvas", 
+        "summary": "Canvas widget for GTK+"
+    }, 
+    "Grip-1.0": {
+        "debian_package": "gir1.2-grip", 
+        "description": "Libgrip is an extenion library that provides widget-level programmable gesture recognition for GTK+ applications natively within the toolkit.  Widgets subscribe to particular gestures and provide programmed functionality on receipt of corresponding gesture events.\n\nThis package can be used by other packages using the GIRepository format to generate dynamic bindings for libgrip", 
+        "homepage": "https://launchpad.net/libgrip", 
+        "summary": "multi-touch gesture API for GTK+ apps"
+    }, 
+    "Grl-0.3": {
+        "debian_package": "gir1.2-grilo-0.3", 
+        "description": "Grilo is a framework focused on making media discovery and browsing easy for application developers.\n\nMore precisely, Grilo provides:\n * A single, high-level API that abstracts the differences among\n   various media content providers, allowing application developers\n   to integrate content from various services and sources easily.\n * A collection of plugins for accessing content from various media\n   providers. Developers can share efforts and code by writing\n   plugins for the framework that are application agnostic.\n * A flexible API that allows plugin developers to write plugins of\n   various kinds.", 
+        "homepage": "https://wiki.gnome.org/Projects/Grilo", 
+        "summary": "Framework for discovering and browsing media"
+    }, 
+    "GrlNet-0.3": {
+        "debian_package": "gir1.2-grilo-0.3", 
+        "description": "Grilo is a framework focused on making media discovery and browsing easy for application developers.\n\nMore precisely, Grilo provides:\n * A single, high-level API that abstracts the differences among\n   various media content providers, allowing application developers\n   to integrate content from various services and sources easily.\n * A collection of plugins for accessing content from various media\n   providers. Developers can share efforts and code by writing\n   plugins for the framework that are application agnostic.\n * A flexible API that allows plugin developers to write plugins of\n   various kinds.", 
+        "homepage": "https://wiki.gnome.org/Projects/Grilo", 
+        "summary": "Framework for discovering and browsing media"
+    }, 
+    "GrlPls-0.3": {
+        "debian_package": "gir1.2-grilo-0.3", 
+        "description": "Grilo is a framework focused on making media discovery and browsing easy for application developers.\n\nMore precisely, Grilo provides:\n * A single, high-level API that abstracts the differences among\n   various media content providers, allowing application developers\n   to integrate content from various services and sources easily.\n * A collection of plugins for accessing content from various media\n   providers. Developers can share efforts and code by writing\n   plugins for the framework that are application agnostic.\n * A flexible API that allows plugin developers to write plugins of\n   various kinds.", 
+        "homepage": "https://wiki.gnome.org/Projects/Grilo", 
+        "summary": "Framework for discovering and browsing media"
+    }, 
+    "Grss-0.7": {
+        "debian_package": "gir1.2-grss-0.7", 
+        "description": "libgrss is a Glib abstraction library for handling feeds in RSS, Atom and other formats. It is intended to be used to manage syndication of feeds in a convenient way.", 
+        "homepage": "", 
+        "summary": "Glib-based library to manage RSS and Atom feeds"
+    }, 
+    "Gsf-1": {
+        "debian_package": "gir1.2-gsf-1", 
+        "description": "The GNOME Structured File Library aims to provide an efficient extensible I/O abstraction for dealing with different structured file formats.", 
+        "homepage": "http://projects.gnome.org/libgsf/", 
+        "summary": "Structured File Library"
+    }, 
+    "Gst-1.0": {
+        "debian_package": "gir1.2-gstreamer-1.0", 
+        "description": "GStreamer is a streaming media framework, based on graphs of filters which operate on media data.  Applications using this library can do anything from real-time sound processing to playing videos, and just about anything else media-related.  Its plugin-based architecture means that new data types or processing capabilities can be added simply by installing new plug-ins.", 
+        "homepage": "http://gstreamer.freedesktop.org", 
+        "summary": "Core GStreamer libraries and elements"
+    }, 
+    "GstAllocators-1.0": {
+        "debian_package": "gir1.2-gst-plugins-base-1.0", 
+        "description": "GStreamer is a streaming media framework, based on graphs of filters which operate on media data.  Applications using this library can do anything from real-time sound processing to playing videos, and just about anything else media-related.  Its plugin-based architecture means that new data types or processing capabilities can be added simply by installing new plug-ins.", 
+        "homepage": "http://gstreamer.freedesktop.org/modules/gst-plugins-base.html", 
+        "summary": "GStreamer libraries from the \"base\" set"
+    }, 
+    "GstApp-1.0": {
+        "debian_package": "gir1.2-gst-plugins-base-1.0", 
+        "description": "GStreamer is a streaming media framework, based on graphs of filters which operate on media data.  Applications using this library can do anything from real-time sound processing to playing videos, and just about anything else media-related.  Its plugin-based architecture means that new data types or processing capabilities can be added simply by installing new plug-ins.", 
+        "homepage": "http://gstreamer.freedesktop.org/modules/gst-plugins-base.html", 
+        "summary": "GStreamer libraries from the \"base\" set"
+    }, 
+    "GstAudio-1.0": {
+        "debian_package": "gir1.2-gst-plugins-base-1.0", 
+        "description": "GStreamer is a streaming media framework, based on graphs of filters which operate on media data.  Applications using this library can do anything from real-time sound processing to playing videos, and just about anything else media-related.  Its plugin-based architecture means that new data types or processing capabilities can be added simply by installing new plug-ins.", 
+        "homepage": "http://gstreamer.freedesktop.org/modules/gst-plugins-base.html", 
+        "summary": "GStreamer libraries from the \"base\" set"
+    }, 
+    "GstBase-1.0": {
+        "debian_package": "gir1.2-gstreamer-1.0", 
+        "description": "GStreamer is a streaming media framework, based on graphs of filters which operate on media data.  Applications using this library can do anything from real-time sound processing to playing videos, and just about anything else media-related.  Its plugin-based architecture means that new data types or processing capabilities can be added simply by installing new plug-ins.", 
+        "homepage": "http://gstreamer.freedesktop.org", 
+        "summary": "Core GStreamer libraries and elements"
+    }, 
+    "GstCheck-1.0": {
+        "debian_package": "gir1.2-gstreamer-1.0", 
+        "description": "GStreamer is a streaming media framework, based on graphs of filters which operate on media data.  Applications using this library can do anything from real-time sound processing to playing videos, and just about anything else media-related.  Its plugin-based architecture means that new data types or processing capabilities can be added simply by installing new plug-ins.", 
+        "homepage": "http://gstreamer.freedesktop.org", 
+        "summary": "Core GStreamer libraries and elements"
+    }, 
+    "GstController-1.0": {
+        "debian_package": "gir1.2-gstreamer-1.0", 
+        "description": "GStreamer is a streaming media framework, based on graphs of filters which operate on media data.  Applications using this library can do anything from real-time sound processing to playing videos, and just about anything else media-related.  Its plugin-based architecture means that new data types or processing capabilities can be added simply by installing new plug-ins.", 
+        "homepage": "http://gstreamer.freedesktop.org", 
+        "summary": "Core GStreamer libraries and elements"
+    }, 
+    "GstFft-1.0": {
+        "debian_package": "gir1.2-gst-plugins-base-1.0", 
+        "description": "GStreamer is a streaming media framework, based on graphs of filters which operate on media data.  Applications using this library can do anything from real-time sound processing to playing videos, and just about anything else media-related.  Its plugin-based architecture means that new data types or processing capabilities can be added simply by installing new plug-ins.", 
+        "homepage": "http://gstreamer.freedesktop.org/modules/gst-plugins-base.html", 
+        "summary": "GStreamer libraries from the \"base\" set"
+    }, 
+    "GstGL-1.0": {
+        "debian_package": "gir1.2-gst-plugins-bad-1.0", 
+        "description": "GStreamer is a streaming media framework, based on graphs of filters which operate on media data.  Applications using this library can do anything from real-time sound processing to playing videos, and just about anything else media-related.  Its plugin-based architecture means that new data types or processing capabilities can be added simply by installing new plug-ins.\n\nGStreamer Bad Plug-ins is a set of plug-ins that aren't up to par compared to the rest. They might be close to being good quality, but they're missing something - be it a good code review, some documentation, a set of tests, a real live maintainer, or some actual wide use.", 
+        "homepage": "http://gstreamer.freedesktop.org/modules/gst-plugins-bad.html", 
+        "summary": "GStreamer development files for libraries from the \"bad\" set"
+    }, 
+    "GstInsertBin-1.0": {
+        "debian_package": "gir1.2-gst-plugins-bad-1.0", 
+        "description": "GStreamer is a streaming media framework, based on graphs of filters which operate on media data.  Applications using this library can do anything from real-time sound processing to playing videos, and just about anything else media-related.  Its plugin-based architecture means that new data types or processing capabilities can be added simply by installing new plug-ins.\n\nGStreamer Bad Plug-ins is a set of plug-ins that aren't up to par compared to the rest. They might be close to being good quality, but they're missing something - be it a good code review, some documentation, a set of tests, a real live maintainer, or some actual wide use.", 
+        "homepage": "http://gstreamer.freedesktop.org/modules/gst-plugins-bad.html", 
+        "summary": "GStreamer development files for libraries from the \"bad\" set"
+    }, 
+    "GstMpegts-1.0": {
+        "debian_package": "gir1.2-gst-plugins-bad-1.0", 
+        "description": "GStreamer is a streaming media framework, based on graphs of filters which operate on media data.  Applications using this library can do anything from real-time sound processing to playing videos, and just about anything else media-related.  Its plugin-based architecture means that new data types or processing capabilities can be added simply by installing new plug-ins.\n\nGStreamer Bad Plug-ins is a set of plug-ins that aren't up to par compared to the rest. They might be close to being good quality, but they're missing something - be it a good code review, some documentation, a set of tests, a real live maintainer, or some actual wide use.", 
+        "homepage": "http://gstreamer.freedesktop.org/modules/gst-plugins-bad.html", 
+        "summary": "GStreamer development files for libraries from the \"bad\" set"
+    }, 
+    "GstNet-1.0": {
+        "debian_package": "gir1.2-gstreamer-1.0", 
+        "description": "GStreamer is a streaming media framework, based on graphs of filters which operate on media data.  Applications using this library can do anything from real-time sound processing to playing videos, and just about anything else media-related.  Its plugin-based architecture means that new data types or processing capabilities can be added simply by installing new plug-ins.", 
+        "homepage": "http://gstreamer.freedesktop.org", 
+        "summary": "Core GStreamer libraries and elements"
+    }, 
+    "GstPbutils-1.0": {
+        "debian_package": "gir1.2-gst-plugins-base-1.0", 
+        "description": "GStreamer is a streaming media framework, based on graphs of filters which operate on media data.  Applications using this library can do anything from real-time sound processing to playing videos, and just about anything else media-related.  Its plugin-based architecture means that new data types or processing capabilities can be added simply by installing new plug-ins.", 
+        "homepage": "http://gstreamer.freedesktop.org/modules/gst-plugins-base.html", 
+        "summary": "GStreamer libraries from the \"base\" set"
+    }, 
+    "GstPlayer-1.0": {
+        "debian_package": "gir1.2-gst-plugins-bad-1.0", 
+        "description": "GStreamer is a streaming media framework, based on graphs of filters which operate on media data.  Applications using this library can do anything from real-time sound processing to playing videos, and just about anything else media-related.  Its plugin-based architecture means that new data types or processing capabilities can be added simply by installing new plug-ins.\n\nGStreamer Bad Plug-ins is a set of plug-ins that aren't up to par compared to the rest. They might be close to being good quality, but they're missing something - be it a good code review, some documentation, a set of tests, a real live maintainer, or some actual wide use.", 
+        "homepage": "http://gstreamer.freedesktop.org/modules/gst-plugins-bad.html", 
+        "summary": "GStreamer development files for libraries from the \"bad\" set"
+    }, 
+    "GstRtp-1.0": {
+        "debian_package": "gir1.2-gst-plugins-base-1.0", 
+        "description": "GStreamer is a streaming media framework, based on graphs of filters which operate on media data.  Applications using this library can do anything from real-time sound processing to playing videos, and just about anything else media-related.  Its plugin-based architecture means that new data types or processing capabilities can be added simply by installing new plug-ins.", 
+        "homepage": "http://gstreamer.freedesktop.org/modules/gst-plugins-base.html", 
+        "summary": "GStreamer libraries from the \"base\" set"
+    }, 
+    "GstRtsp-1.0": {
+        "debian_package": "gir1.2-gst-plugins-base-1.0", 
+        "description": "GStreamer is a streaming media framework, based on graphs of filters which operate on media data.  Applications using this library can do anything from real-time sound processing to playing videos, and just about anything else media-related.  Its plugin-based architecture means that new data types or processing capabilities can be added simply by installing new plug-ins.", 
+        "homepage": "http://gstreamer.freedesktop.org/modules/gst-plugins-base.html", 
+        "summary": "GStreamer libraries from the \"base\" set"
+    }, 
+    "GstRtspServer-1.0": {
+        "debian_package": "gir1.2-gst-rtsp-server-1.0", 
+        "description": "gst-rtsp-server is a library on top of GStreamer for building an RTSP server or embedding RTSP server capabilities into applications.\n\nGStreamer is a streaming media framework, based on graphs of filters which operate on media data.  Applications using this library can do anything from real-time sound processing to playing videos, and just about anything else media-related.  Its plugin-based architecture means that new data types or processing capabilities can be added simply by installing new plug-ins.", 
+        "homepage": "http://gstreamer.freedesktop.org", 
+        "summary": "GStreamer RTSP Server (shared library)"
+    }, 
+    "GstSdp-1.0": {
+        "debian_package": "gir1.2-gst-plugins-base-1.0", 
+        "description": "GStreamer is a streaming media framework, based on graphs of filters which operate on media data.  Applications using this library can do anything from real-time sound processing to playing videos, and just about anything else media-related.  Its plugin-based architecture means that new data types or processing capabilities can be added simply by installing new plug-ins.", 
+        "homepage": "http://gstreamer.freedesktop.org/modules/gst-plugins-base.html", 
+        "summary": "GStreamer libraries from the \"base\" set"
+    }, 
+    "GstTag-1.0": {
+        "debian_package": "gir1.2-gst-plugins-base-1.0", 
+        "description": "GStreamer is a streaming media framework, based on graphs of filters which operate on media data.  Applications using this library can do anything from real-time sound processing to playing videos, and just about anything else media-related.  Its plugin-based architecture means that new data types or processing capabilities can be added simply by installing new plug-ins.", 
+        "homepage": "http://gstreamer.freedesktop.org/modules/gst-plugins-base.html", 
+        "summary": "GStreamer libraries from the \"base\" set"
+    }, 
+    "GstVideo-1.0": {
+        "debian_package": "gir1.2-gst-plugins-base-1.0", 
+        "description": "GStreamer is a streaming media framework, based on graphs of filters which operate on media data.  Applications using this library can do anything from real-time sound processing to playing videos, and just about anything else media-related.  Its plugin-based architecture means that new data types or processing capabilities can be added simply by installing new plug-ins.", 
+        "homepage": "http://gstreamer.freedesktop.org/modules/gst-plugins-base.html", 
+        "summary": "GStreamer libraries from the \"base\" set"
+    }, 
+    "Gtd-1.0": {
+        "debian_package": "gnome-todo", 
+        "description": "GNOME To Do is a simplistic personal task manager designed to perfectly fit the GNOME desktop. Designed from ground up to seamlessly integrate with the GNOME desktop environment, To Do enables you to be as productive as you want.", 
+        "homepage": "https://wiki.gnome.org/Apps/Todo", 
+        "summary": "minimalistic personal task manager designed to fit GNOME desktop"
+    }, 
+    "Gtk-2.0": {
+        "debian_package": "gir1.2-gtk-2.0", 
+        "description": "GTK+ is a multi-platform toolkit for creating graphical user interfaces. Offering a complete set of widgets, GTK+ is suitable for projects ranging from small one-off tools to complete application suites.", 
+        "homepage": "http://www.gtk.org/", 
+        "summary": "GTK+ graphical user interface library"
+    }, 
+    "Gtk-3.0": {
+        "debian_package": "gir1.2-gtk-3.0", 
+        "description": "GTK+ is a multi-platform toolkit for creating graphical user interfaces. Offering a complete set of widgets, GTK+ is suitable for projects ranging from small one-off tools to complete application suites.", 
+        "homepage": "http://www.gtk.org/", 
+        "summary": "GTK+ graphical user interface library"
+    }, 
+    "GtkChamplain-0.12": {
+        "debian_package": "gir1.2-gtkchamplain-0.12", 
+        "description": "Libchamplain-gtk is a C library aimed to provide a Gtk+ widget to display rasterized maps and markers.\n\nIt supports numerous free map sources such as OpenStreetMap (default), OpenArialMap and Maps for free.", 
+        "homepage": "https://wiki.gnome.org/Projects/libchamplain", 
+        "summary": "Gtk+ widget to display maps"
+    }, 
+    "GtkClutter-1.0": {
+        "debian_package": "gir1.2-gtkclutter-1.0", 
+        "description": "Clutter is an Open GL based interactive canvas library, designed for creating fast, mainly 2D single window applications such as media box UIs, presentations, kiosk style applications and so on.", 
+        "homepage": "http://www.clutter-project.org/", 
+        "summary": "Open GL based interactive canvas library GTK+ widget"
+    }, 
+    "GtkSource-3.0": {
+        "debian_package": "gir1.2-gtksource-3.0", 
+        "description": "GtkSourceView is a text widget that extends the standard GTK+ 3.x text widget GtkTextView. It improves GtkTextView by implementing syntax highlighting and other features typical of a source editor.", 
+        "homepage": "https://wiki.gnome.org/Projects/GtkSourceView", 
+        "summary": "shared libraries for the GTK+ syntax highlighting widget"
+    }, 
+    "GtkSpell-3.0": {
+        "debian_package": "gir1.2-gtkspell3-3.0", 
+        "description": "GtkSpell provides Microsoft Word/OS X-style highlighting of misspelled words in a GtkTextView widget.  Right-clicking a misspelled word pops up a menu of suggested replacements.", 
+        "homepage": "http://gtkspell.sourceforge.net/", 
+        "summary": "spell-checking addon for GTK+'s TextView widget"
+    }, 
+    "GtkVnc-2.0": {
+        "debian_package": "gir1.2-gtk-vnc-2.0", 
+        "description": "It is built using coroutines, allowing it to be completely asynchronous while remaining single threaded. It supports RFB protocols 3.3 through 3.8 and the VeNCrypt authentication extension providing SSL/TLS encryption with x509 certificate authentication.\n\nThe core library is written in C and a binding for Python using PyGTK is available. The networking layer supports connections over both IPv4 and IPv6.", 
+        "homepage": "", 
+        "summary": "VNC viewer widget for GTK+3 (runtime libraries)"
+    }, 
+    "Gucharmap-2.90": {
+        "debian_package": "gir1.2-gucharmap-2.90", 
+        "description": "The libgucharmap library contains a Unicode browser widget; it is most prominently used by the \"gucharmap\" program.  See the package of the same name for more information.", 
+        "homepage": "https://wiki.gnome.org/Apps/Gucharmap", 
+        "summary": "Unicode browser widget library (shared library)"
+    }, 
+    "Guestfs-1.0": {
+        "debian_package": "gir1.2-guestfs-1.0", 
+        "description": "The libguestfs library allows accessing and modifying guest disk images.", 
+        "homepage": "http://libguestfs.org", 
+        "summary": "guest disk image management system"
+    }, 
+    "HarfBuzz-0.0": {
+        "debian_package": "gir1.2-harfbuzz-0.0", 
+        "description": "HarfBuzz is an implementation of the OpenType Layout engine (aka layout engine) and the script-specific logic (aka shaping engine).", 
+        "homepage": "http://www.freedesktop.org/wiki/Software/HarfBuzz", 
+        "summary": "OpenType text shaping engine ICU backend (GObject library)"
+    }, 
+    "Hinawa-1.0": {
+        "debian_package": "gir1.2-hinawa-1.0", 
+        "description": "This is an I/O library for units on IEEE 1394 bus. This library supports any types of asynchronous transactions over IEEE 1394 bus. Additionally, this library also supports some functionalities which ALSA firewire stack produces.", 
+        "homepage": "https://github.com/takaswie/libhinawa", 
+        "summary": "I/O library for IEEE 1394 asynchronous transactions"
+    }, 
+    "Hkl-5.0": {
+        "debian_package": "gir1.2-hkl-5.0", 
+        "description": "The hkl library is a framework for diffraction computation and diffractometer control, heavily used at the SOLEIL synchrotron. It supports various types of diffractometer geometry: Eulerian 4-circle, Eulerian 6-circle, kappa 4-circle, kappa 6-circle, and z-axis geometry. For each of these it provides several numerically computed modes, such as bisector and constant psi.", 
+        "homepage": "http://www.synchrotron-soleil.fr/portal/page/portal/Instrumentation/EnvironnementInstrumental/hkl", 
+        "summary": "diffractometer computation control library"
+    }, 
+    "IBus-1.0": {
+        "debian_package": "gir1.2-ibus-1.0", 
+        "description": "IBus is an Intelligent Input Bus. It is a new input framework for the Linux OS. It provides full featured and user friendly input method user interface. It also may help developers to develop input method easily.", 
+        "homepage": "https://github.com/ibus/ibus/releases", 
+        "summary": "Intelligent Input Bus"
+    }, 
+    "Indicate-0.7": {
+        "debian_package": "gir1.2-indicate-0.7", 
+        "description": "A small library for applications to raise \"flags\" on DBus for other components of the desktop to pick up and visualize.", 
+        "homepage": "https://launchpad.net/libindicate", 
+        "summary": "library for raising indicators via DBus"
+    }, 
+    "InputPad-1.0": {
+        "debian_package": "gir1.2-input-pad-1.0", 
+        "description": "The input pad is a tool to send a character to text applications when the corresponging button is pressed. It provides the GTK+ based GUI and can send characters when the GTK+ buttons are pressed.", 
+        "homepage": "http://code.google.com/p/input-pad/", 
+        "summary": "On-screen Input Pad to Send Characters with Mouse"
+    }, 
+    "Itl-1.0": {
+        "debian_package": "gir1.2-itl-1.0", 
+        "description": "This library is a GObject bindings library for libitl (Islamic tools & library project), libitl allows applications to convert between Hijri/Gregorian dates and compute Muslim prayer times and Qibla direction based on multiple methods of calculation.", 
+        "homepage": "https://github.com/aelmahmoudy/libitl-gobject", 
+        "summary": "GObject bindings for libitl"
+    }, 
+    "JSCore-3.0": {
+        "debian_package": "gir1.2-javascriptcoregtk-3.0", 
+        "description": "JavaScriptCore is the JavaScript engine used in WebKit. It consists of the following building blocks: lexer, parser, start-up interpreter (LLInt), baseline JIT, a low-latency optimizing JIT (DFG), and a high-throughput optimizing JIT (FTL).\n\nThis build comes from the GTK+ port of WebKit (API version 3.0).", 
+        "homepage": "http://webkitgtk.org/", 
+        "summary": "JavaScript engine library from WebKitGTK+"
+    }, 
+    "JavaScriptCore-3.0": {
+        "debian_package": "gir1.2-javascriptcoregtk-3.0", 
+        "description": "JavaScriptCore is the JavaScript engine used in WebKit. It consists of the following building blocks: lexer, parser, start-up interpreter (LLInt), baseline JIT, a low-latency optimizing JIT (DFG), and a high-throughput optimizing JIT (FTL).\n\nThis build comes from the GTK+ port of WebKit (API version 3.0).", 
+        "homepage": "http://webkitgtk.org/", 
+        "summary": "JavaScript engine library from WebKitGTK+"
+    }, 
+    "JavaScriptCore-4.0": {
+        "debian_package": "gir1.2-javascriptcoregtk-4.0", 
+        "description": "JavaScriptCore is the JavaScript engine used in WebKit. It consists of the following building blocks: lexer, parser, start-up interpreter (LLInt), baseline JIT, a low-latency optimizing JIT (DFG), and a high-throughput optimizing JIT (FTL).\n\nThis build comes from the GTK+ port of WebKit (API version 4.0).", 
+        "homepage": "http://webkitgtk.org/", 
+        "summary": "JavaScript engine library from WebKitGTK+"
+    }, 
+    "Json-1.0": {
+        "debian_package": "gir1.2-json-1.0", 
+        "description": "JSON-GLib is a library for parsing, generating and manipulating JavaScript Object Notation (JSON) data streams using the GLib type system. It allows manipulating JSON data types with a Document Object Model API. It also allows serializing and deserializing simple or complex GObjects to and from JSON data types.", 
+        "homepage": "https://wiki.gnome.org/Projects/JsonGlib", 
+        "summary": "GLib JSON manipulation library"
+    }, 
+    "Keybinder-0.0": {
+        "debian_package": "gir1.2-keybinder-0.0", 
+        "description": "keybinder is a library for registering global keyboard shortcuts to be used by GTK-based applications under the X Window System.\n\nWhen a combination of key is pressed, keybinder notifies it to the registering application, which can execute one or more operations based on the event previously registered.\n\nOriginally written as part of the Tomboy project, keybinder has been distributed as stand-alone library let other applications to use key binding.", 
+        "homepage": "https://github.com/engla/keybinder", 
+        "summary": "registers global key bindings for applications"
+    }, 
+    "Keybinder-3.0": {
+        "debian_package": "gir1.2-keybinder-3.0", 
+        "description": "keybinder is a library for registering global keyboard shortcuts to be used by GTK-based applications under the X Window System.\n\nWhen a combination of key is pressed, keybinder notifies it to the registering application, which can execute one or more operations based on the event previously registered.\n\nOriginally written as part of the Tomboy project, keybinder has been distributed as stand-alone library let other applications to use key binding.\n\nThis is the Gtk+3 version of the library.", 
+        "homepage": "https://github.com/engla/keybinder", 
+        "summary": "registers global key bindings for applications"
+    }, 
+    "LOKDocView-0.1": {
+        "debian_package": "gir1.2-lokdocview-0.1", 
+        "description": "LOKDocView is the GTK3 widget that wraps the libreoffice functionality and exposes a simple API for applications to use this widget.", 
+        "homepage": "http://www.libreoffice.org", 
+        "summary": "GTK3 widget wrapping LibreOffice functionality"
+    }, 
+    "LangTag-0.5": {
+        "debian_package": "gir1.2-langtag-0.5", 
+        "description": "liblangtag is an interface library to access/deal with tags for identifying languages, which is described in RFC 5646", 
+        "homepage": "http://tagoh.bitbucket.org/liblangtag/", 
+        "summary": "library to access tags for identifying languages"
+    }, 
+    "Libmsi-1.0": {
+        "debian_package": "gir1.2-libmsi0", 
+        "description": "libmsi provides functions to manipulate Windows Installer (.msi) files, both for reading and writing their contents and querying their databases.", 
+        "homepage": "https://wiki.gnome.org/msitools", 
+        "summary": "Windows Installer file manipulation library"
+    }, 
+    "Libosinfo-1.0": {
+        "debian_package": "gir1.2-libosinfo-1.0", 
+        "description": "libosinfo is a GObject based library API for managing information about operating systems, hypervisors and the (virtual) hardware devices they can support. It includes a database containing device metadata and provides APIs to match/identify optimal devices for deploying an operating system on a hypervisor.\n\nVia the GObject Introspection, the API is available in all common programming languages.", 
+        "homepage": "https://fedorahosted.org/libosinfo/", 
+        "summary": "Library for managing information about operating systems and hypervisors"
+    }, 
+    "LibvirtGConfig-1.0": {
+        "debian_package": "gir1.2-libvirt-glib-1.0", 
+        "description": "The libvirt-glib library eases integration of libvirt's events and API into GLib and GObject based applications.\n\nThe API/ABI of this library are still considered unstable.", 
+        "homepage": "https://libvirt.org", 
+        "summary": "libvirt GLib and GObject mapping library"
+    }, 
+    "LibvirtGLib-1.0": {
+        "debian_package": "gir1.2-libvirt-glib-1.0", 
+        "description": "The libvirt-glib library eases integration of libvirt's events and API into GLib and GObject based applications.\n\nThe API/ABI of this library are still considered unstable.", 
+        "homepage": "https://libvirt.org", 
+        "summary": "libvirt GLib and GObject mapping library"
+    }, 
+    "LibvirtGObject-1.0": {
+        "debian_package": "gir1.2-libvirt-glib-1.0", 
+        "description": "The libvirt-glib library eases integration of libvirt's events and API into GLib and GObject based applications.\n\nThe API/ABI of this library are still considered unstable.", 
+        "homepage": "https://libvirt.org", 
+        "summary": "libvirt GLib and GObject mapping library"
+    }, 
+    "LibvirtSandbox-1.0": {
+        "debian_package": "gir1.2-libvirt-sandbox-1.0", 
+        "description": "The Libvirt Sandbox project is an effort to facilitate the use of libvirt virtualization drivers for the purpose of sandboxing applications. It supports LXC and QEMU/KVM.\n\nIt provides a high level API to enable the construction of sandboxes and isolation from the need to understand the virtualization technology configuration.\n\nIt allows integration with systemd to setup service unit files inside a sandbox.", 
+        "homepage": "http://sandbox.libvirt.org/", 
+        "summary": "GObject introspection files for the libvirt-sandbox library"
+    }, 
+    "LightDM-1": {
+        "debian_package": "gir1.2-lightdm-1", 
+        "description": "", 
+        "homepage": "https://launchpad.net/lightdm", 
+        "summary": "simple display manager (gobject library)"
+    }, 
+    "Limba-1.0": {
+        "debian_package": "gir1.2-limba-1.0", 
+        "description": "Limba allows 3rd-party developers to easily distribute their software on multiple Linux distributions. It provides atomic upgrades of software, simultaneous installation of multiple software versions and a simple way to obtain and upgrade software.", 
+        "homepage": "http://people.freedesktop.org/~mak/limba/", 
+        "summary": "Library for the Limba 3rd-party software manager"
+    }, 
+    "LunarDate-2.0": {
+        "debian_package": "gir1.2-lunar-date-2.0", 
+        "description": "Lunar-date is a Chinese Lunar library based on GObject, which can covert between Chinese lunar calendar and Gregorian calendar.", 
+        "homepage": "http://code.google.com/p/liblunar/", 
+        "summary": "Chinese Lunar library based on GObject"
+    }, 
+    "MPID-3.0": {
+        "debian_package": "gir1.2-rb-3.0", 
+        "description": "Rhythmbox is a very easy to use music playing and management program which supports a wide range of audio formats (including mp3 and ogg).", 
+        "homepage": "https://wiki.gnome.org/Apps/Rhythmbox", 
+        "summary": "support library for the rhythmbox music player"
+    }, 
+    "MateDesktop-2.0": {
+        "debian_package": "gir1.2-mate-desktop", 
+        "description": "The MATE component mate-desktop contains the libmate-desktop library, the mate-about program, as well as some desktop-wide documents.\n\nThe libmate-desktop library provides an API shared by several applications on the desktop, but that cannot live in the platform for various reasons.\n\n\nIt can be used by packages using the GIRepository format to generate dynamic bindings.", 
+        "homepage": "http://www.mate-desktop.org/", 
+        "summary": "GObject introspection data for the mate-desktop library"
+    }, 
+    "MateMenu-2.0": {
+        "debian_package": "gir1.2-mate-menu", 
+        "description": "It can be used by packages using the GIRepository format to generate dynamic bindings.", 
+        "homepage": "http://www.mate-desktop.org/", 
+        "summary": "GObject introspection data for the MATE menu specification"
+    }, 
+    "MatePanelApplet-4.0": {
+        "debian_package": "gir1.2-mate-panel", 
+        "description": "The MATE Panel is an essential part of the MATE Desktop, providing toolbar-like ??panels?? which can be attached to the sides of your desktop. They are used to launch applications and embed a number of other functions, such as quick launch icons, the clock, the notification area, volume controls and the battery charge indicator, and utilities ranging from weather forecast to system monitoring.", 
+        "homepage": "http://www.mate-desktop.org/", 
+        "summary": "library for MATE Panel applets"
+    }, 
+    "Matekbd-1.0": {
+        "debian_package": "gir1.2-matekbd", 
+        "description": "libmatekbd offers an API to manage the keyboard in MATE applications.\n\nlibmatekbdui offers an API to display a graphical user interface for libmatekbd operations.\n\n\nIt can be used by packages using the GIRepository format to generate dynamic bindings.", 
+        "homepage": "http://www.mate-desktop.org/", 
+        "summary": "GObject introspection data for libmatekbd and libmatekbdui"
+    }, 
+    "MediaArt-2.0": {
+        "debian_package": "gir1.2-mediaart-2.0", 
+        "description": "Libmediaart is a library tasked with managing, extracting and handling media art caches.", 
+        "homepage": "https://wiki.gnome.org/MediaArtStorageSpec", 
+        "summary": "media art extraction and cache management library"
+    }, 
+    "Meta-Muffin.0": {
+        "debian_package": "gir1.2-meta-muffin-0.0", 
+        "description": "Muffin is a small window manager performing compositing as well based on GTK+ and Clutter and used in desktop environment such as Cinnamon.\n\nIt is fairly extensible by the mean of plugins, providing new or customized visual effects as well as a flexibility in the behavior of the window manager.", 
+        "homepage": "http://cinnamon.linuxmint.com/", 
+        "summary": "lightweight window and compositing manager (shared library)"
+    }, 
+    "Midgard-10.05": {
+        "debian_package": "gir1.2-midgard-10.05", 
+        "description": "Midgard2 is an Open Source Content Repository. It provides an object-oriented and replicated environment for building data-intensive applications for both web and the desktop. Midgard2 is built on the GNOME stack of libraries like GLib and libgda. Communications between applications written in the different languages happen over D-Bus.", 
+        "homepage": "http://www.midgard-project.org", 
+        "summary": "Midgard Content Repository"
+    }, 
+    "ModemManager-1.0": {
+        "debian_package": "gir1.2-modemmanager-1.0", 
+        "description": "ModemManager is a DBus-activated daemon which controls mobile broadband (2G/3G/4G) devices and connections. Whether built-in devices, USB dongles, Bluetooth-paired telephones or professional RS232/USB devices with external power supplies, ModemManager is able to prepare and configure the modems and setup connections with them.", 
+        "homepage": "https://www.freedesktop.org/wiki/Software/ModemManager/", 
+        "summary": "D-Bus service for managing modems"
+    }, 
+    "Mx-1.0": {
+        "debian_package": "gir1.2-mx-1.0", 
+        "description": "The MX toolkit is a GUI toolkit library, using Clutter and is optimized for the Moblin user experience. It consists of various classes useful for building UIs such as Buttons, Tooltips, Scrollbars and others. It also supports styling through CSS stylesheets.", 
+        "homepage": "http://www.clutter-project.org/", 
+        "summary": "toolkit for the Moblin user experience"
+    }, 
+    "MxGtk-1.0": {
+        "debian_package": "gir1.2-mx-1.0", 
+        "description": "The MX toolkit is a GUI toolkit library, using Clutter and is optimized for the Moblin user experience. It consists of various classes useful for building UIs such as Buttons, Tooltips, Scrollbars and others. It also supports styling through CSS stylesheets.", 
+        "homepage": "http://www.clutter-project.org/", 
+        "summary": "toolkit for the Moblin user experience"
+    }, 
+    "NM-1.0": {
+        "debian_package": "gir1.2-networkmanager-1.0", 
+        "description": "NetworkManager is a system network service that manages your network devices and connections, attempting to keep active network connectivity when available. It manages ethernet, WiFi, mobile broadband (WWAN), and PPPoE devices, and provides VPN integration with a variety of different VPN services.", 
+        "homepage": "https://wiki.gnome.org/Projects/NetworkManager", 
+        "summary": "network management framework (GLib shared library)"
+    }, 
+    "NMA-1.0": {
+        "debian_package": "gir1.2-nma-1.0", 
+        "description": "This library provides Gtk+ dialogs for NetworkManager.", 
+        "homepage": "https://www.gnome.org/projects/NetworkManager/", 
+        "summary": "library for wireless and mobile dialogs (libnm version)"
+    }, 
+    "NMClient-1.0": {
+        "debian_package": "gir1.2-networkmanager-1.0", 
+        "description": "NetworkManager is a system network service that manages your network devices and connections, attempting to keep active network connectivity when available. It manages ethernet, WiFi, mobile broadband (WWAN), and PPPoE devices, and provides VPN integration with a variety of different VPN services.", 
+        "homepage": "https://wiki.gnome.org/Projects/NetworkManager", 
+        "summary": "network management framework (GLib shared library)"
+    }, 
+    "NMGtk-1.0": {
+        "debian_package": "gir1.2-nmgtk-1.0", 
+        "description": "This library provides Gtk+ dialogs for NetworkManager.", 
+        "homepage": "https://www.gnome.org/projects/NetworkManager/", 
+        "summary": "library for wireless and mobile dialogs (libnm-glib version)"
+    }, 
+    "Nautilus-3.0": {
+        "debian_package": "gir1.2-nautilus-3.0", 
+        "description": "Nautilus is the official file manager and graphical shell for the GNOME desktop.", 
+        "homepage": "http://www.gnome.org/projects/nautilus/", 
+        "summary": "libraries for nautilus components"
+    }, 
+    "Nemo-3.0": {
+        "debian_package": "gir1.2-nemo-3.0", 
+        "description": "Nemo is the official file manager for the Cinnamon desktop. It allows to browse directories, preview files and launch applications associated with them. It is also responsible for handling the icons on the Cinnamon desktop. It works on local and remote filesystems.", 
+        "homepage": "http://cinnamon.linuxmint.com/", 
+        "summary": "Nemo component system facilities"
+    }, 
+    "NetworkManager-1.0": {
+        "debian_package": "gir1.2-networkmanager-1.0", 
+        "description": "NetworkManager is a system network service that manages your network devices and connections, attempting to keep active network connectivity when available. It manages ethernet, WiFi, mobile broadband (WWAN), and PPPoE devices, and provides VPN integration with a variety of different VPN services.", 
+        "homepage": "https://wiki.gnome.org/Projects/NetworkManager", 
+        "summary": "network management framework (GLib shared library)"
+    }, 
+    "Nice-0.1": {
+        "debian_package": "gir1.2-nice-0.1", 
+        "description": "Nice is an implementation of the IETF's draft Interactive Connectivity Establishment standard (ICE).  ICE is useful for applications that want to establish peer-to-peer UDP data streams. It automates the process of traversing NATs and provides security against some attacks.\n\nExisting standards that use ICE include the Session Initiation Protocol (SIP) and the Jingle XMPP extension for audio/video calls.\n\nNice includes integration with GStreamer.", 
+        "homepage": "http://nice.freedesktop.org/", 
+        "summary": "ICE library (GObject introspection)"
+    }, 
+    "Notify-0.7": {
+        "debian_package": "gir1.2-notify-0.7", 
+        "description": "A library that sends desktop notifications to a notification daemon, as defined in the Desktop Notifications spec. These notifications can be used to inform the user about an event or display some form of information without getting in the user's way.", 
+        "homepage": "", 
+        "summary": "sends desktop notifications to a notification daemon"
+    }, 
+    "OsmGpsMap-1.0": {
+        "debian_package": "gir1.2-osmgpsmap-1.0", 
+        "description": "libosmgpsmap is a library to embed maps in applications that when given GPS co-ordinates, draws a GPS track, and points of interest on a moving map display. Downloads map data from a number of websites, including openstreetmap.org, openaerialmap.org and others.", 
+        "homepage": "http://nzjrs.github.com/osm-gps-map/", 
+        "summary": "GTK+ library to embed OpenStreetMap maps"
+    }, 
+    "PackageKitGlib-1.0": {
+        "debian_package": "gir1.2-packagekitglib-1.0", 
+        "description": "PackageKit allows performing simple software management tasks over a DBus interface e.g. refreshing the cache, updating, installing and removing software packages or searching for multimedia codecs and file handlers.", 
+        "homepage": "https://www.freedesktop.org/software/PackageKit/", 
+        "summary": "Library for accessing PackageKit using GLib"
+    }, 
+    "PanelApplet-5.0": {
+        "debian_package": "gir1.2-panelapplet-5.0", 
+        "description": "This library is used by GNOME Panel applets.", 
+        "homepage": "https://wiki.gnome.org/Projects/GnomePanel", 
+        "summary": "library for GNOME Panel applets"
+    }, 
+    "Pango-1.0": {
+        "debian_package": "gir1.2-pango-1.0", 
+        "description": "Pango is a library for layout and rendering of text, with an emphasis on internationalization. Pango can be used anywhere that text layout is needed. however, most of the work on Pango-1.0 was done using the GTK+ widget toolkit as a test platform. Pango forms the core of text and font handling for GTK+-2.0.\n\nPango is designed to be modular; the core Pango layout can be used with four different font backends:\n- Core X windowing system fonts\n- Client-side fonts on X using the Xft library\n- Direct rendering of scalable fonts using the FreeType library\n- Native fonts on Microsoft backends", 
+        "homepage": "", 
+        "summary": "Layout and rendering of internationalized text"
+    }, 
+    "PangoCairo-1.0": {
+        "debian_package": "gir1.2-pango-1.0", 
+        "description": "Pango is a library for layout and rendering of text, with an emphasis on internationalization. Pango can be used anywhere that text layout is needed. however, most of the work on Pango-1.0 was done using the GTK+ widget toolkit as a test platform. Pango forms the core of text and font handling for GTK+-2.0.\n\nPango is designed to be modular; the core Pango layout can be used with four different font backends:\n- Core X windowing system fonts\n- Client-side fonts on X using the Xft library\n- Direct rendering of scalable fonts using the FreeType library\n- Native fonts on Microsoft backends", 
+        "homepage": "", 
+        "summary": "Layout and rendering of internationalized text"
+    }, 
+    "PangoFT2-1.0": {
+        "debian_package": "gir1.2-pango-1.0", 
+        "description": "Pango is a library for layout and rendering of text, with an emphasis on internationalization. Pango can be used anywhere that text layout is needed. however, most of the work on Pango-1.0 was done using the GTK+ widget toolkit as a test platform. Pango forms the core of text and font handling for GTK+-2.0.\n\nPango is designed to be modular; the core Pango layout can be used with four different font backends:\n- Core X windowing system fonts\n- Client-side fonts on X using the Xft library\n- Direct rendering of scalable fonts using the FreeType library\n- Native fonts on Microsoft backends", 
+        "homepage": "", 
+        "summary": "Layout and rendering of internationalized text"
+    }, 
+    "PangoXft-1.0": {
+        "debian_package": "gir1.2-pango-1.0", 
+        "description": "Pango is a library for layout and rendering of text, with an emphasis on internationalization. Pango can be used anywhere that text layout is needed. however, most of the work on Pango-1.0 was done using the GTK+ widget toolkit as a test platform. Pango forms the core of text and font handling for GTK+-2.0.\n\nPango is designed to be modular; the core Pango layout can be used with four different font backends:\n- Core X windowing system fonts\n- Client-side fonts on X using the Xft library\n- Direct rendering of scalable fonts using the FreeType library\n- Native fonts on Microsoft backends", 
+        "homepage": "", 
+        "summary": "Layout and rendering of internationalized text"
+    }, 
+    "Peas-1.0": {
+        "debian_package": "gir1.2-peas-1.0", 
+        "description": "libpeas is a library that allows applications to support plugins.", 
+        "homepage": "https://wiki.gnome.org/Projects/Libpeas", 
+        "summary": "Application plugin library"
+    }, 
+    "PeasGtk-1.0": {
+        "debian_package": "gir1.2-peas-1.0", 
+        "description": "libpeas is a library that allows applications to support plugins.", 
+        "homepage": "https://wiki.gnome.org/Projects/Libpeas", 
+        "summary": "Application plugin library"
+    }, 
+    "Polkit-1.0": {
+        "debian_package": "gir1.2-polkit-1.0", 
+        "description": "PolicyKit is a toolkit for defining and handling the policy that allows unprivileged processes to speak to privileged processes.", 
+        "homepage": "http://www.freedesktop.org/wiki/Software/polkit/", 
+        "summary": "PolicyKit Authentication Agent API"
+    }, 
+    "PolkitAgent-1.0": {
+        "debian_package": "gir1.2-polkit-1.0", 
+        "description": "PolicyKit is a toolkit for defining and handling the policy that allows unprivileged processes to speak to privileged processes.", 
+        "homepage": "http://www.freedesktop.org/wiki/Software/polkit/", 
+        "summary": "PolicyKit Authentication Agent API"
+    }, 
+    "PolkitGtkMate-1.0": {
+        "debian_package": "gir1.2-mate-polkit", 
+        "description": "The mate-polkit package provides a D-Bus session bus service that is used to bring up authentication dialogs used for obtaining privileges.", 
+        "homepage": "http://www.mate-desktop.org/", 
+        "summary": "MATE authentication agent for PolicyKit-1 (library)"
+    }, 
+    "Poppler-0.18": {
+        "debian_package": "gir1.2-poppler-0.18", 
+        "description": "Poppler is a PDF rendering library based on Xpdf PDF viewer.", 
+        "homepage": "http://poppler.freedesktop.org/", 
+        "summary": "PDF rendering library (GLib-based shared library)"
+    }, 
+    "RB-3.0": {
+        "debian_package": "gir1.2-rb-3.0", 
+        "description": "Rhythmbox is a very easy to use music playing and management program which supports a wide range of audio formats (including mp3 and ogg).", 
+        "homepage": "https://wiki.gnome.org/Apps/Rhythmbox", 
+        "summary": "support library for the rhythmbox music player"
+    }, 
+    "Rest-0.7": {
+        "debian_package": "gir1.2-rest-0.7", 
+        "description": "This library was designed to make it easier to access web services that claim to be \"RESTful\".  It includes convenience wrappers for libsoup and libxml to ease remote use of the RESTful API.", 
+        "homepage": "https://wiki.gnome.org/Librest", 
+        "summary": "REST service access library"
+    }, 
+    "RestExtras-0.7": {
+        "debian_package": "gir1.2-rest-extras-0.7", 
+        "description": "This library was designed to make it easier to access web services that claim to be \"RESTful\".  It includes convenience wrappers for libsoup and libxml to ease remote use of the RESTful API. This extra package provides Facebook and Flickr support.", 
+        "homepage": "https://wiki.gnome.org/Librest", 
+        "summary": "REST service access library extra components"
+    }, 
+    "Rsvg-2.0": {
+        "debian_package": "gir1.2-rsvg-2.0", 
+        "description": "The rsvg library is an efficient renderer for Scalable Vector Graphics (SVG) pictures.", 
+        "homepage": "https://wiki.gnome.org/Projects/LibRsvg", 
+        "summary": "SAX-based renderer library for SVG files (runtime)"
+    }, 
+    "Secret-1": {
+        "debian_package": "gir1.2-secret-1", 
+        "description": "Library for storing and retrieving passwords and other secrets. It communicates with the \"Secret Service\" using DBus.", 
+        "homepage": "https://wiki.gnome.org/Projects/Libsecret", 
+        "summary": "Secret store"
+    }, 
+    "Signon-1.0": {
+        "debian_package": "gir1.2-signon-1.0", 
+        "description": "This is effectively a GLib binding for the D-Bus API provided by signond. It is part of the accounts-sso project.\n\nThis package can be used by other packages using the GIRepository format to generate dynamic bindings for libaccounts-glib0", 
+        "homepage": "https://gitlab.com/accounts-sso/libsignon-glib", 
+        "summary": "typelib for libsignon-glib1"
+    }, 
+    "Skk-1.0": {
+        "debian_package": "gir1.2-skk-1.0", 
+        "description": "Library that provides GObject-based interface of Japanese input methods.  Currently it supports SKK (Simple Kana Kanji) with various typing rules including romaji-to-kana, AZIK, ACT, TUT-Code, T-Code, and NICOLA.", 
+        "homepage": "https://github.com/ueno/libskk", 
+        "summary": "library to deal with Japanese kana-kanji conversion method"
+    }, 
+    "SocialWebClient-0.25": {
+        "debian_package": "gir1.2-socialweb-client-0.25", 
+        "description": "This library allows programmatic access to information available from the socialweb social data server.", 
+        "homepage": "http://gnome.org/", 
+        "summary": "client library to access socialweb server"
+    }, 
+    "Soup-2.4": {
+        "debian_package": "gir1.2-soup-2.4", 
+        "description": "It was originally part of a SOAP (Simple Object Access Protocol) implementation called Soup, but the SOAP and non-SOAP parts have now been split into separate packages.\n\nlibsoup uses the Glib main loop and is designed to work well with GTK+ applications.  This enables GNOME applications to access HTTP servers on the network in a completely asynchronous fashion, very similar to the GTK+ programming model (a synchronous operation mode is also supported for those who want it).\n\nThe GNOME support library is used for features which are important to GNOME apps, but which require GNOME-specific libraries that non-GNOME apps may not want to add dependencies on.\n\nFeatures:\n* Both asynchronous (GMainLoop and callback-based) and synchronous APIs\n* Automatically caches connections\n* SSL Support using GnuTLS\n* Proxy support, including authentication and SSL tunneling\n* Client support for Digest, NTLM, and Basic authentication\n* Server support for Digest and Basic authentication\n* Basic client-side SOAP and XML-RPC support", 
+        "homepage": "https://wiki.gnome.org/Projects/libsoup", 
+        "summary": "HTTP library implementation in C -- GNOME support library"
+    }, 
+    "SoupGNOME-2.4": {
+        "debian_package": "gir1.2-soup-2.4", 
+        "description": "It was originally part of a SOAP (Simple Object Access Protocol) implementation called Soup, but the SOAP and non-SOAP parts have now been split into separate packages.\n\nlibsoup uses the Glib main loop and is designed to work well with GTK+ applications.  This enables GNOME applications to access HTTP servers on the network in a completely asynchronous fashion, very similar to the GTK+ programming model (a synchronous operation mode is also supported for those who want it).\n\nThe GNOME support library is used for features which are important to GNOME apps, but which require GNOME-specific libraries that non-GNOME apps may not want to add dependencies on.\n\nFeatures:\n* Both asynchronous (GMainLoop and callback-based) and synchronous APIs\n* Automatically caches connections\n* SSL Support using GnuTLS\n* Proxy support, including authentication and SSL tunneling\n* Client support for Digest, NTLM, and Basic authentication\n* Server support for Digest and Basic authentication\n* Basic client-side SOAP and XML-RPC support", 
+        "homepage": "https://wiki.gnome.org/Projects/libsoup", 
+        "summary": "HTTP library implementation in C -- GNOME support library"
+    }, 
+    "SpiceClientGLib-2.0": {
+        "debian_package": "gir1.2-spice-client-glib-2.0", 
+        "description": "libspice-glib4 provides glib objects for spice protocol decoding and surface rendering\n\nThis package provide the runtime library.", 
+        "homepage": "http://www.spice-space.org/", 
+        "summary": "GObject for communicating with Spice servers (runtime library)"
+    }, 
+    "SpiceClientGtk-2.0": {
+        "debian_package": "gir1.2-spice-client-gtk-2.0", 
+        "description": "libspice-glib4 provides glib objects for spice protocol decoding and surface rendering\n\nThis package provide the runtime library.", 
+        "homepage": "http://www.spice-space.org/", 
+        "summary": "GObject for communicating with Spice servers (runtime library)"
+    }, 
+    "SpiceClientGtk-3.0": {
+        "debian_package": "gir1.2-spice-client-gtk-3.0", 
+        "description": "libspice-glib4 provides glib objects for spice protocol decoding and surface rendering\n\nThis package provide the runtime library.", 
+        "homepage": "http://www.spice-space.org/", 
+        "summary": "GObject for communicating with Spice servers (runtime library)"
+    }, 
+    "SugarExt-1.0": {
+        "debian_package": "gir1.2-sugarext-1.0", 
+        "description": "Sugar Learning Platform promotes collaborative learning through Sugar Activities that encourage critical thinking, the heart of a quality education.  Designed from the ground up especially for children, Sugar offers an alternative to traditional ??office-desktop?? software.\n\nThe sugar3 library contains a set of widgets to build HIG compliant applications and interfaces to interact with system services like presence and the datastore.", 
+        "homepage": "http://wiki.sugarlabs.org/go/Sugar", 
+        "summary": "Sugar Learning Platform"
+    }, 
+    "SugarGestures-1.0": {
+        "debian_package": "gir1.2-sugarext-1.0", 
+        "description": "Sugar Learning Platform promotes collaborative learning through Sugar Activities that encourage critical thinking, the heart of a quality education.  Designed from the ground up especially for children, Sugar offers an alternative to traditional ??office-desktop?? software.\n\nThe sugar3 library contains a set of widgets to build HIG compliant applications and interfaces to interact with system services like presence and the datastore.", 
+        "homepage": "http://wiki.sugarlabs.org/go/Sugar", 
+        "summary": "Sugar Learning Platform"
+    }, 
+    "TelepathyGLib-0.12": {
+        "debian_package": "gir1.2-telepathyglib-0.12", 
+        "description": "Telepathy is a D-Bus framework for unifying real time communication, including instant messaging, voice calls and video calls. It abstracts differences between protocols to provide a unified interface for applications.", 
+        "homepage": "http://telepathy.freedesktop.org/wiki/", 
+        "summary": "Telepathy framework"
+    }, 
+    "TelepathyLogger-0.2": {
+        "debian_package": "gir1.2-telepathylogger-0.2", 
+        "description": "Telepathy is a D-Bus framework for unifying real time communication, including instant messaging, voice calls and video calls. It abstracts differences between protocols to provide a unified interface for applications.", 
+        "homepage": "http://telepathy.freedesktop.org/wiki/", 
+        "summary": "Telepathy logger service"
+    }, 
+    "Totem-1.0": {
+        "debian_package": "gir1.2-totem-1.0", 
+        "description": "This library is only useful within Totem. You should not have to manually install this package.", 
+        "homepage": "https://wiki.gnome.org/Apps/Videos", 
+        "summary": "Main library for the Totem media player"
+    }, 
+    "TotemPlParser-1.0": {
+        "debian_package": "gir1.2-totem-plparser-1.0", 
+        "description": "totem-pl-parser is a simple GObject-based library to parse a host of playlist formats, as well as save those.", 
+        "homepage": "", 
+        "summary": "Totem Playlist Parser library"
+    }, 
+    "Tracker-1.0": {
+        "debian_package": "gir1.2-tracker-1.0", 
+        "description": "Tracker is an advanced framework for first class objects with associated metadata and tags. It provides a one stop solution for all metadata, tags, shared object databases, search tools and indexing.", 
+        "homepage": "https://wiki.gnome.org/Projects/Tracker", 
+        "summary": "library to control/monitor tracker miners"
+    }, 
+    "TrackerControl-1.0": {
+        "debian_package": "gir1.2-tracker-1.0", 
+        "description": "Tracker is an advanced framework for first class objects with associated metadata and tags. It provides a one stop solution for all metadata, tags, shared object databases, search tools and indexing.", 
+        "homepage": "https://wiki.gnome.org/Projects/Tracker", 
+        "summary": "library to control/monitor tracker miners"
+    }, 
+    "TrackerMiner-1.0": {
+        "debian_package": "gir1.2-tracker-1.0", 
+        "description": "Tracker is an advanced framework for first class objects with associated metadata and tags. It provides a one stop solution for all metadata, tags, shared object databases, search tools and indexing.", 
+        "homepage": "https://wiki.gnome.org/Projects/Tracker", 
+        "summary": "library to control/monitor tracker miners"
+    }, 
+    "UDisks-2.0": {
+        "debian_package": "gir1.2-udisks-2.0", 
+        "description": "The udisks daemon serves as an interface to system block devices, implemented via D-Bus. It handles operations such as querying, mounting, unmounting, formatting, or detaching storage devices such as hard disks or USB thumb drives.\n\nThis provides a convenience library for communicating with udisks2 from GObject based programs.", 
+        "homepage": "http://www.freedesktop.org/wiki/Software/udisks", 
+        "summary": "GObject based library to access udisks2"
+    }, 
+    "UMockdev-1.0": {
+        "debian_package": "gir1.2-umockdev-1.0", 
+        "description": "umockdev mocks hardware devices for creating unit tests for libraries and programs that handle Linux hardware devices.\n\nThis library provides an UMockdevTestbed class for running a program or test suite under a test bed with the previously recorded devices loaded.\n\nRight now this covers sysfs, uevents, basic support for /dev devices, and recording/mocking usbdevfs ioctls (for PtP/MTP devices).\n\nWith this you can simulate particular hardware in virtual environments up to some degree, without needing any particular privileges or disturbing the whole system.\n\nThe library supports gobject-introspection and builds a VAPI, so that you can also use it with Python, JavaScript, and other languages which support GI, and Vala.", 
+        "homepage": "https://github.com/martinpitt/umockdev/", 
+        "summary": "hardware mocking testbed for bug reports and regression tests"
+    }, 
+    "UPowerGlib-1.0": {
+        "debian_package": "gir1.2-upowerglib-1.0", 
+        "description": "upower provides an interface to enumerate power sources on the system and control system-wide power management. Any application can access the org.freedesktop.UPower service on the system message bus. Some operations (such as suspending the system) are restricted using PolicyKit.", 
+        "homepage": "http://upower.freedesktop.org/", 
+        "summary": "abstraction for power management"
+    }, 
+    "Uhm-0.0": {
+        "debian_package": "gir1.2-uhm-0.0", 
+        "description": "uhttpmock is a HTTP web service mocking project for projects which use libsoup. It is still in its infancy, but is already used by libgdata for unit testing.", 
+        "homepage": "https://gitlab.com/groups/uhttpmock", 
+        "summary": "HTTP web service mocking"
+    }, 
+    "Vips-8.0": {
+        "debian_package": "gir1.2-vips-8.0", 
+        "description": "VIPS is an image processing system designed with efficiency in mind. It is good with large images (ones that larger than the amount of RAM in your machine), and for working with colour.  It can perform many image manipulation tasks much faster than other packages such as ImageMagick and the GIMP and includes some special features such as creating single \"mosaic\" images from multiple parts.\n\nVIPS consists of two main components: an image processing library with some command-line tools and a spreadsheet-like graphical user interface.  The graphical interface is available in the nip2 package.", 
+        "homepage": "http://www.vips.ecs.soton.ac.uk", 
+        "summary": "image processing system good for very large ones"
+    }, 
+    "Vte-2.91": {
+        "debian_package": "gir1.2-vte-2.91", 
+        "description": "The VTE library provides a terminal emulator widget VteTerminal for applications using the GTK+ toolkit. It also provides the VtePTY object containing functions for starting a new process on a new pseudo-terminal and for manipulating pseudo-terminals.", 
+        "homepage": "https://wiki.gnome.org/Apps/Terminal/VTE", 
+        "summary": "Terminal emulator widget for GTK+ 3.0"
+    }, 
+    "WebKit-3.0": {
+        "debian_package": "gir1.2-webkit-3.0", 
+        "description": "JavaScriptCore is the JavaScript engine used in WebKit. It consists of the following building blocks: lexer, parser, start-up interpreter (LLInt), baseline JIT, a low-latency optimizing JIT (DFG), and a high-throughput optimizing JIT (FTL).\n\nThis build comes from the GTK+ port of WebKit (API version 3.0).", 
+        "homepage": "http://webkitgtk.org/", 
+        "summary": "JavaScript engine library from WebKitGTK+"
+    }, 
+    "WebKit2-4.0": {
+        "debian_package": "gir1.2-webkit2-4.0", 
+        "description": "JavaScriptCore is the JavaScript engine used in WebKit. It consists of the following building blocks: lexer, parser, start-up interpreter (LLInt), baseline JIT, a low-latency optimizing JIT (DFG), and a high-throughput optimizing JIT (FTL).\n\nThis build comes from the GTK+ port of WebKit (API version 4.0).", 
+        "homepage": "http://webkitgtk.org/", 
+        "summary": "JavaScript engine library from WebKitGTK+"
+    }, 
+    "WebKit2WebExtension-4.0": {
+        "debian_package": "gir1.2-webkit2-4.0", 
+        "description": "JavaScriptCore is the JavaScript engine used in WebKit. It consists of the following building blocks: lexer, parser, start-up interpreter (LLInt), baseline JIT, a low-latency optimizing JIT (DFG), and a high-throughput optimizing JIT (FTL).\n\nThis build comes from the GTK+ port of WebKit (API version 4.0).", 
+        "homepage": "http://webkitgtk.org/", 
+        "summary": "JavaScript engine library from WebKitGTK+"
+    }, 
+    "Wnck-1.0": {
+        "debian_package": "gir1.2-wnck-1.0", 
+        "description": "A library to use for writing pagers and task lists. This variant of libwnck provides WNCK for GTK-2 based applications.", 
+        "homepage": "https://developer.gnome.org/libwnck/2.30/", 
+        "summary": "Window Navigator Construction Kit"
+    }, 
+    "Wnck-3.0": {
+        "debian_package": "gir1.2-wnck-3.0", 
+        "description": "A library to use for writing pagers and task lists.", 
+        "homepage": "", 
+        "summary": "Window Navigator Construction Kit"
+    }, 
+    "Workrave-1.0": {
+        "debian_package": "workrave", 
+        "description": "Workrave is a program that assists in the recovery and prevention of Repetitive Strain Injury (RSI). The program frequently alerts you to take micro-pauses, rest breaks and restricts you to your daily limit.\n\nIt includes a system tray applet that works with GNOME and KDE and has network capabilities to monitor your activity even if switching back and forth between different computers is part of your job.\n\nWorkrave offers many more configuration options than other similar tools.", 
+        "homepage": "http://www.workrave.org/", 
+        "summary": "Repetitive Strain Injury prevention tool"
+    }, 
+    "Xkl-1.0": {
+        "debian_package": "gir1.2-xkl-1.0", 
+        "description": "Libxklavier provides programmers an API for high(er) level access to the X Keyboard Extension, to ease creating XKB related applications.", 
+        "homepage": "http://www.freedesktop.org/wiki/Software/LibXklavier", 
+        "summary": "X Keyboard Extension high-level API"
+    }, 
+    "Zeitgeist-2.0": {
+        "debian_package": "gir1.2-zeitgeist-2.0", 
+        "description": "Zeitgeist is a service which logs the user's activities and events (files opened, websites visited, conversations hold with other people, etc.) and makes the relevant information available to other applications.\n\nIt serves as a comprehensive activity log and also makes it possible to determine relationships between items based on usage patterns.\n\nLibzeitgeist is a client library to access and manage the Zeitgeist event log from languages such as C and Vala.", 
+        "homepage": "http://zeitgeist-project.com/", 
+        "summary": "library to access Zeitgeist"
+    }, 
+    "Zpj-0.0": {
+        "debian_package": "gir1.2-zpj-0.0", 
+        "description": "libzapojit is a GLib-based library for accessing online service APIs using the Microsoft SkyDrive and Hotmail REST protocols.", 
+        "homepage": "http://git.gnome.org/browse/libzapojit", 
+        "summary": "Library for accessing SkyDrive and Hotmail"
+    }, 
+    "cairo-1.0": {
+        "debian_package": "gir1.2-freedesktop", 
+        "description": "GObject Introspection is a project for providing machine readable introspection data of the API of C libraries. This introspection data can be used in several different use cases, for example automatic code generation for bindings, API verification and documentation generation.\n\nGObject Introspection contains tools to generate and handle the introspection data.", 
+        "homepage": "https://wiki.gnome.org/GObjectIntrospection", 
+        "summary": "Library for handling GObject introspection data (runtime library)"
+    }, 
+    "fontconfig-2.0": {
+        "debian_package": "gir1.2-freedesktop", 
+        "description": "GObject Introspection is a project for providing machine readable introspection data of the API of C libraries. This introspection data can be used in several different use cases, for example automatic code generation for bindings, API verification and documentation generation.\n\nGObject Introspection contains tools to generate and handle the introspection data.", 
+        "homepage": "https://wiki.gnome.org/GObjectIntrospection", 
+        "summary": "Library for handling GObject introspection data (runtime library)"
+    }, 
+    "freetype2-2.0": {
+        "debian_package": "gir1.2-freedesktop", 
+        "description": "GObject Introspection is a project for providing machine readable introspection data of the API of C libraries. This introspection data can be used in several different use cases, for example automatic code generation for bindings, API verification and documentation generation.\n\nGObject Introspection contains tools to generate and handle the introspection data.", 
+        "homepage": "https://wiki.gnome.org/GObjectIntrospection", 
+        "summary": "Library for handling GObject introspection data (runtime library)"
+    }, 
+    "libisocodes-1.2.2": {
+        "debian_package": "gir1.2-isocodes-1.2", 
+        "description": "This library can be used to easily access XML data of the iso-codes package. It will provide an abstraction layer to handle both the version 3 and the upcoming version 4 of iso-codes. Moreover, all available translations can be used as well.\n\nThis library makes use of the GObject introspection features, so that it is accessible from a variety of programming languages, for example C, Vala, Ruby, Python, Perl, Lua, JavaScript, PHP and many more.\n\n\nIt can be used by packages using the GIRepository format to generate dynamic bindings.", 
+        "homepage": "", 
+        "summary": "access of iso-codes data and translations"
+    }, 
+    "libxml2-2.0": {
+        "debian_package": "gir1.2-freedesktop", 
+        "description": "GObject Introspection is a project for providing machine readable introspection data of the API of C libraries. This introspection data can be used in several different use cases, for example automatic code generation for bindings, API verification and documentation generation.\n\nGObject Introspection contains tools to generate and handle the introspection data.", 
+        "homepage": "https://wiki.gnome.org/GObjectIntrospection", 
+        "summary": "Library for handling GObject introspection data (runtime library)"
+    }, 
+    "v_sim-3.7": {
+        "debian_package": "gir1.2-v-sim-1.0", 
+        "description": "V_Sim visualizes atomic structures such as crystals, grain boundaries, molecules and so on (either in binary format, or in plain text format).\n\nThis package can be used by other packages using the GIRepository format to generate dynamic bindings.", 
+        "homepage": "http://inac.cea.fr/L_Sim/V_Sim/index.en.html", 
+        "summary": "Visualize atomic structures (gir bindings)"
+    }, 
+    "xfixes-4.0": {
+        "debian_package": "gir1.2-freedesktop", 
+        "description": "GObject Introspection is a project for providing machine readable introspection data of the API of C libraries. This introspection data can be used in several different use cases, for example automatic code generation for bindings, API verification and documentation generation.\n\nGObject Introspection contains tools to generate and handle the introspection data.", 
+        "homepage": "https://wiki.gnome.org/GObjectIntrospection", 
+        "summary": "Library for handling GObject introspection data (runtime library)"
+    }, 
+    "xft-2.0": {
+        "debian_package": "gir1.2-freedesktop", 
+        "description": "GObject Introspection is a project for providing machine readable introspection data of the API of C libraries. This introspection data can be used in several different use cases, for example automatic code generation for bindings, API verification and documentation generation.\n\nGObject Introspection contains tools to generate and handle the introspection data.", 
+        "homepage": "https://wiki.gnome.org/GObjectIntrospection", 
+        "summary": "Library for handling GObject introspection data (runtime library)"
+    }, 
+    "xlib-2.0": {
+        "debian_package": "gir1.2-freedesktop", 
+        "description": "GObject Introspection is a project for providing machine readable introspection data of the API of C libraries. This introspection data can be used in several different use cases, for example automatic code generation for bindings, API verification and documentation generation.\n\nGObject Introspection contains tools to generate and handle the introspection data.", 
+        "homepage": "https://wiki.gnome.org/GObjectIntrospection", 
+        "summary": "Library for handling GObject introspection data (runtime library)"
+    }, 
+    "xrandr-1.3": {
+        "debian_package": "gir1.2-freedesktop", 
+        "description": "GObject Introspection is a project for providing machine readable introspection data of the API of C libraries. This introspection data can be used in several different use cases, for example automatic code generation for bindings, API verification and documentation generation.\n\nGObject Introspection contains tools to generate and handle the introspection data.", 
+        "homepage": "https://wiki.gnome.org/GObjectIntrospection", 
+        "summary": "Library for handling GObject introspection data (runtime library)"
+    }
+}
