@@ -61,6 +61,10 @@ _template = genutil.get_template("""\
     | `{{ name|erest }} <{{ url }}>`__
     {% endfor %}
 {% endif %}
+{% if ps.debian_package %}
+:Debian Package:
+    `{{ ps.debian_package|erest }} <https://packages.debian.org/testing/{{ ps.debian_package }}>`__
+{% endif %}
 {% if ps.dependencies %}
 :Dependencies:
     {% for ns, v in ps.dependencies %}

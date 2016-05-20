@@ -33,7 +33,7 @@ if __name__ == "__main__":
         return "\n".join(new).strip()
 
     def fixup_summary(t):
-        return t.rsplit(" - ", 1)[0]
+        return t.rsplit(" - ", 1)[0].rsplit(" -- ", 1)[0]
 
     final = {}
     for package, namespaces in typelibs.iteritems():
@@ -65,6 +65,7 @@ if __name__ == "__main__":
 
         for ns in namespaces:
             final[ns] = {
+                "lib": candidate.source_name,
                 "homepage": homepage,
                 "summary": summary,
                 "description": description,
