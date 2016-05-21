@@ -69,7 +69,8 @@ class Project(object):
         if matches("Atk"):
             return "ATK_" + version.replace(".", "_")
         elif matches("Gtk") or matches("GLib") or matches("Pango") or \
-                matches("GdkPixbuf") or matches("Colord") or matches("Gck"):
+                matches("GdkPixbuf") or matches("Colord") or \
+                matches("Gck") or matches("Fwupd"):
             return version
         elif "/gstreamer/" in self.doap:
             return ".".join(version.split(".")[:3])
@@ -79,6 +80,8 @@ class Project(object):
             return "cattle-" + version
         elif matches("GExiv2"):
             return "gexiv2-" + version
+        elif matches("Anthy"):
+            return "release/" + version
 
     def get_source_func(self, namespace, project_version=None):
         """Returns a function for mapping the line number paths to web links
@@ -143,6 +146,20 @@ class Project(object):
             def func(path):
                 path, line = path.rsplit(":", 1)
                 return "https://github.com/hughsie/colord/blob/%s/lib/%s#L%s" % (tag, path, line)
+
+            return func
+        elif namespace in ("Fwupd",):
+
+            def func(path):
+                path, line = path.rsplit(":", 1)
+                return "https://github.com/hughsie/fwupd/blob/%s/%s#L%s" % (tag, path, line)
+
+            return func
+        elif namespace in ("Anthy",):
+
+            def func(path):
+                path, line = path.rsplit(":", 1)
+                return "https://anonscm.debian.org/cgit/collab-maint/anthy.git/tree/%s?h=%s#n%s" % (path, tag, line)
 
             return func
 

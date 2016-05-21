@@ -15,7 +15,7 @@ from pgidocgen.girdata import Project
 
 DATA = {
     "Gtk-3.0": (),
-    "Anthy-9000": (),
+    "Anthy-9000": ("9100h", "", ""),
     "AppStreamGlib-1.0": (
         "0.5.14", "as_bundle_get_sdk",
         "https://github.com/hughsie/appstream-glib/tree/appstream_glib_0_5_14/libappstream-glib/as-bundle.c#L176"),
@@ -38,7 +38,9 @@ DATA = {
         "https://github.com/hughsie/colord/blob/1.3.2/lib/colorhug/ch-device.c#L2146"),
     "EvinceDocument-3.0": (),
     "EvinceView-3.0": (),
-    "Fwupd-1.0": (),
+    "Fwupd-1.0": (
+        "0.7.0", "fwupd_result_set_device_id",
+        "https://github.com/hughsie/fwupd/blob/0.7.0/libfwupd/fwupd-result.c#L116"),
     "Gck-1": (
         "3.20.0", "gck_session_open",
         "https://git.gnome.org/browse/gcr/tree/gck/gck-session.c?h=3.20.0#n833"),
