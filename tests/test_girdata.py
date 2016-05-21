@@ -39,7 +39,7 @@ class TGIRData(unittest.TestCase):
     def test_get_tag(self):
 
         def get_tag(namespace):
-            return Project.for_namespace(namespace).tag
+            return Project.for_namespace(namespace).get_tag()
 
         self.assertTrue(re.match(r"\d+\.\d+\.\d+", get_tag("Gtk")))
         self.assertTrue(re.match(r"ATK_\d+_\d+_\d+", get_tag("Atk")))

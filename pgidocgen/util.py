@@ -47,7 +47,7 @@ def parse_gir_shared_libs(gir_path):
             if line.startswith("shared-library="):
                 shared_libs.extend(line.split("=")[-1].strip("\"").split(","))
                 break
-    return shared_libs
+    return filter(None, shared_libs)
 
 
 def cache_calls(func):
@@ -545,6 +545,12 @@ def import_namespace(namespace, version=None, ignore_version=False):
     with warnings.catch_warnings(record=True) as w:
         mod = getattr(
                 __import__("gi.repository." + namespace).repository, namespace)
+
+        if namespace in ("Clutter", "ClutterGst", "Gst", "Grl"):
+            mod.init([])
+        elif namespace in ("Gsf", "IBus"):
+            mod.init()
+
         if not ignore_version:
             assert not w, namespace
         return mod

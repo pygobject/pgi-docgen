@@ -207,11 +207,6 @@ class Namespace(object):
         for (namespace, version) in to_load:
             module = util.import_namespace(namespace, version)
 
-            if namespace in ("Clutter", "ClutterGst", "Gst", "Grl"):
-                module.init([])
-            elif namespace in ("Gsf", "IBus"):
-                module.init()
-
         return module
 
     @util.cached_property

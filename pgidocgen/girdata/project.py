@@ -6,6 +6,7 @@
 # version 2.1 of the License, or (at your option) any later version.
 
 import re
+import urllib
 
 from .. import util
 from .library import Library
@@ -51,15 +52,16 @@ class Project(object):
 
         return version
 
-    @property
-    def tag(self):
+    def get_tag(self, project_version=None):
         """Returns the VCS tag for the given `namespace` and the library
-        version retrieved using Project.version.
+        version like Project.version.
 
         In case not tag can be found returns an empty string.
         """
 
-        version = self.version
+        version = project_version or self.version
+        if not version:
+            return ""
 
         def matches(ns):
             return ns in self.namespaces
@@ -67,21 +69,27 @@ class Project(object):
         if matches("Atk"):
             return "ATK_" + version.replace(".", "_")
         elif matches("Gtk") or matches("GLib") or matches("Pango") or \
-                matches("GdkPixbuf"):
+                matches("GdkPixbuf") or matches("Colord") or matches("Gck"):
             return version
         elif "/gstreamer/" in self.doap:
             return ".".join(version.split(".")[:3])
-        else:
-            return ""
+        elif matches("AppStreamGlib"):
+            return "appstream_glib_" + version.replace(".", "_")
+        elif matches("Cattle"):
+            return "cattle-" + version
+        elif matches("GExiv2"):
+            return "gexiv2-" + version
 
-    def get_source_func(self, namespace):
+    def get_source_func(self, namespace, project_version=None):
         """Returns a function for mapping the line number paths to web links
         or None.
         """
 
         assert namespace in self.namespaces
 
-        tag = self.tag
+        version = project_version or self.version
+        tag = self.get_tag(self.version)
+
         if not tag:
             return None
 
@@ -116,6 +124,27 @@ class Project(object):
                         "?h=%s#n%s" % (git_name, path_prefix, path, tag, line))
 
             return gst_func
+        elif namespace in ("AppStreamGlib",):
+
+            def func(path):
+                path, line = path.rsplit(":", 1)
+                return "https://github.com/hughsie/appstream-glib/tree/%s/%s#L%s" % (tag, path, line)
+
+            return func
+        elif namespace in ("Cattle",):
+
+            def func(path):
+                path, line = path.rsplit(":", 1)
+                return "http://git.kiyuko.org/cgi-bin/browse?p=cattle;a=blob;f=%s;hb=%s#l%s" % (urllib.quote(path), tag, line)
+
+            return func
+        elif namespace in ("Colord", "ColorHug"):
+
+            def func(path):
+                path, line = path.rsplit(":", 1)
+                return "https://github.com/hughsie/colord/blob/%s/lib/%s#L%s" % (tag, path, line)
+
+            return func
 
 
 PROJECTS = [
@@ -162,7 +191,8 @@ PROJECTS = [
     Project(['Champlain', 'GtkChamplain'], 'https://git.gnome.org/browse/libchamplain/plain/libchamplain.doap'),
     Project(['Secret', 'SecretUnstable'], 'https://git.gnome.org/browse/libsecret/plain/libsecret.doap'),
     Project(['Gdk', 'GdkX11', 'Gtk'], 'https://git.gnome.org/browse/gtk+/plain/gtk+.doap'),
-    Project(['ColorHug', 'Colord', 'ColordGtk'], 'https://raw.github.com/hughsie/colord/master/colord.doap'),
+    Project(['ColorHug', 'Colord'], 'https://raw.github.com/hughsie/colord/master/colord.doap'),
+    Project(['ColordGtk'], 'https://github.com/hughsie/colord-gtk/blob/master/colord-gtk.doap'),
     Project(['Gsf'], 'https://git.gnome.org/browse/libgsf/plain/libgsf.doap'),
     Project(['Gee'], 'https://git.gnome.org/browse/libgee/plain/libgee.doap'),
     Project(['LibvirtGConfig', 'LibvirtGLib', 'LibvirtGObject'], 'https://git.gnome.org/browse/libgovirt/plain/libgovirt.doap'),
