@@ -12,11 +12,18 @@ creates a new custom search index (with a different structure) containing
 all symbols.
 """
 
+import re
 import os
 
 from sphinx.search import js_index
+from sphinx.util import jsdump
 
 from .util import unescape_parameter
+
+
+# workaround bug..
+# https://github.com/sphinx-doc/sphinx/issues/2902
+jsdump._name_re = re.compile(r'[a-zA-Z_]\w*')
 
 
 class SearchIndexMerger(object):

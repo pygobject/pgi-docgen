@@ -151,7 +151,7 @@ def html_visit_inheritance_graph(self, node):
         urls[fullname] = url
 
     dotcode = generate_dot(graph, colors, urls)
-    render_dot_html(self, node, dotcode, [], 'inheritance', 'inheritance',
+    render_dot_html(self, node, dotcode, {}, 'inheritance', 'inheritance',
                     alt='Inheritance diagram of ' + class_name)
     raise nodes.SkipNode
 
