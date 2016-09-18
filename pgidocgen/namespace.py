@@ -543,6 +543,10 @@ def _parse_types(dom, module, namespace):
         for k in dir(GLib):
             if re.match("MINU?INT\d+", k) or re.match("MAXU?INT\d+", k):
                 types["G_" + k].add("GLib." + k)
+
+        # there is a weird type called "s" in VariantBuilder
+        types.pop("s", None)
+
     elif namespace == "cairo":
         types.update(get_cairo_types())
 

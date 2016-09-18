@@ -143,7 +143,8 @@ BUILD = ['AccountsService-1.0', 'Anjuta-3.0', 'AppIndicator3-0.1', 'Atk-1.0',
 'Hinawa-1.0', 'GstPlayer-1.0', 'LOKDocView-0.1', 'GrlPls-0.3',
 'GoVirt-1.0', 'Cvc-1.0', 'Hkl-5.0', 'Workrave-1.0',
 'OSTree-1.0', 'Flatpak-1.0', 'Mx-2.0', 'GstTranscoder-1.0', 'GSystem-1.0',
-'GMime-2.6', 'Budgie-1.0'
+'GMime-2.6', 'Budgie-1.0', 'Gepub-0.4', 'GnomeAutoarGtk-0.1',
+'GnomeAutoar-0.1',
 ]
 
 
