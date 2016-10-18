@@ -49,8 +49,8 @@
         "summary": "allow applications to export a menu into the panel"
     }, 
     "AppStream-1.0": {
-        "debian_package": "gir1.2-appstream", 
-        "description": "AppStream is a cross-distribution effort for creating and sharing metadata of software components available in the package repositories of a distribution. It provides specifications for an unified software component metadata format and provides tools to read, write and validate the metadata.", 
+        "debian_package": "gir1.2-appstream-1.0", 
+        "description": "AppStream is a metadata specification, allowing to write metadata for software projects in a general-purpose format. This allows software centers to display useful information for not installed software, as well as determining software the user might want to install (e.g. to open an unknown file type or to make missing firmware available).", 
         "homepage": "http://www.freedesktop.org/wiki/Distributions/AppStream/", 
         "lib": "appstream", 
         "summary": "Library to access AppStream services"
@@ -103,6 +103,13 @@
         "homepage": "https://wiki.gnome.org/Apps/Brasero", 
         "lib": "brasero", 
         "summary": "CD/DVD burning library for GNOME"
+    }, 
+    "Budgie-1.0": {
+        "debian_package": "gir1.2-budgie-desktop-1.0", 
+        "description": "Budgie-Desktop is a GTK+ based desktop environment which focuses on simplicity and elegance.  It provides a traditional desktop metaphor based interface utilising customisable panel based menu driven system. Budgie-Desktop is written from scratch utilising many GNOME based sub-systems such as GNOME-Session and Mutter.\n\nThis is the introspection library and allows creating plugins in python3, C and Vala", 
+        "homepage": "https://solus-project.com/budgie/", 
+        "lib": "budgie-desktop", 
+        "summary": "GNOME introspection library for budgie-desktop"
     }, 
     "CDesktopEnums-3.0": {
         "debian_package": "gir1.2-cinnamondesktop-3.0", 
@@ -180,13 +187,6 @@
         "homepage": "http://www.clutter-project.org/", 
         "lib": "clutter-1.0", 
         "summary": "Open GL based interactive canvas library"
-    }, 
-    "ClutterGst-2.0": {
-        "debian_package": "gir1.2-clutter-gst-2.0", 
-        "description": "Clutter is an Open GL based interactive canvas library, designed for creating fast, mainly 2D single window applications such as media box UIs, presentations, kiosk style applications and so on.", 
-        "homepage": "http://www.clutter-project.org/", 
-        "lib": "clutter-gst-2.0", 
-        "summary": "Open GL based interactive canvas library GStreamer elements"
     }, 
     "ClutterGst-3.0": {
         "debian_package": "gir1.2-clutter-gst-3.0", 
@@ -387,7 +387,7 @@
     "Farstream-0.2": {
         "debian_package": "gir1.2-farstream-0.2", 
         "description": "The Farstream project is an effort to create a framework to deal with all known audio/video conferencing protocols. On one side it offers a generic API that makes it possible to write plugins for different streaming protocols, on the other side it offers an API for clients to use those plugins.", 
-        "homepage": "http://www.freedesktop.org/software/farstream/releases/farstream/", 
+        "homepage": "https://www.freedesktop.org/wiki/Software/Farstream/", 
         "lib": "farstream-0.2", 
         "summary": "Audio/Video communications framework: core library"
     }, 
@@ -397,6 +397,13 @@
         "homepage": "https://github.com/fcitx/fcitx", 
         "lib": "fcitx", 
         "summary": "Flexible Input Method Framework"
+    }, 
+    "Flatpak-1.0": {
+        "debian_package": "gir1.2-flatpak-1.0", 
+        "description": "Flatpak installs, manages and runs sandboxed desktop application bundles. See the flatpak package for a more comprehensive description.", 
+        "homepage": "http://flatpak.org/", 
+        "lib": "flatpak", 
+        "summary": "Application deployment framework for desktop apps (library)"
     }, 
     "Folks-0.6": {
         "debian_package": "gir1.2-folks-0.6", 
@@ -427,11 +434,11 @@
         "summary": "library to aggregates people into metacontacts"
     }, 
     "Fwupd-1.0": {
-        "debian_package": "libfwupd1", 
-        "description": "fwupd is a daemon to allow session software to update device firmware. You can either use a GUI software manager like GNOME Software to view and apply updates, the command-line tool or the system D-Bus interface directly. Currently, firmware updates using the UEFI capsule format and for the ColorHug are supported. More formats may be supported in the future. See <https://github.com/hughsie/fwupd> for details", 
+        "debian_package": "gir1.2-fwupd-1.0", 
+        "description": "It can be used by packages using the GIRepository format to generate dynamic bindings.", 
         "homepage": "https://github.com/hughsie/fwupd", 
         "lib": "fwupd", 
-        "summary": "Firmware update daemon library"
+        "summary": "GObject introspection data for libfwupd"
     }, 
     "GCab-1.0": {
         "debian_package": "gir1.2-libgcab-1.0", 
@@ -510,6 +517,13 @@
         "lib": "gnome-menus", 
         "summary": "GNOME implementation of the freedesktop menu specification"
     }, 
+    "GMime-2.6": {
+        "debian_package": "gir1.2-gmime-2.6", 
+        "description": "GMime provides a core library and set of utilities which may be used for the creation and parsing of messages using the Multipurpose Internet Mail Extension (MIME).", 
+        "homepage": "http://spruce.sourceforge.net/gmime/", 
+        "lib": "gmime", 
+        "summary": "MIME message parser and creator library"
+    }, 
     "GModule-2.0": {
         "debian_package": "gir1.2-glib-2.0", 
         "description": "GObject Introspection is a project for providing machine readable introspection data of the API of C libraries. This introspection data can be used in several different use cases, for example automatic code generation for bindings, API verification and documentation generation.\n\nGObject Introspection contains tools to generate and handle the introspection data.", 
@@ -551,6 +565,13 @@
         "homepage": "https://wiki.gnome.org/Projects/GSound", 
         "lib": "gsound", 
         "summary": "small library for playing system sounds"
+    }, 
+    "GSystem-1.0": {
+        "debian_package": "gir1.2-gsystem-1.0", 
+        "description": "LibGSystem is a deprecated library used by OS components such as OSTree. Parts of its functionality have moved into GLib; other parts of its functionality have moved into the libglnx submodule.\n\nThis package can be used by other packages using the GIRepository format to generate dynamic bindings.", 
+        "homepage": "https://wiki.gnome.org/Projects/LibGSystem", 
+        "lib": "libgsystem", 
+        "summary": "GIO-based library targetd as OS components (introspection)"
     }, 
     "GTop-2.0": {
         "debian_package": "gir1.2-gtop-2.0", 
@@ -624,10 +645,10 @@
     }, 
     "GWeather-3.0": {
         "debian_package": "gir1.2-gweather-3.0", 
-        "description": "libgweather is a library to access weather information from online services for numerous locations.", 
+        "description": "libgweather is a library to access weather information from online services for numerous locations.\n\n\nIt can be used by packages using the GIRepository format to generate dynamic bindings.", 
         "homepage": "https://wiki.gnome.org/Projects/LibGWeather", 
         "lib": "libgweather", 
-        "summary": "GWeather shared library"
+        "summary": "GObject introspection data for the GWeather library"
     }, 
     "GXPS-0.1": {
         "debian_package": "gir1.2-gxps-0.1", 
@@ -748,6 +769,13 @@
         "lib": "geocode-glib", 
         "summary": "geocoding and reverse geocoding GLib library using Nominatim"
     }, 
+    "Gepub-0.4": {
+        "debian_package": "gir1.2-gepub-0.4", 
+        "description": "libgepub is a GObject based library for handling and rendering epub documents.", 
+        "homepage": "", 
+        "lib": "libgepub", 
+        "summary": "library to read epub files"
+    }, 
     "Ggit-1.0": {
         "debian_package": "gir1.2-git2-glib-1.0", 
         "description": "libgit2-glib is a glib wrapper library around the libgit2 git access library.", 
@@ -782,6 +810,20 @@
         "homepage": "http://www.gnumeric.org/", 
         "lib": "gnumeric", 
         "summary": "GObject introspection data for the Gnumeric spreadsheet"
+    }, 
+    "GnomeAutoar-0.1": {
+        "debian_package": "gir1.2-gnomeautoar-0.1", 
+        "description": "GNOME Autoar is a library which makes creating and extracting archives easy, safe, and automatic.", 
+        "homepage": "", 
+        "lib": "gnome-autoar", 
+        "summary": "Archives integration support for GNOME"
+    }, 
+    "GnomeAutoarGtk-0.1": {
+        "debian_package": "gir1.2-gnomeautoargtk-0.1", 
+        "description": "GNOME Autoar is a library which makes creating and extracting archives easy, safe, and automatic.\n\nThis library contains GTK+ widgets which can be embedded into applications.", 
+        "homepage": "", 
+        "lib": "gnome-autoar", 
+        "summary": "GTK+ widgets for the GNOME Autoar library"
     }, 
     "GnomeBluetooth-1.0": {
         "debian_package": "gir1.2-gnomebluetooth-1.0", 
@@ -873,6 +915,13 @@
         "homepage": "http://projects.gnome.org/libgsf/", 
         "lib": "libgsf", 
         "summary": "Structured File Library"
+    }, 
+    "Gspell-1": {
+        "debian_package": "gir1.2-gspell-1", 
+        "description": "gspell provides a flexible API to add spell checking to a GTK+ application. It features:\n* GObject wrappers around Enchant\n* An inline spell checker for GtkTextView (enhanced version of GtkSpell)\n* A spell checker dialog for GtkTextView\n* Support of the no-spell-check tag defined by GtkSourceView\n* Language choosers (button and dialog)", 
+        "homepage": "https://wiki.gnome.org/Projects/gspell", 
+        "lib": "gspell", 
+        "summary": "spell-checking library for GTK+ applications"
     }, 
     "Gst-1.0": {
         "debian_package": "gir1.2-gstreamer-1.0", 
@@ -1006,6 +1055,13 @@
         "homepage": "http://gstreamer.freedesktop.org/modules/gst-plugins-base.html", 
         "lib": "gst-plugins-base1.0", 
         "summary": "GStreamer libraries from the \"base\" set"
+    }, 
+    "GstTranscoder-1.0": {
+        "debian_package": "pitivi", 
+        "description": "GStreamer is a streaming media framework, based on graphs of filters which operate on media data.  Applications using this library can do anything from real-time sound processing to playing videos, and just about anything else media-related.  Its plugin-based architecture means that new data types or processing capabilities can be added simply by installing new plug-ins.\n\nPiTiVi allows users to easily edit audio/video projects based on the GStreamer framework.  PiTIVi provides several ways of creating and modifying a timeline.  Ranging from a simple synopsis view (a-la iMovie) to the full-blown editing view (aka Complex View) which puts you in complete control of your editing.", 
+        "homepage": "http://www.pitivi.org", 
+        "lib": "pitivi", 
+        "summary": "non-linear audio/video editor using GStreamer"
     }, 
     "GstVideo-1.0": {
         "debian_package": "gir1.2-gst-plugins-base-1.0", 
@@ -1150,7 +1206,7 @@
     "JavaScriptCore-4.0": {
         "debian_package": "gir1.2-javascriptcoregtk-4.0", 
         "description": "JavaScriptCore is the JavaScript engine used in WebKit. It consists of the following building blocks: lexer, parser, start-up interpreter (LLInt), baseline JIT, a low-latency optimizing JIT (DFG), and a high-throughput optimizing JIT (FTL).\n\nThis build comes from the GTK+ port of WebKit (API version 4.0).", 
-        "homepage": "http://webkitgtk.org/", 
+        "homepage": "https://webkitgtk.org/", 
         "lib": "webkit2gtk", 
         "summary": "JavaScript engine library from WebKitGTK+"
     }, 
@@ -1182,8 +1238,8 @@
         "lib": "libreoffice", 
         "summary": "GTK3 widget wrapping LibreOffice functionality"
     }, 
-    "LangTag-0.5": {
-        "debian_package": "gir1.2-langtag-0.5", 
+    "LangTag-0.6": {
+        "debian_package": "gir1.2-langtag-0.6", 
         "description": "liblangtag is an interface library to access/deal with tags for identifying languages, which is described in RFC 5646", 
         "homepage": "http://tagoh.bitbucket.org/liblangtag/", 
         "lib": "liblangtag", 
@@ -1199,7 +1255,7 @@
     "Libosinfo-1.0": {
         "debian_package": "gir1.2-libosinfo-1.0", 
         "description": "libosinfo is a GObject based library API for managing information about operating systems, hypervisors and the (virtual) hardware devices they can support. It includes a database containing device metadata and provides APIs to match/identify optimal devices for deploying an operating system on a hypervisor.\n\nVia the GObject Introspection, the API is available in all common programming languages.", 
-        "homepage": "https://fedorahosted.org/libosinfo/", 
+        "homepage": "https://libosinfo.org/", 
         "lib": "libosinfo", 
         "summary": "Library for managing information about operating systems and hypervisors"
     }, 
@@ -1301,13 +1357,6 @@
         "lib": "muffin", 
         "summary": "lightweight window and compositing manager (shared library)"
     }, 
-    "Midgard-10.05": {
-        "debian_package": "gir1.2-midgard-10.05", 
-        "description": "Midgard2 is an Open Source Content Repository. It provides an object-oriented and replicated environment for building data-intensive applications for both web and the desktop. Midgard2 is built on the GNOME stack of libraries like GLib and libgda. Communications between applications written in the different languages happen over D-Bus.", 
-        "homepage": "http://www.midgard-project.org", 
-        "lib": "midgard2-core", 
-        "summary": "Midgard Content Repository"
-    }, 
     "ModemManager-1.0": {
         "debian_package": "gir1.2-modemmanager-1.0", 
         "description": "ModemManager is a DBus-activated daemon which controls mobile broadband (2G/3G/4G) devices and connections. Whether built-in devices, USB dongles, Bluetooth-paired telephones or professional RS232/USB devices with external power supplies, ModemManager is able to prepare and configure the modems and setup connections with them.", 
@@ -1315,15 +1364,8 @@
         "lib": "modemmanager", 
         "summary": "D-Bus service for managing modems"
     }, 
-    "Mx-1.0": {
-        "debian_package": "gir1.2-mx-1.0", 
-        "description": "The MX toolkit is a GUI toolkit library, using Clutter and is optimized for the Moblin user experience. It consists of various classes useful for building UIs such as Buttons, Tooltips, Scrollbars and others. It also supports styling through CSS stylesheets.", 
-        "homepage": "http://www.clutter-project.org/", 
-        "lib": "mx", 
-        "summary": "toolkit for the Moblin user experience"
-    }, 
-    "MxGtk-1.0": {
-        "debian_package": "gir1.2-mx-1.0", 
+    "Mx-2.0": {
+        "debian_package": "gir1.2-mx-2.0", 
         "description": "The MX toolkit is a GUI toolkit library, using Clutter and is optimized for the Moblin user experience. It consists of various classes useful for building UIs such as Buttons, Tooltips, Scrollbars and others. It also supports styling through CSS stylesheets.", 
         "homepage": "http://www.clutter-project.org/", 
         "lib": "mx", 
@@ -1360,13 +1402,13 @@
     "Nautilus-3.0": {
         "debian_package": "gir1.2-nautilus-3.0", 
         "description": "Nautilus is the official file manager and graphical shell for the GNOME desktop.", 
-        "homepage": "http://www.gnome.org/projects/nautilus/", 
+        "homepage": "https://wiki.gnome.org/action/show/Apps/Nautilus", 
         "lib": "nautilus", 
         "summary": "libraries for nautilus components"
     }, 
     "Nemo-3.0": {
         "debian_package": "gir1.2-nemo-3.0", 
-        "description": "Nemo is the official file manager for the Cinnamon desktop. It allows to browse directories, preview files and launch applications associated with them. It is also responsible for handling the icons on the Cinnamon desktop. It works on local and remote filesystems.", 
+        "description": "Nemo is the official file manager for the Cinnamon desktop. It allows one to browse directories, preview files and launch applications associated with them. It is also responsible for handling the icons on the Cinnamon desktop. It works on local and remote filesystems.", 
         "homepage": "http://cinnamon.linuxmint.com/", 
         "lib": "nemo", 
         "summary": "Nemo component system facilities"
@@ -1387,10 +1429,17 @@
     }, 
     "Notify-0.7": {
         "debian_package": "gir1.2-notify-0.7", 
-        "description": "A library that sends desktop notifications to a notification daemon, as defined in the Desktop Notifications spec. These notifications can be used to inform the user about an event or display some form of information without getting in the user's way.", 
+        "description": "A library that sends desktop notifications to a notification daemon, as defined in the Desktop Notifications spec. These notifications can be used to inform the user about an event or display some form of information without getting in the user's way.\n\nThis package can be used by other packages using the GIRepository format to generate dynamic bindings.", 
         "homepage": "", 
         "lib": "libnotify", 
-        "summary": "sends desktop notifications to a notification daemon"
+        "summary": "sends desktop notifications to a notification daemon (Introspection files)"
+    }, 
+    "OSTree-1.0": {
+        "debian_package": "gir1.2-ostree-1.0", 
+        "description": "OSTree is a tool and library for managing bootable, immutable, versioned filesystem trees. It is like git in that it checksums individual files and has a content-addressed object store; unlike git, it \"checks out\" the files using hardlinks into an immutable directory tree. This can be used to provide atomic upgrades with rollback, history and parallel-installation, particularly useful on \"fixed purpose\" systems such as embedded devices. It is also used by the Flatpak application runtime system.", 
+        "homepage": "https://github.com/ostreedev/ostree/", 
+        "lib": "ostree", 
+        "summary": "content-addressed filesystem for operating system binaries (library)"
     }, 
     "OsmGpsMap-1.0": {
         "debian_package": "gir1.2-osmgpsmap-1.0", 
@@ -1416,28 +1465,28 @@
     "Pango-1.0": {
         "debian_package": "gir1.2-pango-1.0", 
         "description": "Pango is a library for layout and rendering of text, with an emphasis on internationalization. Pango can be used anywhere that text layout is needed. however, most of the work on Pango-1.0 was done using the GTK+ widget toolkit as a test platform. Pango forms the core of text and font handling for GTK+-2.0.\n\nPango is designed to be modular; the core Pango layout can be used with four different font backends:\n- Core X windowing system fonts\n- Client-side fonts on X using the Xft library\n- Direct rendering of scalable fonts using the FreeType library\n- Native fonts on Microsoft backends", 
-        "homepage": "", 
+        "homepage": "http://www.pango.org/", 
         "lib": "pango1.0", 
         "summary": "Layout and rendering of internationalized text"
     }, 
     "PangoCairo-1.0": {
         "debian_package": "gir1.2-pango-1.0", 
         "description": "Pango is a library for layout and rendering of text, with an emphasis on internationalization. Pango can be used anywhere that text layout is needed. however, most of the work on Pango-1.0 was done using the GTK+ widget toolkit as a test platform. Pango forms the core of text and font handling for GTK+-2.0.\n\nPango is designed to be modular; the core Pango layout can be used with four different font backends:\n- Core X windowing system fonts\n- Client-side fonts on X using the Xft library\n- Direct rendering of scalable fonts using the FreeType library\n- Native fonts on Microsoft backends", 
-        "homepage": "", 
+        "homepage": "http://www.pango.org/", 
         "lib": "pango1.0", 
         "summary": "Layout and rendering of internationalized text"
     }, 
     "PangoFT2-1.0": {
         "debian_package": "gir1.2-pango-1.0", 
         "description": "Pango is a library for layout and rendering of text, with an emphasis on internationalization. Pango can be used anywhere that text layout is needed. however, most of the work on Pango-1.0 was done using the GTK+ widget toolkit as a test platform. Pango forms the core of text and font handling for GTK+-2.0.\n\nPango is designed to be modular; the core Pango layout can be used with four different font backends:\n- Core X windowing system fonts\n- Client-side fonts on X using the Xft library\n- Direct rendering of scalable fonts using the FreeType library\n- Native fonts on Microsoft backends", 
-        "homepage": "", 
+        "homepage": "http://www.pango.org/", 
         "lib": "pango1.0", 
         "summary": "Layout and rendering of internationalized text"
     }, 
     "PangoXft-1.0": {
         "debian_package": "gir1.2-pango-1.0", 
         "description": "Pango is a library for layout and rendering of text, with an emphasis on internationalization. Pango can be used anywhere that text layout is needed. however, most of the work on Pango-1.0 was done using the GTK+ widget toolkit as a test platform. Pango forms the core of text and font handling for GTK+-2.0.\n\nPango is designed to be modular; the core Pango layout can be used with four different font backends:\n- Core X windowing system fonts\n- Client-side fonts on X using the Xft library\n- Direct rendering of scalable fonts using the FreeType library\n- Native fonts on Microsoft backends", 
-        "homepage": "", 
+        "homepage": "http://www.pango.org/", 
         "lib": "pango1.0", 
         "summary": "Layout and rendering of internationalized text"
     }, 
@@ -1560,13 +1609,6 @@
         "lib": "spice-gtk", 
         "summary": "GObject for communicating with Spice servers (runtime library)"
     }, 
-    "SpiceClientGtk-2.0": {
-        "debian_package": "gir1.2-spice-client-gtk-2.0", 
-        "description": "libspice-glib4 provides glib objects for spice protocol decoding and surface rendering\n\nThis package provide the runtime library.", 
-        "homepage": "http://www.spice-space.org/", 
-        "lib": "spice-gtk", 
-        "summary": "GObject for communicating with Spice servers (runtime library)"
-    }, 
     "SpiceClientGtk-3.0": {
         "debian_package": "gir1.2-spice-client-gtk-3.0", 
         "description": "libspice-glib4 provides glib objects for spice protocol decoding and surface rendering\n\nThis package provide the runtime library.", 
@@ -1640,7 +1682,7 @@
     "UDisks-2.0": {
         "debian_package": "gir1.2-udisks-2.0", 
         "description": "The udisks daemon serves as an interface to system block devices, implemented via D-Bus. It handles operations such as querying, mounting, unmounting, formatting, or detaching storage devices such as hard disks or USB thumb drives.\n\nThis provides a convenience library for communicating with udisks2 from GObject based programs.", 
-        "homepage": "http://www.freedesktop.org/wiki/Software/udisks", 
+        "homepage": "https://www.freedesktop.org/wiki/Software/udisks", 
         "lib": "udisks2", 
         "summary": "GObject based library to access udisks2"
     }, 
@@ -1689,14 +1731,14 @@
     "WebKit2-4.0": {
         "debian_package": "gir1.2-webkit2-4.0", 
         "description": "JavaScriptCore is the JavaScript engine used in WebKit. It consists of the following building blocks: lexer, parser, start-up interpreter (LLInt), baseline JIT, a low-latency optimizing JIT (DFG), and a high-throughput optimizing JIT (FTL).\n\nThis build comes from the GTK+ port of WebKit (API version 4.0).", 
-        "homepage": "http://webkitgtk.org/", 
+        "homepage": "https://webkitgtk.org/", 
         "lib": "webkit2gtk", 
         "summary": "JavaScript engine library from WebKitGTK+"
     }, 
     "WebKit2WebExtension-4.0": {
         "debian_package": "gir1.2-webkit2-4.0", 
         "description": "JavaScriptCore is the JavaScript engine used in WebKit. It consists of the following building blocks: lexer, parser, start-up interpreter (LLInt), baseline JIT, a low-latency optimizing JIT (DFG), and a high-throughput optimizing JIT (FTL).\n\nThis build comes from the GTK+ port of WebKit (API version 4.0).", 
-        "homepage": "http://webkitgtk.org/", 
+        "homepage": "https://webkitgtk.org/", 
         "lib": "webkit2gtk", 
         "summary": "JavaScript engine library from WebKitGTK+"
     }, 
