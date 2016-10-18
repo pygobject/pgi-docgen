@@ -14,9 +14,9 @@ printing, file loading and saving, and other features typical of a
 source code editor.</description>
 
   <homepage rdf:resource="https://wiki.gnome.org/Projects/GtkSourceView" />
-  <mailing-list rdf:resource="http://mail.gnome.org/mailman/listinfo/gnome-devtools" />
-  <download-page rdf:resource="http://download.gnome.org/sources/gtksourceview/" />
-  <bug-database rdf:resource="http://bugzilla.gnome.org/browse.cgi?product=gtksourceview" />
+  <mailing-list rdf:resource="https://mail.gnome.org/mailman/listinfo/gnome-devtools" />
+  <download-page rdf:resource="https://download.gnome.org/sources/gtksourceview/" />
+  <bug-database rdf:resource="https://bugzilla.gnome.org/browse.cgi?product=gtksourceview" />
   <category rdf:resource="http://api.gnome.org/doap-extensions#core" />
 
   <programming-language>C</programming-language>

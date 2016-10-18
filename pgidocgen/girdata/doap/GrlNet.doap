@@ -8,6 +8,7 @@
   <shortdesc xml:lang="en">Grilo is a framework that provides access to various sources of multimedia content, using a pluggable system</shortdesc>
   <category rdf:resource="http://api.gnome.org/doap-extensions#core" />
   <programming-language>C</programming-language>
+  <description>Grilo is a framework focused on making media discovery and browsing easy for application developers.</description>
 
   <homepage
   rdf:resource="https://wiki.gnome.org/Projects/Grilo" />
@@ -30,6 +31,13 @@
       <foaf:name>Juan A. Suarez Romero</foaf:name>
       <foaf:mbox rdf:resource="mailto:jasuarez@igalia.com" />
       <gnome:userid>jasuarez</gnome:userid>
+    </foaf:Person>
+  </maintainer>
+  <maintainer>
+    <foaf:Person>
+      <foaf:name>Victor Toso de Carvalho</foaf:name>
+      <foaf:mbox rdf:resource="mailto:me@victortoso.com" />
+      <gnome:userid>victortoso</gnome:userid>
     </foaf:Person>
   </maintainer>
 </Project>

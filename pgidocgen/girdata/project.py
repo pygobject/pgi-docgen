@@ -209,7 +209,7 @@ PROJECTS = [
     Project(['Secret', 'SecretUnstable'], 'https://git.gnome.org/browse/libsecret/plain/libsecret.doap'),
     Project(['Gdk', 'GdkX11', 'Gtk'], 'https://git.gnome.org/browse/gtk+/plain/gtk+.doap'),
     Project(['ColorHug', 'Colord'], 'https://raw.github.com/hughsie/colord/master/colord.doap'),
-    Project(['ColordGtk'], 'https://github.com/hughsie/colord-gtk/blob/master/colord-gtk.doap'),
+    Project(['ColordGtk'], 'https://raw.github.com/hughsie/colord-gtk/master/colord-gtk.doap'),
     Project(['Gsf'], 'https://git.gnome.org/browse/libgsf/plain/libgsf.doap'),
     Project(['Gee'], 'https://git.gnome.org/browse/libgee/plain/libgee.doap'),
     Project(['LibvirtGConfig', 'LibvirtGLib', 'LibvirtGObject'], 'https://git.gnome.org/browse/libgovirt/plain/libgovirt.doap'),

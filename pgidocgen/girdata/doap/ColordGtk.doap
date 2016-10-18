@@ -4,13 +4,10 @@
          xmlns:gnome="http://api.gnome.org/doap-extensions#"
          xmlns="http://usefulinc.com/ns/doap#">
 
-  <name xml:lang="en">colord</name>
-  <shortdesc xml:lang="en">colord maps devices to color profiles.</shortdesc>
+  <name xml:lang="en">colord-gtk</name>
+  <shortdesc xml:lang="en">colord-gtk is a Gtk helper library for colord.</shortdesc>
   <description xml:lang="en">
-    colord is a system activated daemon that maps devices to color
-    profiles.
-    It is used by gnome-color-manager for system integration and use
-    when there are no users logged in.
+    colord-gtk is a Gtk helper library for colord.
   </description>
 
   <homepage rdf:resource="http://colord.hughsie.com/" />

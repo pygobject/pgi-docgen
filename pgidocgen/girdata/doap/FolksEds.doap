@@ -14,10 +14,10 @@
   fully-fledged people objects. The ultimate goal is to provide the platform
   with easy access to all of the user's contacts.</description>
   <homepage rdf:resource="https://wiki.gnome.org/Projects/Folks" />
-  <download-page rdf:resource="http://download.gnome.org/sources/folks/" />
+  <download-page rdf:resource="https://download.gnome.org/sources/folks/" />
   <bug-database
     rdf:resource="https://bugzilla.gnome.org/browse.cgi?product=folks" />
-  <mailing-list rdf:resource="http://lists.freedesktop.org/mailman/listinfo/telepathy" />
+  <mailing-list rdf:resource="https://lists.freedesktop.org/mailman/listinfo/telepathy" />
   <programming-language>Vala</programming-language>
 
   <maintainer>

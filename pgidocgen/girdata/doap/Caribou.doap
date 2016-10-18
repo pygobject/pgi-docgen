@@ -6,6 +6,8 @@
 
   <name xml:lang="en">caribou</name>
   <shortdesc xml:lang="en">Text entry and UI navigation application</shortdesc>
+  <description>Caribou is an input assistive technology intended for switch and
+pointer users.</description>
   <homepage rdf:resource="https://wiki.gnome.org/Projects/Caribou" />
   <mailing-list rdf:resource="http://mail.gnome.org/mailman/listinfo/gok-list" />
   <bug-database rdf:resource="https://bugzilla.gnome.org/browse.cgi?product=caribou" />
@@ -26,6 +28,14 @@
       <foaf:name>Daiki Ueno</foaf:name>
       <foaf:mbox rdf:resource="mailto:ueno@gnu.org" />
       <gnome:userid>dueno</gnome:userid>
+    </foaf:Person>
+  </maintainer>
+
+  <maintainer>
+    <foaf:Person>
+      <foaf:name>Parag Nemade</foaf:name>
+      <foaf:mbox rdf:resource="mailto:pnemade@fedoraproject.org" />
+      <gnome:userid>panemade</gnome:userid>
     </foaf:Person>
   </maintainer>
 
