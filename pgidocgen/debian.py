@@ -74,7 +74,10 @@ def _extract_control_field(field):
             value = line.split(":", 1)[-1].strip()
             if not package:
                 raise ValueError("no active package")
-            mapping[package] = value
+            # since we cat together multiple package sources
+            # (testing/sid/experimental) we can get the same package multiple
+            # times and thus get multiple values
+            mapping.setdefault(package, []).append(value)
 
     return mapping
 
@@ -85,9 +88,10 @@ def get_build_ids():
     """
 
     build_ids = {}
-    for package, value in _extract_control_field("Build-Ids").iteritems():
-        for v in value.split():
-            build_ids[v] = package
+    for package, values in _extract_control_field("Build-Ids").iteritems():
+        for value in values:
+            for v in value.split():
+                build_ids[v] = package
     return build_ids
 
 
