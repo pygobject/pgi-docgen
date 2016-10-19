@@ -39,6 +39,7 @@ DEB_BLACKLIST = [
     "gir1.2-gst-plugins-base-0.10",
     "gir1.2-gstreamer-0.10",
     "evolution-data-server-dbg",
+    "libstoraged0",
 ]
 
 BLACKLIST = [
@@ -114,7 +115,7 @@ BUILD = ['AccountsService-1.0', 'Anjuta-3.0', 'AppIndicator3-0.1', 'Atk-1.0',
 'GstTag-1.0', 'GstVideo-1.0', 'Gtk-3.0', 'GtkChamplain-0.12',
 'GtkClutter-1.0', 'GtkSource-3.0', 'GtkSpell-3.0', 'Gucharmap-2.90',
 'IBus-1.0', 'Indicate-0.7', 'Itl-1.0', 'JavaScriptCore-3.0', 'Json-1.0',
-'Keybinder-0.0', 'LangTag-0.5', 'Libosinfo-1.0', 'LibvirtGConfig-1.0',
+'Keybinder-0.0', 'Libosinfo-1.0', 'LibvirtGConfig-1.0',
 'LibvirtGLib-1.0', 'LibvirtGObject-1.0', 'LunarDate-2.0', 'MPID-3.0',
 'Nautilus-3.0', 'Nemo-3.0', 'NetworkManager-1.0', 'Notify-0.7',
 'PackageKitGlib-1.0', 'Pango-1.0', 'PangoCairo-1.0', 'PangoFT2-1.0',
@@ -144,7 +145,7 @@ BUILD = ['AccountsService-1.0', 'Anjuta-3.0', 'AppIndicator3-0.1', 'Atk-1.0',
 'GoVirt-1.0', 'Cvc-1.0', 'Hkl-5.0', 'Workrave-1.0',
 'OSTree-1.0', 'Flatpak-1.0', 'Mx-2.0', 'GstTranscoder-1.0', 'GSystem-1.0',
 'GMime-2.6', 'Budgie-1.0', 'Gepub-0.4', 'GnomeAutoarGtk-0.1',
-'GnomeAutoar-0.1',
+'GnomeAutoar-0.1', 'LangTag-0.6', 'Gspell-1',
 ]
 
 
