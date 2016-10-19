@@ -42,8 +42,7 @@ for dep_name in DEPS:
     inv = os.path.join(dep, "objects.inv")
     if not os.path.exists(inv):
         raise SystemExit("Dependency %r not found" % dep)
-    intersphinx_mapping[intersph_name] = (
-        os.path.join("..", "..", "..", dep_name), inv)
+    intersphinx_mapping[intersph_name] = (os.path.join("..", dep_name), inv)
 
 html_theme_path = ['.']
 html_theme = '_theme'

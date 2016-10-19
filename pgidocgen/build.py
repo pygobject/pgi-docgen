@@ -162,8 +162,8 @@ def main(argv):
     parser.add_argument('--devhelp', action='store_true')
     args = parser.parse_args(argv[1:])
 
-    if sphinx.version_info < (1, 3):
-        raise SystemExit("Needs sphinx 1.3+")
+    if sphinx.version_info < (1, 4, 7):
+        raise SystemExit("Needs sphinx 1.4.7+")
 
     to_build = {}
 
