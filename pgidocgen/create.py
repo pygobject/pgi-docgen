@@ -21,8 +21,7 @@ def _main_many(prog, target, namespaces):
     fd, temp_cache = tempfile.mkstemp("pgidocgen-cache")
     os.close(fd)
     try:
-        copy_env = os.environ.copy()
-        copy_env["PGIDOCGEN_CACHE"] = temp_cache
+        os.environ["PGIDOCGEN_CACHE"] = temp_cache
         for namespace in namespaces:
             subprocess.check_call(
                 [sys.executable, prog, target, namespace])
