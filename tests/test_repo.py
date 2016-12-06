@@ -139,6 +139,10 @@ class TRepository(unittest.TestCase):
         func = Function.from_object("Gtk", "stock_lookup", Gtk.stock_lookup, repo, Gtk)
         self.assertEqual(func.signature, "(stock_id)")
 
+        klass = Class.from_object(repo, Gtk.Widget)
+        self.assertEqual(
+            klass.subclasses.count("Gtk.Container"), 1)
+
     def test_gtk(self):
         repo = Repository("Gtk", "3.0")
         Gtk = repo.import_module()

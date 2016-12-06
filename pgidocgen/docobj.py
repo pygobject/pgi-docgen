@@ -602,11 +602,12 @@ class Class(BaseDocObject, MethodsMixin, PropertiesMixin, SignalsMixin,
                 getattr(module, name, None)
             cls._inspected.add(module)
 
-        subclasses = []
+        subclasses = set()
         for subc in util.fake_subclasses(obj):
             if util.get_namespace(subc) == namespace:
-                subclasses.append(class_name(subc))
-        subclasses.sort()
+                subclasses.add(class_name(subc))
+        subclasses = sorted(subclasses)
+
         klass.subclasses = subclasses
         klass.signature = get_signature_string(obj.__init__)
         klass.image_path = image_path
