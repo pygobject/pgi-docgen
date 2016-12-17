@@ -42,7 +42,7 @@ class TRepository(unittest.TestCase):
         self.assertEqual(
             klass.methods_inherited,
             [('Atk.Object', 23),
-             ('GObject.Object', 33),
+             ('GObject.Object', 38),
              ('Atk.Component', 13)])
 
     def test_hierarchy(self):
@@ -173,11 +173,17 @@ class TRepository(unittest.TestCase):
 
     def test_gobject(self):
         repo = Repository("GObject", "2.0")
+        GObject = repo.import_module()
         mod = repo.parse()
 
         self.assertEqual(
             repo.lookup_py_id_for_type_struct("GObjectClass"),
             "GObject.Object")
+
+        klass = Class.from_object(repo, GObject.Object)
+        method = find(klass.methods, "list_properties")
+        self.assertTrue(method.is_static)
+        self.assertEqual(method.fullname, "GObject.Object.list_properties")
 
         klass = find(mod.enums, "GEnum")
         self.assertEqual(klass.base, "GLib.Enum")

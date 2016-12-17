@@ -10,6 +10,7 @@ import os
 import re
 import types
 import inspect
+import copy
 
 from gi.repository import GObject
 
@@ -540,20 +541,27 @@ class Class(BaseDocObject, MethodsMixin, PropertiesMixin, SignalsMixin,
         klass.info = DocInfo.from_object(repo, "all", klass,
                                          current_type=klass.fullname)
 
+        gtype_struct = None
         if util.is_iface(obj):
             klass.is_interface = True
             klass.is_abstract = True
             iface_struct = obj._get_iface_struct()
             if iface_struct:
-                cs = type(iface_struct)
-                klass.gtype_struct = class_name(cs)
+                gtype_struct = type(iface_struct)
         else:
             klass.is_interface = False
             klass.is_abstract = obj.__gtype__.is_abstract()
             class_struct = obj._get_class_struct()
             if class_struct:
-                cs = type(class_struct)
-                klass.gtype_struct = class_name(cs)
+                gtype_struct = type(class_struct)
+
+        if gtype_struct is not None:
+            klass.gtype_struct = class_name(gtype_struct)
+            cs_obj = Structure.from_object(repo, gtype_struct)
+            for method in cs_obj.methods:
+                new = method.copy_for_new(klass.fullname)
+                new.is_static = True
+                klass.methods.append(new)
 
         klass.is_gobject = util.is_object(obj) or util.is_iface(obj)
 
@@ -670,6 +678,12 @@ class Function(BaseDocObject):
 
         self.signature = u"()"
         self.signature_desc = u""
+
+    def copy_for_new(self, parent_fullname):
+        new = copy.copy(self)
+        new.fullname = parent_fullname + "." + new.name
+        new.info = new.info.copy()
+        return new
 
     @classmethod
     def from_object(cls, parent_fullname, name, obj, repo, owner):
@@ -1062,6 +1076,9 @@ class DocInfo(BaseDocObject):
         self.deprecated = False
         self.version_deprecated = u""
         self.deprecation_desc = u""
+
+    def copy(self):
+        return copy.copy(self)
 
     @classmethod
     def from_object(cls, repo, type_, doc_object,
