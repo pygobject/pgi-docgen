@@ -16,7 +16,7 @@
     "AccountsService-1.0": {
         "debian_package": "gir1.2-accountsservice-1.0", 
         "description": "The AccountService project provides a set of D-Bus interfaces for querying and manipulating user account information and an implementation of these interfaces, based on the useradd, usermod and userdel commands.", 
-        "homepage": "http://www.freedesktop.org/wiki/Software/AccountsService/", 
+        "homepage": "https://www.freedesktop.org/wiki/Software/AccountsService/", 
         "lib": "accountsservice", 
         "summary": "query and manipulate user account information"
     }, 
@@ -30,7 +30,7 @@
     "Anthy-9000": {
         "debian_package": "ibus-anthy", 
         "description": "IBus is an Intelligent Input Bus. It is a new input framework for Linux OS. It provides full featured and user friendly input method user interface. It also may help developers to develop input method easily.\n\nIBus-Anthy is an input method (IM) for Japanese, based on IBus.", 
-        "homepage": "http://code.google.com/p/ibus", 
+        "homepage": "https://github.com/ibus/ibus/wiki", 
         "lib": "ibus-anthy", 
         "summary": "anthy engine for IBus"
     }, 
@@ -50,7 +50,7 @@
     }, 
     "AppStream-1.0": {
         "debian_package": "gir1.2-appstream-1.0", 
-        "description": "AppStream is a metadata specification, allowing to write metadata for software projects in a general-purpose format. This allows software centers to display useful information for not installed software, as well as determining software the user might want to install (e.g. to open an unknown file type or to make missing firmware available).", 
+        "description": "AppStream is a metadata specification, allowing to write metadata for software projects in a standardized format. This allows software centers to display useful information for not installed software, as well as determining software the user might want to install (e.g. to open an unknown file type or to make missing firmware available).", 
         "homepage": "http://www.freedesktop.org/wiki/Distributions/AppStream/", 
         "lib": "appstream", 
         "summary": "Library to access AppStream services"
@@ -89,6 +89,13 @@
         "homepage": "https://wiki.gnome.org/Accessibility", 
         "lib": "at-spi2-core", 
         "summary": "Assistive Technology Service Provider Interface"
+    }, 
+    "Bamf-3": {
+        "debian_package": "gir1.2-bamf-3", 
+        "description": "Bamf matches application windows to desktop files. It removes the headache of applications matching into a simple DBus daemon and C wrapper library. It currently features application matching at amazing levels of accuracy (covering nearly every corner case).", 
+        "homepage": "https://launchpad.net/bamf", 
+        "lib": "bamf", 
+        "summary": "Window matching library"
     }, 
     "BraseroBurn-3.1": {
         "debian_package": "gir1.2-brasero-3.0", 
@@ -660,7 +667,7 @@
     "Ganv-1.0": {
         "debian_package": "gir1.2-ganv-1.0", 
         "description": "Ganv is an interactive Gtk canvas widget for graph-based interfaces (patchers, modular synthesizers, finite state automata, interactive graphs, etc).\n\nGanv provides classes for \"Modules\" (boxes with \"Ports\"), Circles, and Edges (lines that connect either Ports or Circles).  The user can rearrange items, or Ganv can automatically arrange items using GraphViz. Edges can be made by the user one at a time with the mouse, or in groups using the mouse and keyboard.", 
-        "homepage": "http://dev.drobilla.net/browser/trunk/ganv", 
+        "homepage": "http://drobilla.net/software/ganv", 
         "lib": "ganv", 
         "summary": "canvas widget for graph-based interfaces"
     }, 
@@ -799,10 +806,10 @@
     }, 
     "Gladeui-2.0": {
         "debian_package": "gir1.2-gladeui-2.0", 
-        "description": "Glade is a RAD tool to enable quick and easy development of user interfaces for the GTK+ toolkit.\n\nGlade is, since its \"3.0\" major version, highly modular, and composed of widgets which can be used by other applications to integrate functionality similar to the one provided by the Glade application itself.\n\nThis library provides all the widgets and core code, like parsing and saving files.", 
+        "description": "Glade is a RAD tool to enable quick and easy development of user interfaces for the GTK+ toolkit.\n\nGlade is, since its \"3.0\" major version, highly modular, and composed of widgets which can be used by other applications to integrate functionality similar to the one provided by the Glade application itself.", 
         "homepage": "http://glade.gnome.org/", 
         "lib": "glade", 
-        "summary": "GTK+ User Interface Build core library"
+        "summary": "GObject introspection data for the GTK+ User Interface library"
     }, 
     "Gnm-1.12": {
         "debian_package": "gir1.2-gnumeric", 
@@ -1507,14 +1514,14 @@
     "Polkit-1.0": {
         "debian_package": "gir1.2-polkit-1.0", 
         "description": "PolicyKit is a toolkit for defining and handling the policy that allows unprivileged processes to speak to privileged processes.", 
-        "homepage": "http://www.freedesktop.org/wiki/Software/polkit/", 
+        "homepage": "https://www.freedesktop.org/wiki/Software/polkit/", 
         "lib": "policykit-1", 
         "summary": "PolicyKit Authentication Agent API"
     }, 
     "PolkitAgent-1.0": {
         "debian_package": "gir1.2-polkit-1.0", 
         "description": "PolicyKit is a toolkit for defining and handling the policy that allows unprivileged processes to speak to privileged processes.", 
-        "homepage": "http://www.freedesktop.org/wiki/Software/polkit/", 
+        "homepage": "https://www.freedesktop.org/wiki/Software/polkit/", 
         "lib": "policykit-1", 
         "summary": "PolicyKit Authentication Agent API"
     }, 
@@ -1640,7 +1647,7 @@
     "TelepathyLogger-0.2": {
         "debian_package": "gir1.2-telepathylogger-0.2", 
         "description": "Telepathy is a D-Bus framework for unifying real time communication, including instant messaging, voice calls and video calls. It abstracts differences between protocols to provide a unified interface for applications.", 
-        "homepage": "http://telepathy.freedesktop.org/wiki/", 
+        "homepage": "https://telepathy.freedesktop.org/wiki/", 
         "lib": "telepathy-logger", 
         "summary": "Telepathy logger service"
     }, 
@@ -1700,12 +1707,26 @@
         "lib": "upower", 
         "summary": "abstraction for power management"
     }, 
+    "Ufo-0.0": {
+        "debian_package": "gir1.2-ufo-0.0", 
+        "description": "The UFO data processing framework is a C library suited to build general purpose streams data processing on heterogeneous architectures such as CPUs, GPUs or clusters. It is extensively used at the Karlsruhe Institute of Technology for Ultra-fast X-ray Imaging (radiography, tomography and laminography).\n\nA gobject-instrospection binding is also provided to write scripts or user interfaces.", 
+        "homepage": "http://ufo.kit.edu/", 
+        "lib": "ufo-core", 
+        "summary": "Library for high-performance, GPU-based computing"
+    }, 
     "Uhm-0.0": {
         "debian_package": "gir1.2-uhm-0.0", 
         "description": "uhttpmock is a HTTP web service mocking project for projects which use libsoup. It is still in its infancy, but is already used by libgdata for unit testing.", 
         "homepage": "https://gitlab.com/groups/uhttpmock", 
         "lib": "uhttpmock", 
         "summary": "HTTP web service mocking"
+    }, 
+    "Urfkill-0.5": {
+        "debian_package": "gir1.2-urfkill-0.5", 
+        "description": "liburfkill provides the basic functions for urfkilld, which handles the configuration of the rfkill-related function keys and provides the management of the wireless killswitches.", 
+        "homepage": "http://www.freedesktop.org/wiki/Software/urfkill", 
+        "lib": "urfkill", 
+        "summary": "wireless killswitch management library"
     }, 
     "Vips-8.0": {
         "debian_package": "gir1.2-vips-8.0", 
@@ -1762,6 +1783,13 @@
         "homepage": "http://www.workrave.org/", 
         "lib": "workrave", 
         "summary": "Repetitive Strain Injury prevention tool"
+    }, 
+    "XApp-1.0": {
+        "debian_package": "gir1.2-xapp-1.0", 
+        "description": "This library is used by XApp to load the .desktop files.", 
+        "homepage": "http://cinnamon.linuxmint.com/", 
+        "lib": "xapp", 
+        "summary": "XApp library for loading .desktop files"
     }, 
     "Xkl-1.0": {
         "debian_package": "gir1.2-xkl-1.0", 

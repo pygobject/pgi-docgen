@@ -180,6 +180,7 @@
     "gdbus-subtree-server": "https://developer.gnome.org/gio/stable/GDBusConnection.html#gdbus-subtree-server", 
     "gdbus-unix-fd-client": "https://developer.gnome.org/gio/stable/GDBusConnection.html#gdbus-unix-fd-client", 
     "gfile-etag": "https://developer.gnome.org/gio/stable/GFile.html#gfile-etag", 
+    "gio": "https://developer.gnome.org/gio/stable/gio.html#gio", 
     "gio-D-Bus-Addresses": "https://developer.gnome.org/gio/stable/gio-D-Bus-Addresses.html#gio-D-Bus-Addresses", 
     "gio-D-Bus-Introspection-Data": "https://developer.gnome.org/gio/stable/gio-D-Bus-Introspection-Data.html#gio-D-Bus-Introspection-Data", 
     "gio-D-Bus-Utilities": "https://developer.gnome.org/gio/stable/gio-D-Bus-Utilities.html#gio-D-Bus-Utilities", 

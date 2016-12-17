@@ -88,6 +88,8 @@
     "gstreamer-GstParse": "http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstParse.html#gstreamer-GstParse", 
     "gstreamer-GstPoll": "http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstPoll.html#gstreamer-GstPoll", 
     "gstreamer-GstProtectionMeta": "http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstProtectionMeta.html#gstreamer-GstProtectionMeta", 
+    "gstreamer-GstStream": "http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstStream.html#gstreamer-GstStream", 
+    "gstreamer-GstStreamCollection": "http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstStreamCollection.html#gstreamer-GstStreamCollection", 
     "gstreamer-GstTocSetter": "http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstTocSetter.html#gstreamer-GstTocSetter", 
     "gstreamer-GstTypeFind": "http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstTypeFind.html#gstreamer-GstTypeFind", 
     "gstreamer-GstUri": "http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstUri.html#gstreamer-GstUri", 
