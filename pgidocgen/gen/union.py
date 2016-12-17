@@ -76,7 +76,7 @@ Details
     {{ util.render_info(union.info)|indent(4, False) }}
 
     {% for method in union.get_methods(static=True) %}
-    .. staticmethod:: {{ method.fullname }}{{ method.signature }}
+    .. classmethod:: {{ method.fullname }}{{ method.signature }}
 
         {{ method.signature_desc|indent(8, False) }}
 
@@ -134,7 +134,7 @@ class UnionGenerator(genutil.Generator):
         summary_rows = []
         for func in methods:
             summary_rows.append(util.get_csv_line([
-                "*static*" if func.is_static else "",
+                "*class*" if func.is_static else "",
                 ":py:func:`%s<%s>` %s" % (func.name, func.fullname,
                                           util.escape_rest(func.signature))]))
 

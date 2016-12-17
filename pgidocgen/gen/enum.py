@@ -40,7 +40,7 @@ Details
     {{ util.render_info(enum.info)|indent(4, False) }}
 
     {% for method in enum.get_methods(static=True) %}
-    .. staticmethod:: {{ method.name }}{{ method.signature }}
+    .. classmethod:: {{ method.name }}{{ method.signature }}
 
         {{ method.signature_desc|indent(8, False) }}
 

@@ -57,7 +57,7 @@ Class Details
     {% endfor %}
 
     {% for method in cls.get_methods(static=True) %}
-    .. staticmethod:: {{ method.fullname }}{{ method.signature }}
+    .. classmethod:: {{ method.fullname }}{{ method.signature }}
 
         {{ method.signature_desc|indent(8, False) }}
 
@@ -364,7 +364,7 @@ Class Details
     {{ util.render_info(cls.info)|indent(4, False) }}
 
     {% for method in cls.get_methods(static=True) %}
-    .. staticmethod:: {{ method.fullname }}{{ method.signature }}
+    .. classmethod:: {{ method.fullname }}{{ method.signature }}
 
         {{ method.signature_desc|indent(8, False) }}
 
@@ -498,7 +498,7 @@ class ClassGenerator(genutil.Generator):
         summary_rows = []
         for func in methods:
             summary_rows.append(util.get_csv_line([
-                "*static*" if func.is_static else "",
+                "*class*" if func.is_static else "",
                 ":py:func:`%s<%s>` %s" % (func.name, func.fullname,
                                           util.escape_rest(func.signature))]))
         methods_summary_rows = summary_rows
@@ -517,7 +517,7 @@ class ClassGenerator(genutil.Generator):
         summary_rows = []
         for func in methods:
             summary_rows.append(util.get_csv_line([
-                "*static*" if func.is_static else "",
+                "*class*" if func.is_static else "",
                 ":py:func:`%s<%s>` %s" % (func.name, func.fullname,
                                           util.escape_rest(func.signature))]))
         methods_summary_rows = summary_rows
