@@ -12,16 +12,16 @@ DIR="$( cd "$( dirname "$0" )" && pwd )"
 BUILD="$DIR/../_docs/_build_devhelp"
 
 rm -rf _temp
-git clone https://github.com/lazka/pgi-docs-devhelp.git _temp
+git clone https://github.com/pygobject/pgi-docs-devhelp.git _temp
 cd _temp
 
 git rm -r "*";
 cp -r "$BUILD"/* .
 
 # add readme
-echo "This repository was created automatically using https://github.com/lazka/pgi-docgen\n" >> README.rst
+echo "This repository was created automatically using https://github.com/pygobject/pgi-docgen\n" >> README.rst
 echo "It contains devhelp packages for PyGObject\n\n" >> README.rst
-echo "1) git clone https://github.com/lazka/pgi-docs-devhelp.git ~/.local/share/devhelp/books\n" >> README.rst
+echo "1) git clone https://github.com/pygobject/pgi-docs-devhelp.git ~/.local/share/devhelp/books\n" >> README.rst
 echo "2) devhelp\n" >> README.rst
 echo "To update:\n" >> README.rst
 echo "1) cd ~/.local/share/devhelp/books\n" >> README.rst

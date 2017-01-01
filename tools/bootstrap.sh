@@ -14,7 +14,7 @@ if [ -d "$VENV" ]; then
 else
     virtualenv --system-site-packages -p $PYTHON _venv
     . "$VENV"/bin/activate
-    pip install git+https://github.com/lazka/pgi.git
+    pip install git+https://github.com/pygobject/pgi.git
     pip install sphinx
     pip install BeautifulSoup
     pip install jinja2
