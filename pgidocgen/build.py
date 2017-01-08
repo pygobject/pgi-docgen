@@ -131,6 +131,11 @@ def do_build(package):
     os.remove(os.path.join(package.build_path, "genindex.html"))
     os.remove(os.path.join(package.build_path, "search.html"))
 
+    if os.name != "nt":
+        for d in ["structs", "unions", "interfaces", "iface-structs",
+                  "class-structs"]:
+            os.symlink("classes", os.path.join(package.build_path, d))
+
     return package
 
 

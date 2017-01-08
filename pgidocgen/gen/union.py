@@ -20,7 +20,7 @@ Unions
     :maxdepth: 1
 
 {% for union in unions %}
-    {{ union.name }}
+    classes/{{ union.name }}
 {% endfor %}
 
 """)
@@ -102,7 +102,7 @@ class UnionGenerator(genutil.Generator):
         self._unions = set()
 
     def get_names(self):
-        return ["unions/index"]
+        return ["unions"]
 
     def is_empty(self):
         return not bool(self._unions)
@@ -111,13 +111,16 @@ class UnionGenerator(genutil.Generator):
         self._unions.add(union)
 
     def write(self, dir_):
-        sub_dir = os.path.join(dir_, "unions")
+        sub_dir = os.path.join(dir_, "classes")
 
-        os.mkdir(sub_dir)
+        try:
+            os.mkdir(sub_dir)
+        except OSError:
+            pass
 
         unions = sorted(self._unions, key=lambda x: x.name)
 
-        path = os.path.join(sub_dir, "index.rst")
+        path = os.path.join(dir_, "unions.rst")
         with open(path, "wb") as h:
             text = _main_template.render(unions=unions)
             h.write(text.encode("utf-8"))

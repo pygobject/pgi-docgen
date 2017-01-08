@@ -20,7 +20,7 @@ _main_template = genutil.get_template("""\
     :maxdepth: 1
 
 {% for struct in structures %}
-    {{ struct.name }}
+    classes/{{ struct.name }}
 {% endfor %}
 
 """)
@@ -105,7 +105,7 @@ class StructGenerator(genutil.Generator):
         self._structs = set()
 
     def get_names(self):
-        return ["%s/index" % self._key]
+        return [self._key]
 
     def is_empty(self):
         return not bool(self._structs)
@@ -114,13 +114,16 @@ class StructGenerator(genutil.Generator):
         self._structs.add(struct)
 
     def write(self, dir_):
-        sub_dir = os.path.join(dir_, self._key)
+        sub_dir = os.path.join(dir_, "classes")
 
-        os.mkdir(sub_dir)
+        try:
+            os.mkdir(sub_dir)
+        except OSError:
+            pass
 
         structs = sorted(self._structs, key=lambda x: x.name)
 
-        path = os.path.join(sub_dir, "index.rst")
+        path = os.path.join(dir_, "%s.rst" % self._key)
         with open(path, "wb") as h:
             text = _main_template.render(structures=structs, title=self._title)
             h.write(text.encode("utf-8"))

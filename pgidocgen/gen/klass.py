@@ -29,7 +29,7 @@ Classes
     :maxdepth: 1
 
     {% for class in classes %}
-    {{ class.name }}
+    classes/{{ class.name }}
     {% endfor %}
 
 """)
@@ -452,9 +452,9 @@ class ClassGenerator(genutil.Generator):
     def get_names(self):
         names = []
         if self._ifaces:
-            names.append("interfaces/index.rst")
+            names.append("interfaces")
         if self._classes or self._pyclasses:
-            names.append("classes/index.rst")
+            names.append("classes")
         return names
 
     def is_empty(self):
@@ -462,18 +462,26 @@ class ClassGenerator(genutil.Generator):
             not bool(self._pyclasses)
 
     def write(self, dir_):
+        sub_dir = os.path.join(dir_, "classes")
+        try:
+            os.mkdir(sub_dir)
+        except OSError:
+            pass
+
         if self._ifaces:
-            self._write(os.path.join(dir_, "interfaces"),
-                        self._ifaces, True)
+            self._write(sub_dir, self._ifaces, True)
 
         if self._classes or self._pyclasses:
             classes = self._classes.copy()
             classes.update(self._pyclasses)
-            self._write(os.path.join(dir_, "classes"), classes, False)
+            self._write(sub_dir, classes, False)
 
     def _write(self, sub_dir, classes, is_interface):
-        os.mkdir(sub_dir)
-        index_path = os.path.join(sub_dir, "index.rst")
+
+        if is_interface:
+            index_path = os.path.join(sub_dir, "..", "interfaces.rst")
+        else:
+            index_path = os.path.join(sub_dir, "..", "classes.rst")
 
         classes = sorted(classes, key=lambda x: x.name)
 
