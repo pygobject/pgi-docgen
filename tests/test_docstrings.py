@@ -26,7 +26,6 @@ class DummyRepo(object):
             "AtkTextAttribute": ["Atk.TextAttribute"],
             "ATK_TEXT_ATTR_INVALID": ["Atk.TextAttribute.INVALID"],
             "GtkApplication": ["Gtk.Application"],
-            "GtkCellEditable": ["Gtk.CellEditable"],
             "ATK_RELATION_NULL": ["Atk.RelationType.NULL"],
             "AtkObject": ["Atk.Object"],
             "AtkTable": ["Atk.Table"],

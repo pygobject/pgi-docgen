@@ -91,7 +91,7 @@ class Project(object):
         assert namespace in self.namespaces
 
         version = project_version or self.version
-        tag = self.get_tag(self.version)
+        tag = self.get_tag(version)
 
         if not tag:
             return None

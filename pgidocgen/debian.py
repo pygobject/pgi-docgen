@@ -12,7 +12,6 @@ This isn't used by pgidocgen, but by some of the included tools
 """
 
 import os
-import apt
 import subprocess
 
 from .debug import get_debug_files_for_name, get_debug_build_id_for_name

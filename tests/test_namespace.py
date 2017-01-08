@@ -8,7 +8,7 @@
 
 import unittest
 
-from pgidocgen.namespace import Namespace, get_cairo_types, \
+from pgidocgen.namespace import get_cairo_types, \
     fixup_since, get_versions, get_namespace
 
 
@@ -95,7 +95,7 @@ class TNamespace(unittest.TestCase):
 
     def test_atk(self):
         ns = get_namespace("Atk", "1.0")
-        types = ns.types
+        ns.types
         docs = ns.docs
         versions = get_versions(docs)
         self.assertTrue("ATK-0.7" not in versions)

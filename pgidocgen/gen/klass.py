@@ -499,18 +499,6 @@ class ClassGenerator(genutil.Generator):
                     self._write_class(h, cls)
 
     def _write_pyclass(self, h, cls):
-
-        methods = cls.get_methods(static=True)
-        methods += cls.get_methods(static=False)
-
-        summary_rows = []
-        for func in methods:
-            summary_rows.append(util.get_csv_line([
-                "*class*" if func.is_static else "",
-                ":py:func:`%s<%s>` %s" % (func.name, func.fullname,
-                                          util.escape_rest(func.signature))]))
-        methods_summary_rows = summary_rows
-
         text = _py_template.render(
             cls=cls,
         )

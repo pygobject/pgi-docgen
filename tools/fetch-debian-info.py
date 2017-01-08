@@ -8,9 +8,7 @@
 
 import json
 import apt
-import subprocess
 
-from pgidocgen.util import shell
 from pgidocgen.debian import _extract_control_field, get_repo_typelibs
 from pgidocgen.girdata import get_debian_path
 

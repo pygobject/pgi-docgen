@@ -27,7 +27,7 @@ import apt_pkg
 
 from pgidocgen.debian import get_repo_girs, get_debug_packages_for_libs, \
     get_repo_typelibs
-from pgidocgen.util import parse_gir_shared_libs, shell
+from pgidocgen.util import parse_gir_shared_libs
 
 
 DEB_BLACKLIST = [

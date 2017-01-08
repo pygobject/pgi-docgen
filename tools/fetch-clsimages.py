@@ -27,7 +27,6 @@ GTK_MAPPING = {
     "CheckButton": "check-button",
     "LinkButton": "link-button",
     "MenuButton": "menu-button",
-    "LockButton": "lock-button",
     "Entry": "entry",
     "SearchEntry": "search-entry",
     "RadioButton": "radio-group",

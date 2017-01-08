@@ -453,6 +453,8 @@ def MarkDownParseSpanElementsInner(text, markersref):
                 closest_marker_index = i
                 closest_marker_position = marker_position
 
+        closest_marker_index  # pyflakes
+
         if closest_marker_position >= 0:
             text_marker = text[closest_marker_position:]
 

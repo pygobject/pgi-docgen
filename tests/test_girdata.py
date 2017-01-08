@@ -25,7 +25,7 @@ class TGIRData(unittest.TestCase):
         for m in mods:
             ns, version = m.split("-", 1)
             try:
-                mod = import_namespace(ns, version)
+                import_namespace(ns, version)
             except ImportError:
                 continue
             lib = Library.for_namespace(ns, version)
