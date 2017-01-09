@@ -132,6 +132,13 @@
         "lib": "cinnamon-menus", 
         "summary": "GObject introspection data for the Cinnamon menu library"
     }, 
+    "CScreensaver-1.0": {
+        "debian_package": "libcscreensaver0", 
+        "description": "cinnamon-screensaver is a screen saver and locker that aims to have simple, sane and secure defaults, and be well integrated with the Cinnamon desktop.", 
+        "homepage": "http://cinnamon.linuxmint.com/", 
+        "lib": "cinnamon-screensaver", 
+        "summary": "library and introspection data used by cinnamon-screensaver"
+    }, 
     "Caja-2.0": {
         "debian_package": "gir1.2-caja", 
         "description": "Caja is the official file manager for the MATE desktop. It allows one to browse directories, preview files and launch applications associated with them. It is also responsible for handling the icons on the MATE desktop. It works on local and remote filesystems.\n\n\nIt can be used by packages using the GIRepository format to generate dynamic bindings.", 
@@ -442,10 +449,10 @@
     }, 
     "Fwupd-1.0": {
         "debian_package": "gir1.2-fwupd-1.0", 
-        "description": "It can be used by packages using the GIRepository format to generate dynamic bindings.", 
+        "description": "fwupd is a daemon to allow session software to update device firmware. You can either use a GUI software manager like GNOME Software to view and apply updates, the command-line tool or the system D-Bus interface directly. Currently, firmware updates using the UEFI capsule format and for the ColorHug are supported. More formats may be supported in the future. See <https://github.com/hughsie/fwupd> for details", 
         "homepage": "https://github.com/hughsie/fwupd", 
         "lib": "fwupd", 
-        "summary": "GObject introspection data for libfwupd"
+        "summary": "Firmware update daemon library"
     }, 
     "GCab-1.0": {
         "debian_package": "gir1.2-libgcab-1.0", 
@@ -652,10 +659,10 @@
     }, 
     "GWeather-3.0": {
         "debian_package": "gir1.2-gweather-3.0", 
-        "description": "libgweather is a library to access weather information from online services for numerous locations.\n\n\nIt can be used by packages using the GIRepository format to generate dynamic bindings.", 
+        "description": "libgweather is a library to access weather information from online services for numerous locations.", 
         "homepage": "https://wiki.gnome.org/Projects/LibGWeather", 
         "lib": "libgweather", 
-        "summary": "GObject introspection data for the GWeather library"
+        "summary": "GWeather shared library"
     }, 
     "GXPS-0.1": {
         "debian_package": "gir1.2-gxps-0.1", 
