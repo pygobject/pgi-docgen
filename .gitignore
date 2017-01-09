@@ -5,3 +5,4 @@ _venv
 _docs*
 MANIFEST
 tools/_temp_data_dir
+.cache
