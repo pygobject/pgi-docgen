@@ -875,6 +875,14 @@ class Flags(BaseDocObject, MethodsMixin):
         instance._parse_methods(repo, obj)
         if obj.__bases__[0] is not int:
             instance.base = class_name(obj.__bases__[0])
+
+        instance.signature = get_signature_string(obj.__init__)
+
+        # override docs
+        if obj.__doc__:
+            instance.info.desc = repo.render_override_docs(
+                util.unindent(obj.__doc__, True), all="", docs="")
+
         return instance
 
 

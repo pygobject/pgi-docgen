@@ -31,7 +31,7 @@ Details
 
 {% if entries %}
     {% for entry in entries %}
-.. class:: {{ entry.fullname }}()
+.. class:: {{ entry.fullname }}{{ entry.signature }}
 
     {% if entry.base %}
     Bases: :class:`{{ entry.base }}`

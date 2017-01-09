@@ -31,7 +31,7 @@ Details
 
 {% if enums %}
     {% for enum in enums %}
-.. class:: {{ enum.fullname }}()
+.. class:: {{ enum.fullname }}{{ enum.signature }}
 
     {% if enum.base %}
     Bases: :class:`{{ enum.base }}`
