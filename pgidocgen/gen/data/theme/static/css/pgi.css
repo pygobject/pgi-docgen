@@ -30,6 +30,7 @@ p {
 
 .wy-nav-content-wrap {
     margin-left: 0;
+    background: #fcfcfc;
 }
 
 @media screen and (max-width: 768px){
