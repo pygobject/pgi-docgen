@@ -33,7 +33,7 @@ for dep_name in DEPS:
     intersph_name = dep_name.replace("-", "").replace(".", "")
     if dep_name == "cairo-1.0":
         intersphinx_mapping[intersph_name] = (
-            "http://cairographics.org/documentation/pycairo/2/",
+            "https://pycairo.readthedocs.io/en/latest/",
             "../_intersphinx/cairo.inv")
         continue
 

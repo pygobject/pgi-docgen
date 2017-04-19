@@ -222,7 +222,7 @@ class ModuleGenerator(object):
         # SOURCE/_intersphinx
         extern_intersphinx = {
             "python": "http://docs.python.org/2.7",
-            "cairo": "http://cairographics.org/documentation/pycairo/2",
+            "cairo": "https://pycairo.readthedocs.io/en/latest",
         }
 
         isph_path = os.path.join(os.path.dirname(sub_dir), "_intersphinx")
