@@ -43,6 +43,7 @@
     "glib-File-Utilities": "https://developer.gnome.org/glib/stable/glib-File-Utilities.html#glib-File-Utilities", 
     "glib-GDateTime": "https://developer.gnome.org/glib/stable/glib-GDateTime.html#glib-GDateTime", 
     "glib-GTimeZone": "https://developer.gnome.org/glib/stable/glib-GTimeZone.html#glib-GTimeZone", 
+    "glib-GUuid": "https://developer.gnome.org/glib/stable/glib-GUuid.html#glib-GUuid", 
     "glib-GVariant": "https://developer.gnome.org/glib/stable/glib-GVariant.html#glib-GVariant", 
     "glib-GVariantType": "https://developer.gnome.org/glib/stable/glib-GVariantType.html#glib-GVariantType", 
     "glib-Glob-style-pattern-matching": "https://developer.gnome.org/glib/stable/glib-Glob-style-pattern-matching.html#glib-Glob-style-pattern-matching", 

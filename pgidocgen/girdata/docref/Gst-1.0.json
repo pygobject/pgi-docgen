@@ -35,6 +35,7 @@
     "GstControlSource": "http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstControlSource.html#GstControlSource", 
     "GstDateTime": "http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstDateTime.html#GstDateTime", 
     "GstDeviceProviderFactory": "http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstDeviceProviderFactory.html#GstDeviceProviderFactory", 
+    "GstDynamicTypeFactory": "http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstDynamicTypeFactory.html#GstDynamicTypeFactory", 
     "GstElement": "http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html#GstElement", 
     "GstElementFactory": "http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElementFactory.html#GstElementFactory", 
     "GstEvent": "http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstEvent.html#GstEvent", 
