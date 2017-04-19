@@ -141,10 +141,10 @@
     }, 
     "Caja-2.0": {
         "debian_package": "gir1.2-caja", 
-        "description": "Caja is the official file manager for the MATE desktop. It allows one to browse directories, preview files and launch applications associated with them. It is also responsible for handling the icons on the MATE desktop. It works on local and remote filesystems.\n\n\nIt can be used by packages using the GIRepository format to generate dynamic bindings.", 
+        "description": "Caja is the official file manager for the MATE desktop. It allows one to browse directories, preview files and launch applications associated with them. It is also responsible for handling the icons on the MATE desktop. It works on local and remote filesystems.", 
         "homepage": "http://www.mate-desktop.org/", 
         "lib": "caja", 
-        "summary": "GObject introspection data for Caja"
+        "summary": "libraries for Caja components"
     }, 
     "Cally-1.0": {
         "debian_package": "gir1.2-clutter-1.0", 
@@ -646,14 +646,14 @@
     "GVnc-1.0": {
         "debian_package": "gir1.2-gtk-vnc-2.0", 
         "description": "It is built using coroutines, allowing it to be completely asynchronous while remaining single threaded. It supports RFB protocols 3.3 through 3.8 and the VeNCrypt authentication extension providing SSL/TLS encryption with x509 certificate authentication.\n\nThe core library is written in C and a binding for Python using PyGTK is available. The networking layer supports connections over both IPv4 and IPv6.", 
-        "homepage": "", 
+        "homepage": "https://wiki.gnome.org/Projects/gtk-vnc", 
         "lib": "gtk-vnc", 
         "summary": "VNC viewer widget for GTK+3 (runtime libraries)"
     }, 
     "GVncPulse-1.0": {
         "debian_package": "gir1.2-gtk-vnc-2.0", 
         "description": "It is built using coroutines, allowing it to be completely asynchronous while remaining single threaded. It supports RFB protocols 3.3 through 3.8 and the VeNCrypt authentication extension providing SSL/TLS encryption with x509 certificate authentication.\n\nThe core library is written in C and a binding for Python using PyGTK is available. The networking layer supports connections over both IPv4 and IPv6.", 
-        "homepage": "", 
+        "homepage": "https://wiki.gnome.org/Projects/gtk-vnc", 
         "lib": "gtk-vnc", 
         "summary": "VNC viewer widget for GTK+3 (runtime libraries)"
     }, 
@@ -965,6 +965,13 @@
         "lib": "gst-plugins-base1.0", 
         "summary": "GStreamer libraries from the \"base\" set"
     }, 
+    "GstBadAllocators-1.0": {
+        "debian_package": "gir1.2-gst-plugins-bad-1.0", 
+        "description": "GStreamer is a streaming media framework, based on graphs of filters which operate on media data.  Applications using this library can do anything from real-time sound processing to playing videos, and just about anything else media-related.  Its plugin-based architecture means that new data types or processing capabilities can be added simply by installing new plug-ins.\n\nGStreamer Bad Plug-ins is a set of plug-ins that aren't up to par compared to the rest. They might be close to being good quality, but they're missing something - be it a good code review, some documentation, a set of tests, a real live maintainer, or some actual wide use.", 
+        "homepage": "http://gstreamer.freedesktop.org/modules/gst-plugins-bad.html", 
+        "lib": "gst-plugins-bad1.0", 
+        "summary": "GStreamer development files for libraries from the \"bad\" set"
+    }, 
     "GstBase-1.0": {
         "debian_package": "gir1.2-gstreamer-1.0", 
         "description": "GStreamer is a streaming media framework, based on graphs of filters which operate on media data.  Applications using this library can do anything from real-time sound processing to playing videos, and just about anything else media-related.  Its plugin-based architecture means that new data types or processing capabilities can be added simply by installing new plug-ins.", 
@@ -1136,7 +1143,7 @@
     "GtkVnc-2.0": {
         "debian_package": "gir1.2-gtk-vnc-2.0", 
         "description": "It is built using coroutines, allowing it to be completely asynchronous while remaining single threaded. It supports RFB protocols 3.3 through 3.8 and the VeNCrypt authentication extension providing SSL/TLS encryption with x509 certificate authentication.\n\nThe core library is written in C and a binding for Python using PyGTK is available. The networking layer supports connections over both IPv4 and IPv6.", 
-        "homepage": "", 
+        "homepage": "https://wiki.gnome.org/Projects/gtk-vnc", 
         "lib": "gtk-vnc", 
         "summary": "VNC viewer widget for GTK+3 (runtime libraries)"
     }, 
@@ -1157,7 +1164,7 @@
     "HarfBuzz-0.0": {
         "debian_package": "gir1.2-harfbuzz-0.0", 
         "description": "HarfBuzz is an implementation of the OpenType Layout engine (aka layout engine) and the script-specific logic (aka shaping engine).", 
-        "homepage": "http://www.freedesktop.org/wiki/Software/HarfBuzz", 
+        "homepage": "https://www.freedesktop.org/wiki/Software/HarfBuzz", 
         "lib": "harfbuzz", 
         "summary": "OpenType text shaping engine ICU backend (GObject library)"
     }, 
@@ -1338,10 +1345,10 @@
     }, 
     "MateMenu-2.0": {
         "debian_package": "gir1.2-mate-menu", 
-        "description": "It can be used by packages using the GIRepository format to generate dynamic bindings.", 
+        "description": "The package contains an implementation of the draft \"Desktop Menu Specification\" from freedesktop.org:\n\nhttp://www.freedesktop.org/Standards/menu-spec", 
         "homepage": "http://www.mate-desktop.org/", 
         "lib": "mate-menus", 
-        "summary": "GObject introspection data for the MATE menu specification"
+        "summary": "implementation of the freedesktop menu specification for MATE (library)"
     }, 
     "MatePanelApplet-4.0": {
         "debian_package": "gir1.2-mate-panel", 
@@ -1352,10 +1359,10 @@
     }, 
     "Matekbd-1.0": {
         "debian_package": "gir1.2-matekbd", 
-        "description": "libmatekbd offers an API to manage the keyboard in MATE applications.\n\nlibmatekbdui offers an API to display a graphical user interface for libmatekbd operations.\n\n\nIt can be used by packages using the GIRepository format to generate dynamic bindings.", 
+        "description": "libmatekbd offers an API to manage the keyboard in MATE applications.\n\nlibmatekbdui offers an API to display a graphical user interface for libmatekbd operations.", 
         "homepage": "http://www.mate-desktop.org/", 
         "lib": "libmatekbd", 
-        "summary": "GObject introspection data for libmatekbd and libmatekbdui"
+        "summary": "MATE library to manage keyboard configuration"
     }, 
     "MediaArt-2.0": {
         "debian_package": "gir1.2-mediaart-2.0", 
@@ -1566,6 +1573,13 @@
         "homepage": "https://wiki.gnome.org/Librest", 
         "lib": "librest", 
         "summary": "REST service access library extra components"
+    }, 
+    "Retro-0.10": {
+        "debian_package": "gir1.2-retro-gtk-0.10", 
+        "description": "retro-gtk is a library for developers to make GTK frontends for the libretro API.\n\nlibretro is an API for the creation of games and emulators. The emulators and platforms are distributed as \"libretro cores\".\n\nTherefore, a developer can use retro-gtk to make a gaming app that should be able to play any game that can be played using libretro cores.", 
+        "homepage": "https://wiki.gnome.org/Apps/Games", 
+        "lib": "retro-gtk", 
+        "summary": "library for GTK libretro frontends"
     }, 
     "Rsvg-2.0": {
         "debian_package": "gir1.2-rsvg-2.0", 
