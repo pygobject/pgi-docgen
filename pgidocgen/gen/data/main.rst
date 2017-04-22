@@ -1,7 +1,3 @@
-==========================================
-Python GObject Introspection API Reference
-==========================================
-
 This API reference was auto generated using `pgi-docgen
 <https://github.com/pygobject/pgi-docgen>`__ and describes the interfaces exposed
 by `PyGObject <https://wiki.gnome.org/Projects/PyGObject>`__.
