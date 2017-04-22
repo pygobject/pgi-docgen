@@ -6,6 +6,10 @@ p {
     font-size: 1em;
 }
 
+.wy-body-for-nav a:visited {
+    color: #3091d1;
+}
+
 @media screen and (min-width: 768px){
     .local-toc {
         position:fixed;
