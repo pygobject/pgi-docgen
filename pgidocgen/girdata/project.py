@@ -10,6 +10,7 @@ import urllib
 
 from .. import util
 from .library import Library
+from .util import load_debian
 
 
 class Project(object):
@@ -40,15 +41,25 @@ class Project(object):
         """
 
         version = ""
+        version_strings = []
         for namespace in self.namespaces:
             try:
                 rmod = util.import_namespace(namespace, ignore_version=True)
             except ImportError:
                 continue
             l = Library.for_namespace(namespace, util.get_module_version(rmod))
+            version_strings.append(l.namespace)
             version = l.version
             if version:
                 break
+
+        # get the debian package version if all else fails
+        if not version:
+            debian_info = load_debian()
+            for v in version_strings:
+                if v in debian_info:
+                    version = debian_info[v]["version"]
+                    break
 
         return version
 
