@@ -57,9 +57,16 @@ if __name__ == "__main__":
                 candidate = dep
                 break
 
+        def extract_version(version):
+            version = version.split(":", 1)[-1]
+            for s in "-~+":
+                version = version.rsplit(s, 1)[0]
+            return version
+
         homepage = candidate.homepage
         summary = fixup_summary(candidate.summary)
         description = fixup_desc(candidate.description)
+        version = extract_version(candidate.source_version)
 
         for ns in namespaces:
             final[ns] = {
@@ -68,6 +75,7 @@ if __name__ == "__main__":
                 "summary": summary,
                 "description": description,
                 "debian_package": package,
+                "version": version,
             }
 
     cache.close()
