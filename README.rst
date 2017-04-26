@@ -72,32 +72,49 @@ generated documentation:
         }
 
 
-License
--------
+Licenses
+--------
 
-Everything in the ``data/theme`` sub directory:
+Everything in the ``pgidocgen/gen/data/theme`` sub directory:
 
     https://github.com/rtfd/readthedocs.org
 
     MIT License
 
-``data/theme/static/js/modernizr.min.js``:
+Fonts embedded in ``pgidocgen/gen/data/theme/static/css/pgi.css``
 
-    http://modernizr.com
+    Lato:
+        http://www.latofonts.com
 
-    MIT License
+        SIL Open Font License 1.1
 
-``data/theme/static/fonts/lato*.wof``
+    DejaVu Sans Mono:
+        https://dejavu-fonts.github.io/
 
-    http://www.latofonts.com
+        Public Domain
 
-    SIL Open Font License
+    FontAwesome:
+        http://fontawesome.io
 
-``data/ext/devhelp_fork.py``:
+        SIL OFL 1.1
+
+``pgidocgen/gen/data/ext/devhelp_fork.py``
 
     https://bitbucket.org/birkenfeld/sphinx/
 
     BSD
+
+``pgidocgen/gen/data/index/jquery-2.2.0.min.js``
+
+    https://jquery.org/
+
+    MIT License
+
+``pgidocgen/gen/data/index/js.cookie-2.1.0.min.js``
+
+    https://github.com/js-cookie/js-cookie
+
+    MIT License
 
 Everything else:
 
