@@ -8,6 +8,7 @@ include tests/*.py
 include tools/*.py
 include tools/*.sh
 include README.rst
+include LICENSE
 recursive-include pgidocgen/girdata/clsimages *
 recursive-include pgidocgen/girdata/doap *
 recursive-include pgidocgen/girdata/docref *
