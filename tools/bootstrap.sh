@@ -6,13 +6,13 @@
 
 echo "Usage: 'source bootstrap.sh'"
 
-VENV="_venv"
+VENV="${VENV:-_venv}"
 PYTHON=${PYTHON:-python2}
 
 if [ -d "$VENV" ]; then
     . "$VENV"/bin/activate
 else
-    virtualenv --system-site-packages -p $PYTHON _venv
+    virtualenv --system-site-packages -p $PYTHON "$VENV"
     . "$VENV"/bin/activate
     pip install git+https://github.com/pygobject/pgi.git
     pip install sphinx
