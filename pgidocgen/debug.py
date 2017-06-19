@@ -279,8 +279,14 @@ def get_abs_library_path(library_name):
     if "LD_LIBRARY_PATH" in os.environ:
         return os.path.join(os.environ["LD_LIBRARY_PATH"], library_name)
 
+    # On debian ldconfig is in /sbin which isn't in PATH by default
+    env = os.environ.copy()
+    paths = [p for p in env.get("PATH", "").split(os.pathsep)]
+    paths.append("/sbin")
+    env["PATH"] = os.pathsep.join(paths)
+
     data = subprocess.check_output(["ldconfig", "-p"],
-                                   stderr=subprocess.STDOUT)
+                                   stderr=subprocess.STDOUT, env=env)
 
     for line in data.splitlines():
         line = line.strip()
