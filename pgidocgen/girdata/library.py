@@ -56,6 +56,7 @@ LIBRARIES = [
     Library("Clutter-1.0", "https://developer.gnome.org/clutter/stable/", "clutter"),
     Library("Gst-1.0", "http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/", "gstreamer-1.0"),
     Library("GES-1.0", "http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer-editing-services/html/", "ges-1.0"),
+    Library("UDisks-2.0", "http://storaged.org/doc/udisks2-api/latest/", "udisks2"),
 ]
 
 
