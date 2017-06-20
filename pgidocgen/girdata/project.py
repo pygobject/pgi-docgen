@@ -93,6 +93,9 @@ class Project(object):
             return "gexiv2-" + version
         elif matches("Anthy"):
             return "release/" + version
+        elif matches("UDisks"):
+            # XXX: I don't understand the tagging system they use.. anyone?
+            return "udisks-2.6.4"
 
     def get_source_func(self, namespace, project_version=None):
         """Returns a function for mapping the line number paths to web links
@@ -171,6 +174,13 @@ class Project(object):
             def func(path):
                 path, line = path.rsplit(":", 1)
                 return "https://anonscm.debian.org/cgit/collab-maint/anthy.git/tree/%s?h=%s#n%s" % (path, tag, line)
+
+            return func
+        elif namespace in ("UDisks",):
+
+            def func(path):
+                path, line = path.rsplit(":", 1)
+                return "https://github.com/storaged-project/udisks/blob/%s/%s#L%s" % (tag, path, line)
 
             return func
 
@@ -262,4 +272,5 @@ PROJECTS = [
     Project(['HarfBuzz'], 'http://cgit.freedesktop.org/harfbuzz/plain/harfbuzz.doap'),
     Project(['Gom'], 'https://git.gnome.org/browse/gom/plain/gom.doap'),
     Project(['Gnm'], 'https://git.gnome.org/browse/gnumeric/plain/gnumeric.doap'),
+    Project(['UDisks']),
 ]
