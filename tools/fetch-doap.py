@@ -31,8 +31,9 @@ def main(argv):
     print "Missing:"
     print sorted(ns_list)
 
+    projects = [p for p in PROJECTS if p.doap]
     pool = Pool(20)
-    for content, project in pool.imap_unordered(fetch, PROJECTS):
+    for content, project in pool.imap_unordered(fetch, projects):
         for ns in project.namespaces:
             path = get_doap_path(ns)
             with open(path, 'wb') as h:

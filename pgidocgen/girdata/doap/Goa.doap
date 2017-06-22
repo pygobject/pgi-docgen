@@ -14,9 +14,8 @@
   <description xml:lang="en">
     GNOME Online Accounts provides interfaces so that applications and
     libraries in GNOME can access the user's online accounts. It has
-    providers for Google, ownCloud, Facebook, Flickr, Windows Live,
-    Pocket, Foursquare, Microsoft Exchange, Last.fm, IMAP/SMTP, Jabber,
-    SIP and Kerberos.
+    providers for Google, Nextcloud, Facebook, Microsoft, Flickr, Pocket,
+    Foursquare, Microsoft Exchange, Last.fm, IMAP/SMTP and Kerberos.
   </description>
 
   <homepage rdf:resource="https://wiki.gnome.org/Projects/GnomeOnlineAccounts" />
