@@ -1067,6 +1067,8 @@ class Module(BaseDocObject):
         mod.project_summary = get_project_summary(repo.namespace, repo.version)
         mod.project_summary.dependencies = repo.get_dependencies()
 
+        print "%s-%s: unresolved links: %d" % (repo.namespace, repo.version, repo.missed_links)
+        
         return mod
 
 
