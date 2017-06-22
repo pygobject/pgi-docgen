@@ -19,6 +19,7 @@ class Repository(object):
     def __init__(self, namespace, version):
         self.namespace = namespace
         self.version = version
+        self.missed_links = 0
 
         self._ns = ns = get_namespace(namespace, version)
 
