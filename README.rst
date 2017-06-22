@@ -19,7 +19,7 @@ Requirements
 * BeautifulSoup 3
 * graphviz
 
-Calling ``PYTHON=python2 source ./tools/bootstrap.sh`` will put you in a
+Calling ``source ./tools/bootstrap.sh`` will put you in a
 virtualenv with all dependencies installed (except graphviz).
 
 
