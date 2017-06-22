@@ -35,8 +35,10 @@ def fetch_pages(lib):
         pages.add(page)
 
     for tag in soup.findAll("keyword"):
-        keywords.add(tag["link"])
-
+        if tag.get("link"):
+            if tag["link"].startswith('gdbus-'):
+                continue
+            keywords.add(tag["link"])
 
     return pages, keywords
 
