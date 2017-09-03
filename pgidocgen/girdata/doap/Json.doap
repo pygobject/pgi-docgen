@@ -10,9 +10,15 @@
   <description>JSON-GLib implements a full JSON parser using GLib and GObject. Use JSON-GLib it is possible to parse and generate valid JSON data structures, using a DOM-like API. JSON-GLib also offers GObject integration, providing the ability to serialize and deserialize GObject instances to and from JSON data types.</description>
 
   <homepage rdf:resource="https://wiki.gnome.org/Projects/JsonGlib"/>
-  <license rdf:resource="http://usefulinc.com/doap/licenses/lgpl"/>
-  <download-page rdf:resource="http://download.gnome.org/sources/json-glib/" />
+  <license rdf:resource="http://spdx.org/licenses/LGPL-2.1+"/>
+  <download-page rdf:resource="http://download.gnome.org/sources/json-glib/"/>
   <bug-database rdf:resource="https://bugzilla.gnome.org/enter_bug.cgi?product=json-glib"/>
+  <repository>
+    <GitRepository>
+      <location rdf:resource="https://gitlab.gnome.org/GNOME/json-glib.git"/>
+      <browse rdf:resource="https://gitlab.gnome.org/GNOME/json-glib/"/>
+    </GitRepository>
+  </repository>
 
   <category rdf:resource="http://api.gnome.org/doap-extensions#core"/>
 
