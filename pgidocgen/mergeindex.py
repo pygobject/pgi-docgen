@@ -85,14 +85,18 @@ class SearchIndexMerger(object):
 
             new_titles = []
             new_filenames = []
-            for fn, title in zip(index["filenames"], index["titles"]):
+            new_docnames = []
+            for docname, fn, title in zip(index["docnames"],
+                                          index["filenames"], index["titles"]):
                 new_filenames.append(fn)
+                new_docnames.append(docname)
                 # add the namespace to title not containing the module name
                 if "." not in title:
                     title = "%s - %s" % (ns.replace("-", " "), title)
                 new_titles.append(title)
             namespaces[ns]["titles"] = new_titles
             namespaces[ns]["filenames"] = new_filenames
+            namespaces[ns]["docnames"] = new_docnames
 
             new_objects = {}
             for k, attributes in index["objects"].iteritems():

@@ -287,12 +287,12 @@ SearchIndex.prototype._getResults = function(parts) {
         var namespace = namespaces[ns];
         var objects = namespace.objects;
         var titles = namespace.titles;
-        var filenames = namespace.filenames;
+        var docnames = namespace.docnames;
         var module = ns.split("-")[0];
         var partsLength = parts.length;
 
         var get_fn = function(index) {
-            return ns + "/" + filenames[index];
+            return ns + "/" + docnames[index];
         };
 
         var titleLength = titles.length;
