@@ -20,6 +20,7 @@ import subprocess
 import shutil
 import argparse
 import requests
+import time
 from multiprocessing.pool import ThreadPool
 
 import apt
@@ -179,17 +180,24 @@ def compare_deb_packages(a, b):
 
 def _fetch(args):
     dest, uri = args
-    print uri
-    r = requests.get(uri)
+    for i in range(5):
+        try:
+            r = requests.get(uri)
+        except requests.RequestException as e:
+            time.sleep(i * i)
+            continue
+        break
+    else:
+        raise Exception(e)
     filename = uri.rsplit("/", 1)[-1]
     with open(os.path.join(dest, filename), "wb") as h:
         h.write(r.content)
+    return uri
 
 
 def fetch_girs(girs, dest):
     dest = os.path.abspath(dest)
     assert not os.path.exists(dest)
-    os.mkdir(dest)
 
     tmp_root = os.path.join(dest, "temp_root")
     tmp_download = os.path.join(dest, "tmp_download")
@@ -199,7 +207,6 @@ def fetch_girs(girs, dest):
     uris = []
     cache = apt.Cache()
     cache.open(None)
-    os.mkdir(tmp_download)
     # install anything that is a candidate or older
     # (is versions really ordered?)
     for name in girs:
@@ -212,8 +219,10 @@ def fetch_girs(girs, dest):
                     uris.append(version.uri)
     cache.close()
 
+    os.makedirs(tmp_download)
     pool = ThreadPool(processes=10)
-    pool.map_async(_fetch, [(tmp_download, uri) for uri in uris])
+    for i, uri in enumerate(pool.imap_unordered(_fetch, [(tmp_download, u) for u in uris])):
+        print("%d/%d" % (i+1, len(uris)), uri)
     pool.close()
     pool.join()
 
