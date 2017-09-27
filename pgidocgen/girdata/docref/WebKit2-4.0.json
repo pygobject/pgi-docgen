@@ -1,5 +1,7 @@
 {
+    "WebKitApplicationInfo": "http://webkitgtk.org/reference/webkit2gtk/stable/WebKitApplicationInfo.html#WebKitApplicationInfo", 
     "WebKitAuthenticationRequest": "http://webkitgtk.org/reference/webkit2gtk/stable/WebKitAuthenticationRequest.html#WebKitAuthenticationRequest", 
+    "WebKitAutomationSession": "http://webkitgtk.org/reference/webkit2gtk/stable/WebKitAutomationSession.html#WebKitAutomationSession", 
     "WebKitBackForwardList": "http://webkitgtk.org/reference/webkit2gtk/stable/WebKitBackForwardList.html#WebKitBackForwardList", 
     "WebKitBackForwardListItem": "http://webkitgtk.org/reference/webkit2gtk/stable/WebKitBackForwardListItem.html#WebKitBackForwardListItem", 
     "WebKitColorChooserRequest": "http://webkitgtk.org/reference/webkit2gtk/stable/WebKitColorChooserRequest.html#WebKitColorChooserRequest", 
@@ -25,6 +27,8 @@
     "WebKitNetworkProxySettings": "http://webkitgtk.org/reference/webkit2gtk/stable/WebKitNetworkProxySettings.html#WebKitNetworkProxySettings", 
     "WebKitNotification": "http://webkitgtk.org/reference/webkit2gtk/stable/WebKitNotification.html#WebKitNotification", 
     "WebKitNotificationPermissionRequest": "http://webkitgtk.org/reference/webkit2gtk/stable/WebKitNotificationPermissionRequest.html#WebKitNotificationPermissionRequest", 
+    "WebKitOptionMenu": "http://webkitgtk.org/reference/webkit2gtk/stable/WebKitOptionMenu.html#WebKitOptionMenu", 
+    "WebKitOptionMenuItem": "http://webkitgtk.org/reference/webkit2gtk/stable/WebKitOptionMenuItem.html#WebKitOptionMenuItem", 
     "WebKitPermissionRequest": "http://webkitgtk.org/reference/webkit2gtk/stable/WebKitPermissionRequest.html#WebKitPermissionRequest", 
     "WebKitPlugin": "http://webkitgtk.org/reference/webkit2gtk/stable/WebKitPlugin.html#WebKitPlugin", 
     "WebKitPolicyDecision": "http://webkitgtk.org/reference/webkit2gtk/stable/WebKitPolicyDecision.html#WebKitPolicyDecision", 

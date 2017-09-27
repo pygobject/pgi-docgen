@@ -6,6 +6,10 @@
 
   <name xml:lang="en">libchamplain</name>
   <shortdesc xml:lang="en">A map widget</shortdesc>
+  <description>libchamplain is a Clutter based actor and a GTK widget displaying
+interactive maps. Various map sources can be used together with the possibility
+to draw custom overlays, markers and lines on top of the maps. Bindings to other
+languages are provided using GObject Introspection.</description>
   <category rdf:resource="http://api.gnome.org/doap-extensions#core" />
   <programming-language>C</programming-language>
   <homepage rdf:resource="https://wiki.gnome.org/Projects/libchamplain" />

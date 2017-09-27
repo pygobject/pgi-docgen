@@ -273,4 +273,5 @@ PROJECTS = [
     Project(['Gom'], 'https://git.gnome.org/browse/gom/plain/gom.doap'),
     Project(['Gnm'], 'https://git.gnome.org/browse/gnumeric/plain/gnumeric.doap'),
     Project(['UDisks']),
+    Project(['Dazzle'], 'https://git.gnome.org/browse/libdazzle/plain/libdazzle.doap'),
 ]

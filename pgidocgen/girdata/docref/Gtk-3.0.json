@@ -393,6 +393,7 @@
     "gtkfilechooserdialog-responses": "https://developer.gnome.org/gtk3/stable/GtkFileChooserDialog.html#gtkfilechooserdialog-responses", 
     "gtkfilechooserdialog-setting-up": "https://developer.gnome.org/gtk3/stable/GtkFileChooserDialog.html#gtkfilechooserdialog-setting-up", 
     "gtkfilechooserdialognative-differences": "https://developer.gnome.org/gtk3/stable/gtk3-GtkFileChooserNative.html#gtkfilechooserdialognative-differences", 
+    "gtkfilechooserdialognative-macos": "https://developer.gnome.org/gtk3/stable/gtk3-GtkFileChooserNative.html#gtkfilechooserdialognative-macos", 
     "gtkfilechooserdialognative-portal": "https://developer.gnome.org/gtk3/stable/gtk3-GtkFileChooserNative.html#gtkfilechooserdialognative-portal", 
     "gtkfilechooserdialognative-responses": "https://developer.gnome.org/gtk3/stable/gtk3-GtkFileChooserNative.html#gtkfilechooserdialognative-responses", 
     "gtkfilechooserdialognative-win32": "https://developer.gnome.org/gtk3/stable/gtk3-GtkFileChooserNative.html#gtkfilechooserdialognative-win32", 
