@@ -13,6 +13,23 @@
         margin: 15px 0px 25px 20px !important;
     }
 
+    .splash {
+     position:absolute;
+     top:40%;
+     left:0;
+     right:0;
+     text-align:center;
+     margin-top:-3.5em;
+     opacity: 0.75;
+     color: #aaa;
+    }
+
+    .splash-title {
+     text-shadow: 0px 0px 2px #eee;
+     letter-spacing: -0.1rem;
+     font-size: 3em;
+    }
+
     </style>
 
 </head>
@@ -25,7 +42,17 @@
         <div class="rst-content">
 
            <div class="section">
-                {{ body }}
+                <div class="splash">
+                    <span class="splash-title">PyGObject API Reference</span>
+                    <br><br>
+                    <i class="fa fa-question-circle"></i>&#160;&#160;<a href="faq.html">Frequently Asked Questions</a>
+                    <br><br>
+                    <i class="fa fa-cog"></i>&#160;&#160;<a href="config.html">Search Configuration</a>
+                    <br><br>
+                    <i class="fa fa-github"></i>&#160;&#160;<a class="reference external" href="https://github.com/pygobject/pgi-docgen">Source Code</a>
+                    <br><br>
+                    <i class="fa fa-bug"></i>&#160;&#160;<a class="reference external" href="https://github.com/pygobject/pgi-docgen/issues">Issue Tracker</a>
+                </div>
             </div>
         </div>
       </div>

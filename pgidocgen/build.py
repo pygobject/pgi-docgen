@@ -277,13 +277,19 @@ def main(argv):
             env = jinja2.Environment().from_string(data)
             t.write(env.render(results=results))
 
-        with open(os.path.join(index_path, "main.html"), "rb") as h:
+        with open(os.path.join(index_path, "faq.html"), "rb") as h:
             data = h.read()
-        with open(os.path.join(get_data_dir(), "main.rst"), "rb") as h:
+        with open(os.path.join(get_data_dir(), "faq.rst"), "rb") as h:
             main_rst = h.read()
-        with open(os.path.join(target_path, "main.html"), "wb") as t:
+        with open(os.path.join(target_path, "faq.html"), "wb") as t:
             env = jinja2.Environment().from_string(data)
             t.write(env.render(body=rest2html(main_rst)))
+
+        with open(os.path.join(index_path, "main.html"), "rb") as h:
+            data = h.read()
+        with open(os.path.join(target_path, "main.html"), "wb") as t:
+            env = jinja2.Environment().from_string(data)
+            t.write(env.render())
 
         share_static(target_path)
     else:
