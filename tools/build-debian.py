@@ -32,18 +32,8 @@ from pgidocgen.util import parse_gir_shared_libs
 
 
 DEB_BLACKLIST = [
-    "gir1.2-panelapplet-4.0",
-    "gir1.2-gpaste-2.0",
-    "gir1.2-gpaste-4.0",
-    "gir1.2-gdm3",
-    "gir1.2-webkit2-3.0",
-    "gir1.2-gst-plugins-base-0.10",
-    "gir1.2-gstreamer-0.10",
-    "evolution-data-server-dbg",
-    "libstoraged0",
     "gir1.2-hkl-5.0",
-    "gir1.2-spice-client-glib-2.0",
-    "gir1.2-spice-client-gtk-3.0",
+    "gir1.2-totem-plparser-1.0",
 ]
 
 BLACKLIST = [
@@ -152,7 +142,7 @@ BUILD = ['AccountsService-1.0', 'Anjuta-3.0', 'AppIndicator3-0.1', 'Atk-1.0',
 'Dazzle-1.0', 'BlockDev-2.0', 'Devhelp-3.0', 'GMime-3.0',
 'AyatanaAppIndicator-0.1', 'AyatanaAppIndicator3-0.1', 'AvahiCore-0.6',
 'TrackerMiner-2.0', 'Avahi-0.6', 'TrackerControl-2.0', 'Retro-0.12',
-'AyatanaIdo3-0.4', 'Tracker-2.0'
+'AyatanaIdo3-0.4', 'Tracker-2.0', 'Fwupd-2.0',
 ]
 
 
