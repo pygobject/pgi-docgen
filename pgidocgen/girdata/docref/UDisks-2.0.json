@@ -252,6 +252,7 @@
     "gdbus-method-org-freedesktop-UDisks2-Partition.SetType": "http://storaged.org/doc/udisks2-api/latest/gdbus-org.freedesktop.UDisks2.Partition.html#gdbus-method-org-freedesktop-UDisks2-Partition.SetType", 
     "gdbus-method-org-freedesktop-UDisks2-PartitionTable.CreatePartition": "http://storaged.org/doc/udisks2-api/latest/gdbus-org.freedesktop.UDisks2.PartitionTable.html#gdbus-method-org-freedesktop-UDisks2-PartitionTable.CreatePartition", 
     "gdbus-method-org-freedesktop-UDisks2-PartitionTable.CreatePartitionAndFormat": "http://storaged.org/doc/udisks2-api/latest/gdbus-org.freedesktop.UDisks2.PartitionTable.html#gdbus-method-org-freedesktop-UDisks2-PartitionTable.CreatePartitionAndFormat", 
+    "gdbus-method-org-freedesktop-UDisks2-Swapspace.SetLabel": "http://storaged.org/doc/udisks2-api/latest/gdbus-org.freedesktop.UDisks2.Swapspace.html#gdbus-method-org-freedesktop-UDisks2-Swapspace.SetLabel", 
     "gdbus-method-org-freedesktop-UDisks2-Swapspace.Start": "http://storaged.org/doc/udisks2-api/latest/gdbus-org.freedesktop.UDisks2.Swapspace.html#gdbus-method-org-freedesktop-UDisks2-Swapspace.Start", 
     "gdbus-method-org-freedesktop-UDisks2-Swapspace.Stop": "http://storaged.org/doc/udisks2-api/latest/gdbus-org.freedesktop.UDisks2.Swapspace.html#gdbus-method-org-freedesktop-UDisks2-Swapspace.Stop", 
     "gdbus-method-org-freedesktop-UDisks2-VolumeGroup.AddDevice": "http://storaged.org/doc/udisks2-api/latest/gdbus-org.freedesktop.UDisks2.VolumeGroup.html#gdbus-method-org-freedesktop-UDisks2-VolumeGroup.AddDevice", 

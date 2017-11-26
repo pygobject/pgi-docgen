@@ -41,7 +41,7 @@ This is a library to handle UPnP IGD port mapping.</description>
     <foaf:Person>
       <foaf:name>Olivier Crête</foaf:name>
       <foaf:mbox rdf:resource="mailto:olivier.crete@ocrete.ca" />
-      <gnome:userid>Tester</gnome:userid>
+      <gnome:userid>tester</gnome:userid>
     </foaf:Person>
   </maintainer>
 </Project>
