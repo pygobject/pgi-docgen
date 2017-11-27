@@ -34,6 +34,7 @@ from pgidocgen.util import parse_gir_shared_libs
 DEB_BLACKLIST = [
     "gir1.2-hkl-5.0",
     "gir1.2-totem-plparser-1.0",
+    "gir1.2-gpaste-6.0",
 ]
 
 BLACKLIST = [
@@ -87,6 +88,7 @@ BLACKLIST = [
     "v_sim-3.7",
     "FolksDummy-0.6",
     "Wnck-1.0",
+    "AyatanaAppIndicator-0.1",
 ]
 
 BUILD = ['AccountsService-1.0', 'Anjuta-3.0', 'AppIndicator3-0.1', 'Atk-1.0',
@@ -130,8 +132,8 @@ BUILD = ['AccountsService-1.0', 'Anjuta-3.0', 'AppIndicator3-0.1', 'Atk-1.0',
 "GstMpegts-1.0", 'Anthy-9000', 'MediaArt-2.0', 'CoglGst-2.0',
 'GstRtspServer-1.0', 'ClutterGst-3.0', 'Gom-1.0', 'Limba-1.0', 'Abi-3.0',
 'Gnm-1.12', 'Libmsi-1.0', 'Vips-8.0', 'GooCanvas-2.0', 'GSound-1.0',
-'Accounts-1.0', 'Signon-1.0', 'Fwupd-1.0', 'Grss-0.7', 'AppStream-1.0',
-'Dfu-1.0', 'LibvirtSandbox-1.0', 'GrlNet-0.3', 'Grl-0.3', 'Hinawa-1.0',
+'Accounts-1.0', 'Signon-1.0', 'Grss-0.7', 'AppStream-1.0',
+'LibvirtSandbox-1.0', 'GrlNet-0.3', 'Grl-0.3', 'Hinawa-1.0',
 'GstPlayer-1.0', 'LOKDocView-0.1', 'GrlPls-0.3', 'GoVirt-1.0', 'Cvc-1.0',
 'Workrave-1.0', 'OSTree-1.0', 'Flatpak-1.0', 'Mx-2.0',
 'GstTranscoder-1.0', 'GSystem-1.0', 'GMime-2.6', 'Budgie-1.0',
@@ -140,9 +142,10 @@ BUILD = ['AccountsService-1.0', 'Anjuta-3.0', 'AppIndicator3-0.1', 'Atk-1.0',
 'GstBadAllocators-1.0', 'Gepub-0.5', 'Camel-1.2',
 'Graphene-1.0', 'EDataServerUI-1.2', 'Template-1.0', 'Jsonrpc-1.0',
 'Dazzle-1.0', 'BlockDev-2.0', 'Devhelp-3.0', 'GMime-3.0',
-'AyatanaAppIndicator-0.1', 'AyatanaAppIndicator3-0.1', 'AvahiCore-0.6',
+'AyatanaAppIndicator3-0.1', 'AvahiCore-0.6',
 'TrackerMiner-2.0', 'Avahi-0.6', 'TrackerControl-2.0', 'Retro-0.12',
 'AyatanaIdo3-0.4', 'Tracker-2.0', 'Fwupd-2.0',
+'Snapd-1', 'Parlatype-1.0', 'Peony-2.0',
 ]
 
 
