@@ -263,7 +263,8 @@ def main(argv):
             shutil.copyfile(src, dst)
 
         done_sorted = sorted(done, key=lambda d: d.name.lower())
-        results = [(d.name + "/index.html", d.name.replace("-", " "), d.lib_version)
+        results = [(d.name + "/index.html", d.name.split("-")[0],
+                    d.name.split("-")[-1], d.lib_version)
                    for d in done_sorted]
         with open(os.path.join(index_path, "sidebar.html"), "rb") as h:
             data = h.read()

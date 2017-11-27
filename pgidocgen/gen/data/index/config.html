@@ -51,8 +51,8 @@
         <label><input type="button" id="select-all" value="Select All">&#160;&#160;&#160;<input type="button" id="unselect-all" value="Unselect All"></label>
     </dd>
     <dd class="module-selection">
-        {% for url, name, version in results %}
-        <label><input type="checkbox" class="module-checkbox" value="{{ name }}">{{ name }}</label>
+        {% for url, name, nsver, version in results %}
+        <label><input type="checkbox" class="module-checkbox" value="{{ name }}">{{ name }} {{ nsver }}</label>
         {% endfor %}
     </dd>
 </dl>

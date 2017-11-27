@@ -72,6 +72,10 @@
         overflow: hidden;
     }
 
+    .left .version {
+        color: #888;
+    }
+
     .right {
         float: right;
         color: #888;
@@ -129,8 +133,8 @@
     <div class="wy-menu wy-menu-vertical">
         <div id="search-results">
             <ul>
-                {% for url, name, version in results %}
-                <li><a href="{{ url }}" target="Content" title="{{ name }}"><div class="right">{{ version }}</div><div class="left">{{ name }}</div></a></li>
+                {% for url, name, nsver, version in results %}
+                <li><a href="{{ url }}" target="Content" title="{{ name }}"><div class="right">{{ version }}</div><div class="left">{{ name }} <span class="version">{{ nsver }}</span></div></a></li>
                 {% endfor %}
             </ul>
         </div>
