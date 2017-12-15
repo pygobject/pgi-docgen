@@ -330,13 +330,13 @@ def main(argv):
     os.environ["XDG_DATA_DIRS"] = data_dir
 
     subprocess.check_call(
-        ["python", "./pgi-docgen.py", "_docs"] + BUILD)
+        ["./pgidocgen.py", "create", "_docs"] + BUILD)
     subprocess.check_call(
-        ["python", "./pgi-docgen-build.py", "_docs", "_docs/_build"])
+        ["./pgidocgen.py", "build", "_docs", "_docs/_build"])
 
     if args.devhelp:
         subprocess.check_call(
-            ["python", "./pgi-docgen-build.py", "--devhelp",
+            ["./pgidocgen.py", "build", "--devhelp",
              "_docs", "_docs/_build_devhelp"])
 
 

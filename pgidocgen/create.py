@@ -17,36 +17,34 @@ from .gen import ModuleGenerator
 from .util import get_gir_files
 
 
-def _main_many(prog, target, namespaces):
+def add_parser(subparsers):
+    parser = subparsers.add_parser("create",
+        help="Create a sphinx environ")
+    parser.add_argument('target',
+                        help='path to where the resulting source should be')
+    parser.add_argument('namespace', nargs="+",
+                        help='namespace including version e.g. Gtk-3.0')
+    parser.set_defaults(func=main)
+
+
+def _main_many(target, namespaces):
     fd, temp_cache = tempfile.mkstemp("pgidocgen-cache")
     os.close(fd)
     try:
         os.environ["PGIDOCGEN_CACHE"] = temp_cache
         for namespace in namespaces:
             subprocess.check_call(
-                [sys.executable, prog, target, namespace])
+                [sys.executable, sys.argv[0], "create", target, namespace])
     finally:
         os.unlink(temp_cache)
 
 
-def main(argv):
-    parser = argparse.ArgumentParser(
-        description='Create a sphinx environ')
-    parser.add_argument('target',
-                        help='path to where the resulting source should be')
-    parser.add_argument('namespace', nargs="+",
-                        help='namespace including version e.g. Gtk-3.0')
-
-    try:
-        args = parser.parse_args(argv[1:])
-    except SystemExit:
-        raise SystemExit(1)
-
+def main(args):
     if not args.namespace:
         print "No namespace given"
         raise SystemExit(1)
     elif len(args.namespace) > 1:
-        return _main_many(argv[0], args.target, args.namespace)
+        return _main_many(args.target, args.namespace)
     else:
         namespace = args.namespace[0]
 

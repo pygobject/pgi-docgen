@@ -157,16 +157,17 @@ class Package(object):
         return "<%s name=%s>" % (type(self).__name__, self.name)
 
 
-def main(argv):
-
-    parser = argparse.ArgumentParser(
-        description='Build the sphinx environ created with pgi-docgen')
+def add_parser(subparsers):
+    parser = subparsers.add_parser("build",
+        help="uild the sphinx environ created with pgi-docgen")
     parser.add_argument('source', help='path to the sphinx environ base dir')
     parser.add_argument('target',
                         help='path to where the resulting build should be')
     parser.add_argument('--devhelp', action='store_true')
-    args = parser.parse_args(argv[1:])
+    parser.set_defaults(func=main)
 
+
+def main(args):
     if sphinx.version_info < (1, 5, 0):
         raise SystemExit("Needs sphinx 1.5.0+")
 
