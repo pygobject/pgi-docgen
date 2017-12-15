@@ -6,6 +6,8 @@
 # License as published by the Free Software Foundation; either
 # version 2.1 of the License, or (at your option) any later version.
 
+from __future__ import print_function
+
 import os
 import re
 import inspect
@@ -122,7 +124,7 @@ def iter_public_attr(obj):
             if not inspect.isclass(obj):
                 obj = type(obj)
             # FIXME.. pgi exposes methods it can't compile
-            print "PGI-ERROR: %s.%s.%s" % (obj.__module__, obj.__name__, attr)
+            print("PGI-ERROR: %s.%s.%s" % (obj.__module__, obj.__name__, attr))
             continue
         yield attr, attr_obj
 

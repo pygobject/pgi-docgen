@@ -12,6 +12,7 @@ from pgidocgen.util import is_staticmethod, is_classmethod, is_normalmethod, \
     is_method_owner, is_fundamental, is_object, instance_to_rest, \
     get_child_properties, fake_subclasses, get_style_properties, \
     unescape_parameter, fake_bases, is_attribute_owner, unindent
+from pgidocgen.compat import long_
 
 
 class TUtil(unittest.TestCase):
@@ -87,7 +88,7 @@ class TUtil(unittest.TestCase):
         self.assertEqual(v,
             ":obj:`Gtk.AccelFlags.LOCKED` | :obj:`Gtk.AccelFlags.MASK`")
 
-        v = instance_to_rest(int, 42L)
+        v = instance_to_rest(int, long_(42))
         self.assertEqual(v, "``42``")
 
         v = instance_to_rest(Gtk.Button, None)
