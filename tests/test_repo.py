@@ -40,10 +40,9 @@ class TRepository(unittest.TestCase):
         Atk = repo.import_module()
         klass = Class.from_object(repo, Atk.Plug)
         self.assertEqual(
-            klass.methods_inherited,
-            [('Atk.Object', 23),
-             ('GObject.Object', 38),
-             ('Atk.Component', 13)])
+            [x[0] for x in klass.methods_inherited],
+            ['Atk.Object', 'GObject.Object', 'Atk.Component']
+        )
 
     def test_hierarchy(self):
         from pgi.repository import GObject

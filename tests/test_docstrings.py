@@ -14,6 +14,8 @@ from pgidocgen.namespace import get_base_types
 
 class DummyRepo(object):
 
+    missed_links = 0
+
     def __init__(self):
         self.types = {
             "g_rand_new_with_seed": ["GLib.Rand.new_with_seed"],
