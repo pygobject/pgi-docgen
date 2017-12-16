@@ -13,7 +13,6 @@ import re
 import inspect
 import keyword
 import csv
-import cStringIO
 import warnings
 import subprocess
 
@@ -477,6 +476,8 @@ def get_gir_files():
 
 
 def get_csv_line(values):
+    import cStringIO
+
     class CSVDialect(csv.Dialect):
         delimiter = ','
         quotechar = '"'

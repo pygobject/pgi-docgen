@@ -47,6 +47,8 @@ if PY2:
     import __builtin__ as builtins
     builtins
 
+    from urllib import unquote
+
 elif PY3:
     from io import StringIO
     StringIO = StringIO
@@ -77,3 +79,5 @@ elif PY3:
 
     import builtins
     builtins
+
+    from urllib.parse import unquote
