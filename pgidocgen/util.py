@@ -45,12 +45,12 @@ def parse_gir_shared_libs(gir_path):
 
     shared_libs = []
     with open(gir_path, "rb") as h:
-        for line in h.read().splitlines():
+        for line in h.read().decode("utf-8").splitlines():
             line = line.strip()
             if line.startswith("shared-library="):
                 shared_libs.extend(line.split("=")[-1].strip("\"").split(","))
                 break
-    return filter(None, shared_libs)
+    return list(filter(None, shared_libs))
 
 
 def cache_calls(func):
@@ -452,7 +452,7 @@ def xdg_get_system_data_dirs():
 
     data_dirs = os.getenv("XDG_DATA_DIRS")
     if data_dirs:
-        return map(os.path.abspath, data_dirs.split(":"))
+        return list(map(os.path.abspath, data_dirs.split(":")))
     else:
         return ("/usr/local/share/", "/usr/share/")
 

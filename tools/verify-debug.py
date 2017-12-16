@@ -1,10 +1,12 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 # Copyright 2016 Christoph Reiter
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
 # License as published by the Free Software Foundation; either
 # version 2.1 of the License, or (at your option) any later version.
+
+from __future__ import print_function
 
 import requests
 
@@ -16,14 +18,14 @@ from pgidocgen.girdata import Project
 DATA = {
     "Gtk-3.0": (),
     "Anthy-9000": ("9100h", "", ""),
-    "AppStreamGlib-1.0": (
-        "0.5.14", "as_bundle_get_sdk",
-        "https://github.com/hughsie/appstream-glib/tree/appstream_glib_0_5_14/libappstream-glib/as-bundle.c#L176"),
+    #~ "AppStreamGlib-1.0": (
+        #~ "0.5.14", "as_bundle_get_sdk",
+        #~ "https://github.com/hughsie/appstream-glib/tree/appstream_glib_0_5_14/libappstream-glib/as-bundle.c#L176"),
     "Atk-1.0": (
         "2.20.0", "atk_get_default_registry",
         "https://git.gnome.org/browse/atk/tree/atk/atkregistry.c?h=ATK_2_20_0#n267"),
     "Cally-1.0": (),
-    "Cattle-1.0": ("1.2.0", "cattle_program_new", ""),
+    # "Cattle-1.0": ("1.2.0", "cattle_program_new", ""),
     "Champlain-0.12": ("0.12.13",),
     "Clutter-1.0": (),
     "ClutterGdk-1.0": (),
@@ -48,11 +50,11 @@ DATA = {
     "Gdk-3.0": (),
     "GdkPixbuf-2.0": (
         "2.34.0", "gdk_pixbuf_new_from_file",
-        "https://git.gnome.org/browse/gdk-pixbuf/tree/gdk-pixbuf/gdk-pixbuf-io.c?h=2.34.0#n1067"),
+        "https://git.gnome.org/browse/gdk-pixbuf/tree/gdk-pixbuf/gdk-pixbuf-io.c?h=2.34.0#n1053"),
     "GdkX11-3.0": (),
     "GES-1.0": (
         "1.8.0", "ges_effect_new",
-        "http://cgit.freedesktop.org/gstreamer/gst-editing-services/tree/ges/ges-effect.c?h=1.8.1#n264"),
+        "http://cgit.freedesktop.org/gstreamer/gst-editing-services/tree/ges/ges-effect.c?h=1.8.0#n265"),
     # This is buggy..
     #~ "GExiv2-0.10": (
         #~ "0.10.3", "gexiv2_preview_image_new",
@@ -62,8 +64,7 @@ DATA = {
 
 if __name__ == "__main__":
     for namespace, path in get_gir_files().items():
-        if namespace in DATA:
-            assert DATA[namespace], namespace
+        if DATA.get(namespace):
             version, symbol, res = DATA[namespace]
             p = Project.for_namespace(namespace.split("-")[0])
             assert p.get_tag(version)
@@ -79,6 +80,6 @@ if __name__ == "__main__":
                 r = requests.get(res)
                 assert r.ok
                 assert symbol in r.text, namespace
-                print namespace, res
+                print(namespace, res)
             else:
                 assert not symbols, symbols

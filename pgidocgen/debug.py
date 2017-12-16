@@ -10,6 +10,8 @@ import sys
 import bisect
 import subprocess
 
+from .compat import chr_
+
 """
 Provides source paths and line numbers for shared libraries.
 The library has to include debug symbols or a separate debug symbol file has
@@ -35,7 +37,7 @@ def get_debug_link_file(library_path):
     data = read_elf_section(library_path, ".gnu_debuglink")
     if not data:
         return None
-    filename = data.split(b"\x00", 1)[0]
+    filename = data.split(b"\x00", 1)[0].decode("ascii")
     debug_dir = get_debug_file_directory()
     orig_path = os.path.dirname(library_path).lstrip(os.path.sep)
     return os.path.join(debug_dir, orig_path, filename)
@@ -51,16 +53,16 @@ def read_elf_section(library_path, name):
 
     def tobin(s):
         d = b""
-        for i in xrange(0, len(s), 2):
-            d += chr(int(s[i:i + 2], 16))
+        for i in range(0, len(s), 2):
+            d += chr_(int(s[i:i + 2].decode("ascii"), 16))
         return d
 
     content = b""
     for line in data.splitlines():
         parts = line.split(None, 1)
-        if len(parts) != 2 or not parts[0].startswith("0x"):
+        if len(parts) != 2 or not parts[0].startswith(b"0x"):
             continue
-        content += parts[1][:35].replace(" ", "")
+        content += parts[1][:35].replace(b" ", b"")
     return tobin(content)
 
 
@@ -70,10 +72,10 @@ def get_debug_build_id(library_path):
     data = read_elf_section(library_path, ".note.gnu.build-id")
     if not data:
         return None
-    index = data.find("GNU")
+    index = data.find(b"GNU")
     assert index != -1
     index += 4
-    return "".join(["%02x" % ord(c) for c in data[index:]])
+    return "".join(["%02x" % c for c in bytearray(data[index:])])
 
 
 def get_debug_build_id_for_name(library_name):
@@ -130,7 +132,7 @@ def get_public_symbols(library_path):
         return {}
 
     symbols = {}
-    for line in data.splitlines():
+    for line in data.decode("utf-8").splitlines():
         parts = line.split(None, 1)
         if not parts:
             continue
@@ -158,7 +160,7 @@ def get_compile_units(library_path):
     cu_dir = None
     cu_low_pc = None
     type_ = None
-    for line in data.splitlines():
+    for line in data.decode("utf-8").splitlines():
         parts = line.split()
         if len(parts) < 2:
             continue
@@ -236,7 +238,7 @@ def get_line_numbers_for_file(library_path):
 
     public = get_public_symbols(library_path)
     symbols = {}
-    for addr, symbol in sorted(public.iteritems()):
+    for addr, symbol in sorted(public.items()):
         cu, line = find_nearest_cu(addr), find_nearest_line(addr)
         if symbol not in symbols:
             symbols[symbol] = "%s:%s" % (cu, line)
@@ -246,9 +248,9 @@ def get_line_numbers_for_file(library_path):
 
     # strip away the common path
     assert len(symbols) > 1
-    base = symbols.values()[0].split(os.path.sep)
+    base = list(symbols.values())[0].split(os.path.sep)
     min_match = len(base)
-    for symbol, path in symbols.iteritems():
+    for symbol, path in symbols.items():
         parts = path.split(os.path.sep)
         same = 0
         for a, b in zip(parts, base):
@@ -288,7 +290,7 @@ def get_abs_library_path(library_name):
     data = subprocess.check_output(["ldconfig", "-p"],
                                    stderr=subprocess.STDOUT, env=env)
 
-    for line in data.splitlines():
+    for line in data.decode("utf-8").splitlines():
         line = line.strip()
         parts = line.split(None, 4)
         if len(parts) == 4:
