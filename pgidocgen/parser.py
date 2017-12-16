@@ -8,7 +8,7 @@
 
 import re
 
-from BeautifulSoup import BeautifulStoneSoup, Tag
+from bs4 import BeautifulSoup, Tag
 
 from . import util
 from .util import escape_rest, force_unindent
@@ -229,6 +229,7 @@ def _handle_xml(repo, current_type, current_func, out, item):
         return _handle_data(repo, current_type, current_func, text)
 
     if isinstance(item, Tag):
+        item_text = item.getText().strip()
         if item.name == "literal" or item.name == "type":
             if item.text:
                 # docutils doesn't like empty literals..
@@ -250,32 +251,33 @@ def _handle_xml(repo, current_type, current_func, out, item):
                 lines.append(data.rstrip())
             out.append("\n" + "\n".join(lines) + "\n")
         elif item.name == "ulink":
-            out.append("`%s <%s>`__" % (item.getText(), item.get("url", "")))
+            out.append("`%s <%s>`__" % (item_text, item.get("url", "")))
         elif item.name == "link":
+            lines = []
             linked = item.get("linkend", "")
             if not linked:
-                out.append(item.getText())
+                lines.append(item_text)
             else:
-                pyref = docref_to_pyref(repo, linked, item.getText())
+                pyref = docref_to_pyref(repo, linked, item_text)
                 if pyref is not None:
-                    out.append(pyref)
+                    lines.append(pyref)
                 else:
                     url = repo.lookup_gtkdoc_ref(linked)
                     if url is not None:
-                        out.append("`%s <%s>`__" % (item.getText(), url))
+                        lines.append("`%s <%s>`__" % (item_text, url))
                     else:
-                        out.append("'%s [%s]'" % (item.getText(), linked))
+                        lines.append("'%s [%s]'" % (item_text, linked))
                         repo.missed_links += 1
+            out.extend(lines)
         elif item.name == "programlisting" or item.name == "screen":
-            text = item.getText()
-            if not text.count("\n"):
-                out.append("``%s``" % item.getText())
+            if not item_text.count("\n"):
+                out.append("``%s``" % item_text)
             else:
                 language = item.get("language", "none").lower()
                 code = "\n.. code-block:: %s\n\n%s\n" % (
                     language,
                     util.indent(
-                        util.unindent(item.getText(), ignore_first_line=True)))
+                        util.unindent(item_text, ignore_first_line=True)))
                 out.append(code)
         elif item.name == "para":
             for item in item.contents:
@@ -287,7 +289,7 @@ def _handle_xml(repo, current_type, current_func, out, item):
             # is it doesn't allow newlines, but we can live with that for
             # titles
             title_text = " ".join(
-                handle_data(item.getText()).splitlines())
+                handle_data(item_text).splitlines())
             code = "\n%s\n    ..\n        .\n\n" % title_text
             out.append(code)
         elif item.name == "keycombo":
@@ -295,7 +297,7 @@ def _handle_xml(repo, current_type, current_func, out, item):
             for sub in item.contents:
                 if not isinstance(sub, Tag):
                     continue
-                subs.append(handle_data(sub.getText()))
+                subs.append(handle_data(sub.getText().strip()))
             out.append(" + ".join(subs))
         elif item.name == "varlistentry":
             terms = []
@@ -305,9 +307,9 @@ def _handle_xml(repo, current_type, current_func, out, item):
                     continue
 
                 if sub.name == "term":
-                    terms.append(sub.getText())
+                    terms.append(sub.getText().strip())
                 elif sub.name == "listitem":
-                    listitem = sub.getText()
+                    listitem = sub.getText().strip()
                 else:
                     assert 0
 
@@ -362,8 +364,8 @@ def _docstring_to_docbook(docstring):
 
 
 def _docbook_to_rest(repo, docbook, current_type, current_func):
-    soup = BeautifulStoneSoup(docbook,
-                              convertEntities=BeautifulStoneSoup.HTML_ENTITIES)
+    soup = BeautifulSoup("<dummy>" + docbook + "</dummy>", "xml")
+
     out = []
     for item in soup.contents:
         _handle_xml(repo, current_type, current_func, out, item)

@@ -183,13 +183,30 @@ class TDocstring(unittest.TestCase):
             ':obj:`Atk.Table <Gtk.Widget>`')
 
 
-    def test_docbook_programlisting(self):
+    def test_docbook_programlisting_single(self):
         self.check("""
 <informalexample><programlisting>
 gtk_entry_buffer_get_length (gtk_entry_get_buffer (entry));
 </programlisting></informalexample>""",
         "``gtk_entry_buffer_get_length (gtk_entry_get_buffer (entry));``")
 
+    def test_docbook_programlisting(self):
+        self.check(
+            """\
+<programlisting>
+foo;
+bar;
+</programlisting>\
+""",
+            """\
+
+.. code-block:: none
+
+    foo;
+    bar;\
+""")
+
+    def test_docbook_programlisting_extra(self):
         self.check(
             """\
 foo

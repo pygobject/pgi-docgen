@@ -16,7 +16,7 @@ Requirements
 * pgi (trunk)
 * jinja2
 * Sphinx
-* BeautifulSoup 3
+* BeautifulSoup4
 * graphviz
 
 Calling ``source ./tools/bootstrap.sh`` will put you in a

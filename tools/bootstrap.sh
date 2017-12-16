@@ -16,7 +16,7 @@ else
     . "$VENV"/bin/activate
     pip install git+https://github.com/pygobject/pgi.git
     pip install sphinx
-    pip install BeautifulSoup
+    pip install beautifulsoup4
     pip install jinja2
     pip install cairocffi
 fi
