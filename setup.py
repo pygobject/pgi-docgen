@@ -11,22 +11,20 @@ from distutils.core import setup, Command
 
 class TestCommand(Command):
     description = "run unit tests"
-    user_options = [
-        ("filter=", None, "regexp for filter classes"),
-        ("exitfirst", "x", "exit instantly on first error or failed test"),
-    ]
+    user_options = []
 
     def initialize_options(self):
-        self.filter = ""
-        self.exitfirst = False
+        pass
 
     def finalize_options(self):
-        self.filter = str(self.filter)
-        self.exitfirst = bool(self.exitfirst)
+        pass
 
     def run(self):
-        from tests import do_test
-        exit(do_test(self.filter, self.exitfirst) != 0)
+        import pytest
+
+        status = pytest.main(["tests"])
+        if status != 0:
+            raise SystemExit(status)
 
 
 setup(name='pgidocgen',
