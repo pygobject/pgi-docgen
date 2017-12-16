@@ -32,7 +32,9 @@ def shell(cmd):
     pipe = subprocess.PIPE
     p = subprocess.Popen(cmd, shell=True, stdout=pipe, stderr=pipe, stdin=pipe)
     stdout, stderr = p.communicate()
-    return p.returncode, stdout.strip(), stderr.strip()
+    return (p.returncode,
+            stdout.strip().decode("utf-8"),
+            stderr.strip().decode("utf-8"))
 
 
 def parse_gir_shared_libs(gir_path):

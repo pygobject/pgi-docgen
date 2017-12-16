@@ -25,6 +25,7 @@ def get_repo_typelibs():
 
     typelibs = {}
     data = subprocess.check_output(["apt-file", "search", ".typelib"])
+    data = data.decode("utf-8")
     for line in data.strip().splitlines():
         package, path = line.split(": ", 1)
         if path.startswith("/usr/lib/x86_64-linux-gnu/girepository-1.0/") or \

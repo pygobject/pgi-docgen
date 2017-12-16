@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 # Copyright 2016 Christoph Reiter
 #
 # This library is free software; you can redistribute it and/or
@@ -34,7 +34,7 @@ if __name__ == "__main__":
         return t.rsplit(" - ", 1)[0].rsplit(" -- ", 1)[0]
 
     final = {}
-    for package, namespaces in typelibs.iteritems():
+    for package, namespaces in typelibs.items():
         candidate = cache[package].candidate
         if not candidate:
             continue
@@ -81,4 +81,4 @@ if __name__ == "__main__":
     cache.close()
 
     with open(get_debian_path(), "wb") as h:
-        h.write(json.dumps(final, sort_keys=True, indent=4))
+        h.write(json.dumps(final, sort_keys=True, indent=4).encode("utf-8"))
