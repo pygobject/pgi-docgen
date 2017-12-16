@@ -1,10 +1,12 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 # Copyright 2014 Christoph Reiter
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
 # License as published by the Free Software Foundation; either
 # version 2.1 of the License, or (at your option) any later version.
+
+from __future__ import print_function
 
 import os
 import re
@@ -92,7 +94,7 @@ MAPPING = dict([(k, GTK_URL  % v) for k, v in GTK_MAPPING.items()])
 
 def fetch(args):
     key, url = args
-    print key
+    print(key)
     resp = requests.get(url)
     return key, resp.content
 
@@ -101,7 +103,7 @@ def main(dest, mapping):
     # make sure there are no typos in the mapping
     for key in mapping.keys():
         if not hasattr(Gtk, key):
-            print key, "missing..."
+            print(key, "missing...")
 
     missing = []
     for name in dir(Gtk):
@@ -113,8 +115,8 @@ def main(dest, mapping):
         except TypeError:
             pass
 
-    print "Following widget sublasses are missing an image:"
-    print missing
+    print("Following widget sublasses are missing an image:")
+    print(missing)
 
     resp = requests.get("http://git.gnome.org/browse/gtk+/plain/docs/reference/gtk/images/")
     mapped_images = GTK_MAPPING.values()
@@ -124,9 +126,9 @@ def main(dest, mapping):
             not_mapped.append(image)
     not_mapped.sort()
 
-    print "Following images on the server aren't linked to a widget"
-    print "http://git.gnome.org/browse/gtk+/plain/docs/reference/gtk/images/"
-    print not_mapped
+    print("Following images on the server aren't linked to a widget")
+    print("http://git.gnome.org/browse/gtk+/plain/docs/reference/gtk/images/")
+    print(not_mapped)
 
     pool = Pool(20)
     for key, data in pool.imap_unordered(fetch, mapping.items()):
