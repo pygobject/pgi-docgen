@@ -1,10 +1,12 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 # Copyright 2014 Christoph Reiter
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
 # License as published by the Free Software Foundation; either
 # version 2.1 of the License, or (at your option) any later version.
+
+from __future__ import print_function
 
 import sys
 from multiprocessing import Pool
@@ -16,7 +18,7 @@ from pgidocgen.girdata import PROJECTS, get_doap_path
 
 
 def fetch(project):
-    print project.doap
+    print(project.doap)
     resp = requests.get(project.doap)
     if resp.status_code != requests.codes.ok:
         raise Exception(project.doap)
@@ -28,8 +30,8 @@ def main(argv):
     for p in PROJECTS:
         ns_list -= set(p.namespaces)
 
-    print "Missing:"
-    print sorted(ns_list)
+    print("Missing:")
+    print(sorted(ns_list))
 
     projects = [p for p in PROJECTS if p.doap]
     pool = Pool(20)

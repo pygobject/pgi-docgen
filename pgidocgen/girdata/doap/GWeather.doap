@@ -5,6 +5,7 @@
          xmlns="http://usefulinc.com/ns/doap#">
 
   <name xml:lang="en">libgweather</name>
+  <description xml:lang="en">Location and timezone database and weather-lookup library</description>
   <shortdesc xml:lang="en">Location and timezone database and weather-lookup library</shortdesc>
 
   <homepage rdf:resource="https://wiki.gnome.org/Projects/LibGWeather" />
@@ -25,6 +26,13 @@
       <foaf:name>Giovanni Campagna</foaf:name>
       <foaf:mbox rdf:resource="mailto:gcampagna@src.gnome.org" />
       <gnome:userid>gcampagna</gnome:userid>
+    </foaf:Person>
+  </maintainer>
+  <maintainer>
+    <foaf:Person>
+      <foaf:name>Bastien Nocera</foaf:name>
+      <foaf:mbox rdf:resource="mailto:hadess@src.gnome.org" />
+      <gnome:userid>hadess</gnome:userid>
     </foaf:Person>
   </maintainer>
   <!--<maintainer>

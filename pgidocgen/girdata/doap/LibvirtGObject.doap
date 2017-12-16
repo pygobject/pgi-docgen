@@ -17,4 +17,11 @@
 			<gnome:userid>teuf</gnome:userid>
 		</foaf:Person>
 	</maintainer>
+	<maintainer>
+		<foaf:Person>
+			<foaf:name>Eduardo Lima (Etrunko)</foaf:name>
+			<foaf:mbox rdf:resource="mailto:eblima@gmail.com" />
+			<gnome:userid>eblima</gnome:userid>
+		</foaf:Person>
+	</maintainer>
 </Project>
