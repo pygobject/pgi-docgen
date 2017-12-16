@@ -69,7 +69,7 @@ def _get_generic_library_version(mod):
 
     suffix = ""
     modname = mod.__name__
-    for i, (o, l) in enumerate(reversed(zip(modname, modname.lower()))):
+    for i, (o, l) in enumerate(reversed(list(zip(modname, modname.lower())))):
         if o != l:
             suffix = modname[-i - 1:].upper()
             break

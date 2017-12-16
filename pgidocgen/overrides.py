@@ -20,6 +20,6 @@ def parse_override_docs(namespace, version):
     except PycodeError:
         return {}
     docs = {}
-    for key, value in ma.find_attr_docs().iteritems():
+    for key, value in ma.find_attr_docs().items():
         docs[namespace + "." + ".".join(filter(None, key))] = "\n".join(value)
     return docs

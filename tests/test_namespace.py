@@ -36,7 +36,7 @@ class TNamespace(unittest.TestCase):
         types = ns.types
         ns.docs
 
-        for key, values in types.iteritems():
+        for key, values in types.items():
             for v in values:
                 self.assertTrue(v.startswith("Gtk."), msg=v)
 

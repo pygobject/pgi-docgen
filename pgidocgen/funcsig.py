@@ -9,6 +9,7 @@ import re
 
 from .util import indent
 from .rstutil import field_name, bold
+from .compat import string_types
 
 
 def get_type_name(type_):
@@ -22,7 +23,7 @@ def get_type_name(type_):
 
     if type_ is None:
         return ""
-    elif isinstance(type_, basestring):
+    elif isinstance(type_, string_types):
         return type_
     elif isinstance(type_, list):
         assert len(type_) == 1

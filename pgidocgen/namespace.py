@@ -26,9 +26,6 @@ from .overrides import parse_override_docs
 SHELVE_CACHE = os.environ.get("PGIDOCGEN_CACHE", None)
 
 
-RE_XML_ILLEGAL = "(&#x1c;)"
-
-
 def get_namespace(namespace, version, _cache={}):
 
     key = str(namespace + "-" + version)
@@ -72,7 +69,7 @@ def _get_dom(path, _cache={}):
     gc.collect()
     with open(path, "rb") as h:
         data = h.read()
-        data = re.sub(RE_XML_ILLEGAL, "?", data)
+        data = re.sub(b"(&#x1c;)", b"?", data)
         _cache[path] = minidom.parseString(data)
     return _cache[path]
 
@@ -108,8 +105,8 @@ def fixup_since(text):
 def _fixup_all_added_since(all_docs):
     """Applies fixup_since() to all docs"""
 
-    for type_, type_docs in all_docs.iteritems():
-        for k, e in type_docs.iteritems():
+    for type_, type_docs in all_docs.items():
+        for k, e in type_docs.items():
             docs = e.docs
             version = e.version
             deprecated_version = e.deprecated_version
@@ -133,8 +130,8 @@ def get_versions(all_docs):
     """Collects all 'added since' and 'deprecated since' versions"""
 
     versions = set()
-    for type_, type_docs in all_docs.iteritems():
-        for k, e in type_docs.iteritems():
+    for type_, type_docs in all_docs.items():
+        for k, e in type_docs.items():
             if e.version:
                 versions.add(e.version)
             if e.deprecated_version:
@@ -189,7 +186,7 @@ class Namespace(object):
 
         source = {}
         for lib in self.shared_libraries:
-            for symbol, path in get_line_numbers_for_name(lib).iteritems():
+            for symbol, path in get_line_numbers_for_name(lib).items():
                 source[symbol] = path
         return source
 
@@ -419,7 +416,7 @@ def _parse_types(dom, module, namespace):
             # TODO: shadowed..?
             instance_params[set_name] = instance_param
 
-    for key, value in all_shadows.iteritems():
+    for key, value in all_shadows.items():
         shadow_map[all_shadowed_by.pop(key)] = value
     assert not all_shadowed_by
     del all_shadowed_by
@@ -494,7 +491,7 @@ def _parse_types(dom, module, namespace):
 
     # make c defs which are replaced point to the key of the replacement
     # so that: "gdk_threads_add_timeout_full" -> Gdk.threads_add_timeout
-    for shadowed, shadowing in shadow_map.iteritems():
+    for shadowed, shadowing in shadow_map.items():
         types[shadowing] = set(types[shadowed])
         types[shadowed].clear()
 

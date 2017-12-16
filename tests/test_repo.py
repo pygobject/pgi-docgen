@@ -50,9 +50,10 @@ class TRepository(unittest.TestCase):
         repo = Repository("Atk", "1.0")
         Atk = repo.import_module()
         hier = get_hierarchy([Atk.NoOpObjectFactory])
-        self.assertEqual(hier.keys(), [GObject.Object])
-        self.assertEqual(hier[GObject.Object].keys(), [Atk.ObjectFactory])
-        self.assertEqual(hier[GObject.Object][Atk.ObjectFactory].keys(),
+        self.assertEqual(list(hier.keys()), [GObject.Object])
+        self.assertEqual(list(hier[GObject.Object].keys()),
+                         [Atk.ObjectFactory])
+        self.assertEqual(list(hier[GObject.Object][Atk.ObjectFactory].keys()),
                          [Atk.NoOpObjectFactory])
         self.assertFalse(
             hier[GObject.Object][Atk.ObjectFactory][Atk.NoOpObjectFactory])

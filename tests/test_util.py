@@ -8,11 +8,11 @@
 import os
 import unittest
 
-from pgidocgen.util import is_staticmethod, is_classmethod, is_normalmethod, \
+from pgidocgen.util import is_staticmethod, is_classmethod, \
     is_method_owner, is_fundamental, is_object, instance_to_rest, \
     get_child_properties, fake_subclasses, get_style_properties, \
     unescape_parameter, fake_bases, is_attribute_owner, unindent
-from pgidocgen.compat import long_
+from pgidocgen.compat import long_, PY2
 
 
 class TUtil(unittest.TestCase):
@@ -33,20 +33,11 @@ class TUtil(unittest.TestCase):
             def y():
                 pass
 
-            def z(self):
-                pass
-
         self.assertTrue(is_classmethod(SomeClass.x))
         self.assertFalse(is_staticmethod(SomeClass.x))
-        self.assertFalse(is_normalmethod(SomeClass.x))
 
         self.assertTrue(is_staticmethod(SomeClass.y))
         self.assertFalse(is_classmethod(SomeClass.y))
-        self.assertFalse(is_normalmethod(SomeClass.y))
-
-        self.assertFalse(is_classmethod(SomeClass.z))
-        self.assertFalse(is_staticmethod(SomeClass.z))
-        self.assertTrue(is_normalmethod(SomeClass.z))
 
     def test_is_method_owner(self):
         from pgi.repository import Gtk

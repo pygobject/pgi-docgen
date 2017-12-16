@@ -18,8 +18,10 @@ import subprocess
 
 from docutils.core import publish_parts
 
+from .compat import long_
 
-_KWD_RE = re.compile("^(%s)$" % "|".join(keyword.kwlist))
+
+_KWD_RE = re.compile("^(%s)$" % "|".join(keyword.kwlist + ["print"]))
 
 
 def rest2html(text):
@@ -412,14 +414,14 @@ def fake_mro(obj):
 
 
 def is_staticmethod(obj):
-    return not hasattr(obj, "im_self")
+    return not hasattr(obj, "im_self") and not inspect.ismethod(obj)
 
 
 def is_classmethod(obj):
     try:
         return obj.im_self is not None
     except AttributeError:
-        return False
+        return inspect.ismethod(obj)
 
 
 def is_virtualmethod(obj):
@@ -437,10 +439,6 @@ def is_callback(obj):
 def is_property(obj):
     return isinstance(obj, property) or (
         hasattr(obj, "__get__") and not callable(obj))
-
-
-def is_normalmethod(obj):
-    return not is_staticmethod(obj) and not is_classmethod(obj)
 
 
 def make_rest_title(text, char="="):
@@ -507,7 +505,7 @@ def instance_to_rest(cls, inst):
     """
 
     # get rid of 'L' suffixes with repr()
-    if isinstance(inst, long):
+    if isinstance(inst, long_) and not isinstance(inst, int):
         inst = int(inst)
 
     if inst is None or inst is True or inst is False:

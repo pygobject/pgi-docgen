@@ -6,6 +6,8 @@
 # License as published by the Free Software Foundation; either
 # version 2.1 of the License, or (at your option) any later version.
 
+from __future__ import print_function
+
 import os
 import re
 import types
@@ -61,7 +63,7 @@ def class_name(cls):
 def to_names(hierarchy):
 
     return sorted(
-            [(class_name(k), to_names(v)) for (k, v) in hierarchy.iteritems()])
+            [(class_name(k), to_names(v)) for (k, v) in hierarchy.items()])
 
 
 def to_short_desc(docs):
@@ -269,10 +271,12 @@ class Property(BaseDocObject):
         if spec.flags & GObject.ParamFlags.DEPRECATED:
             prop.info.deprecated = True
 
-        if spec.get_blurb() is not None:
+        blurb = spec.get_blurb()
+        if blurb is not None:
+            if isinstance(blurb, bytes):
+                blurb = blurb.decode("utf-8")
             short_desc = docstring_to_rest(
-                repo, spec.get_blurb().decode("utf-8"),
-                current_type=parent_fullname)
+                repo, blurb, current_type=parent_fullname)
         else:
             short_desc = u""
 
@@ -290,9 +294,11 @@ class Property(BaseDocObject):
                    type_desc, value_desc)
 
         if spec.blurb is not None:
+            blurb = spec.blurb
+            if isinstance(blurb, bytes):
+                blurb = blurb.decode("utf-8")
             short_desc = docstring_to_rest(
-                repo, spec.blurb.decode("utf-8"),
-                current_type=parent_fullname)
+                repo, blurb, current_type=parent_fullname)
         else:
             short_desc = u""
 
@@ -340,7 +346,7 @@ class Signal(BaseDocObject):
                 repo, inst.fullname, signal=True)
         else:
             # FIXME pgi
-            print "FIXME: signal: %s " % inst.fullname
+            print("FIXME: signal: %s " % inst.fullname)
             signature_desc = "(FIXME pgi-docgen: arguments are missing here)"
 
         inst.signature_desc = signature_desc
@@ -727,7 +733,7 @@ class Function(BaseDocObject):
                     else:
                         docs.append(str(base_obj.__doc__ or u""))
 
-            return filter(None, docs)
+            return list(filter(None, docs))
 
         def split_firstline(docstring):
             """Returns a tuple of the first line and the rest"""
@@ -924,13 +930,13 @@ class SymbolMapping(object):
         source_map = repo.get_source_map()
         pysource_map = {}
         if func:
-            for key, value in source_map.iteritems():
+            for key, value in source_map.items():
                 value = func(value)
                 for pyid in repo.lookup_all_py_id(key, shadowed=False):
                     pysource_map[pyid] = value
 
         symbol_map = []
-        items = repo.get_types().iteritems()
+        items = repo.get_types().items()
         for key, values in sorted(items, key=lambda x: x[0].lower()):
             if func:
                 source_path = source_map.get(key, u"")
@@ -1067,7 +1073,8 @@ class Module(BaseDocObject):
         mod.project_summary = get_project_summary(repo.namespace, repo.version)
         mod.project_summary.dependencies = repo.get_dependencies()
 
-        print "%s-%s: unresolved links: %d" % (repo.namespace, repo.version, repo.missed_links)
+        print("%s-%s: unresolved links: %d" % (repo.namespace, repo.version,
+                                               repo.missed_links))
         
         return mod
 
