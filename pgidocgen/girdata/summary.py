@@ -6,8 +6,7 @@
 # version 2.1 of the License, or (at your option) any later version.
 
 import os
-
-from BeautifulSoup import BeautifulStoneSoup
+import xml.etree.ElementTree as etree
 
 from .util import get_doap_path, load_debian
 
@@ -33,42 +32,54 @@ def get_project_summary(namespace, version):
     if os.path.exists(doap_path):
 
         with open(doap_path, "rb") as h:
-            soup = BeautifulStoneSoup(h)
+            root = etree.parse(h)
 
-        name = soup.find("name")
-        shortdesc = soup.find("shortdesc")
-        description = soup.find("description")
-        mailing_lists = soup.findAll("mailing-list")
-        homepage = soup.find("homepage")
-        bug_database = soup.find("bug-database")
-        repository = soup.find("repository")
-        repositories = (repository and repository.findAll("browse")) or []
+        # strip namespaces
+        for x in root.iter():
+            x.tag = x.tag.rsplit("}")[-1]
+            for key, value in list(x.attrib.items()):
+                del x.attrib[key]
+                x.attrib[key.rsplit("}")[-1]] = value
 
-        if name:
-            ps.name = name.string
-            if shortdesc:
-                ps.name += " (%s)" % shortdesc.string.strip()
+        name = root.find("name")
+        shortdesc = root.find("shortdesc")
+        description = root.find("description")
+        mailing_lists = root.findall("mailing-list")
+        homepage = root.find("homepage")
+        bug_database = root.find("bug-database")
+        repository = root.find("repository")
+        if repository is not None:
+            repositories = repository.findall(".//browse")
+        else:
+            repositories = []
 
-        if description:
-            ps.description = description.string
+        if name is not None:
+            ps.name = name.text
+            if shortdesc is not None:
+                ps.name += " (%s)" % shortdesc.text.strip()
 
-        if homepage:
-            ps.homepage = homepage["rdf:resource"]
+        if description is not None:
+            ps.description = description.text
 
-        if bug_database:
-            ps.bugtracker = bug_database["rdf:resource"]
+        if homepage is not None:
+            ps.homepage =  homepage.attrib["resource"]
+
+        if bug_database is not None:
+            ps.bugtracker = bug_database.attrib["resource"]
 
         ps.repositories = [
-            (r["rdf:resource"], r["rdf:resource"]) for r in repositories]
+            (r.attrib["resource"], r.attrib["resource"]) for r in repositories]
 
         def strip_mailto(s):
             if s.startswith("mailto:"):
                 return s[7:]
             return s
 
-        ps.mailinglists = [
-            (strip_mailto(r["rdf:resource"]), r["rdf:resource"])
-            for r in mailing_lists]
+        ps.mailinglists = []
+        for r in mailing_lists:
+            ps.mailinglists.append(
+                (strip_mailto(r.attrib["resource"]), r.attrib["resource"])
+            )
 
     key = "%s-%s" % (namespace, version)
     deb_info = load_debian()

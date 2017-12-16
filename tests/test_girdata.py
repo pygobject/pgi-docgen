@@ -12,10 +12,21 @@ import unittest
 from pgidocgen.util import import_namespace
 from pgidocgen.girdata import Library, Project, \
     get_docref_dir, get_docref_path, get_class_image_dir, \
-    get_class_image_path
+    get_class_image_path, get_project_summary
 
 
 class TGIRData(unittest.TestCase):
+
+    def test_get_project_summary(self):
+        s = get_project_summary("Gtk", "3.0")
+        assert s.name == "gtk+ (Multi-platform toolkit)"
+        assert s.description.startswith("GTK+ is a")
+        assert s.homepage
+        assert s.bugtracker
+        assert s.mailinglists
+        assert s.repositories
+
+        get_project_summary("GIRepository", "1.0")
 
     def test_get_library_version(self):
         mods = ["Gtk-3.0", "Atk-1.0", "Gst-1.0", "Poppler-0.18", "Anthy-9000",
