@@ -214,11 +214,11 @@ class ModuleGenerator(object):
         conf_path = os.path.join(dir_, "conf_data.py")
         deps = ["-".join(d) for d in module.dependencies]
         with io.open(conf_path, "w", encoding="utf-8") as conf:
-            conf.write("DEPS = %r\n" % deps)
+            conf.write(u"DEPS = %r\n" % deps)
             # for sphinx.ext.linkcode
-            conf.write("SOURCEURLS = %r\n" % module.symbol_mapping.source_map)
+            conf.write(u"SOURCEURLS = %r\n" % module.symbol_mapping.source_map)
             # for the sidebar index
-            conf.write("LIB_VERSION = %r\n" % module.library_version)
+            conf.write(u"LIB_VERSION = %r\n" % module.library_version)
 
         # make sure the generated config
         with io.open(conf_path, "r", encoding="utf-8") as h:
