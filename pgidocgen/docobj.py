@@ -937,7 +937,7 @@ class SymbolMapping(object):
 
         symbol_map = []
         items = repo.get_types().items()
-        for key, values in sorted(items, key=lambda x: x[0].lower()):
+        for key, values in sorted(items, key=lambda x: (x[0].lower(), x[0])):
             if func:
                 source_path = source_map.get(key, u"")
                 source_url = func(source_path) if source_path else u""

@@ -248,7 +248,7 @@ def get_line_numbers_for_file(library_path):
 
     # strip away the common path
     assert len(symbols) > 1
-    base = list(symbols.values())[0].split(os.path.sep)
+    base = sorted(symbols.values(), key=len)[0].split(os.path.sep)
     min_match = len(base)
     for symbol, path in symbols.items():
         parts = path.split(os.path.sep)

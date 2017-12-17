@@ -55,6 +55,9 @@ DATA = {
     "GES-1.0": (
         "1.8.0", "ges_effect_new",
         "http://cgit.freedesktop.org/gstreamer/gst-editing-services/tree/ges/ges-effect.c?h=1.8.0#n265"),
+    "GLib-2.0": (
+        "2.54.2", "g_base64_decode_step",
+        "https://git.gnome.org/browse/glib/tree/glib/gbase64.c?h=2.54.2#n326"),
     # This is buggy..
     #~ "GExiv2-0.10": (
         #~ "0.10.3", "gexiv2_preview_image_new",
