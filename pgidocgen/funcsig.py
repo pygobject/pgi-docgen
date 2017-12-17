@@ -32,7 +32,7 @@ def get_type_name(type_):
         assert len(type_) == 1
         key, value = type_.popitem()
         return "{%s: %s}" % (get_type_name(key), get_type_name(value))
-    elif type_.__module__ in "__builtin__":
+    elif type_.__module__ in ("__builtin__", "builtins"):
         return type_.__name__
     else:
         return "%s.%s" % (type_.__module__, type_.__name__)

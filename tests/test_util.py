@@ -9,7 +9,7 @@
 import os
 import unittest
 
-from pgidocgen.util import is_staticmethod, is_classmethod, \
+from pgidocgen.util import is_staticmethod, \
     is_method_owner, is_fundamental, is_object, instance_to_rest, \
     get_child_properties, fake_subclasses, get_style_properties, \
     unescape_parameter, fake_bases, is_attribute_owner, unindent, \
@@ -29,22 +29,10 @@ class TUtil(unittest.TestCase):
         self.assertEqual(unindent("foo bar.", False), "foo bar.")
 
     def test_method_checks(self):
+        from pgi.repository import GLib
 
-        class SomeClass(object):
-
-            @classmethod
-            def x(cls):
-                pass
-
-            @staticmethod
-            def y():
-                pass
-
-        self.assertTrue(is_classmethod(SomeClass.x))
-        self.assertFalse(is_staticmethod(SomeClass.x))
-
-        self.assertTrue(is_staticmethod(SomeClass.y))
-        self.assertFalse(is_classmethod(SomeClass.y))
+        assert not is_staticmethod(GLib.AsyncQueue.push)
+        assert is_staticmethod(GLib.Date.new)
 
     def test_is_method_owner(self):
         from pgi.repository import Gtk
@@ -131,6 +119,7 @@ class TUtil(unittest.TestCase):
 
     def test_unescape(self):
         self.assertEqual(unescape_parameter("print_"), "print")
+        self.assertEqual(unescape_parameter("exec_"), "exec")
         self.assertEqual(unescape_parameter("_print"), "-print")
         self.assertEqual(unescape_parameter("_3"), "3")
 

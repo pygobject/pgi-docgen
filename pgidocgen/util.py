@@ -22,7 +22,7 @@ from docutils.core import publish_parts
 from .compat import long_, PY2
 
 
-_KWD_RE = re.compile("^(%s)$" % "|".join(keyword.kwlist + ["print"]))
+_KWD_RE = re.compile("^(%s)$" % "|".join(keyword.kwlist + ["print", "exec"]))
 
 
 def rest2html(text):
@@ -415,14 +415,10 @@ def fake_mro(obj):
 
 
 def is_staticmethod(obj):
-    return not hasattr(obj, "im_self") and not inspect.ismethod(obj)
-
-
-def is_classmethod(obj):
-    try:
-        return obj.im_self is not None
-    except AttributeError:
-        return inspect.ismethod(obj)
+    if PY2:
+        return not hasattr(obj, "im_self")
+    else:
+        return getattr(obj, "_is_static", False)
 
 
 def is_virtualmethod(obj):

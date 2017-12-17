@@ -7,8 +7,15 @@
 
 import unittest
 
-from pgidocgen.funcsig import FuncSignature, arg_to_class_ref
+from pgidocgen.funcsig import FuncSignature, arg_to_class_ref, \
+    py_type_to_class_ref
 from pgidocgen.util import escape_rest
+
+
+class TOther(unittest.TestCase):
+
+    def test_py_type_to_class_ref(self):
+        assert py_type_to_class_ref(str) == ":obj:`str`"
 
 
 class TFuncSigs(unittest.TestCase):
