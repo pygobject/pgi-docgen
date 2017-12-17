@@ -15,10 +15,11 @@ import keyword
 import csv
 import warnings
 import subprocess
+from io import BytesIO, StringIO
 
 from docutils.core import publish_parts
 
-from .compat import long_
+from .compat import long_, PY2
 
 
 _KWD_RE = re.compile("^(%s)$" % "|".join(keyword.kwlist + ["print"]))
@@ -476,7 +477,6 @@ def get_gir_files():
 
 
 def get_csv_line(values):
-    import cStringIO
 
     class CSVDialect(csv.Dialect):
         delimiter = ','
@@ -488,14 +488,20 @@ def get_csv_line(values):
 
     encoded = []
     for value in [v.replace("\n", " ") for v in values]:
-        if isinstance(value, unicode):
+        if PY2:
             value = value.encode("utf-8")
         encoded.append(value)
 
-    h = cStringIO.StringIO()
+    if PY2:
+        h = BytesIO()
+    else:
+        h = StringIO()
     w = csv.writer(h, CSVDialect)
     w.writerow(encoded)
-    return h.getvalue().rstrip().decode("utf-8")
+    result = h.getvalue().rstrip()
+    if PY2:
+        result = result.decode("utf-8")
+    return result
 
 
 def instance_to_rest(cls, inst):

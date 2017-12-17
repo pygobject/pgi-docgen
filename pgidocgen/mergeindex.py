@@ -13,6 +13,7 @@ all symbols.
 """
 
 import os
+import io
 
 from sphinx.search import js_index
 
@@ -30,7 +31,7 @@ class SearchIndexMerger(object):
             self._indices[namespace] = index
 
     def load_index(self, namespace, index_path):
-        with open(index_path, "rb") as h:
+        with io.open(index_path, "r", encoding="utf-8") as h:
             data = h.read()
             mod = js_index.loads(data)
             self.add_index(namespace, mod)
@@ -44,7 +45,7 @@ class SearchIndexMerger(object):
         namespaces = {}
 
         pairs = []
-        for ns, index in self._indices.iteritems():
+        for ns, index in self._indices.items():
             for k, v in index["objnames"].items():
                 pair = (index["objtypes"][k], v)
                 if pair not in pairs:
@@ -74,13 +75,13 @@ class SearchIndexMerger(object):
             old_index = str(old_index)
             index = self._indices[ns]
             value = index["objtypes"][old_index]
-            for k, v in done["objtypes"].iteritems():
+            for k, v in done["objtypes"].items():
                 if value == v:
                     return int(k)
             assert 0
 
         # OBJECTS
-        for ns, index in self._indices.iteritems():
+        for ns, index in self._indices.items():
             namespaces[ns] = {}
 
             new_titles = []
@@ -99,7 +100,7 @@ class SearchIndexMerger(object):
             namespaces[ns]["docnames"] = new_docnames
 
             new_objects = {}
-            for k, attributes in index["objects"].iteritems():
+            for k, attributes in index["objects"].items():
                 if "." in k:
                     k = k.split(".", 1)[-1]
                 else:
@@ -165,6 +166,6 @@ def mergeindex(path):
         key = os.path.basename(os.path.dirname(index_path))
         merger.load_index(key, index_path)
 
-    with open(os.path.join(path, "searchindex.js"), "wb") as h:
+    with io.open(os.path.join(path, "searchindex.js"), "w", encoding="utf-8") as h:
         output = merger.merge()
         h.write(js_index.dumps(output))

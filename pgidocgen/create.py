@@ -5,6 +5,8 @@
 # License as published by the Free Software Foundation; either
 # version 2.1 of the License, or (at your option) any later version.
 
+from __future__ import print_function
+
 import sys
 import argparse
 import subprocess
@@ -41,7 +43,7 @@ def _main_many(target, namespaces):
 
 def main(args):
     if not args.namespace:
-        print "No namespace given"
+        print("No namespace given")
         raise SystemExit(1)
     elif len(args.namespace) > 1:
         return _main_many(args.target, args.namespace)
@@ -50,14 +52,14 @@ def main(args):
 
     # this catches the "pip install pgi" case
     if pgi.version_info[-1] != -1:
-        print "atm pgi-docgen needs pgi trunk and not a stable release"
-        print "Get it here: https://github.com/pygobject/pgi"
+        print("atm pgi-docgen needs pgi trunk and not a stable release")
+        print("Get it here: https://github.com/pygobject/pgi")
         raise SystemExit(1)
 
     girs = get_gir_files()
 
     if namespace not in girs:
-        print "GIR file for %s not found, aborting." % namespace
+        print("GIR file for %s not found, aborting." % namespace)
         raise SystemExit(1)
 
     namespace, version = namespace.split("-", 1)

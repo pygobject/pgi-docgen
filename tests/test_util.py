@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Copyright 2013 Christoph Reiter
 #
 # This library is free software; you can redistribute it and/or
@@ -11,11 +12,17 @@ import unittest
 from pgidocgen.util import is_staticmethod, is_classmethod, \
     is_method_owner, is_fundamental, is_object, instance_to_rest, \
     get_child_properties, fake_subclasses, get_style_properties, \
-    unescape_parameter, fake_bases, is_attribute_owner, unindent
+    unescape_parameter, fake_bases, is_attribute_owner, unindent, \
+    get_csv_line
 from pgidocgen.compat import long_, PY2
 
 
 class TUtil(unittest.TestCase):
+
+    def test_get_csv_line(self):
+        assert get_csv_line(["foo"]) == '"foo"'
+        assert get_csv_line(["foo", "bla\n"]) == '"foo","bla "'
+        assert get_csv_line([u"ä"]) == u'"ä"'
 
     def test_unindent(self):
         self.assertEqual(unindent("foo bar.", True), "foo bar.")

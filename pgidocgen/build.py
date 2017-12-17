@@ -5,7 +5,10 @@
 # License as published by the Free Software Foundation; either
 # version 2.1 of the License, or (at your option) any later version.
 
+from __future__ import print_function
+
 import os
+import io
 import glob
 import re
 import argparse
@@ -21,6 +24,7 @@ import sphinx
 from .mergeindex import mergeindex
 from .util import rest2html
 from .gen.genutil import get_data_dir
+from .compat import exec_
 
 
 DEVHELP_PREFIX = "python-"
@@ -40,7 +44,7 @@ def rewrite_static_links(main):
     """
 
     def rewrite(path, depth):
-        with open(path, "rb") as h:
+        with io.open(path, "r", encoding="utf-8") as h:
             data = h.read()
 
         def repl(match):
@@ -57,7 +61,7 @@ def rewrite_static_links(main):
 
         new_data = re.sub("(<link .*? href=[\"'])([^\"']+)", repl, data)
         if data != new_data:
-            with open(path, "wb") as h:
+            with io.open(path, "w", encoding="utf-8") as h:
                 h.write(new_data)
 
     for root, dirs, files in os.walk(main):
@@ -104,7 +108,7 @@ def share_static(main):
 
 
 def do_build(package):
-    print "Build started for %s" % package.name
+    print("Build started for %s" % package.name)
 
     sphinx_args = [package.path, package.build_path]
     copy_env = os.environ.copy()
@@ -183,9 +187,9 @@ def main(args):
 
         # extract the build dir from the config
         conf_path = os.path.join(path, "conf_data.py")
-        with open(conf_path, "rb") as h:
+        with io.open(conf_path, "r", encoding="utf-8") as h:
             exec_env = {}
-            exec h.read() in exec_env
+            exec_(h.read(), exec_env)
         deps = set(exec_env["DEPS"])
         if devhelp:
             prefix = DEVHELP_PREFIX
@@ -222,29 +226,29 @@ def main(args):
     def job_cb(package=None):
         if package is not None:
             done.add(package)
-            print "%s finished: %d/%d done" % (
-                package.name, len(done), num_to_build)
+            print("%s finished: %d/%d done" % (
+                  package.name, len(done), num_to_build))
 
         for package in get_new_jobs():
-            print "Queue build for %s" % package.name
+            print("Queue build for %s" % package.name)
             pool.apply_async(do_build, [package], callback=job_cb)
 
         if len(done) == num_to_build:
-            print "All done"
+            print("All done")
             event.set()
 
     def get_new_jobs():
         jobs = []
 
         done_deps = done | to_ignore
-        for name, package in to_build.items():
+        for name, package in list(to_build.items()):
             if package.can_build(done_deps):
                 del to_build[name]
                 jobs.append(package)
 
         return jobs
 
-    for name, package in to_build.items():
+    for name, package in list(to_build.items()):
         if os.path.exists(package.build_path):
             del to_build[name]
             done.add(package)
@@ -267,29 +271,29 @@ def main(args):
         results = [(d.name + "/index.html", d.name.split("-")[0],
                     d.name.split("-")[-1], d.lib_version)
                    for d in done_sorted]
-        with open(os.path.join(index_path, "sidebar.html"), "rb") as h:
+        with io.open(os.path.join(index_path, "sidebar.html"), "r", encoding="utf-8") as h:
             data = h.read()
-        with open(os.path.join(target_path, "sidebar.html"), "wb") as t:
+        with io.open(os.path.join(target_path, "sidebar.html"), "w", encoding="utf-8") as t:
             env = jinja2.Environment().from_string(data)
             t.write(env.render(results=results))
 
-        with open(os.path.join(index_path, "config.html"), "rb") as h:
+        with io.open(os.path.join(index_path, "config.html"), "r", encoding="utf-8") as h:
             data = h.read()
-        with open(os.path.join(target_path, "config.html"), "wb") as t:
+        with io.open(os.path.join(target_path, "config.html"), "w", encoding="utf-8") as t:
             env = jinja2.Environment().from_string(data)
             t.write(env.render(results=results))
 
-        with open(os.path.join(index_path, "faq.html"), "rb") as h:
+        with io.open(os.path.join(index_path, "faq.html"), "r", encoding="utf-8") as h:
             data = h.read()
-        with open(os.path.join(get_data_dir(), "faq.rst"), "rb") as h:
+        with io.open(os.path.join(get_data_dir(), "faq.rst"), "r", encoding="utf-8") as h:
             main_rst = h.read()
-        with open(os.path.join(target_path, "faq.html"), "wb") as t:
+        with io.open(os.path.join(target_path, "faq.html"), "w", encoding="utf-8") as t:
             env = jinja2.Environment().from_string(data)
             t.write(env.render(body=rest2html(main_rst)))
 
-        with open(os.path.join(index_path, "main.html"), "rb") as h:
+        with io.open(os.path.join(index_path, "main.html"), "r", encoding="utf-8") as h:
             data = h.read()
-        with open(os.path.join(target_path, "main.html"), "wb") as t:
+        with io.open(os.path.join(target_path, "main.html"), "w", encoding="utf-8") as t:
             env = jinja2.Environment().from_string(data)
             t.write(env.render())
 

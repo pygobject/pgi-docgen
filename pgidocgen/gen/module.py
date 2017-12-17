@@ -5,9 +5,13 @@
 # License as published by the Free Software Foundation; either
 # version 2.1 of the License, or (at your option) any later version.
 
+from __future__ import print_function
+
 import os
+import io
 import shutil
-from urllib2 import urlopen, URLError, HTTPError
+
+import requests
 
 from .klass import ClassGenerator
 from .flags import FlagsGenerator
@@ -23,6 +27,7 @@ from . import genutil
 
 from ..namespace import get_namespace
 from ..repo import Repository
+from ..compat import exec_
 
 
 _template = genutil.get_template("""\
@@ -125,10 +130,10 @@ class ModuleGenerator(object):
 
     def _write(self, sub_dir, namespace, version):
         if os.path.exists(sub_dir):
-            print "%s-%s: skipping, already exists" % (namespace, version)
+            print("%s-%s: skipping, already exists" % (namespace, version))
             return
 
-        print "%s-%s: building..." % (namespace, version)
+        print("%s-%s: building..." % (namespace, version))
         module = Repository(namespace, version).parse()
 
         class_gen = ClassGenerator()
@@ -183,7 +188,8 @@ class ModuleGenerator(object):
         os.mkdir(sub_dir)
         dir_ = sub_dir
 
-        with open(os.path.join(sub_dir, "index.rst"),  "wb") as h:
+        index_path = os.path.join(sub_dir, "index.rst")
+        with io.open(index_path,  "w", encoding="utf-8") as h:
 
             title = "%s %s" % (namespace, version)
             if module.library_version:
@@ -203,11 +209,11 @@ class ModuleGenerator(object):
             text = _template.render(
                 title=title, ps=module.project_summary, names=names,
                 namespace=namespace, version=version)
-            h.write(text.encode("utf-8"))
+            h.write(text)
 
         conf_path = os.path.join(dir_, "conf_data.py")
         deps = ["-".join(d) for d in module.dependencies]
-        with open(conf_path, "wb") as conf:
+        with io.open(conf_path, "w", encoding="utf-8") as conf:
             conf.write("DEPS = %r\n" % deps)
             # for sphinx.ext.linkcode
             conf.write("SOURCEURLS = %r\n" % module.symbol_mapping.source_map)
@@ -215,8 +221,8 @@ class ModuleGenerator(object):
             conf.write("LIB_VERSION = %r\n" % module.library_version)
 
         # make sure the generated config
-        with open(conf_path, "rb") as h:
-            exec h.read() in {}
+        with io.open(conf_path, "r", encoding="utf-8") as h:
+            exec_(h.read(), {})
 
         # download external objects.inv for intersphinx and cache them in
         # SOURCE/_intersphinx
@@ -238,11 +244,11 @@ class ModuleGenerator(object):
 
             try:
                 inv_url = url + "/objects.inv"
-                h = urlopen(inv_url)
+                r = requests.get(inv_url)
                 with open(inv_path, "wb") as f:
-                    f.write(h.read())
-            except (HTTPError, URLError) as e:
-                print "ERROR: %r" % e
+                    f.write(r.content)
+            except requests.exceptions.RequestException as e:
+                print("ERROR: %r" % e)
 
         data_dir = genutil.get_data_dir()
 

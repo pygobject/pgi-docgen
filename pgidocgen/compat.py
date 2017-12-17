@@ -49,6 +49,17 @@ if PY2:
 
     from urllib import unquote
 
+    def exec_(_code_, _globs_=None, _locs_=None):
+        if _globs_ is None:
+            frame = sys._getframe(1)
+            _globs_ = frame.f_globals
+            if _locs_ is None:
+                _locs_ = frame.f_locals
+            del frame
+        elif _locs_ is None:
+            _locs_ = _globs_
+        exec("""exec _code_ in _globs_, _locs_""")
+
 elif PY3:
     from io import StringIO
     StringIO = StringIO
@@ -81,3 +92,5 @@ elif PY3:
     builtins
 
     from urllib.parse import unquote
+
+    exec_ = getattr(builtins, "exec")

@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 # Copyright 2013, 2014 Christoph Reiter
 #
 # This library is free software; you can redistribute it and/or
