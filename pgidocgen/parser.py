@@ -8,7 +8,12 @@
 
 import re
 
-from bs4 import BeautifulSoup, Tag
+BF4 = 0  # bf4 still needs work
+
+if BF4:
+    from bf4 import BeautifulSoup, Tag
+else:
+    from BeautifulSoup import BeautifulStoneSoup, Tag
 
 from . import util
 from .util import escape_rest, force_unindent
@@ -364,7 +369,11 @@ def _docstring_to_docbook(docstring):
 
 
 def _docbook_to_rest(repo, docbook, current_type, current_func):
-    soup = BeautifulSoup("<dummy>" + docbook + "</dummy>", "xml")
+    if BF4:
+        soup = BeautifulSoup("<dummy>" + docbook + "</dummy>", "xml")
+    else:
+        soup = BeautifulStoneSoup(
+            docbook, convertEntities=BeautifulStoneSoup.HTML_ENTITIES)
 
     out = []
     for item in soup.contents:
