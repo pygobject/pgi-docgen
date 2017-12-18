@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 
+import io
 import os
 
 from docutils import nodes
 
 from sphinx.ext.graphviz import render_dot, GraphvizError
-from sphinx.util.compat import Directive
+from docutils.parsers.rst import Directive
 
 
 def generate_dot(graph, colors, urls={}):
@@ -80,9 +81,9 @@ class InheritanceGraph(Directive):
         for line in self.content:
             if not line.strip():
                 continue
-            parts = map(unicode.strip, line.split("->"))
+            parts = [p.strip() for p in line.split("->")]
             if len(parts) != 2:
-                parts = map(unicode.strip, line.split(":"))
+                parts = [p.strip() for p in line.split(":")]
                 assert len(parts) == 2
                 colors[parts[0]] = parts[1]
                 continue
@@ -111,7 +112,7 @@ def render_dot_html(self, node, code, options, prefix='graphviz',
                     imgcls=None, alt=None):
     try:
         fname, outfn = render_dot(self, code, options, "svg", prefix)
-    except GraphvizError, exc:
+    except GraphvizError as exc:
         self.builder.warn('dot code %r: ' % code + str(exc))
         raise nodes.SkipNode
 
@@ -126,8 +127,8 @@ def render_dot_html(self, node, code, options, prefix='graphviz',
         self.body.append(self.encode(code))
     else:
         # inline the svg
-        with open(outfn, "rb") as h:
-            data = h.read().decode("utf-8")
+        with io.open(outfn, "r", encoding="utf-8") as h:
+            data = h.read()
             data = data[data.find("<svg"):]
         os.remove(outfn)
         self.body.append(data)

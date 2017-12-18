@@ -7,7 +7,7 @@
 echo "Usage: 'source bootstrap.sh'"
 
 VENV="${VENV:-_venv}"
-PYTHON=${PYTHON:-python2}
+PYTHON=${PYTHON:-python3}
 
 if [ -d "$VENV" ]; then
     . "$VENV"/bin/activate

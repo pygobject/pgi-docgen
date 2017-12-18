@@ -17,6 +17,7 @@ from multiprocessing.pool import ThreadPool
 import multiprocessing
 import threading
 import shutil
+import sys
 
 import jinja2
 import sphinx
@@ -124,7 +125,7 @@ def do_build(package):
         os.path.dirname(package.build_path)
 
     subprocess.check_call(
-        ["sphinx-build", "-n", "-q", "-a", "-E"] + sphinx_args,
+        [sys.executable, "-m", "sphinx", "-n", "-q", "-a", "-E"] + sphinx_args,
         env=copy_env)
 
     # we don't rebuild, remove all caches
