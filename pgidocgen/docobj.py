@@ -19,19 +19,8 @@ from gi.repository import GObject
 from . import util
 from .funcsig import FuncSignature, py_type_to_class_ref, get_type_name
 from .girdata import get_project_summary, get_class_image_path, Project
-from .util import escape_parameter
+from .util import escape_parameter, get_signature_string
 from .parser import docstring_to_rest
-
-
-def get_signature_string(callable_):
-    try:
-        argspec = inspect.getargspec(callable_)
-    except TypeError:
-        # ... is not a Python function
-        return u"()"
-    if argspec[0] and argspec[0][0] in ('cls', 'self'):
-        del argspec[0][0]
-    return inspect.formatargspec(*argspec)
 
 
 def get_hierarchy(type_seq):
@@ -700,7 +689,7 @@ class Function(BaseDocObject):
         is_method = not owner_is_module
 
         if is_method:
-            is_static = util.is_staticmethod(obj)
+            is_static = util.is_staticmethod(owner, name)
             is_vfunc = util.is_virtualmethod(obj)
         else:
             is_static = False

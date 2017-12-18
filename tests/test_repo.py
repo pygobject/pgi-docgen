@@ -77,6 +77,8 @@ class TRepository(unittest.TestCase):
         repo = Repository("GLib", "2.0")
         mod = repo.parse()
 
+        klass = find(mod.pyclasses, "Error")
+
         # GLib.io_add_watch points to g_io_add_watch_full and should
         # also use its docs
         func = find(mod.functions, "io_add_watch")

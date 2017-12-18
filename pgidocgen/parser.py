@@ -369,45 +369,12 @@ def _docstring_to_docbook(docstring):
     return docstring
 
 
-def _fixup_xml(xml_input):
-
-    last_pos = (-1, -1)
-    while 1:
-        try:
-            return etree.tostring(etree.fromstring(xml_input))
-        except etree.XMLSyntaxError as e:
-            if e.position == last_pos:
-                break
-            last_pos = e.position
-            l, col = last_pos
-
-            lines = xml_input.splitlines()
-            line = lines[l - 1]
-            lines[l - 1] = line[:col-2] + escape(line[col-2]) + line[col-1:]
-            xml_input = "\n".join(lines)
-
-    while 1:
-        try:
-            return etree.tostring(etree.fromstring(xml_input))
-        except etree.XMLSyntaxError as e:
-            def repl(matchobj):
-                x = matchobj.group(0)
-                return escape(x[0]) + x[1:]
-
-            new = re.sub('(<[^>]*[<$])', repl, xml_input, re.MULTILINE)
-            if new == xml_input:
-                break
-            xml_input = new
-
-    # this shouldn't fail, but might drop some input
-    return etree.tostring(
-        etree.fromstring(xml_input, parser=etree.XMLParser(recover=True)))
-
-
 def _docbook_to_rest(repo, docbook, current_type, current_func):
     if sys.version_info[0] == 3:
-        x = "<dummy>" + docbook + "</dummy>"
-        soup = BeautifulSoup(_fixup_xml(x), "xml")
+        dummy = "<dummy>" + docbook + "</dummy>"
+        dummy = etree.tostring(
+            etree.fromstring(dummy, parser=etree.XMLParser(recover=True)))
+        soup = BeautifulSoup(dummy, "xml")
     else:
         soup = BeautifulStoneSoup(
             docbook, convertEntities=BeautifulStoneSoup.HTML_ENTITIES)
@@ -455,6 +422,23 @@ def docstring_to_rest(repo, docstring, current_type=None, current_func=None):
     if current_func is not None:
         # functions or methods
         assert current_func.count(".") in (1, 2)
+
+    if sys.version_info[0] == 3:
+
+        def esc_xml(text):
+            # in case it's not valid xml, assume markdown and escape
+            try:
+                etree.tostring(etree.fromstring(
+                    "<dummy>%s</dummy>" % text.replace(
+                        "&nbsp;", "&#160;")))
+            except etree.XMLSyntaxError as e:
+                text = escape(text)
+            return text
+
+        # skip inline code when escaping xml
+        reg = re.compile("(\|\[.*?\]\|)", flags=re.MULTILINE | re.DOTALL)
+        docstring = "".join([
+            p if reg.match(p) else esc_xml(p) for p in reg.split(docstring)])
 
     docbook = _docstring_to_docbook(docstring)
     rst = _docbook_to_rest(repo, docbook, current_type, current_func)

@@ -86,6 +86,25 @@ class TDocstring(unittest.TestCase):
         self.check("1>G", "1>G")
         self.check("negative value if a < b;", "negative value if a < b;")
         self.check("a & b", "a & b")
+        self.check("&", "&")
+        self.check("<", "<")
+        self.check("<= 0 >=", "<= 0 >=")
+        if not PY2:
+            self.check("<a\nb>", "<a\nb>")
+        self.check("<, == or >", "<, == or >")
+        self.check("&,;", "&,;")
+
+    def test_prog(self):
+        self.check("""
+|[<!-- language="C" -->
+&foo
+b
+]|""", """
+.. code-block:: c
+
+    &foo
+    b\
+""")
 
     def test_field(self):
         self.check(

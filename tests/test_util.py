@@ -13,11 +13,20 @@ from pgidocgen.util import is_staticmethod, \
     is_method_owner, is_fundamental, is_object, instance_to_rest, \
     get_child_properties, fake_subclasses, get_style_properties, \
     unescape_parameter, fake_bases, is_attribute_owner, unindent, \
-    get_csv_line
+    get_csv_line, get_signature_string
 from pgidocgen.compat import long_, PY2
 
 
 class TUtil(unittest.TestCase):
+
+    def test_get_signature_string(self):
+        from pgi.repository import GLib
+
+        func = GLib.Error.__init__
+        if PY2:
+            assert get_signature_string(func) == "()"
+        else:
+            assert get_signature_string(func) == "(*args, **kwargs)"
 
     def test_get_csv_line(self):
         assert get_csv_line(["foo"]) == '"foo"'
@@ -31,11 +40,16 @@ class TUtil(unittest.TestCase):
     def test_method_checks(self):
         from pgi.repository import GLib
 
-        assert not is_staticmethod(GLib.AsyncQueue.push)
-        assert is_staticmethod(GLib.Date.new)
+        assert not is_staticmethod(GLib.AsyncQueue, "push")
+        assert is_staticmethod(GLib.Date, "new")
+        assert is_staticmethod(GLib.IOChannel, "new_file")
+        assert is_staticmethod(GLib.IOChannel, "new_file")
+        assert is_staticmethod(GLib.Variant, "split_signature")
 
     def test_is_method_owner(self):
-        from pgi.repository import Gtk
+        from pgi.repository import Gtk, GLib
+
+        assert not is_method_owner(GLib.IOError, "from_bytes")
 
         self.assertTrue(is_method_owner(Gtk.ActionGroup, "add_actions"))
         self.assertFalse(is_method_owner(Gtk.Range, "get_has_tooltip"))
@@ -53,8 +67,9 @@ class TUtil(unittest.TestCase):
             is_attribute_owner(GdkPixbuf.PixbufAnimation, "ref"))
 
     def test_class_checks(self):
-        from pgi.repository import GObject
+        from pgi.repository import GObject, GLib
 
+        self.assertFalse(is_fundamental(GLib.Error))
         self.assertTrue(is_fundamental(GObject.Object))
         self.assertTrue(is_fundamental(GObject.ParamSpec))
         self.assertFalse(is_fundamental(object))

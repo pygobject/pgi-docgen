@@ -25,6 +25,17 @@ from .compat import long_, PY2
 _KWD_RE = re.compile("^(%s)$" % "|".join(keyword.kwlist + ["print", "exec"]))
 
 
+def get_signature_string(callable_):
+    try:
+        argspec = inspect.getargspec(callable_)
+    except TypeError:
+        # ... is not a Python function
+        return u"()"
+    if argspec[0] and argspec[0][0] in ('cls', 'self'):
+        del argspec[0][0]
+    return inspect.formatargspec(*argspec)
+
+
 def rest2html(text):
     return publish_parts(text, writer_name='html')['html_body']
 
@@ -203,10 +214,10 @@ def is_attribute_owner(cls, attr_name):
     if ovr and attr_name in ovr.__dict__:
         return True
 
-    for base in fake_bases(cls):
-        if getattr(base, attr_name, None) == obj:
-            return False
-    return True
+    if attr_name in cls.__dict__:
+        return True
+
+    return False
 
 
 def is_method_owner(cls, method_name):
@@ -414,11 +425,13 @@ def fake_mro(obj):
     return mro_bases
 
 
-def is_staticmethod(obj):
-    if PY2:
-        return not hasattr(obj, "im_self")
-    else:
-        return getattr(obj, "_is_static", False)
+def is_staticmethod(parent, name):
+    getattr(parent, name)
+    for c in parent.__mro__:
+        if name in c.__dict__:
+            obj = c.__dict__.get(name)
+            return isinstance(obj, (classmethod, staticmethod))
+    return False
 
 
 def is_virtualmethod(obj):
