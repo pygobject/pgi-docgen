@@ -227,7 +227,7 @@ class ModuleGenerator(object):
         # download external objects.inv for intersphinx and cache them in
         # SOURCE/_intersphinx
         extern_intersphinx = {
-            "python": "http://docs.python.org/2.7",
+            "python": "http://docs.python.org/3",
             "cairo": "https://pycairo.readthedocs.io/en/latest",
         }
 
