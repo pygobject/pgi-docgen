@@ -12,7 +12,7 @@ creates a sphinx environment.
 Requirements
 ------------
 
-* Python2.7 or PyPy
+* Python 3
 * pgi (trunk)
 * jinja2
 * Sphinx
