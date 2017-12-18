@@ -10,6 +10,7 @@ import unittest
 
 from pgidocgen.repo import docstring_to_rest
 from pgidocgen.namespace import get_base_types
+from pgidocgen.compat import PY2
 
 
 class DummyRepo(object):
@@ -75,6 +76,16 @@ class TDocstring(unittest.TestCase):
 
     def check(self, *args, **kwargs):
         return self._check(*args, **kwargs)
+
+    def test_invalid_xml(self):
+        self.check("bla 1 < 3", "bla 1 < 3")
+        self.check("bla 1 << 3", "bla 1 << 3")
+        if not PY2:
+            self.check("1<<$", "1<<$")
+            self.check("1<<<G<", "1<<<G<")
+        self.check("1>G", "1>G")
+        self.check("negative value if a < b;", "negative value if a < b;")
+        self.check("a & b", "a & b")
 
     def test_field(self):
         self.check(
