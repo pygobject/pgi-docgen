@@ -32,7 +32,9 @@ def get_project_summary(namespace, version):
     if os.path.exists(doap_path):
 
         with open(doap_path, "rb") as h:
-            root = etree.parse(h)
+            data = h.read()
+            data = data.replace(b"&excl;", b"&#x21;")
+            root = etree.fromstring(data)
 
         # strip namespaces
         for x in root.iter():

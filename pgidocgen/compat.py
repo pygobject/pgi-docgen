@@ -47,7 +47,7 @@ if PY2:
     import __builtin__ as builtins
     builtins
 
-    from urllib import unquote
+    from urllib import unquote, quote
 
     def exec_(_code_, _globs_=None, _locs_=None):
         if _globs_ is None:
@@ -91,6 +91,6 @@ elif PY3:
     import builtins
     builtins
 
-    from urllib.parse import unquote
+    from urllib.parse import unquote, quote
 
     exec_ = getattr(builtins, "exec")

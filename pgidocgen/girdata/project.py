@@ -6,11 +6,11 @@
 # version 2.1 of the License, or (at your option) any later version.
 
 import re
-import urllib
 
 from .. import util
 from .library import Library
 from .util import load_debian
+from ..compat import quote
 
 
 class Project(object):
@@ -152,7 +152,7 @@ class Project(object):
 
             def func(path):
                 path, line = path.rsplit(":", 1)
-                return "http://git.kiyuko.org/cgi-bin/browse?p=cattle;a=blob;f=%s;hb=%s#l%s" % (urllib.quote(path), tag, line)
+                return "http://git.kiyuko.org/cgi-bin/browse?p=cattle;a=blob;f=%s;hb=%s#l%s" % (quote(path), tag, line)
 
             return func
         elif namespace in ("Colord", "ColorHug"):

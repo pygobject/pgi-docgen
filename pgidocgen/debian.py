@@ -46,6 +46,7 @@ def get_repo_girs():
 
     girs = {}
     data = subprocess.check_output(["apt-file", "search", ".gir"])
+    data = data.decode("utf-8")
     for line in data.strip().splitlines():
         package, path = line.split(": ", 1)
         if path.startswith("/usr/share/gir-1.0/"):
@@ -88,7 +89,7 @@ def get_build_ids():
     """
 
     build_ids = {}
-    for package, values in _extract_control_field("Build-Ids").iteritems():
+    for package, values in _extract_control_field("Build-Ids").items():
         for value in values:
             for v in value.split():
                 build_ids[v] = package
@@ -110,6 +111,7 @@ def get_debug_packages_for_libs(libraries):
     debug_packages = set()
     data = subprocess.check_output(["apt-file", "search", ".so"])
     data += subprocess.check_output(["apt-file", "search", ".debug"])
+    data = data.decode("utf-8")
     for line in data.splitlines():
         package, path = line.split(": ", 1)
         if path in debug_files:

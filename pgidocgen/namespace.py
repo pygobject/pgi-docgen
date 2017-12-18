@@ -47,7 +47,7 @@ def get_namespace(namespace, version, _cache={}):
                 d.close()
                 ns = Namespace(namespace, version)
                 # make sure we save a fully populated instance
-                for k, v in type(ns).__dict__.items():
+                for k, v in list(type(ns).__dict__.items()):
                     if isinstance(v, util.cached_property):
                         getattr(ns, k)
                 d = shelve.open(SHELVE_CACHE, protocol=2)

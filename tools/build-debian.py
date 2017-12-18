@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 # Copyright 2015 Christoph Reiter
 #
 # This library is free software; you can redistribute it and/or
@@ -6,13 +6,7 @@
 # License as published by the Free Software Foundation; either
 # version 2.1 of the License, or (at your option) any later version.
 
-"""
-Call these first:
-
-* apt-file update
-* sudo apt-get update
-
-"""
+from __future__ import print_function
 
 import os
 import sys
@@ -22,6 +16,7 @@ import argparse
 import requests
 import time
 from multiprocessing.pool import ThreadPool
+from functools import cmp_to_key
 
 import apt
 import apt_pkg
@@ -165,14 +160,16 @@ def check_typelibs(typelibs):
     cache.close()
 
     if to_install:
-        print "Not all typelibs installed:\n"
-        print "sudo apt install " + " ".join(sorted(to_install))
+        print("Not all typelibs installed:\n")
+        print("sudo apt install " + " ".join(sorted(to_install)))
         raise SystemExit(1)
 
 
 def compare_deb_packages(a, b):
     va = subprocess.check_output(["dpkg", "--field", a, "Version"]).strip()
     vb = subprocess.check_output(["dpkg", "--field", b, "Version"]).strip()
+    va = va.decode("utf-8")
+    vb = vb.decode("utf-8")
     return apt_pkg.version_compare(va, vb)
 
 
@@ -201,7 +198,7 @@ def fetch_girs(girs, dest):
     tmp_download = os.path.join(dest, "tmp_download")
     dst = os.path.join(dest, "gir-1.0")
 
-    print "Download packages.."
+    print("Download packages..")
     uris = []
     cache = apt.Cache()
     cache.open(None)
@@ -224,11 +221,11 @@ def fetch_girs(girs, dest):
     pool.close()
     pool.join()
 
-    print "Extracting packages.."
+    print("Extracting packages..")
 
     # sort, so older girs get replaced
     entries = [os.path.join(tmp_download, e) for e in os.listdir(tmp_download)]
-    entries.sort(cmp=compare_deb_packages)
+    entries.sort(key=cmp_to_key(compare_deb_packages))
 
     os.mkdir(dst)
     for path in entries:
@@ -246,9 +243,9 @@ def fetch_girs_cached():
     temp_data = os.path.join(
         os.path.dirname(os.path.realpath(__file__)), "_temp_data_dir")
     if not os.path.exists(temp_data):
-        print "find girs.."
+        print("find girs..")
         girs = get_repo_girs()
-        print "fetch and extract debian packages.."
+        print("fetch and extract debian packages..")
         fetch_girs(girs, temp_data)
     return temp_data
 
@@ -282,8 +279,8 @@ def check_debug_packages(gir_dir, can_build):
     cache.close()
 
     if to_install:
-        print "Not all debug packages installed:\n"
-        print "sudo apt install " + " ".join(sorted(to_install))
+        print("Not all debug packages installed:\n")
+        print("sudo apt install " + " ".join(sorted(to_install)))
         raise SystemExit(1)
 
 
@@ -292,11 +289,11 @@ def main(argv):
     parser.add_argument('--devhelp', action='store_true')
     args = parser.parse_args(argv[1:])
 
-    print "[don't forget to apt-file update/apt-get update!]"
+    print("[don't forget to apt-file update/apt-get update!]")
 
-    print "searching for typelibs.."
+    print("searching for typelibs..")
     typelibs = get_repo_typelibs()
-    print "searching for uninstalled typelibs"
+    print("searching for uninstalled typelibs")
     check_typelibs(typelibs)
 
     data_dir = fetch_girs_cached()
@@ -304,22 +301,22 @@ def main(argv):
     gir_list = [os.path.splitext(e)[0] for e in os.listdir(gir_dir)]
 
     typelib_ns = set()
-    for namespaces in typelibs.itervalues():
+    for namespaces in typelibs.values():
         typelib_ns.update(namespaces)
 
-    print "Missing gir files: %r" % sorted(typelib_ns - set(gir_list))
-    print "Missing typelib files: %r" % sorted(set(gir_list) - typelib_ns)
+    print("Missing gir files: %r" % sorted(typelib_ns - set(gir_list)))
+    print("Missing typelib files: %r" % sorted(set(gir_list) - typelib_ns))
     can_build = sorted(set(gir_list) & typelib_ns)
-    print "%d ready to build" % len(can_build)
+    print("%d ready to build" % len(can_build))
 
     assert not (set(BLACKLIST) & set(BUILD))
 
     unknown_build = set(BLACKLIST) - set(can_build)
     assert not unknown_build, unknown_build
     can_build = set(can_build) - set(BLACKLIST)
-    print "%d ready to build after blacklisting" % len(can_build)
+    print("%d ready to build after blacklisting" % len(can_build))
 
-    print "searching for debug packages.."
+    print("searching for debug packages..")
     check_debug_packages(gir_dir, can_build)
 
     unknown_build = set(BUILD) - set(can_build)

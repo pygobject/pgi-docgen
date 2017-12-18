@@ -27,6 +27,7 @@ class TGIRData(unittest.TestCase):
         assert s.repositories
 
         get_project_summary("GIRepository", "1.0")
+        get_project_summary("GstVideo", "1.0")
 
     def test_get_library_version(self):
         mods = ["Gtk-3.0", "Atk-1.0", "Gst-1.0", "Poppler-0.18", "Anthy-9000",
