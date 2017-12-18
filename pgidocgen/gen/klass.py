@@ -600,7 +600,7 @@ class ClassGenerator(genutil.Generator):
         inheritance_edges = get_edges(cls.base_tree)
         inheritance_edges.sort(key=lambda x: x[0].name)
 
-        inheritance_nodes = get_nodes(cls.base_tree).values()
+        inheritance_nodes = list(get_nodes(cls.base_tree).values())
         inheritance_nodes.sort(key=lambda x: x.name)
 
         # copy images

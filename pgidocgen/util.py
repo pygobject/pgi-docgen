@@ -26,6 +26,9 @@ _KWD_RE = re.compile("^(%s)$" % "|".join(keyword.kwlist + ["print", "exec"]))
 
 
 def get_signature_string(callable_):
+    if type(callable_).__name__ == "wrapper_descriptor":
+            return u"()"
+
     try:
         argspec = inspect.getargspec(callable_)
     except TypeError:

@@ -23,10 +23,9 @@ class TUtil(unittest.TestCase):
         from pgi.repository import GLib
 
         func = GLib.Error.__init__
-        if PY2:
-            assert get_signature_string(func) == "()"
-        else:
-            assert get_signature_string(func) == "(*args, **kwargs)"
+        assert get_signature_string(func) == "()"
+        assert get_signature_string(GLib.IOChannel.new_file) == \
+            "(filename, mode)"
 
     def test_get_csv_line(self):
         assert get_csv_line(["foo"]) == '"foo"'
