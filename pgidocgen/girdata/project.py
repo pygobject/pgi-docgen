@@ -6,11 +6,11 @@
 # version 2.1 of the License, or (at your option) any later version.
 
 import re
+from urllib.parse import quote
 
 from .. import util
 from .library import Library
 from .util import load_debian
-from ..compat import quote
 
 
 class Project(object):

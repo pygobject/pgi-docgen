@@ -11,7 +11,7 @@ from __future__ import print_function
 import sys
 import argparse
 import json
-import urllib
+from urllib.parse import unquote
 
 import requests
 from bs4 import BeautifulSoup
@@ -19,7 +19,6 @@ from multiprocessing import Pool
 
 from pgidocgen.girdata import get_docref_path
 from pgidocgen.girdata.library import LIBRARIES
-from pgidocgen.compat import unquote
 
 
 def fetch_pages(lib):

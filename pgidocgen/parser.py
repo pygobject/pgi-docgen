@@ -9,12 +9,9 @@
 import re
 import sys
 
-if sys.version_info[0] == 3:
-    from lxml import etree
-    from xml.sax.saxutils import escape
-    from bs4 import BeautifulSoup, Tag
-else:
-    from BeautifulSoup import BeautifulStoneSoup, Tag
+from lxml import etree
+from xml.sax.saxutils import escape
+from bs4 import BeautifulSoup, Tag
 
 from . import util
 from .util import escape_rest, force_unindent
@@ -370,14 +367,10 @@ def _docstring_to_docbook(docstring):
 
 
 def _docbook_to_rest(repo, docbook, current_type, current_func):
-    if sys.version_info[0] == 3:
-        dummy = "<dummy>" + docbook + "</dummy>"
-        dummy = etree.tostring(
-            etree.fromstring(dummy, parser=etree.XMLParser(recover=True)))
-        soup = BeautifulSoup(dummy, "xml")
-    else:
-        soup = BeautifulStoneSoup(
-            docbook, convertEntities=BeautifulStoneSoup.HTML_ENTITIES)
+    dummy = "<dummy>" + docbook + "</dummy>"
+    dummy = etree.tostring(
+        etree.fromstring(dummy, parser=etree.XMLParser(recover=True)))
+    soup = BeautifulSoup(dummy, "xml")
 
     out = []
     for item in soup.contents:
@@ -423,22 +416,20 @@ def docstring_to_rest(repo, docstring, current_type=None, current_func=None):
         # functions or methods
         assert current_func.count(".") in (1, 2)
 
-    if sys.version_info[0] == 3:
+    def esc_xml(text):
+        # in case it's not valid xml, assume markdown and escape
+        try:
+            etree.tostring(etree.fromstring(
+                "<dummy>%s</dummy>" % text.replace(
+                    "&nbsp;", "&#160;")))
+        except etree.XMLSyntaxError as e:
+            text = escape(text)
+        return text
 
-        def esc_xml(text):
-            # in case it's not valid xml, assume markdown and escape
-            try:
-                etree.tostring(etree.fromstring(
-                    "<dummy>%s</dummy>" % text.replace(
-                        "&nbsp;", "&#160;")))
-            except etree.XMLSyntaxError as e:
-                text = escape(text)
-            return text
-
-        # skip inline code when escaping xml
-        reg = re.compile("(\|\[.*?\]\|)", flags=re.MULTILINE | re.DOTALL)
-        docstring = "".join([
-            p if reg.match(p) else esc_xml(p) for p in reg.split(docstring)])
+    # skip inline code when escaping xml
+    reg = re.compile("(\|\[.*?\]\|)", flags=re.MULTILINE | re.DOTALL)
+    docstring = "".join([
+        p if reg.match(p) else esc_xml(p) for p in reg.split(docstring)])
 
     docbook = _docstring_to_docbook(docstring)
     rst = _docbook_to_rest(repo, docbook, current_type, current_func)

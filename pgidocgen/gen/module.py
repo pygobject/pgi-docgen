@@ -27,7 +27,6 @@ from . import genutil
 
 from ..namespace import get_namespace
 from ..repo import Repository
-from ..compat import exec_
 
 
 _template = genutil.get_template("""\
@@ -222,7 +221,7 @@ class ModuleGenerator(object):
 
         # make sure the generated config
         with io.open(conf_path, "r", encoding="utf-8") as h:
-            exec_(h.read(), {})
+            exec(h.read(), {})
 
         # download external objects.inv for intersphinx and cache them in
         # SOURCE/_intersphinx

@@ -10,8 +10,6 @@ import sys
 import bisect
 import subprocess
 
-from .compat import chr_
-
 """
 Provides source paths and line numbers for shared libraries.
 The library has to include debug symbols or a separate debug symbol file has
@@ -54,7 +52,7 @@ def read_elf_section(library_path, name):
     def tobin(s):
         d = b""
         for i in range(0, len(s), 2):
-            d += chr_(int(s[i:i + 2].decode("ascii"), 16))
+            d += bytes([int(s[i:i + 2].decode("ascii"), 16)])
         return d
 
     content = b""

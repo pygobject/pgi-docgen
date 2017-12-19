@@ -25,7 +25,6 @@ import sphinx
 from .mergeindex import mergeindex
 from .util import rest2html
 from .gen.genutil import get_data_dir
-from .compat import exec_
 
 
 DEVHELP_PREFIX = "python-"
@@ -190,7 +189,7 @@ def main(args):
         conf_path = os.path.join(path, "conf_data.py")
         with io.open(conf_path, "r", encoding="utf-8") as h:
             exec_env = {}
-            exec_(h.read(), exec_env)
+            exec(h.read(), exec_env)
         deps = set(exec_env["DEPS"])
         if devhelp:
             prefix = DEVHELP_PREFIX
