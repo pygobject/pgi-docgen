@@ -1,6 +1,10 @@
 .. image:: https://circleci.com/gh/pygobject/pgi-docgen.svg?style=svg
     :target: https://circleci.com/gh/pygobject/pgi-docgen
 
+.. image:: https://codecov.io/gh/pygobject/pgi-docgen/branch/master/graph/badge.svg
+    :target: https://codecov.io/gh/pygobject/pgi-docgen
+
+
 What is this?
 =============
 
