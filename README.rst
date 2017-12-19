@@ -1,3 +1,6 @@
+.. image:: https://circleci.com/gh/pygobject/pgi-docgen.svg?style=svg
+    :target: https://circleci.com/gh/pygobject/pgi-docgen
+
 What is this?
 =============
 
