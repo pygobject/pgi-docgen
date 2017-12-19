@@ -7,7 +7,6 @@
 # License as published by the Free Software Foundation; either
 # version 2.1 of the License, or (at your option) any later version.
 
-import sys
 import argparse
 
 from . import create, build

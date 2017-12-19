@@ -54,6 +54,7 @@ html_context = {
     "extra_css_files": ["_static/css/pgi.css"],
 }
 
+
 def linkcode_resolve(domain, info):
     """for sphinx.ext.linkcode"""
 

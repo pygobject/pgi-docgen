@@ -36,8 +36,8 @@ def get_class_image_dir(namespace, version):
     """
 
     return os.path.join(
-            _BASEDIR, "clsimages",
-            "%s-%s" % (namespace, version))
+        _BASEDIR, "clsimages",
+        "%s-%s" % (namespace, version))
 
 
 def get_class_image_path(namespace, version, class_name):

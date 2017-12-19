@@ -45,7 +45,7 @@ def read_elf_section(library_path, name):
     try:
         data = subprocess.check_output(["readelf", "-x", name,
                                         library_path],
-                                        stderr=subprocess.STDOUT)
+                                       stderr=subprocess.STDOUT)
     except subprocess.CalledProcessError:
         return b""
 

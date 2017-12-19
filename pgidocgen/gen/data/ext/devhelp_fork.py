@@ -87,7 +87,7 @@ class DevhelpBuilder(StandaloneHTMLBuilder):
         def write_toc(node, parent):
             # type: (nodes.Node, nodes.Node) -> None
             if isinstance(node, addnodes.compact_paragraph) or \
-                   isinstance(node, nodes.bullet_list):
+                    isinstance(node, nodes.bullet_list):
                 for subnode in node:
                     write_toc(subnode, parent)
             elif isinstance(node, nodes.list_item):

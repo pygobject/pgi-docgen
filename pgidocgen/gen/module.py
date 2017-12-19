@@ -5,8 +5,6 @@
 # License as published by the Free Software Foundation; either
 # version 2.1 of the License, or (at your option) any later version.
 
-from __future__ import print_function
-
 import os
 import io
 import shutil
@@ -188,12 +186,12 @@ class ModuleGenerator(object):
         dir_ = sub_dir
 
         index_path = os.path.join(sub_dir, "index.rst")
-        with io.open(index_path,  "w", encoding="utf-8") as h:
+        with io.open(index_path, "w", encoding="utf-8") as h:
 
             title = "%s %s" % (namespace, version)
             if module.library_version:
                 title += " (%s)" % module.library_version
-  
+
             names = []
             gens = [func_gen, cb_gen, class_gen, hier_gen, struct_gen,
                     class_struct_gen, iface_struct_gen,

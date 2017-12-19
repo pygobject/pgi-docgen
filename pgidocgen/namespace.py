@@ -317,7 +317,7 @@ def get_cairo_types():
             c_name = "_".join(filter(None, ["cairo", prefix, arg]))
             if hasattr(lib, c_name):
                 map_[c_name] = ["cairo." + obj.__name__ + "." + arg]
-        type_name = "_".join(filter(None,  ["cairo", prefix, "t"]))
+        type_name = "_".join(filter(None, ["cairo", prefix, "t"]))
         map_[type_name] = ["cairo." + obj.__name__]
         return map_
 

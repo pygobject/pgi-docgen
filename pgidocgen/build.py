@@ -5,13 +5,10 @@
 # License as published by the Free Software Foundation; either
 # version 2.1 of the License, or (at your option) any later version.
 
-from __future__ import print_function
-
 import os
 import io
 import glob
 import re
-import argparse
 import subprocess
 from multiprocessing.pool import ThreadPool
 import multiprocessing
@@ -87,7 +84,7 @@ def share_static(main):
 
     roots = []
     for entry in os.listdir(main):
-        if entry.startswith(("_", ".")) or not "-" in entry:
+        if entry.startswith(("_", ".")) or "-" not in entry:
             continue
         path = os.path.join(main, entry)
         if not os.path.isdir(path):
@@ -162,8 +159,9 @@ class Package(object):
 
 
 def add_parser(subparsers):
-    parser = subparsers.add_parser("build",
-        help="uild the sphinx environ created with pgi-docgen")
+    parser = subparsers.add_parser(
+        "build",
+        help="build the sphinx environ created with pgi-docgen")
     parser.add_argument('source', help='path to the sphinx environ base dir')
     parser.add_argument('target',
                         help='path to where the resulting build should be')

@@ -6,8 +6,6 @@
 # License as published by the Free Software Foundation; either
 # version 2.1 of the License, or (at your option) any later version.
 
-from __future__ import print_function
-
 import os
 import re
 import types
@@ -1064,7 +1062,7 @@ class Module(BaseDocObject):
 
         print("%s-%s: unresolved links: %d" % (repo.namespace, repo.version,
                                                repo.missed_links))
-        
+
         return mod
 
 

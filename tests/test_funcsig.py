@@ -62,26 +62,30 @@ class TFuncSigs(unittest.TestCase):
         self.assertEqual(sig.raises, True)
 
     def test_from_string_hash(self):
-        sig = FuncSignature.from_string("to_hash",
+        sig = FuncSignature.from_string(
+            "to_hash",
             "to_hash(flags: NetworkManager.SettingHashFlags) -> "
             "{str: {int: int}}")
 
         self.assertEqual(sig.res, [["{str: {int: int}}"]])
 
-        sig = FuncSignature.from_string("do_get_item_attributes",
+        sig = FuncSignature.from_string(
+            "do_get_item_attributes",
             "do_get_item_attributes(item_index: int) -> "
             "attributes: {str: GLib.Variant}")
 
         self.assertEqual(sig.res, [["attributes", "{str: GLib.Variant}"]])
 
     def test_to_simple_sig(self):
-        sig = FuncSignature.from_string("to_hash",
+        sig = FuncSignature.from_string(
+            "to_hash",
             "to_hash(flags: NetworkManager.SettingHashFlags, foo: [int]) -> "
             "{str: {int: int}}")
         self.assertEqual(sig.to_simple_signature(), "(flags, foo)")
 
     def test_to_simple_sig_2(self):
-        sig = FuncSignature.from_string("to_hash",
+        sig = FuncSignature.from_string(
+            "to_hash",
             "to_hash(flags: Foo.Bar, foo: [int or None], *data)")
         self.assertEqual(sig.to_simple_signature(), "(flags, foo, *data)")
 
@@ -123,7 +127,7 @@ class TFuncSigs(unittest.TestCase):
 
 :returns:
     RETURNDOC(Foo.bar.go)
-    
+    \n\
     :b_:
         PARADOC(Foo.bar.go.b\\_)
 
