@@ -14,6 +14,6 @@ if [ ! -f "$CACHEDIR/$DOCKERIMAGE" ]; then
 fi;
 
 docker image load -i "$CACHEDIR/$DOCKERIMAGE"
-docker run --volume "$(pwd):/app" --workdir "/app" --tty --detach "$DOCKERIMAGE" bash > container_id
+docker run $(bash <(curl -s https://codecov.io/env)) --volume "$(pwd):/app" --workdir "/app" --tty --detach "$DOCKERIMAGE" bash > container_id
 docker exec "$(cat container_id)" bash -x ".circleci/test-docker.sh"
 docker stop "$(cat container_id)"
