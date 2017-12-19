@@ -64,7 +64,7 @@ def get_project_summary(namespace, version):
             ps.description = description.text
 
         if homepage is not None:
-            ps.homepage =  homepage.attrib["resource"]
+            ps.homepage = homepage.attrib["resource"]
 
         if bug_database is not None:
             ps.bugtracker = bug_database.attrib["resource"]

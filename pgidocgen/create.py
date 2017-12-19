@@ -5,10 +5,7 @@
 # License as published by the Free Software Foundation; either
 # version 2.1 of the License, or (at your option) any later version.
 
-from __future__ import print_function
-
 import sys
-import argparse
 import subprocess
 import tempfile
 import os
@@ -21,7 +18,7 @@ from .util import get_gir_files
 
 def add_parser(subparsers):
     parser = subparsers.add_parser("create",
-        help="Create a sphinx environ")
+                                   help="Create a sphinx environ")
     parser.add_argument('target',
                         help='path to where the resulting source should be')
     parser.add_argument('namespace', nargs="+",

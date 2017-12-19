@@ -209,13 +209,12 @@ b
             '<link linkend="GtkWidget"><type>AtkTable</type></link>',
             ':obj:`Atk.Table <Gtk.Widget>`')
 
-
     def test_docbook_programlisting_single(self):
         self.check("""
 <informalexample><programlisting>
 gtk_entry_buffer_get_length (gtk_entry_get_buffer (entry));
 </programlisting></informalexample>""",
-        "``gtk_entry_buffer_get_length (gtk_entry_get_buffer (entry));``")
+                   "``gtk_entry_buffer_get_length (gtk_entry_get_buffer (entry));``")
 
     def test_docbook_programlisting(self):
         self.check(
@@ -545,7 +544,7 @@ user\\_data\\:
 
     GdkEvent *event;
     GdkEventType type;
-    
+    \n\
     type = event->type;
 """)
 

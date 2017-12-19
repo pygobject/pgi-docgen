@@ -63,11 +63,11 @@ def MarkDownParseBlocks(linesref, symbol, context):
                     if md_block["depth"] > 0:
                         md_block["depth"] -= 1
                     else:
-                        #("closing tag '$line'");
+                        # ("closing tag '$line'");
                         md_block["closed"] = 1
                         # TODO(ensonic): reparse inner text with MarkDownParseLines?
                 md_block["text"] += "\n" + line
-                #("add to markup");
+                # ("add to markup");
                 continue
 
         deindented_line = line
@@ -208,7 +208,7 @@ def MarkDownParseBlocks(linesref, symbol, context):
                 continue
 
         # indentation sensitive types
-        #("parsing '$line'");
+        # ("parsing '$line'");
 
         heading_match = re.search(
             r"^([#]{1,2})[ \t]+(.+?)[ \t]*[#]*[ \t]*(?:{#([^}]+)})?[ \t]*$",
@@ -280,7 +280,7 @@ def MarkDownParseBlocks(linesref, symbol, context):
             # skip link markdown
             # TODO(ensonic): consider adding more uri schemes (ftp, ...)
             if re.search(r"^https?", tag):
-                #("skipping link '$tag'");
+                # ("skipping link '$tag'");
                 pass
             else:
                 # for TEXT_LEVEL_ELEMENTS, we want to keep them as-is in the
@@ -289,12 +289,12 @@ def MarkDownParseBlocks(linesref, symbol, context):
                     md_block["type"] == "paragraph" and
                     "start" in md_block and
                     not md_block.get("closed"))
-                #("markup found '$tag', scanning $scanning_for_end_of_text_level_tag ?");
+                # ("markup found '$tag', scanning $scanning_for_end_of_text_level_tag ?");
                 if tag not in MD_TEXT_LEVEL_ELEMENTS and not scanning_for_end_of_text_level_tag:
                     md_blocks.append(md_block)
 
                     if is_self_closing:
-                        #("self-closing docbook '$tag'");
+                        # ("self-closing docbook '$tag'");
                         md_block = {
                             "type": "self-closing tag",
                             "text": deindented_line,
@@ -302,7 +302,7 @@ def MarkDownParseBlocks(linesref, symbol, context):
                         is_self_closing = 0
                         continue
 
-                    #("new markup '$tag'");
+                    # ("new markup '$tag'");
                     md_block = {
                         "type": "markup",
                         "text": deindented_line,
@@ -316,19 +316,19 @@ def MarkDownParseBlocks(linesref, symbol, context):
                     continue
                 else:
                     if tag in MD_TEXT_LEVEL_ELEMENTS:
-                        #("text level docbook '$tag' in '".$md_block->{"type"}."' state");
+                        # ("text level docbook '$tag' in '".$md_block->{"type"}."' state");
                         # TODO(ensonic): handle nesting
                         if not scanning_for_end_of_text_level_tag:
                             if re.search(r"<\/%s>" % tag, deindented_line):
-                                #("new text level markup '$tag'");
+                                # ("new text level markup '$tag'");
                                 md_block["start"] = "<" + tag + ">"
                                 md_block["end"] = "</" + tag + ">"
                                 md_block["closed"] = 0
-                                #("scanning for end of '$tag'");
+                                # ("scanning for end of '$tag'");
                         else:
                             if md_block["end"] in deindented_line:
                                 md_block["closed"] = 1
-                                #("found end of '$tag'");
+                                # ("found end of '$tag'");
         elif li_match:
             # li
             md_blocks.append(md_block)
@@ -382,18 +382,17 @@ def MarkDownParseBlocks(linesref, symbol, context):
                     "interrupted": 0,
                     "text": line,
                 }
-                #("new paragraph due to interrupted");
+                # ("new paragraph due to interrupted");
             else:
                 md_block["text"] += "\n" + line
-                #("add to paragraph");
+                # ("add to paragraph");
         else:
             md_blocks.append(md_block)
             md_block = {
                 "type": "paragraph",
                 "text": line,
             }
-            #("new paragraph due to different block type");
-
+            # ("new paragraph due to different block type");
 
     md_blocks.append(md_block)
     md_blocks.pop(0)
@@ -412,7 +411,7 @@ def ReplaceEntities(text, symbol):
         ["&quot;", "\""],
         ["&apos;", "'"],
         ["&nbsp;", " "],
-        ["&amp;", "&"], # Do this last, or the others get messed up.
+        ["&amp;", "&"],  # Do this last, or the others get messed up.
     ]
 
     # Expand entities in <programlisting> even inside CDATA since
@@ -420,7 +419,7 @@ def ReplaceEntities(text, symbol):
     for a, b in entities:
         text = re.sub(re.escape(a), b, text)
 
-    return text;
+    return text
 
 
 def MarkDownParseSpanElementsInner(text, markersref):
@@ -428,12 +427,12 @@ def MarkDownParseSpanElementsInner(text, markersref):
     markers = dict.fromkeys(markersref, 1)
 
     while text != "":
-        closest_marker = "";
-        closest_marker_index = 0;
-        closest_marker_position = -1;
-        text_marker = "";
-        i = 0;
-        offset = 0;
+        closest_marker = ""
+        closest_marker_index = 0
+        closest_marker_position = -1
+        text_marker = ""
+        i = 0
+        offset = 0
 
         for marker, use in markers.items():
             if not use:
@@ -526,9 +525,9 @@ def MarkDownParseSpanElementsInner(text, markersref):
             else:
                 markup += closest_marker
                 if closest_marker == "![":
-                  offset = 2
+                    offset = 2
                 else:
-                  offset = 1
+                    offset = 1
         elif closest_marker == "`":
             match = re.search(r"^(`+)([^`]+?)\1(?!`)", text)
             if match:
@@ -545,7 +544,7 @@ def MarkDownParseSpanElementsInner(text, markersref):
             offset += len(closest_marker)
 
         if offset > 0:
-          text = text[offset:]
+            text = text[offset:]
 
     return markup
 
@@ -621,9 +620,9 @@ def MarkDownOutputDocBook(blocksref, symbol, context):
                     output += "<informalexample><screen><![CDATA[\n"
                     tag = "screen"
                 else:
-                    output += "<informalexample><programlisting language=\"%s\"><![CDATA[\n" % block["language"];
+                    output += "<informalexample><programlisting language=\"%s\"><![CDATA[\n" % block["language"]
             else:
-                output += "<informalexample><programlisting><![CDATA[\n";
+                output += "<informalexample><programlisting><![CDATA[\n"
 
             for line in block["lines"]:
                 output += ReplaceEntities(line, symbol) + "\n"

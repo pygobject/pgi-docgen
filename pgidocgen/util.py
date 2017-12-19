@@ -6,8 +6,6 @@
 # License as published by the Free Software Foundation; either
 # version 2.1 of the License, or (at your option) any later version.
 
-from __future__ import print_function
-
 import os
 import re
 import inspect
@@ -15,7 +13,7 @@ import keyword
 import csv
 import warnings
 import subprocess
-from io import BytesIO, StringIO
+import io
 
 from docutils.core import publish_parts
 
@@ -70,6 +68,7 @@ def parse_gir_shared_libs(gir_path):
 
 def cache_calls(func):
     _cache = {}
+
     def wrap(*args):
         if len(_cache) > 100:
             _cache.clear()
@@ -207,7 +206,7 @@ def is_attribute_owner(cls, attr_name):
     """
 
     try:
-        obj = getattr(cls, attr_name)
+        getattr(cls, attr_name)
     except AttributeError:
         return False
 
@@ -293,23 +292,6 @@ def is_field(obj):
 
     field_base = type(GObject.Value.g_type)
     return isinstance(obj, field_base)
-
-
-def is_base(cls):
-    """If all base classes of the passed class are internal"""
-
-    if not inspect.isclass(cls):
-        return False
-
-    if cls.__bases__[0] in (object, int, long, float, str, unicode):
-        return True
-
-    # skip any overrides
-    base = fake_bases(cls)[0]
-    if base.__module__.split(".")[0] in ("pgi", "gi"):
-        return True
-
-    return False
 
 
 def indent(text, count=4):
@@ -500,7 +482,7 @@ def get_csv_line(values):
     for value in [v.replace("\n", " ") for v in values]:
         encoded.append(value)
 
-    h = StringIO()
+    h = io.StringIO()
     w = csv.writer(h, CSVDialect)
     w.writerow(encoded)
     result = h.getvalue().rstrip()
@@ -519,7 +501,7 @@ def instance_to_rest(cls, inst):
     if is_enum(cls):
         for k, v in cls.__dict__.items():
             if isinstance(v, cls) and v == inst:
-                return  ":obj:`%s`" % (
+                return ":obj:`%s`" % (
                     get_namespace(cls) + "." + cls.__name__ + "." + k)
     elif is_flags(cls):
         bits = []

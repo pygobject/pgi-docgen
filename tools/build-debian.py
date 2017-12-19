@@ -6,8 +6,6 @@
 # License as published by the Free Software Foundation; either
 # version 2.1 of the License, or (at your option) any later version.
 
-from __future__ import print_function
-
 import os
 import sys
 import subprocess
@@ -86,61 +84,64 @@ BLACKLIST = [
     "AyatanaAppIndicator-0.1",
 ]
 
-BUILD = ['AccountsService-1.0', 'Anjuta-3.0', 'AppIndicator3-0.1', 'Atk-1.0',
-'Atspi-2.0', 'Cally-1.0', 'Caribou-1.0', 'Champlain-0.12', 'Cheese-3.0',
-'Clutter-1.0', 'ClutterGdk-1.0', 'ClutterX11-1.0', 'Cogl-1.0', 'Cogl-2.0',
-'CoglPango-1.0', 'ColorHug-1.0', 'Colord-1.0', 'ColordGtk-1.0', 'CryptUI-0.0',
-'DBus-1.0', 'DBusGLib-1.0', 'Dbusmenu-0.4', 'DbusmenuGtk3-0.4', 'Dee-1.0',
-'EBook-1.2', 'EBookContacts-1.2', 'EDataServer-1.2', 'EvinceDocument-3.0',
-'EvinceView-3.0', 'Farstream-0.2', 'Fcitx-1.0', 'GConf-2.0', 'GData-0.0',
-'GDesktopEnums-3.0', 'GES-1.0', 'GExiv2-0.10', 'GIRepository-2.0', 'GL-1.0',
-'GLib-2.0', 'GMenu-3.0', 'GModule-2.0', 'GObject-2.0', 'GOffice-0.10',
-'GSSDP-1.0', 'GUPnP-1.0', 'GUPnPAV-1.0', 'GUPnPDLNA-2.0', 'GUPnPDLNAGst-2.0',
-'GUPnPIgd-1.0', 'GUdev-1.0', 'GUsb-1.0', 'GWeather-3.0', 'GXPS-0.1', 'Gck-1',
-'Gda-5.0', 'Gdk-3.0', 'GdkPixbuf-2.0', 'GdkX11-3.0', 'Gdl-3', 'Gdm-1.0',
-'GeocodeGlib-1.0', 'Gio-2.0', 'Gkbd-3.0', 'Gladeui-2.0', 'GnomeBluetooth-1.0',
-'GnomeDesktop-3.0', 'GnomeKeyring-1.0', 'Goa-1.0', 'Gsf-1', 'Gst-1.0',
-'GstAllocators-1.0', 'GstApp-1.0', 'GstAudio-1.0', 'GstBase-1.0',
-'GstCheck-1.0', 'GstController-1.0', 'GstFft-1.0', 'GstNet-1.0',
-'GstPbutils-1.0', 'GstRtp-1.0', 'GstRtsp-1.0', 'GstSdp-1.0', 'GstTag-1.0',
-'GstVideo-1.0', 'Gtk-3.0', 'GtkChamplain-0.12', 'GtkClutter-1.0',
-'GtkSource-3.0', 'GtkSpell-3.0', 'Gucharmap-2.90', 'IBus-1.0', 'Indicate-0.7',
-'Itl-1.0', 'JavaScriptCore-3.0', 'Json-1.0', 'Keybinder-0.0', 'Libosinfo-1.0',
-'LibvirtGConfig-1.0', 'LibvirtGLib-1.0', 'LibvirtGObject-1.0',
-'LunarDate-2.0', 'MPID-3.0', 'Nautilus-3.0', 'Nemo-3.0', 'NetworkManager-1.0',
-'Notify-0.7', 'PackageKitGlib-1.0', 'Pango-1.0', 'PangoCairo-1.0',
-'PangoFT2-1.0', 'PangoXft-1.0', 'Peas-1.0', 'PeasGtk-1.0', 'Polkit-1.0',
-'PolkitAgent-1.0', 'Poppler-0.18', 'RB-3.0', 'Rest-0.7', 'RestExtras-0.7',
-'Rsvg-2.0', 'Secret-1', 'Soup-2.4', 'SoupGNOME-2.4', 'SpiceClientGLib-2.0',
-'SpiceClientGtk-3.0', 'SugarGestures-1.0', 'TelepathyGLib-0.12',
-'TelepathyLogger-0.2', 'TotemPlParser-1.0', 'UDisks-2.0', 'UMockdev-1.0',
-'UPowerGlib-1.0', 'Vte-2.91', 'WebKit-3.0', 'Wnck-3.0', 'Xkl-1.0',
-'Zeitgeist-2.0', 'Zpj-0.0', 'cairo-1.0', 'fontconfig-2.0', 'freetype2-2.0',
-'libxml2-2.0', 'xfixes-4.0', 'xft-2.0', 'xlib-2.0', 'xrandr-1.3',
-"CoglPango-2.0", "GFBGraph-0.2", "Guestfs-1.0", "HarfBuzz-0.0",
-"InputPad-1.0", "Keybinder-3.0", "LightDM-1", "MateMenu-2.0", "OsmGpsMap-1.0",
-"Totem-1.0", "Uhm-0.0", "AppStreamGlib-1.0", "CDesktopEnums-3.0", "CMenu-3.0",
-"CinnamonDesktop-3.0", "ModemManager-1.0", "Evd-0.1", "Cattle-1.0",
-"GCab-1.0", "GPaste-1.0", "GVnc-1.0", "GVncPulse-1.0", "Ggit-1.0",
-"GtkVnc-2.0", "JavaScriptCore-4.0", "SocialWebClient-0.25", "WebKit2-4.0",
-"WebKit2WebExtension-4.0", "NM-1.0", "GstGL-1.0", "GstInsertBin-1.0",
-"GstMpegts-1.0", 'Anthy-9000', 'MediaArt-2.0', 'CoglGst-2.0',
-'GstRtspServer-1.0', 'ClutterGst-3.0', 'Gom-1.0', 'Limba-1.0', 'Abi-3.0',
-'Gnm-1.12', 'Libmsi-1.0', 'Vips-8.0', 'GooCanvas-2.0', 'GSound-1.0',
-'Accounts-1.0', 'Signon-1.0', 'Grss-0.7', 'AppStream-1.0',
-'LibvirtSandbox-1.0', 'GrlNet-0.3', 'Grl-0.3', 'Hinawa-1.0',
-'GstPlayer-1.0', 'LOKDocView-0.1', 'GrlPls-0.3', 'GoVirt-1.0', 'Cvc-1.0',
-'Workrave-1.0', 'OSTree-1.0', 'Flatpak-1.0', 'Mx-2.0',
-'GstTranscoder-1.0', 'GSystem-1.0', 'GMime-2.6', 'Budgie-1.0',
-'GnomeAutoarGtk-0.1', 'GnomeAutoar-0.1', 'LangTag-0.6', 'Gspell-1',
-'Urfkill-0.5', 'Bamf-3', 'Ufo-0.0', 'XApp-1.0', 'CScreensaver-1.0',
-'GstBadAllocators-1.0', 'Gepub-0.5', 'Camel-1.2',
-'Graphene-1.0', 'EDataServerUI-1.2', 'Template-1.0', 'Jsonrpc-1.0',
-'Dazzle-1.0', 'BlockDev-2.0', 'Devhelp-3.0', 'GMime-3.0',
-'AyatanaAppIndicator3-0.1', 'AvahiCore-0.6',
-'TrackerMiner-2.0', 'Avahi-0.6', 'TrackerControl-2.0', 'Retro-0.12',
-'AyatanaIdo3-0.4', 'Tracker-2.0', 'Fwupd-2.0',
-'Snapd-1', 'Parlatype-1.0', 'Peony-2.0',
+BUILD = [
+    'AccountsService-1.0', 'Anjuta-3.0', 'AppIndicator3-0.1', 'Atk-1.0',
+    'Atspi-2.0', 'Cally-1.0', 'Caribou-1.0', 'Champlain-0.12', 'Cheese-3.0',
+    'Clutter-1.0', 'ClutterGdk-1.0', 'ClutterX11-1.0', 'Cogl-1.0', 'Cogl-2.0',
+    'CoglPango-1.0', 'ColorHug-1.0', 'Colord-1.0', 'ColordGtk-1.0',
+    'CryptUI-0.0', 'DBus-1.0', 'DBusGLib-1.0', 'Dbusmenu-0.4',
+    'DbusmenuGtk3-0.4', 'Dee-1.0', 'EBook-1.2', 'EBookContacts-1.2',
+    'EDataServer-1.2', 'EvinceDocument-3.0', 'EvinceView-3.0',
+    'Farstream-0.2', 'Fcitx-1.0', 'GConf-2.0', 'GData-0.0',
+    'GDesktopEnums-3.0', 'GES-1.0', 'GExiv2-0.10', 'GIRepository-2.0',
+    'GL-1.0', 'GLib-2.0', 'GMenu-3.0', 'GModule-2.0', 'GObject-2.0',
+    'GOffice-0.10', 'GSSDP-1.0', 'GUPnP-1.0', 'GUPnPAV-1.0', 'GUPnPDLNA-2.0',
+    'GUPnPDLNAGst-2.0', 'GUPnPIgd-1.0', 'GUdev-1.0', 'GUsb-1.0',
+    'GWeather-3.0', 'GXPS-0.1', 'Gck-1', 'Gda-5.0', 'Gdk-3.0',
+    'GdkPixbuf-2.0', 'GdkX11-3.0', 'Gdl-3', 'Gdm-1.0', 'GeocodeGlib-1.0',
+    'Gio-2.0', 'Gkbd-3.0', 'Gladeui-2.0', 'GnomeBluetooth-1.0',
+    'GnomeDesktop-3.0', 'GnomeKeyring-1.0', 'Goa-1.0', 'Gsf-1', 'Gst-1.0',
+    'GstAllocators-1.0', 'GstApp-1.0', 'GstAudio-1.0', 'GstBase-1.0',
+    'GstCheck-1.0', 'GstController-1.0', 'GstFft-1.0', 'GstNet-1.0',
+    'GstPbutils-1.0', 'GstRtp-1.0', 'GstRtsp-1.0', 'GstSdp-1.0', 'GstTag-1.0',
+    'GstVideo-1.0', 'Gtk-3.0', 'GtkChamplain-0.12', 'GtkClutter-1.0',
+    'GtkSource-3.0', 'GtkSpell-3.0', 'Gucharmap-2.90', 'IBus-1.0',
+    'Indicate-0.7', 'Itl-1.0', 'JavaScriptCore-3.0', 'Json-1.0',
+    'Keybinder-0.0', 'Libosinfo-1.0', 'LibvirtGConfig-1.0', 'LibvirtGLib-1.0',
+    'LibvirtGObject-1.0', 'LunarDate-2.0', 'MPID-3.0', 'Nautilus-3.0',
+    'Nemo-3.0', 'NetworkManager-1.0', 'Notify-0.7', 'PackageKitGlib-1.0',
+    'Pango-1.0', 'PangoCairo-1.0', 'PangoFT2-1.0', 'PangoXft-1.0', 'Peas-1.0',
+    'PeasGtk-1.0', 'Polkit-1.0', 'PolkitAgent-1.0', 'Poppler-0.18', 'RB-3.0',
+    'Rest-0.7', 'RestExtras-0.7', 'Rsvg-2.0', 'Secret-1', 'Soup-2.4',
+    'SoupGNOME-2.4', 'SpiceClientGLib-2.0', 'SpiceClientGtk-3.0',
+    'SugarGestures-1.0', 'TelepathyGLib-0.12', 'TelepathyLogger-0.2',
+    'TotemPlParser-1.0', 'UDisks-2.0', 'UMockdev-1.0', 'UPowerGlib-1.0',
+    'Vte-2.91', 'WebKit-3.0', 'Wnck-3.0', 'Xkl-1.0', 'Zeitgeist-2.0',
+    'Zpj-0.0', 'cairo-1.0', 'fontconfig-2.0', 'freetype2-2.0', 'libxml2-2.0',
+    'xfixes-4.0', 'xft-2.0', 'xlib-2.0', 'xrandr-1.3', "CoglPango-2.0",
+    "GFBGraph-0.2", "Guestfs-1.0", "HarfBuzz-0.0", "InputPad-1.0",
+    "Keybinder-3.0", "LightDM-1", "MateMenu-2.0", "OsmGpsMap-1.0",
+    "Totem-1.0", "Uhm-0.0", "AppStreamGlib-1.0", "CDesktopEnums-3.0",
+    "CMenu-3.0", "CinnamonDesktop-3.0", "ModemManager-1.0", "Evd-0.1",
+    "Cattle-1.0", "GCab-1.0", "GPaste-1.0", "GVnc-1.0", "GVncPulse-1.0",
+    "Ggit-1.0", "GtkVnc-2.0", "JavaScriptCore-4.0", "SocialWebClient-0.25",
+    "WebKit2-4.0", "WebKit2WebExtension-4.0", "NM-1.0", "GstGL-1.0",
+    "GstInsertBin-1.0", "GstMpegts-1.0", 'Anthy-9000', 'MediaArt-2.0',
+    'CoglGst-2.0', 'GstRtspServer-1.0', 'ClutterGst-3.0', 'Gom-1.0',
+    'Limba-1.0', 'Abi-3.0', 'Gnm-1.12', 'Libmsi-1.0', 'Vips-8.0',
+    'GooCanvas-2.0', 'GSound-1.0', 'Accounts-1.0', 'Signon-1.0', 'Grss-0.7',
+    'AppStream-1.0', 'LibvirtSandbox-1.0', 'GrlNet-0.3', 'Grl-0.3',
+    'Hinawa-1.0', 'GstPlayer-1.0', 'LOKDocView-0.1', 'GrlPls-0.3',
+    'GoVirt-1.0', 'Cvc-1.0', 'Workrave-1.0', 'OSTree-1.0', 'Flatpak-1.0',
+    'Mx-2.0', 'GstTranscoder-1.0', 'GSystem-1.0', 'GMime-2.6', 'Budgie-1.0',
+    'GnomeAutoarGtk-0.1', 'GnomeAutoar-0.1', 'LangTag-0.6', 'Gspell-1',
+    'Urfkill-0.5', 'Bamf-3', 'Ufo-0.0', 'XApp-1.0', 'CScreensaver-1.0',
+    'GstBadAllocators-1.0', 'Gepub-0.5', 'Camel-1.2', 'Graphene-1.0',
+    'EDataServerUI-1.2', 'Template-1.0', 'Jsonrpc-1.0', 'Dazzle-1.0',
+    'BlockDev-2.0', 'Devhelp-3.0', 'GMime-3.0', 'AyatanaAppIndicator3-0.1',
+    'AvahiCore-0.6', 'TrackerMiner-2.0', 'Avahi-0.6', 'TrackerControl-2.0',
+    'Retro-0.12', 'AyatanaIdo3-0.4', 'Tracker-2.0', 'Fwupd-2.0', 'Snapd-1',
+    'Parlatype-1.0', 'Peony-2.0',
 ]
 
 
@@ -175,6 +176,7 @@ def compare_deb_packages(a, b):
 
 def _fetch(args):
     dest, uri = args
+    e = None
     for i in range(5):
         try:
             r = requests.get(uri)
@@ -217,7 +219,7 @@ def fetch_girs(girs, dest):
     os.makedirs(tmp_download)
     pool = ThreadPool(processes=10)
     for i, uri in enumerate(pool.imap_unordered(_fetch, [(tmp_download, u) for u in uris])):
-        print("%d/%d" % (i+1, len(uris)), uri)
+        print("%d/%d" % (i + 1, len(uris)), uri)
     pool.close()
     pool.join()
 
@@ -229,7 +231,7 @@ def fetch_girs(girs, dest):
 
     os.mkdir(dst)
     for path in entries:
-        subprocess.check_call(["dpkg" , "-x", path, tmp_root])
+        subprocess.check_call(["dpkg", "-x", path, tmp_root])
         base_src = os.path.join(tmp_root, "usr", "share", "gir-1.0")
         if not os.path.isdir(base_src):
             continue

@@ -84,8 +84,8 @@ class TUtil(unittest.TestCase):
             return instance_to_rest(gprop.value_type.pytype, gprop.default_value)
 
         v = instance_to_rest(Gtk.AccelFlags, Gtk.AccelFlags.LOCKED)
-        self.assertEqual(v,
-            ":obj:`Gtk.AccelFlags.LOCKED` | :obj:`Gtk.AccelFlags.MASK`")
+        self.assertEqual(
+            v, ":obj:`Gtk.AccelFlags.LOCKED` | :obj:`Gtk.AccelFlags.MASK`")
 
         v = instance_to_rest(int, 42)
         self.assertEqual(v, "``42``")

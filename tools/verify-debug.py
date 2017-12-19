@@ -6,8 +6,6 @@
 # License as published by the Free Software Foundation; either
 # version 2.1 of the License, or (at your option) any later version.
 
-from __future__ import print_function
-
 import requests
 
 from pgidocgen.util import get_gir_files, parse_gir_shared_libs
@@ -18,9 +16,9 @@ from pgidocgen.girdata import Project
 DATA = {
     "Gtk-3.0": (),
     "Anthy-9000": ("9100h", "", ""),
-    #~ "AppStreamGlib-1.0": (
-        #~ "0.5.14", "as_bundle_get_sdk",
-        #~ "https://github.com/hughsie/appstream-glib/tree/appstream_glib_0_5_14/libappstream-glib/as-bundle.c#L176"),
+    # "AppStreamGlib-1.0": (
+    # "0.5.14", "as_bundle_get_sdk",
+    # "https://github.com/hughsie/appstream-glib/tree/appstream_glib_0_5_14/libappstream-glib/as-bundle.c#L176"),
     "Atk-1.0": (
         "2.20.0", "atk_get_default_registry",
         "https://git.gnome.org/browse/atk/tree/atk/atkregistry.c?h=ATK_2_20_0#n267"),
@@ -59,9 +57,9 @@ DATA = {
         "2.54.2", "g_base64_decode_step",
         "https://git.gnome.org/browse/glib/tree/glib/gbase64.c?h=2.54.2#n326"),
     # This is buggy..
-    #~ "GExiv2-0.10": (
-        #~ "0.10.3", "gexiv2_preview_image_new",
-        #~ "https://git.gnome.org/browse/gexiv2/tree/gexiv2/gexiv2-startup.cpp?h=gexiv2-0.10.3#n46"),
+    # "GExiv2-0.10": (
+    # "0.10.3", "gexiv2_preview_image_new",
+    # "https://git.gnome.org/browse/gexiv2/tree/gexiv2/gexiv2-startup.cpp?h=gexiv2-0.10.3#n46"),
 }
 
 

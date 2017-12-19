@@ -7,7 +7,6 @@
 # version 2.1 of the License, or (at your option) any later version.
 
 import re
-import sys
 
 from lxml import etree
 from xml.sax.saxutils import escape
