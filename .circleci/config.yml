@@ -1,0 +1,26 @@
+defaults: &defaults
+  working_directory: ~/workdir
+  machine: true
+  steps:
+    - checkout
+    - run: pwd
+    - run: ls -l
+    - run: cp ".circleci/Dockerfile" _cache_key_file
+    - restore_cache:
+        key: cache-{{ checksum "_cache_key_file" }}
+    - run: bash -x .circleci/test.sh
+    - save_cache:
+        key: cache-{{ checksum "_cache_key_file" }}
+        paths:
+          - .circleci/_ci_cache
+
+version: 2
+jobs:
+  job.default:
+    <<: *defaults
+
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - job.default
