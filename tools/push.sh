@@ -16,7 +16,7 @@ if [ -d "$BUILD" ]; then
     rm -rf "$TEMP_BUILD"
     git clone https://github.com/lazka/pgi-docs.git "$TEMP_BUILD"
     cd "$TEMP_BUILD"
-    git checkout gh-pages
+    git checkout master
 
     git rm -r "*";
     cp -r "$BUILD"/* .
@@ -24,7 +24,7 @@ if [ -d "$BUILD" ]; then
     # add readme
     echo "This repository was created automatically using https://github.com/pygobject/pgi-docgen\n" >> README.rst
     echo "It contains a static website which can be viewed at http://lazka.github.io/pgi-docs/\n" >> README.rst
-    echo "It also works offline: http://github.com/lazka/pgi-docs/archive/gh-pages.zip" >> README.rst
+    echo "It also works offline: http://github.com/lazka/pgi-docs/archive/master.zip" >> README.rst
 
     # disable jekyll
     touch  .nojekyll

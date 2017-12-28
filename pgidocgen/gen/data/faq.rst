@@ -1,6 +1,6 @@
 Is this also available for offline use?
-    Yes, you can download `gh-pages.zip
-    <https://github.com/lazka/pgi-docs/archive/gh-pages.zip>`__ (~30 MB),
+    Yes, you can download `master.zip
+    <https://github.com/lazka/pgi-docs/archive/master.zip>`__ (~45 MB),
     extract it and open the `index.html` file with Firefox or Chrome.
 
     In case of Chrome/Chromium ``--allow-file-access-from-files`` has to be
