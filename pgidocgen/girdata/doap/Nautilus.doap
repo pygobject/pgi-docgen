@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <Project xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
          xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
          xmlns:foaf="http://xmlns.com/foaf/0.1/"
@@ -6,54 +7,27 @@
 
   <name xml:lang="en">Nautilus</name>
   <shortdesc xml:lang="en">Default file manager for GNOME</shortdesc>
-  <description>Default file manager for GNOME</description>
+  <description xml:lang="en">Default file manager for GNOME</description>
   <homepage rdf:resource="https://wiki.gnome.org/Apps/Nautilus" />
-  <mailing-list rdf:resource="http://mail.gnome.org/mailman/listinfo/nautilus-list" />
-  <download-page rdf:resource="http://download.gnome.org/sources/nautilus/" />
+  <mailing-list rdf:resource="https://mail.gnome.org/mailman/listinfo/nautilus-list" />
+  <download-page rdf:resource="https://download.gnome.org/sources/nautilus/" />
   <bug-database rdf:resource="https://gitlab.gnome.org/GNOME/nautilus/issues" />
+
   <category rdf:resource="http://api.gnome.org/doap-extensions#core" />
   <programming-language>C</programming-language>
 
   <maintainer>
     <foaf:Person>
-      <foaf:name>Alexander Larsson</foaf:name>
-      <foaf:mbox rdf:resource="mailto:alexl@redhat.com" />
-      <gnome:userid>alexl</gnome:userid>
-    </foaf:Person>
-  </maintainer>
-  <maintainer>
-    <foaf:Person>
-      <foaf:name>Martin Wehner</foaf:name>
-      <foaf:mbox rdf:resource="mailto:martin.wehner@gmail.com" />
-      <gnome:userid>mwehner</gnome:userid>
-    </foaf:Person>
-  </maintainer>
-  <maintainer>
-    <foaf:Person>
-      <foaf:name>Christian Neumair</foaf:name>
-      <foaf:mbox rdf:resource="mailto:cneumair@gnome.org" />
-      <gnome:userid>cneumair</gnome:userid>
-    </foaf:Person>
-  </maintainer>
-  <maintainer>
-    <foaf:Person>
-      <foaf:name>Andrew Walton</foaf:name>
-      <foaf:mbox rdf:resource="mailto:awalton@gnome.org" />
-      <gnome:userid>awalton</gnome:userid>
-    </foaf:Person>
-  </maintainer>
-  <maintainer>
-    <foaf:Person>
-      <foaf:name>Cosimo Cecchi</foaf:name>
-      <foaf:mbox rdf:resource="mailto:cosimoc@gnome.org" />
-      <gnome:userid>cosimoc</gnome:userid>
-    </foaf:Person>
-  </maintainer>
-  <maintainer>
-    <foaf:Person>
       <foaf:name>Carlos Soriano Sanchez</foaf:name>
       <foaf:mbox rdf:resource="mailto:csoriano@gnome.org" />
       <gnome:userid>csoriano</gnome:userid>
+    </foaf:Person>
+  </maintainer>
+  <maintainer>
+    <foaf:Person>
+      <foaf:name>Ernestas Kulik</foaf:name>
+      <foaf:mbox rdf:resource="mailto:ernestask@gnome.org" />
+      <gnome:userid>ernestask</gnome:userid>
     </foaf:Person>
   </maintainer>
 </Project>

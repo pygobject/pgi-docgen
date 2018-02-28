@@ -28,18 +28,18 @@
       <gnome:userid>gcampagna</gnome:userid>
     </foaf:Person>
   </maintainer>
-  <maintainer>
+  <author>
     <foaf:Person>
       <foaf:name>Bastien Nocera</foaf:name>
       <foaf:mbox rdf:resource="mailto:hadess@src.gnome.org" />
       <gnome:userid>hadess</gnome:userid>
     </foaf:Person>
-  </maintainer>
-  <!--<maintainer>
+  </author>
+  <author>
     <foaf:Person>
       <foaf:name>Frank Solensky</foaf:name>
       <foaf:mbox rdf:resource="mailto:fsolensky@src.gnome.org" />
       <gnome:userid>fsolensky</gnome:userid>
     </foaf:Person>
-  </maintainer>-->
+  </author>
 </Project>

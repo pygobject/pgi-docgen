@@ -5,6 +5,7 @@
          xmlns="http://usefulinc.com/ns/doap#">
 
   <name xml:lang="en">GNOME Desktop Library</name>
+  <description xml:lang="en">Library with common API for various GNOME modules</description>
   <shortdesc xml:lang="en">Library with common API for various GNOME modules</shortdesc>
   <!--
   <homepage rdf:resource="http://www.gnome.org/" />
@@ -23,11 +24,11 @@
       <gnome:userid>walters</gnome:userid>
     </foaf:Person>
   </maintainer>
-  <maintainer>
+  <author>
     <foaf:Person>
       <foaf:name>Bastien Nocera</foaf:name>
       <foaf:mbox rdf:resource="mailto:hadess@hadess.net" />
       <gnome:userid>hadess</gnome:userid>
     </foaf:Person>
-  </maintainer>
+  </author>
 </Project>

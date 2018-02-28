@@ -37,10 +37,27 @@
     </foaf:Person>
   </maintainer>
 
+  <maintainer>
+    <foaf:Person>
+      <foaf:name>Philip Withnall</foaf:name>
+      <foaf:mbox rdf:resource="mailto:philip@tecnocode.co.uk"/>
+      <foaf:mbox rdf:resource="mailto:withnall@endlessm.com"/>
+      <gnome:userid>pwithnall</gnome:userid>
+    </foaf:Person>
+  </maintainer>
+
+  <maintainer>
+    <foaf:Person>
+      <foaf:name>Emmanuele Bassi</foaf:name>
+      <foaf:mbox rdf:resource="mailto:ebassi@gnome.org"/>
+      <gnome:userid>ebassi</gnome:userid>
+    </foaf:Person>
+  </maintainer>
+
   <repository>
     <GitRepository>
-        <browse rdf:resource="http://git.gnome.org/browse/glib/"/>
-      <location rdf:resource="git://git.gnome.org/glib"/>
+      <browse rdf:resource="https://gitlab.gnome.org/GNOME/glib/tree/master"/>
+      <location rdf:resource="https://gitlab.gnome.org/GNOME/glib.git"/>
     </GitRepository>
   </repository>
 
