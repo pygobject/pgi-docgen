@@ -122,6 +122,18 @@ class Project(object):
                     git_name, path, tag, line)
 
             return gnome_func
+        elif "gitlab.gnome.org" in self.doap:
+            match = re.search("/GNOME/(.*?)/", self.doap)
+            if match is None:
+                return
+            git_name = match.group(1)
+
+            def gnome_func(path):
+                path, line = path.rsplit(":", 1)
+                return "https://gitlab.gnome.org/GNOME/%s/blob/%s/%s#L%s" % (
+                    git_name, tag, path, line)
+
+            return gnome_func
         elif "cgit.freedesktop.org/gstreamer/" in self.doap:
             match = re.search("/gstreamer/(.*?)/", self.doap)
             if match is None:

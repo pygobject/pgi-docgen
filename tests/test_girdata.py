@@ -88,8 +88,8 @@ class TGIRData(unittest.TestCase):
 
         url = get_url("Gtk", "gtk/gtktoolshell.c:30")
         self.assertTrue(
-            re.match(r"https://git\.gnome\.org/browse/gtk\+/tree/gtk/"
-                     r"gtktoolshell\.c\?h=\d+\.\d+\.\d+#n\d+", url))
+            re.match(r"https://gitlab\.gnome\.org/GNOME/gtk/blob/"
+                     r"\d+\.\d+\.\d+/gtk/gtktoolshell\.c#L30", url))
 
         url = get_url("Gst", "gst/gstelementfactory.c:430")
         self.assertTrue(
