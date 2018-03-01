@@ -35,7 +35,10 @@ def _main_many(target, namespaces):
             subprocess.check_call(
                 [sys.executable, sys.argv[0], "create", target, namespace])
     finally:
-        os.unlink(temp_cache)
+        try:
+            os.unlink(temp_cache)
+        except OSError:
+            pass
 
 
 def main(args):

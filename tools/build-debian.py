@@ -28,6 +28,7 @@ DEB_BLACKLIST = [
     "gir1.2-hkl-5.0",
     "gir1.2-totem-plparser-1.0",
     "gir1.2-gpaste-6.0",
+    "libgstreamer-gl1.0-0",
 ]
 
 BLACKLIST = [
@@ -36,7 +37,6 @@ BLACKLIST = [
     "Gdk-2.0",
     "GdkX11-2.0",
     'MateDesktop-2.0',
-    'PolkitGtkMate-1.0',
     'AtrilView-1.5.0',
     'AtrilDocument-1.5.0',
     'Eom-1.0',
@@ -141,7 +141,7 @@ BUILD = [
     'BlockDev-2.0', 'Devhelp-3.0', 'GMime-3.0', 'AyatanaAppIndicator3-0.1',
     'AvahiCore-0.6', 'TrackerMiner-2.0', 'Avahi-0.6', 'TrackerControl-2.0',
     'Retro-0.12', 'AyatanaIdo3-0.4', 'Tracker-2.0', 'Fwupd-2.0', 'Snapd-1',
-    'Parlatype-1.0', 'Peony-2.0',
+    'Parlatype-1.0', 'Peony-2.0', 'Gegl-0.3',
 ]
 
 
