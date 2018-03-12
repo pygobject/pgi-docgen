@@ -29,7 +29,7 @@
         "homepage": "http://www.anjuta.org/",
         "lib": "anjuta",
         "summary": "GNOME development IDE, for C/C++",
-        "version": "3.26.0"
+        "version": "3.28.0"
     },
     "Anthy-9000": {
         "debian_package": "ibus-anthy",
@@ -503,13 +503,13 @@
         "summary": "GObject introspection data for the eom library",
         "version": "1.20.0"
     },
-    "Evd-0.1": {
-        "debian_package": "gir1.2-evd-0.1",
+    "Evd-0.2": {
+        "debian_package": "gir1.2-evd-0.2",
         "description": "EventDance is an open source library for interconnecting heterogeneous applications in a simple, secure and scalable fashion. It provides a nice API to send and receive data among distributed applications over different types of transports. This and other features like cryptography, make EventDance a perfect choice for peer-to-peer application development.",
         "homepage": "https://github.com/elima/EventDance",
         "lib": "event-dance",
         "summary": "Peer-to-peer inter-process communication library",
-        "version": "0.1.28"
+        "version": "0.2.0"
     },
     "EvinceDocument-3.0": {
         "debian_package": "gir1.2-evince-3.0",
@@ -517,7 +517,7 @@
         "homepage": "https://wiki.gnome.org/Apps/Evince",
         "lib": "evince",
         "summary": "Document (PostScript, PDF) rendering library",
-        "version": "3.26.0"
+        "version": "3.27.92"
     },
     "EvinceView-3.0": {
         "debian_package": "gir1.2-evince-3.0",
@@ -525,7 +525,7 @@
         "homepage": "https://wiki.gnome.org/Apps/Evince",
         "lib": "evince",
         "summary": "Document (PostScript, PDF) rendering library",
-        "version": "3.26.0"
+        "version": "3.27.92"
     },
     "Farstream-0.2": {
         "debian_package": "gir1.2-farstream-0.2",
@@ -549,7 +549,7 @@
         "homepage": "http://flatpak.org/",
         "lib": "flatpak",
         "summary": "Application deployment framework for desktop apps (library)",
-        "version": "0.10.4"
+        "version": "0.11.3"
     },
     "Folks-0.6": {
         "debian_package": "gir1.2-folks-0.6",
@@ -621,7 +621,7 @@
         "homepage": "http://www.gnome.org/",
         "lib": "gsettings-desktop-schemas",
         "summary": "GObject introspection for GSettings desktop-wide schemas",
-        "version": "3.27.90"
+        "version": "3.27.92"
     },
     "GES-1.0": {
         "debian_package": "gir1.2-ges-1.0",
@@ -837,7 +837,7 @@
         "homepage": "https://wiki.gnome.org/Projects/LibGWeather",
         "lib": "libgweather",
         "summary": "GWeather shared library",
-        "version": "3.26.1"
+        "version": "3.28.0"
     },
     "GXPS-0.1": {
         "debian_package": "gir1.2-gxps-0.1",
@@ -933,7 +933,7 @@
         "homepage": "",
         "lib": "gdl",
         "summary": "GNOME DevTool libraries",
-        "version": "3.26.0"
+        "version": "3.28.0"
     },
     "Gdm-1.0": {
         "debian_package": "gir1.2-gdm-1.0",
@@ -1013,7 +1013,7 @@
         "homepage": "https://glade.gnome.org/",
         "lib": "glade",
         "summary": "GObject introspection data for the GTK+ User Interface library",
-        "version": "3.20.2"
+        "version": "3.20.4"
     },
     "Gnm-1.12": {
         "debian_package": "gir1.2-gnumeric",
@@ -1053,7 +1053,7 @@
         "homepage": "",
         "lib": "gnome-desktop3",
         "summary": "Utility library for loading .desktop files",
-        "version": "3.26.2"
+        "version": "3.27.92"
     },
     "GnomeKeyring-1.0": {
         "debian_package": "gir1.2-gnomekeyring-1.0",
@@ -1077,7 +1077,7 @@
         "homepage": "https://wiki.gnome.org/Projects/GnomeOnlineAccounts",
         "lib": "gnome-online-accounts",
         "summary": "library for GNOME Online Accounts",
-        "version": "3.26.2"
+        "version": "3.27.92"
     },
     "Gom-1.0": {
         "debian_package": "gir1.2-gom-1.0",
@@ -1093,7 +1093,7 @@
         "homepage": "https://wiki.gnome.org/action/show/Projects/GooCanvas",
         "lib": "goocanvas-2.0",
         "summary": "Canvas widget for GTK+",
-        "version": "2.0.3"
+        "version": "2.0.4"
     },
     "Graphene-1.0": {
         "debian_package": "gir1.2-graphene-1.0",
@@ -1525,7 +1525,7 @@
         "homepage": "http://www.libreoffice.org",
         "lib": "libreoffice",
         "summary": "GTK3 widget wrapping LibreOffice functionality",
-        "version": "6.0.1"
+        "version": "6.0.2"
     },
     "LangTag-0.6": {
         "debian_package": "gir1.2-langtag-0.6",
@@ -1615,6 +1615,14 @@
         "summary": "support library for the rhythmbox music player",
         "version": "3.4.2"
     },
+    "Manette-0.2": {
+        "debian_package": "gir1.2-manette-0.2",
+        "description": "libmanette is a library for using game controllers using an API inspired by GDK's device and event handling. It supports the W3C Draft Gamepad specification.",
+        "homepage": "https://gitlab.gnome.org/aplazas/libmanette",
+        "lib": "libmanette",
+        "summary": "Simple GObject game controller library",
+        "version": "0.2.0"
+    },
     "MateDesktop-2.0": {
         "debian_package": "gir1.2-matedesktop-2.0",
         "description": "The MATE component mate-desktop contains the libmate-desktop library, the mate-about program, as well as some desktop-wide documents.\n\nThe libmate-desktop library provides an API shared by several applications on the desktop, but that cannot live in the platform for various reasons.\n\nThe package contains the actual mate-desktop library.",
@@ -1669,7 +1677,7 @@
         "homepage": "https://www.freedesktop.org/wiki/Software/ModemManager/",
         "lib": "modemmanager",
         "summary": "D-Bus service for managing modems",
-        "version": "1.6.8"
+        "version": "1.7.990"
     },
     "Mx-2.0": {
         "debian_package": "gir1.2-mx-2.0",
@@ -1869,7 +1877,7 @@
         "homepage": "http://poppler.freedesktop.org/",
         "lib": "poppler",
         "summary": "PDF rendering library (GLib-based shared library)",
-        "version": "0.61.1"
+        "version": "0.62.0"
     },
     "RB-3.0": {
         "debian_package": "gir1.2-rb-3.0",
@@ -2125,7 +2133,7 @@
         "homepage": "https://wiki.gnome.org/Apps/Terminal/VTE",
         "lib": "vte2.91",
         "summary": "Terminal emulator widget for GTK+ 3.0",
-        "version": "0.50.2"
+        "version": "0.51.92"
     },
     "WebKit-3.0": {
         "debian_package": "gir1.2-webkit-3.0",

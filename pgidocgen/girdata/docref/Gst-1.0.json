@@ -50,6 +50,7 @@
     "GstPlugin": "http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstPlugin.html#GstPlugin",
     "GstPluginFeature": "http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstPluginFeature.html#GstPluginFeature",
     "GstPreset": "http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstPreset.html#GstPreset",
+    "GstPromise": "http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstPromise.html#GstPromise",
     "GstProxyPad": "http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstGhostPad.html#GstProxyPad",
     "GstQuery": "http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstQuery.html#GstQuery",
     "GstRegistry": "http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstRegistry.html#GstRegistry",

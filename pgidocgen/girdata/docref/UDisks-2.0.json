@@ -383,6 +383,7 @@
     "gdbus-property-org-freedesktop-UDisks2-Block.ReadOnly": "http://storaged.org/doc/udisks2-api/latest/gdbus-org.freedesktop.UDisks2.Block.html#gdbus-property-org-freedesktop-UDisks2-Block.ReadOnly",
     "gdbus-property-org-freedesktop-UDisks2-Block.Size": "http://storaged.org/doc/udisks2-api/latest/gdbus-org.freedesktop.UDisks2.Block.html#gdbus-property-org-freedesktop-UDisks2-Block.Size",
     "gdbus-property-org-freedesktop-UDisks2-Block.Symlinks": "http://storaged.org/doc/udisks2-api/latest/gdbus-org.freedesktop.UDisks2.Block.html#gdbus-property-org-freedesktop-UDisks2-Block.Symlinks",
+    "gdbus-property-org-freedesktop-UDisks2-Block.UserspaceMountOptions": "http://storaged.org/doc/udisks2-api/latest/gdbus-org.freedesktop.UDisks2.Block.html#gdbus-property-org-freedesktop-UDisks2-Block.UserspaceMountOptions",
     "gdbus-property-org-freedesktop-UDisks2-Drive-Ata.AamEnabled": "http://storaged.org/doc/udisks2-api/latest/gdbus-org.freedesktop.UDisks2.Drive.Ata.html#gdbus-property-org-freedesktop-UDisks2-Drive-Ata.AamEnabled",
     "gdbus-property-org-freedesktop-UDisks2-Drive-Ata.AamSupported": "http://storaged.org/doc/udisks2-api/latest/gdbus-org.freedesktop.UDisks2.Drive.Ata.html#gdbus-property-org-freedesktop-UDisks2-Drive-Ata.AamSupported",
     "gdbus-property-org-freedesktop-UDisks2-Drive-Ata.AamVendorRecommendedValue": "http://storaged.org/doc/udisks2-api/latest/gdbus-org.freedesktop.UDisks2.Drive.Ata.html#gdbus-property-org-freedesktop-UDisks2-Drive-Ata.AamVendorRecommendedValue",
@@ -453,6 +454,7 @@
     "gdbus-property-org-freedesktop-UDisks2-Filesystem-BTRFS.used": "http://storaged.org/doc/udisks2-api/latest/gdbus-org.freedesktop.UDisks2.Filesystem.BTRFS.html#gdbus-property-org-freedesktop-UDisks2-Filesystem-BTRFS.used",
     "gdbus-property-org-freedesktop-UDisks2-Filesystem-BTRFS.uuid": "http://storaged.org/doc/udisks2-api/latest/gdbus-org.freedesktop.UDisks2.Filesystem.BTRFS.html#gdbus-property-org-freedesktop-UDisks2-Filesystem-BTRFS.uuid",
     "gdbus-property-org-freedesktop-UDisks2-Filesystem.MountPoints": "http://storaged.org/doc/udisks2-api/latest/gdbus-org.freedesktop.UDisks2.Filesystem.html#gdbus-property-org-freedesktop-UDisks2-Filesystem.MountPoints",
+    "gdbus-property-org-freedesktop-UDisks2-Filesystem.Size": "http://storaged.org/doc/udisks2-api/latest/gdbus-org.freedesktop.UDisks2.Filesystem.html#gdbus-property-org-freedesktop-UDisks2-Filesystem.Size",
     "gdbus-property-org-freedesktop-UDisks2-ISCSI-Session.abort_timeout": "http://storaged.org/doc/udisks2-api/latest/gdbus-org.freedesktop.UDisks2.ISCSI.Session.html#gdbus-property-org-freedesktop-UDisks2-ISCSI-Session.abort_timeout",
     "gdbus-property-org-freedesktop-UDisks2-ISCSI-Session.address": "http://storaged.org/doc/udisks2-api/latest/gdbus-org.freedesktop.UDisks2.ISCSI.Session.html#gdbus-property-org-freedesktop-UDisks2-ISCSI-Session.address",
     "gdbus-property-org-freedesktop-UDisks2-ISCSI-Session.lu_reset_timeout": "http://storaged.org/doc/udisks2-api/latest/gdbus-org.freedesktop.UDisks2.ISCSI.Session.html#gdbus-property-org-freedesktop-UDisks2-ISCSI-Session.lu_reset_timeout",
@@ -570,6 +572,7 @@
     "udisks2-UDisksManagerLSM": "http://storaged.org/doc/udisks2-api/latest/udisks2-UDisksManagerLSM.html#udisks2-UDisksManagerLSM",
     "udisks2-UDisksModuleManager": "http://storaged.org/doc/udisks2-api/latest/udisks2-UDisksModuleManager.html#udisks2-UDisksModuleManager",
     "udisks2-UDisksPhysicalVolume": "http://storaged.org/doc/udisks2-api/latest/udisks2-UDisksPhysicalVolume.html#udisks2-UDisksPhysicalVolume",
+    "udisks2-UDisksUtabMonitor": "http://storaged.org/doc/udisks2-api/latest/udisks2-UDisksUtabMonitor.html#udisks2-UDisksUtabMonitor",
     "udisks2-UDisksVolumeGroup": "http://storaged.org/doc/udisks2-api/latest/udisks2-UDisksVolumeGroup.html#udisks2-UDisksVolumeGroup",
     "udisks2-Utilities": "http://storaged.org/doc/udisks2-api/latest/udisks2-Utilities.html#udisks2-Utilities"
 }
