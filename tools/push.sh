@@ -30,7 +30,7 @@ if [ -d "$BUILD" ]; then
     touch  .nojekyll
 
     git add .
-    git commit -m "update"
+    git commit -m "update" || true
     git push
 fi
 
@@ -43,7 +43,7 @@ if [ -d "$DEVHELPBUILD" ]; then
     cd "$TEMP_DEVHELP"
 
     git rm -r "*";
-    cp -r "$BUILD"/* .
+    cp -r "$DEVHELPBUILD"/* .
 
     # add readme
     echo "This repository was created automatically using https://github.com/pygobject/pgi-docgen\n" >> README.rst
@@ -55,6 +55,6 @@ if [ -d "$DEVHELPBUILD" ]; then
     echo "2) git pull\n" >> README.rst
 
     git add .
-    git commit -m "update"
+    git commit -m "update" || true
     git push
 fi
