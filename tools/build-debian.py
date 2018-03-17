@@ -122,7 +122,7 @@ BUILD = [
     "GFBGraph-0.2", "Guestfs-1.0", "HarfBuzz-0.0", "InputPad-1.0",
     "Keybinder-3.0", "LightDM-1", "MateMenu-2.0", "OsmGpsMap-1.0",
     "Totem-1.0", "Uhm-0.0", "AppStreamGlib-1.0", "CDesktopEnums-3.0",
-    "CMenu-3.0", "CinnamonDesktop-3.0", "ModemManager-1.0", "Evd-0.1",
+    "CMenu-3.0", "CinnamonDesktop-3.0", "ModemManager-1.0",
     "Cattle-1.0", "GCab-1.0", "GPaste-1.0", "GVnc-1.0", "GVncPulse-1.0",
     "Ggit-1.0", "GtkVnc-2.0", "JavaScriptCore-4.0", "SocialWebClient-0.25",
     "WebKit2-4.0", "WebKit2WebExtension-4.0", "NM-1.0", "GstGL-1.0",
@@ -141,7 +141,7 @@ BUILD = [
     'BlockDev-2.0', 'Devhelp-3.0', 'GMime-3.0', 'AyatanaAppIndicator3-0.1',
     'AvahiCore-0.6', 'TrackerMiner-2.0', 'Avahi-0.6', 'TrackerControl-2.0',
     'Retro-0.12', 'AyatanaIdo3-0.4', 'Tracker-2.0', 'Fwupd-2.0', 'Snapd-1',
-    'Parlatype-1.0', 'Peony-2.0', 'Gegl-0.3',
+    'Parlatype-1.0', 'Peony-2.0', 'Gegl-0.3', 'Evd-0.2', 'Manette-0.2',
 ]
 
 
