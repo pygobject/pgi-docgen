@@ -66,6 +66,9 @@ BLACKLIST = [
     # hangs?
     'NMA-1.0',
 
+    # crashes
+    'GUPnPIgd-1.0',
+
     # criticals.. better skip
     "NMClient-1.0",
     "NMGtk-1.0",
@@ -96,13 +99,13 @@ BUILD = [
     'GDesktopEnums-3.0', 'GES-1.0', 'GExiv2-0.10', 'GIRepository-2.0',
     'GL-1.0', 'GLib-2.0', 'GMenu-3.0', 'GModule-2.0', 'GObject-2.0',
     'GOffice-0.10', 'GSSDP-1.0', 'GUPnP-1.0', 'GUPnPAV-1.0', 'GUPnPDLNA-2.0',
-    'GUPnPDLNAGst-2.0', 'GUPnPIgd-1.0', 'GUdev-1.0', 'GUsb-1.0',
+    'GUPnPDLNAGst-2.0', 'GUdev-1.0', 'GUsb-1.0',
     'GWeather-3.0', 'GXPS-0.1', 'Gck-1', 'Gda-5.0', 'Gdk-3.0',
     'GdkPixbuf-2.0', 'GdkX11-3.0', 'Gdl-3', 'Gdm-1.0', 'GeocodeGlib-1.0',
     'Gio-2.0', 'Gkbd-3.0', 'Gladeui-2.0', 'GnomeBluetooth-1.0',
     'GnomeDesktop-3.0', 'GnomeKeyring-1.0', 'Goa-1.0', 'Gsf-1', 'Gst-1.0',
     'GstAllocators-1.0', 'GstApp-1.0', 'GstAudio-1.0', 'GstBase-1.0',
-    'GstCheck-1.0', 'GstController-1.0', 'GstFft-1.0', 'GstNet-1.0',
+    'GstCheck-1.0', 'GstController-1.0', 'GstNet-1.0',
     'GstPbutils-1.0', 'GstRtp-1.0', 'GstRtsp-1.0', 'GstSdp-1.0', 'GstTag-1.0',
     'GstVideo-1.0', 'Gtk-3.0', 'GtkChamplain-0.12', 'GtkClutter-1.0',
     'GtkSource-3.0', 'GtkSpell-3.0', 'Gucharmap-2.90', 'IBus-1.0',
@@ -133,15 +136,17 @@ BUILD = [
     'AppStream-1.0', 'LibvirtSandbox-1.0', 'GrlNet-0.3', 'Grl-0.3',
     'Hinawa-1.0', 'GstPlayer-1.0', 'LOKDocView-0.1', 'GrlPls-0.3',
     'GoVirt-1.0', 'Cvc-1.0', 'Workrave-1.0', 'OSTree-1.0', 'Flatpak-1.0',
-    'Mx-2.0', 'GstTranscoder-1.0', 'GSystem-1.0', 'GMime-2.6', 'Budgie-1.0',
+    'GstTranscoder-1.0', 'GSystem-1.0', 'GMime-2.6', 'Budgie-1.0',
     'GnomeAutoarGtk-0.1', 'GnomeAutoar-0.1', 'LangTag-0.6', 'Gspell-1',
     'Urfkill-0.5', 'Bamf-3', 'Ufo-0.0', 'XApp-1.0', 'CScreensaver-1.0',
-    'GstBadAllocators-1.0', 'Gepub-0.5', 'Camel-1.2', 'Graphene-1.0',
+    'Camel-1.2', 'Graphene-1.0',
     'EDataServerUI-1.2', 'Template-1.0', 'Jsonrpc-1.0', 'Dazzle-1.0',
     'BlockDev-2.0', 'Devhelp-3.0', 'GMime-3.0', 'AyatanaAppIndicator3-0.1',
     'AvahiCore-0.6', 'TrackerMiner-2.0', 'Avahi-0.6', 'TrackerControl-2.0',
-    'Retro-0.12', 'AyatanaIdo3-0.4', 'Tracker-2.0', 'Fwupd-2.0', 'Snapd-1',
+    'AyatanaIdo3-0.4', 'Tracker-2.0', 'Fwupd-2.0', 'Snapd-1',
     'Parlatype-1.0', 'Peony-2.0', 'Gegl-0.3', 'Evd-0.2', 'Manette-0.2',
+    'MessagingMenu-1.0', 'Playerctl-1.0', 'Gepub-0.6', 'Gegl-0.4',
+    'Granite-1.0', 'GstWebRTC-1.0', 'Retro-0.14', 'MyPaint-1.3',
 ]
 
 

@@ -6,20 +6,30 @@
 
   <name xml:lang="en">GSettings Desktop Schemas</name>
   <shortdesc xml:lang="en">Shared GSettings schemas for the desktop</shortdesc>
+  <description xml:lang="en">Shared GSettings schemas for the desktop</description>
   <!--
   <homepage rdf:resource="http://www.gnome.org/" />
   -->
   <mailing-list rdf:resource="http://mail.gnome.org/mailman/listinfo/desktop-devel-list" />
   <download-page rdf:resource="http://download.gnome.org/sources/gsettings-desktop-schemas/" />
   <bug-database rdf:resource="https://bugzilla.gnome.org/browse.cgi?product=gsettings-desktop-schemas" />
+  <programming-language>XML</programming-language>
 
   <category rdf:resource="http://api.gnome.org/doap-extensions#core" />
 
   <maintainer>
     <foaf:Person>
+      <foaf:name>Carlos Garnacho</foaf:name>
+      <foaf:mbox rdf:resource="mailto:carlosg@gnome.org" />
+      <gnome:userid>carlosg</gnome:userid>
+    </foaf:Person>
+  </maintainer>
+
+  <author>
+    <foaf:Person>
       <foaf:name>Bastien Nocera</foaf:name>
       <foaf:mbox rdf:resource="mailto:hadess@hadess.net" />
       <gnome:userid>hadess</gnome:userid>
     </foaf:Person>
-  </maintainer>
+  </author>
 </Project>

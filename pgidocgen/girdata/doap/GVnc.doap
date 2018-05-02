@@ -6,25 +6,29 @@
 
   <name xml:lang="en">gtk-vnc</name>
   <shortdesc xml:lang="en">A VNC viewer widget for GTK+</shortdesc>
-  <homepage rdf:resource="http://live.gnome.org/gtk-vnc/" />
+  <description>gtk-vnc is a project providing client side APIs for the
+RFB protocol / VNC remote desktop technology.
+
+It is built using coroutines allowing it to be completely
+asynchronous while remaining single threaded. It provides
+two core C libraries, libgvnc for interacting with the core
+RFB protocol and libgtk-vnc for a GTK display widget.
+
+There is a traditional Python binding built on PyGTK, and
+evolving support for arbitrary languages via the GObject
+Introspection system.</description>
+  <homepage rdf:resource="https://wiki.gnome.org/Projects/gtk-vnc" />
   <download-page rdf:resource="http://download.gnome.org/sources/gtk-vnc/" />
   <bug-database rdf:resource="http://bugzilla.gnome.org/browse.cgi?product=gtk-vnc" />
+  <programming-language>C</programming-language>
 
-  <category rdf:resource="http://api.gnome.org/doap-extensions#desktop" />
+  <category rdf:resource="http://api.gnome.org/doap-extensions#core" />
 
   <maintainer>
     <foaf:Person>
       <foaf:name>Daniel P. Berrange</foaf:name>
       <foaf:mbox rdf:resource="mailto:dan@berrange.com" />
       <gnome:userid>dberrange</gnome:userid>
-    </foaf:Person>
-  </maintainer>
-
-  <maintainer>
-    <foaf:Person>
-      <foaf:name>Jonh Wendell</foaf:name>
-      <foaf:mbox rdf:resource="mailto:jwendell@gnome.org" />
-      <gnome:userid>jwendell</gnome:userid>
     </foaf:Person>
   </maintainer>
 
