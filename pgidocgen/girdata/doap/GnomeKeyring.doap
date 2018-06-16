@@ -6,6 +6,16 @@
 
 	<name xml:lang="en">gnome-keyring</name>
 	<shortdesc xml:lang="en">Stores passwords and encryption keys</shortdesc>
+	<description>gnome-keyring is a program that keep password and other secrets for
+users. It is run as a daemon in the session, similar to ssh-agent, and
+other applications locate it via an environment variable or a D-Bus.
+
+The program can manage several keyrings, each with its own master
+password, and there is also a session keyring which is never stored to
+disk, but forgotten when the session ends.
+
+The library libgnome-keyring is used by applications to integrate with
+the GNOME keyring system.</description>
 
 	<homepage rdf:resource="https://wiki.gnome.org/Projects/GnomeKeyring" />
 	<mailing-list rdf:resource="http://mail.gnome.org/mailman/listinfo/gnome-keyring-list" />
@@ -19,6 +29,14 @@
 			<foaf:name>Stef Walter</foaf:name>
 			<foaf:mbox rdf:resource="mailto:stef@memberwebs.com" />
 			<gnome:userid>stefw</gnome:userid>
+		</foaf:Person>
+	</maintainer>
+
+	<maintainer>
+		<foaf:Person>
+			<foaf:name>Daiki Ueno</foaf:name>
+			<foaf:mbox rdf:resource="mailto:ueno@gnu.org" />
+			<gnome:userid>dueno</gnome:userid>
 		</foaf:Person>
 	</maintainer>
 </Project>

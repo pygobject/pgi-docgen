@@ -11,7 +11,7 @@
   <homepage rdf:resource="http://www.gtk.org" />
   <mailing-list rdf:resource="https://mail.gnome.org/mailman/listinfo/gtk-devel-list" />
   <download-page rdf:resource="https://download.gnome.org/sources/gdk-pixbuf/" />
-  <bug-database rdf:resource="https://bugzilla.gnome.org/browse.cgi?product=gtk+" />
+  <bug-database rdf:resource="https://gitlab.gnome.org/GNOME/gdk-pixbuf/issues/new" />
   <category rdf:resource="http://api.gnome.org/doap-extensions#core" />
   <programming-language>C</programming-language>
 

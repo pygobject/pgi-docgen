@@ -11,7 +11,7 @@ This is a partial Python port of the markdown code from gtk-doc.
 
 Sections not ported fully are marked with PYTHONTODO
 
-See https://git.gnome.org/browse/gtk-doc/commit/gtkdoc-mkdb.in?id=c567d9e28c355f43faeba61fb81fd16fc74cf062
+See https://gitlab.gnome.org/GNOME/gtk-doc/commit/c567d9e28c355f43faeba61fb81fd16fc74cf062
 """
 
 import re

@@ -6,12 +6,14 @@
 
   <name xml:lang="en">Gnumeric</name>
   <shortdesc xml:lang="en">The Gnome Office Spreadsheet - Free, Fast, Accurate: Pick any 3!</shortdesc>
+  <description>Gnumeric is a spreadsheet application aiming to be Free, Fast, and Accurate.</description>
   <homepage rdf:resource="http://www.gnumeric.org/" />
   <mailing-list rdf:resource="http://mail.gnome.org/mailman/listinfo/gnumeric-list" />
   <download-page rdf:resource="http://download.gnome.org/sources/gnumeric/" />
-  <bug-database rdf:resource="http://bugzilla.gnome.org/browse.cgi?product=gnumeric" />
+  <bug-database rdf:resource="https://gitlab.gnome.org/GNOME/gnumeric/issues" />
 
-  <category rdf:resource="http://api.gnome.org/doap-extensions#productivity" />
+  <category rdf:resource="http://api.gnome.org/doap-extensions#apps" />
+  <programming-language>C</programming-language>
 
   <maintainer>
     <foaf:Person>

@@ -8,9 +8,9 @@
   <shortdesc xml:lang="en">Centralized access to appointments and contacts</shortdesc>
   <description>Centralized access to appointments and contacts</description>
   <homepage rdf:resource="https://wiki.gnome.org/Apps/Evolution" />
-  <mailing-list rdf:resource="http://mail.gnome.org/mailman/listinfo/evolution-list" />
-  <download-page rdf:resource="http://download.gnome.org/sources/evolution-data-server" />
-  <bug-database rdf:resource="https://bugzilla.gnome.org/browse.cgi?product=evolution-data-server" />
+  <mailing-list rdf:resource="https://mail.gnome.org/mailman/listinfo/evolution-list" />
+  <download-page rdf:resource="https://download.gnome.org/sources/evolution-data-server" />
+  <bug-database rdf:resource="https://gitlab.gnome.org/GNOME/evolution-data-server/issues/" />
   <category rdf:resource="http://api.gnome.org/doap-extensions#core" />
   <programming-language>C</programming-language>
 

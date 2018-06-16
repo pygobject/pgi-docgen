@@ -22,30 +22,16 @@
 
   <maintainer>
     <foaf:Person>
-      <foaf:name>Travis Reitter</foaf:name>
-      <foaf:mbox rdf:resource="mailto:travis.reitter@collabora.co.uk" />
-      <gnome:userid>treitter</gnome:userid>
+      <foaf:name>Niels de Graef</foaf:name>
+      <foaf:mbox rdf:resource="mailto:nielsdegraef@gmail.com" />
+      <gnome:userid>nielsdg</gnome:userid>
     </foaf:Person>
   </maintainer>
   <maintainer>
     <foaf:Person>
       <foaf:name>Philip Withnall</foaf:name>
-      <foaf:mbox rdf:resource="mailto:philip.withnall@collabora.co.uk" />
+      <foaf:mbox rdf:resource="mailto:philip@tecnocode.co.uk" />
       <gnome:userid>pwithnall</gnome:userid>
-    </foaf:Person>
-  </maintainer>
-  <maintainer>
-    <foaf:Person>
-      <foaf:name>Raul Gutierrez Segales</foaf:name>
-      <foaf:mbox rdf:resource="mailto:rgs@collabora.co.uk" />
-      <gnome:userid>raulgs</gnome:userid>
-    </foaf:Person>
-  </maintainer>
-  <maintainer>
-    <foaf:Person>
-      <foaf:name>Jeremy Whiting</foaf:name>
-      <foaf:mbox rdf:resource="mailto:jpwhiting@kde.org" />
-      <gnome:userid>jpwhiting</gnome:userid>
     </foaf:Person>
   </maintainer>
 </Project>

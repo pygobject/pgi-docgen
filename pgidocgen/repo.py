@@ -186,7 +186,7 @@ class Repository(object):
         the code of that symbol.
 
         e.g. "g_idle_add" ->
-            https://git.gnome.org/browse/glib/tree/glib/gmain.c?h=2.46.2#n5538
+            https://gitlab.gnome.org/GNOME/glib/blob/2.46.2/glib/gmain.c#L5538
         """
 
         return self._ns.source_map

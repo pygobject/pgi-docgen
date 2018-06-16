@@ -85,7 +85,7 @@ GTK_MAPPING = {
     "LockButton": "lockbutton",
 }
 
-GTK_URL = ("https://git.gnome.org/browse/gtk+/plain/docs/"
+GTK_URL = ("https://gitlab.gnome.org/GNOME/gtk/raw/master/docs/"
            "reference/gtk/images/%s.png")
 
 MAPPING = dict([(k, GTK_URL % v) for k, v in GTK_MAPPING.items()])
@@ -117,16 +117,16 @@ def main(dest, mapping):
     print("Following widget sublasses are missing an image:")
     print(missing)
 
-    resp = requests.get("http://git.gnome.org/browse/gtk+/plain/docs/reference/gtk/images/")
+    resp = requests.get("https://gitlab.gnome.org/GNOME/gtk/tree/master/docs/reference/gtk/images/")
     mapped_images = GTK_MAPPING.values()
     not_mapped = []
-    for image in set(re.findall("([^>/]+?)\.png", resp.text)):
+    for image in set(re.findall("([^>/'\"]+?)\.png", resp.text)):
         if image not in mapped_images:
             not_mapped.append(image)
     not_mapped.sort()
 
     print("Following images on the server aren't linked to a widget")
-    print("http://git.gnome.org/browse/gtk+/plain/docs/reference/gtk/images/")
+    print("https://gitlab.gnome.org/GNOME/gtk/tree/master/docs/reference/gtk/images")
     print(not_mapped)
 
     pool = Pool(20)
