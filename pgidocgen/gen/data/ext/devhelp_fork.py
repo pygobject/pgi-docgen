@@ -115,11 +115,13 @@ class DevhelpBuilder(StandaloneHTMLBuilder):
             if len(refs) == 0:
                 pass
             elif len(refs) == 1:
-                etree.SubElement(functions, 'function',
+                etree.SubElement(functions, 'keyword',
+                                 type='function',
                                  name=title, link=refs[0][1])
             else:
                 for i, ref in enumerate(refs):
-                    etree.SubElement(functions, 'function',
+                    etree.SubElement(functions, 'keyword',
+                                     type='function',
                                      name="[%d] %s" % (i, title),
                                      link=ref[1])
 
@@ -134,7 +136,7 @@ class DevhelpBuilder(StandaloneHTMLBuilder):
                 write_index(title, refs, subitems)
 
         # Dump the XML file
-        xmlfile = path.join(outdir, outname + '.devhelp.gz')
+        xmlfile = path.join(outdir, outname + '.devhelp2.gz')
         with gzip.open(xmlfile, 'w') as f:  # type: ignore
             tree.write(f, 'utf-8')
 

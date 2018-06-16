@@ -301,8 +301,8 @@ def main(args):
         # devhelp file name (without the extension)
         for package in done:
             path = package.build_path
-            dh = glob.glob(os.path.join(path, "*.devhelp.gz"))[0]
+            dh = glob.glob(os.path.join(path, "*.devhelp2.gz"))[0]
             dh_name = os.path.join(
-                os.path.dirname(dh), os.path.basename(path) + ".devhelp.gz")
+                os.path.dirname(dh), os.path.basename(path) + ".devhelp2.gz")
             if not os.path.exists(dh_name):
                 os.rename(dh, dh_name)
