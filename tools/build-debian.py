@@ -71,7 +71,6 @@ BLACKLIST = [
 
     # criticals.. better skip
     "NMClient-1.0",
-    "NMGtk-1.0",
 
     # depends on one of the above
     "Ganv-1.0",
@@ -144,9 +143,10 @@ BUILD = [
     'BlockDev-2.0', 'Devhelp-3.0', 'GMime-3.0', 'AyatanaAppIndicator3-0.1',
     'AvahiCore-0.6', 'TrackerMiner-2.0', 'Avahi-0.6', 'TrackerControl-2.0',
     'AyatanaIdo3-0.4', 'Tracker-2.0', 'Fwupd-2.0', 'Snapd-1',
-    'Parlatype-1.0', 'Peony-2.0', 'Gegl-0.3', 'Evd-0.2', 'Manette-0.2',
+    'Parlatype-1.0', 'Peony-2.0', 'Evd-0.2', 'Manette-0.2',
     'MessagingMenu-1.0', 'Playerctl-1.0', 'Gepub-0.6', 'Gegl-0.4',
     'Granite-1.0', 'GstWebRTC-1.0', 'Retro-0.14', 'MyPaint-1.3',
+    'GtkSource-4', 'Aravis-0.6',
 ]
 
 

@@ -61,7 +61,7 @@
         "homepage": "http://www.freedesktop.org/wiki/Distributions/AppStream/",
         "lib": "appstream",
         "summary": "Library to access AppStream services",
-        "version": "0.12.0"
+        "version": "0.12.1"
     },
     "AppStreamGlib-1.0": {
         "debian_package": "gir1.2-appstreamglib-1.0",
@@ -70,6 +70,14 @@
         "lib": "appstream-glib",
         "summary": "GNOME library to access AppStream services",
         "version": "0.7.7"
+    },
+    "Aravis-0.6": {
+        "debian_package": "gir1.2-aravis-0.6",
+        "description": "GenICam standard provides a generic programming interface for all kinds of cameras and devices. Aravis currently implements the gigabit ethernet and USB3 (Since Aravis 0.5.x) protocols used by industrial cameras.",
+        "homepage": "https://github.com/AravisProject/aravis",
+        "lib": "aravis",
+        "summary": "glib/gobject based library for video acquisition using GenICam cameras",
+        "version": "0.5.12"
     },
     "Atk-1.0": {
         "debian_package": "gir1.2-atk-1.0",
@@ -229,7 +237,7 @@
         "homepage": "https://wiki.gnome.org/Apps/Evolution",
         "lib": "evolution-data-server",
         "summary": "Evolution MIME message handling library",
-        "version": "3.28.1"
+        "version": "3.28.2"
     },
     "Caribou-1.0": {
         "debian_package": "gir1.2-caribou-1.0",
@@ -461,7 +469,7 @@
         "homepage": "https://wiki.gnome.org/Apps/Evolution",
         "lib": "evolution-data-server",
         "summary": "Evolution MIME message handling library",
-        "version": "3.28.1"
+        "version": "3.28.2"
     },
     "EBookContacts-1.2": {
         "debian_package": "gir1.2-ebookcontacts-1.2",
@@ -469,7 +477,7 @@
         "homepage": "https://wiki.gnome.org/Apps/Evolution",
         "lib": "evolution-data-server",
         "summary": "Client library for evolution contacts books",
-        "version": "3.28.1"
+        "version": "3.28.2"
     },
     "EDataServer-1.2": {
         "debian_package": "gir1.2-edataserver-1.2",
@@ -477,7 +485,7 @@
         "homepage": "https://wiki.gnome.org/Apps/Evolution",
         "lib": "evolution-data-server",
         "summary": "Evolution MIME message handling library",
-        "version": "3.28.1"
+        "version": "3.28.2"
     },
     "EDataServerUI-1.2": {
         "debian_package": "gir1.2-edataserverui-1.2",
@@ -485,7 +493,7 @@
         "homepage": "https://wiki.gnome.org/Apps/Evolution",
         "lib": "evolution-data-server",
         "summary": "Evolution MIME message handling library",
-        "version": "3.28.1"
+        "version": "3.28.2"
     },
     "Entangle-0.1": {
         "debian_package": "gir1.2-entangle-0.1",
@@ -549,7 +557,7 @@
         "homepage": "http://flatpak.org/",
         "lib": "flatpak",
         "summary": "Application deployment framework for desktop apps (library)",
-        "version": "0.11.5"
+        "version": "0.11.8.3"
     },
     "Folks-0.6": {
         "debian_package": "gir1.2-folks-0.6",
@@ -589,7 +597,7 @@
         "homepage": "https://github.com/hughsie/fwupd",
         "lib": "fwupd",
         "summary": "Firmware update daemon library",
-        "version": "1.0.7"
+        "version": "1.0.8"
     },
     "GCab-1.0": {
         "debian_package": "gir1.2-gcab-1.0",
@@ -626,10 +634,10 @@
     "GES-1.0": {
         "debian_package": "gir1.2-ges-1.0",
         "description": "The GStreamer multimedia framework and the accompanying NLE set of plugins for non-linear editing offer all the building blocks for: * Decoding and encoding to a wide variety of formats, through all the\n available GStreamer plugins.\n* Easily choosing segments of streams and arranging them through time\n through the NLE set of plugins.\nBut all those building blocks only offer stream-level access, which results in developers who want to write non-linear editors to write a consequent amount of code to get to the level of non-linear editing notions which are closer and more meaningful for the end-user (and therefore the application).\n\nThe GStreamer Editing Services (GES) aims to fill the gap between GStreamer/NLE and the application developer by offering a series of classes to simplify the creation of many kind of editing-related applications.",
-        "homepage": "http://gstreamer.freedesktop.org",
+        "homepage": "https://gstreamer.freedesktop.org",
         "lib": "gstreamer-editing-services1.0",
         "summary": "GStreamer editing services (shared library)",
-        "version": "1.14.0"
+        "version": "1.14.1"
     },
     "GExiv2-0.10": {
         "debian_package": "gir1.2-gexiv2-0.10",
@@ -941,7 +949,7 @@
         "homepage": "",
         "lib": "gdm3",
         "summary": "GNOME Display Manager (shared library)",
-        "version": "3.28.1"
+        "version": "3.28.2"
     },
     "Gee-0.8": {
         "debian_package": "gir1.2-gee-0.8",
@@ -951,21 +959,13 @@
         "summary": "GObject based collection and utility library (GObject-Introspection)",
         "version": "0.20.1"
     },
-    "Gegl-0.3": {
-        "debian_package": "gir1.2-gegl-0.3",
-        "description": "GEGL (Generic Graphics Library) is a graph based image processing framework.\n\nGEGL's original design was made to scratch GIMP's itches for a new compositing and processing core. This core is being designed to have minimal dependencies and a simple well defined API.\n\n\nIt can be used by packages using the GIRepository format to generate dynamic bindings.",
-        "homepage": "http://gegl.org/",
-        "lib": "gegl",
-        "summary": "GObject introspection data for the Generic Graphics Library",
-        "version": "0.3.28"
-    },
     "Gegl-0.4": {
         "debian_package": "gir1.2-gegl-0.4",
         "description": "GEGL (Generic Graphics Library) is a graph based image processing framework.\n\nGEGL's original design was made to scratch GIMP's itches for a new compositing and processing core. This core is being designed to have minimal dependencies and a simple well defined API.\n\n\nIt can be used by packages using the GIRepository format to generate dynamic bindings.",
         "homepage": "http://gegl.org/",
         "lib": "gegl",
         "summary": "GObject introspection data for the Generic Graphics Library",
-        "version": "0.4.0"
+        "version": "0.4.2"
     },
     "Geoclue-2.0": {
         "debian_package": "gir1.2-geoclue-2.0",
@@ -973,7 +973,7 @@
         "homepage": "http://www.freedesktop.org/wiki/Software/GeoClue",
         "lib": "geoclue-2.0",
         "summary": "convenience library to interact with geoinformation service",
-        "version": "2.4.7"
+        "version": "2.4.10"
     },
     "GeocodeGlib-1.0": {
         "debian_package": "gir1.2-geocodeglib-1.0",
@@ -1061,7 +1061,7 @@
         "homepage": "",
         "lib": "gnome-desktop3",
         "summary": "Utility library for loading .desktop files",
-        "version": "3.28.1"
+        "version": "3.28.2"
     },
     "GnomeKeyring-1.0": {
         "debian_package": "gir1.2-gnomekeyring-1.0",
@@ -1170,146 +1170,146 @@
     "Gst-1.0": {
         "debian_package": "gir1.2-gstreamer-1.0",
         "description": "GStreamer is a streaming media framework, based on graphs of filters which operate on media data.  Applications using this library can do anything from real-time sound processing to playing videos, and just about anything else media-related.  Its plugin-based architecture means that new data types or processing capabilities can be added simply by installing new plug-ins.",
-        "homepage": "http://gstreamer.freedesktop.org",
+        "homepage": "https://gstreamer.freedesktop.org",
         "lib": "gstreamer1.0",
         "summary": "Core GStreamer libraries and elements",
-        "version": "1.14.0"
+        "version": "1.14.1"
     },
     "GstAllocators-1.0": {
         "debian_package": "gir1.2-gst-plugins-base-1.0",
         "description": "GStreamer is a streaming media framework, based on graphs of filters which operate on media data.  Applications using this library can do anything from real-time sound processing to playing videos, and just about anything else media-related.  Its plugin-based architecture means that new data types or processing capabilities can be added simply by installing new plug-ins.",
-        "homepage": "http://gstreamer.freedesktop.org/modules/gst-plugins-base.html",
+        "homepage": "https://gstreamer.freedesktop.org",
         "lib": "gst-plugins-base1.0",
         "summary": "GStreamer GL libraries",
-        "version": "1.14.0"
+        "version": "1.14.1"
     },
     "GstApp-1.0": {
         "debian_package": "gir1.2-gst-plugins-base-1.0",
         "description": "GStreamer is a streaming media framework, based on graphs of filters which operate on media data.  Applications using this library can do anything from real-time sound processing to playing videos, and just about anything else media-related.  Its plugin-based architecture means that new data types or processing capabilities can be added simply by installing new plug-ins.",
-        "homepage": "http://gstreamer.freedesktop.org/modules/gst-plugins-base.html",
+        "homepage": "https://gstreamer.freedesktop.org",
         "lib": "gst-plugins-base1.0",
         "summary": "GStreamer GL libraries",
-        "version": "1.14.0"
+        "version": "1.14.1"
     },
     "GstAudio-1.0": {
         "debian_package": "gir1.2-gst-plugins-base-1.0",
         "description": "GStreamer is a streaming media framework, based on graphs of filters which operate on media data.  Applications using this library can do anything from real-time sound processing to playing videos, and just about anything else media-related.  Its plugin-based architecture means that new data types or processing capabilities can be added simply by installing new plug-ins.",
-        "homepage": "http://gstreamer.freedesktop.org/modules/gst-plugins-base.html",
+        "homepage": "https://gstreamer.freedesktop.org",
         "lib": "gst-plugins-base1.0",
         "summary": "GStreamer GL libraries",
-        "version": "1.14.0"
+        "version": "1.14.1"
     },
     "GstBase-1.0": {
         "debian_package": "gir1.2-gstreamer-1.0",
         "description": "GStreamer is a streaming media framework, based on graphs of filters which operate on media data.  Applications using this library can do anything from real-time sound processing to playing videos, and just about anything else media-related.  Its plugin-based architecture means that new data types or processing capabilities can be added simply by installing new plug-ins.",
-        "homepage": "http://gstreamer.freedesktop.org",
+        "homepage": "https://gstreamer.freedesktop.org",
         "lib": "gstreamer1.0",
         "summary": "Core GStreamer libraries and elements",
-        "version": "1.14.0"
+        "version": "1.14.1"
     },
     "GstCheck-1.0": {
         "debian_package": "gir1.2-gstreamer-1.0",
         "description": "GStreamer is a streaming media framework, based on graphs of filters which operate on media data.  Applications using this library can do anything from real-time sound processing to playing videos, and just about anything else media-related.  Its plugin-based architecture means that new data types or processing capabilities can be added simply by installing new plug-ins.",
-        "homepage": "http://gstreamer.freedesktop.org",
+        "homepage": "https://gstreamer.freedesktop.org",
         "lib": "gstreamer1.0",
         "summary": "Core GStreamer libraries and elements",
-        "version": "1.14.0"
+        "version": "1.14.1"
     },
     "GstController-1.0": {
         "debian_package": "gir1.2-gstreamer-1.0",
         "description": "GStreamer is a streaming media framework, based on graphs of filters which operate on media data.  Applications using this library can do anything from real-time sound processing to playing videos, and just about anything else media-related.  Its plugin-based architecture means that new data types or processing capabilities can be added simply by installing new plug-ins.",
-        "homepage": "http://gstreamer.freedesktop.org",
+        "homepage": "https://gstreamer.freedesktop.org",
         "lib": "gstreamer1.0",
         "summary": "Core GStreamer libraries and elements",
-        "version": "1.14.0"
+        "version": "1.14.1"
     },
     "GstGL-1.0": {
         "debian_package": "gir1.2-gst-plugins-base-1.0",
         "description": "GStreamer is a streaming media framework, based on graphs of filters which operate on media data.  Applications using this library can do anything from real-time sound processing to playing videos, and just about anything else media-related.  Its plugin-based architecture means that new data types or processing capabilities can be added simply by installing new plug-ins.",
-        "homepage": "http://gstreamer.freedesktop.org/modules/gst-plugins-base.html",
+        "homepage": "https://gstreamer.freedesktop.org",
         "lib": "gst-plugins-base1.0",
         "summary": "GStreamer GL libraries",
-        "version": "1.14.0"
+        "version": "1.14.1"
     },
     "GstInsertBin-1.0": {
         "debian_package": "gir1.2-gst-plugins-bad-1.0",
         "description": "GStreamer is a streaming media framework, based on graphs of filters which operate on media data.  Applications using this library can do anything from real-time sound processing to playing videos, and just about anything else media-related.  Its plugin-based architecture means that new data types or processing capabilities can be added simply by installing new plug-ins.\n\nGStreamer Bad Plug-ins is a set of plug-ins that aren't up to par compared to the rest. They might be close to being good quality, but they're missing something - be it a good code review, some documentation, a set of tests, a real live maintainer, or some actual wide use.",
-        "homepage": "http://gstreamer.freedesktop.org/modules/gst-plugins-bad.html",
+        "homepage": "https://gstreamer.freedesktop.org",
         "lib": "gst-plugins-bad1.0",
         "summary": "GStreamer libraries from the \"bad\" set",
-        "version": "1.14.0"
+        "version": "1.14.1"
     },
     "GstMpegts-1.0": {
         "debian_package": "gir1.2-gst-plugins-bad-1.0",
         "description": "GStreamer is a streaming media framework, based on graphs of filters which operate on media data.  Applications using this library can do anything from real-time sound processing to playing videos, and just about anything else media-related.  Its plugin-based architecture means that new data types or processing capabilities can be added simply by installing new plug-ins.\n\nGStreamer Bad Plug-ins is a set of plug-ins that aren't up to par compared to the rest. They might be close to being good quality, but they're missing something - be it a good code review, some documentation, a set of tests, a real live maintainer, or some actual wide use.",
-        "homepage": "http://gstreamer.freedesktop.org/modules/gst-plugins-bad.html",
+        "homepage": "https://gstreamer.freedesktop.org",
         "lib": "gst-plugins-bad1.0",
         "summary": "GStreamer libraries from the \"bad\" set",
-        "version": "1.14.0"
+        "version": "1.14.1"
     },
     "GstNet-1.0": {
         "debian_package": "gir1.2-gstreamer-1.0",
         "description": "GStreamer is a streaming media framework, based on graphs of filters which operate on media data.  Applications using this library can do anything from real-time sound processing to playing videos, and just about anything else media-related.  Its plugin-based architecture means that new data types or processing capabilities can be added simply by installing new plug-ins.",
-        "homepage": "http://gstreamer.freedesktop.org",
+        "homepage": "https://gstreamer.freedesktop.org",
         "lib": "gstreamer1.0",
         "summary": "Core GStreamer libraries and elements",
-        "version": "1.14.0"
+        "version": "1.14.1"
     },
     "GstPbutils-1.0": {
         "debian_package": "gir1.2-gst-plugins-base-1.0",
         "description": "GStreamer is a streaming media framework, based on graphs of filters which operate on media data.  Applications using this library can do anything from real-time sound processing to playing videos, and just about anything else media-related.  Its plugin-based architecture means that new data types or processing capabilities can be added simply by installing new plug-ins.",
-        "homepage": "http://gstreamer.freedesktop.org/modules/gst-plugins-base.html",
+        "homepage": "https://gstreamer.freedesktop.org",
         "lib": "gst-plugins-base1.0",
         "summary": "GStreamer GL libraries",
-        "version": "1.14.0"
+        "version": "1.14.1"
     },
     "GstPlayer-1.0": {
         "debian_package": "gir1.2-gst-plugins-bad-1.0",
         "description": "GStreamer is a streaming media framework, based on graphs of filters which operate on media data.  Applications using this library can do anything from real-time sound processing to playing videos, and just about anything else media-related.  Its plugin-based architecture means that new data types or processing capabilities can be added simply by installing new plug-ins.\n\nGStreamer Bad Plug-ins is a set of plug-ins that aren't up to par compared to the rest. They might be close to being good quality, but they're missing something - be it a good code review, some documentation, a set of tests, a real live maintainer, or some actual wide use.",
-        "homepage": "http://gstreamer.freedesktop.org/modules/gst-plugins-bad.html",
+        "homepage": "https://gstreamer.freedesktop.org",
         "lib": "gst-plugins-bad1.0",
         "summary": "GStreamer libraries from the \"bad\" set",
-        "version": "1.14.0"
+        "version": "1.14.1"
     },
     "GstRtp-1.0": {
         "debian_package": "gir1.2-gst-plugins-base-1.0",
         "description": "GStreamer is a streaming media framework, based on graphs of filters which operate on media data.  Applications using this library can do anything from real-time sound processing to playing videos, and just about anything else media-related.  Its plugin-based architecture means that new data types or processing capabilities can be added simply by installing new plug-ins.",
-        "homepage": "http://gstreamer.freedesktop.org/modules/gst-plugins-base.html",
+        "homepage": "https://gstreamer.freedesktop.org",
         "lib": "gst-plugins-base1.0",
         "summary": "GStreamer GL libraries",
-        "version": "1.14.0"
+        "version": "1.14.1"
     },
     "GstRtsp-1.0": {
         "debian_package": "gir1.2-gst-plugins-base-1.0",
         "description": "GStreamer is a streaming media framework, based on graphs of filters which operate on media data.  Applications using this library can do anything from real-time sound processing to playing videos, and just about anything else media-related.  Its plugin-based architecture means that new data types or processing capabilities can be added simply by installing new plug-ins.",
-        "homepage": "http://gstreamer.freedesktop.org/modules/gst-plugins-base.html",
+        "homepage": "https://gstreamer.freedesktop.org",
         "lib": "gst-plugins-base1.0",
         "summary": "GStreamer GL libraries",
-        "version": "1.14.0"
+        "version": "1.14.1"
     },
     "GstRtspServer-1.0": {
         "debian_package": "gir1.2-gst-rtsp-server-1.0",
         "description": "gst-rtsp-server is a library on top of GStreamer for building an RTSP server or embedding RTSP server capabilities into applications.\n\nGStreamer is a streaming media framework, based on graphs of filters which operate on media data.  Applications using this library can do anything from real-time sound processing to playing videos, and just about anything else media-related.  Its plugin-based architecture means that new data types or processing capabilities can be added simply by installing new plug-ins.",
-        "homepage": "http://gstreamer.freedesktop.org",
+        "homepage": "https://gstreamer.freedesktop.org",
         "lib": "gst-rtsp-server1.0",
         "summary": "GStreamer RTSP Server (shared library)",
-        "version": "1.14.0"
+        "version": "1.14.1"
     },
     "GstSdp-1.0": {
         "debian_package": "gir1.2-gst-plugins-base-1.0",
         "description": "GStreamer is a streaming media framework, based on graphs of filters which operate on media data.  Applications using this library can do anything from real-time sound processing to playing videos, and just about anything else media-related.  Its plugin-based architecture means that new data types or processing capabilities can be added simply by installing new plug-ins.",
-        "homepage": "http://gstreamer.freedesktop.org/modules/gst-plugins-base.html",
+        "homepage": "https://gstreamer.freedesktop.org",
         "lib": "gst-plugins-base1.0",
         "summary": "GStreamer GL libraries",
-        "version": "1.14.0"
+        "version": "1.14.1"
     },
     "GstTag-1.0": {
         "debian_package": "gir1.2-gst-plugins-base-1.0",
         "description": "GStreamer is a streaming media framework, based on graphs of filters which operate on media data.  Applications using this library can do anything from real-time sound processing to playing videos, and just about anything else media-related.  Its plugin-based architecture means that new data types or processing capabilities can be added simply by installing new plug-ins.",
-        "homepage": "http://gstreamer.freedesktop.org/modules/gst-plugins-base.html",
+        "homepage": "https://gstreamer.freedesktop.org",
         "lib": "gst-plugins-base1.0",
         "summary": "GStreamer GL libraries",
-        "version": "1.14.0"
+        "version": "1.14.1"
     },
     "GstTranscoder-1.0": {
         "debian_package": "pitivi",
@@ -1322,18 +1322,18 @@
     "GstVideo-1.0": {
         "debian_package": "gir1.2-gst-plugins-base-1.0",
         "description": "GStreamer is a streaming media framework, based on graphs of filters which operate on media data.  Applications using this library can do anything from real-time sound processing to playing videos, and just about anything else media-related.  Its plugin-based architecture means that new data types or processing capabilities can be added simply by installing new plug-ins.",
-        "homepage": "http://gstreamer.freedesktop.org/modules/gst-plugins-base.html",
+        "homepage": "https://gstreamer.freedesktop.org",
         "lib": "gst-plugins-base1.0",
         "summary": "GStreamer GL libraries",
-        "version": "1.14.0"
+        "version": "1.14.1"
     },
     "GstWebRTC-1.0": {
         "debian_package": "gir1.2-gst-plugins-bad-1.0",
         "description": "GStreamer is a streaming media framework, based on graphs of filters which operate on media data.  Applications using this library can do anything from real-time sound processing to playing videos, and just about anything else media-related.  Its plugin-based architecture means that new data types or processing capabilities can be added simply by installing new plug-ins.\n\nGStreamer Bad Plug-ins is a set of plug-ins that aren't up to par compared to the rest. They might be close to being good quality, but they're missing something - be it a good code review, some documentation, a set of tests, a real live maintainer, or some actual wide use.",
-        "homepage": "http://gstreamer.freedesktop.org/modules/gst-plugins-bad.html",
+        "homepage": "https://gstreamer.freedesktop.org",
         "lib": "gst-plugins-bad1.0",
         "summary": "GStreamer libraries from the \"bad\" set",
-        "version": "1.14.0"
+        "version": "1.14.1"
     },
     "Gtd-1.0": {
         "debian_package": "gir1.2-gtd-1.0",
@@ -1383,6 +1383,14 @@
         "summary": "shared libraries for the GTK+ syntax highlighting widget",
         "version": "3.24.7"
     },
+    "GtkSource-4": {
+        "debian_package": "gir1.2-gtksource-4",
+        "description": "GtkSourceView is a text widget that extends the standard GTK+ 3.x text widget GtkTextView. It improves GtkTextView by implementing syntax highlighting and other features typical of a source editor.",
+        "homepage": "https://wiki.gnome.org/Projects/GtkSourceView",
+        "lib": "gtksourceview4",
+        "summary": "shared libraries for the GTK+ syntax highlighting widget",
+        "version": "4.0.1"
+    },
     "GtkSpell-3.0": {
         "debian_package": "gir1.2-gtkspell3-3.0",
         "description": "GtkSpell provides Microsoft Word/OS X-style highlighting of misspelled words in a GtkTextView widget.  Right-clicking a misspelled word pops up a menu of suggested replacements.",
@@ -1413,7 +1421,7 @@
         "homepage": "http://libguestfs.org",
         "lib": "libguestfs",
         "summary": "guest disk image management system",
-        "version": "1.38.0"
+        "version": "1.38.1"
     },
     "HarfBuzz-0.0": {
         "debian_package": "gir1.2-harfbuzz-0.0",
@@ -1474,7 +1482,7 @@
     "JSCore-3.0": {
         "debian_package": "gir1.2-javascriptcoregtk-3.0",
         "description": "JavaScriptCore is the JavaScript engine used in WebKit. It consists of the following building blocks: lexer, parser, start-up interpreter (LLInt), baseline JIT, a low-latency optimizing JIT (DFG), and a high-throughput optimizing JIT (FTL).\n\nThis build comes from the GTK+ port of WebKit (API version 3.0).",
-        "homepage": "http://webkitgtk.org/",
+        "homepage": "https://webkitgtk.org/",
         "lib": "webkitgtk",
         "summary": "JavaScript engine library from WebKitGTK+",
         "version": "2.4.11"
@@ -1482,7 +1490,7 @@
     "JavaScriptCore-3.0": {
         "debian_package": "gir1.2-javascriptcoregtk-3.0",
         "description": "JavaScriptCore is the JavaScript engine used in WebKit. It consists of the following building blocks: lexer, parser, start-up interpreter (LLInt), baseline JIT, a low-latency optimizing JIT (DFG), and a high-throughput optimizing JIT (FTL).\n\nThis build comes from the GTK+ port of WebKit (API version 3.0).",
-        "homepage": "http://webkitgtk.org/",
+        "homepage": "https://webkitgtk.org/",
         "lib": "webkitgtk",
         "summary": "JavaScript engine library from WebKitGTK+",
         "version": "2.4.11"
@@ -1493,7 +1501,7 @@
         "homepage": "https://webkitgtk.org/",
         "lib": "webkit2gtk",
         "summary": "JavaScript engine library from WebKitGTK+",
-        "version": "2.20.1"
+        "version": "2.20.3"
     },
     "Json-1.0": {
         "debian_package": "gir1.2-json-1.0",
@@ -1533,7 +1541,7 @@
         "homepage": "http://www.libreoffice.org",
         "lib": "libreoffice",
         "summary": "GTK3 widget wrapping LibreOffice functionality",
-        "version": "6.0.4"
+        "version": "6.0.5"
     },
     "LangTag-0.6": {
         "debian_package": "gir1.2-langtag-0.6",
@@ -1709,7 +1717,7 @@
         "homepage": "https://wiki.gnome.org/Projects/NetworkManager",
         "lib": "network-manager",
         "summary": "GObject-based client library for NetworkManager",
-        "version": "1.10.6"
+        "version": "1.10.8"
     },
     "NMA-1.0": {
         "debian_package": "gir1.2-nma-1.0",
@@ -1717,7 +1725,7 @@
         "homepage": "https://www.gnome.org/projects/NetworkManager/",
         "lib": "network-manager-applet",
         "summary": "library for wireless and mobile dialogs (libnm version)",
-        "version": "1.8.10"
+        "version": "1.8.12"
     },
     "NMClient-1.0": {
         "debian_package": "gir1.2-networkmanager-1.0",
@@ -1727,21 +1735,13 @@
         "summary": "network management framework (GLib shared library)",
         "version": "1.10.6"
     },
-    "NMGtk-1.0": {
-        "debian_package": "gir1.2-nmgtk-1.0",
-        "description": "This library provides Gtk+ dialogs for NetworkManager.",
-        "homepage": "https://www.gnome.org/projects/NetworkManager/",
-        "lib": "network-manager-applet",
-        "summary": "library for wireless and mobile dialogs (libnm-glib version)",
-        "version": "1.8.10"
-    },
     "Nautilus-3.0": {
         "debian_package": "gir1.2-nautilus-3.0",
         "description": "Nautilus is the official file manager and graphical shell for the GNOME desktop.",
         "homepage": "https://wiki.gnome.org/action/show/Apps/Nautilus",
         "lib": "nautilus",
         "summary": "libraries for nautilus components",
-        "version": "3.26.3.1"
+        "version": "3.28.1"
     },
     "Nemo-3.0": {
         "debian_package": "gir1.2-nemo-3.0",
@@ -1781,12 +1781,12 @@
         "homepage": "https://github.com/ostreedev/ostree/",
         "lib": "ostree",
         "summary": "content-addressed filesystem for operating system binaries (library)",
-        "version": "2018.4"
+        "version": "2018.5"
     },
     "OsmGpsMap-1.0": {
         "debian_package": "gir1.2-osmgpsmap-1.0",
         "description": "libosmgpsmap is a library to embed maps in applications that when given GPS co-ordinates, draws a GPS track, and points of interest on a moving map display. Downloads map data from a number of websites, including openstreetmap.org, openaerialmap.org and others.",
-        "homepage": "http://nzjrs.github.com/osm-gps-map/",
+        "homepage": "https://nzjrs.github.com/osm-gps-map/",
         "lib": "osm-gps-map",
         "summary": "GTK+ library to embed OpenStreetMap maps",
         "version": "1.1.0"
@@ -1869,7 +1869,7 @@
         "homepage": "https://github.com/acrisci/playerctl",
         "lib": "playerctl",
         "summary": "utility to control media players via MPRIS (library)",
-        "version": "0.5.0"
+        "version": "0.6.0"
     },
     "Pluma-1.0": {
         "debian_package": "gir1.2-pluma-1.0",
@@ -1989,7 +1989,7 @@
         "homepage": "https://wiki.gnome.org/Projects/libsoup",
         "lib": "libsoup2.4",
         "summary": "HTTP library implementation in C",
-        "version": "2.62.1"
+        "version": "2.62.2"
     },
     "SoupGNOME-2.4": {
         "debian_package": "gir1.2-soup-2.4",
@@ -1997,7 +1997,7 @@
         "homepage": "https://wiki.gnome.org/Projects/libsoup",
         "lib": "libsoup2.4",
         "summary": "HTTP library implementation in C",
-        "version": "2.62.1"
+        "version": "2.62.2"
     },
     "SpiceClientGLib-2.0": {
         "debian_package": "gir1.2-spiceclientglib-2.0",
@@ -2157,12 +2157,12 @@
         "homepage": "https://wiki.gnome.org/Apps/Terminal/VTE",
         "lib": "vte2.91",
         "summary": "Terminal emulator widget for GTK+ 3.0",
-        "version": "0.52.1"
+        "version": "0.52.2"
     },
     "WebKit-3.0": {
         "debian_package": "gir1.2-webkit-3.0",
         "description": "JavaScriptCore is the JavaScript engine used in WebKit. It consists of the following building blocks: lexer, parser, start-up interpreter (LLInt), baseline JIT, a low-latency optimizing JIT (DFG), and a high-throughput optimizing JIT (FTL).\n\nThis build comes from the GTK+ port of WebKit (API version 3.0).",
-        "homepage": "http://webkitgtk.org/",
+        "homepage": "https://webkitgtk.org/",
         "lib": "webkitgtk",
         "summary": "JavaScript engine library from WebKitGTK+",
         "version": "2.4.11"
@@ -2173,7 +2173,7 @@
         "homepage": "https://webkitgtk.org/",
         "lib": "webkit2gtk",
         "summary": "JavaScript engine library from WebKitGTK+",
-        "version": "2.20.1"
+        "version": "2.20.3"
     },
     "WebKit2WebExtension-4.0": {
         "debian_package": "gir1.2-webkit2-4.0",
@@ -2181,7 +2181,7 @@
         "homepage": "https://webkitgtk.org/",
         "lib": "webkit2gtk",
         "summary": "JavaScript engine library from WebKitGTK+",
-        "version": "2.20.1"
+        "version": "2.20.3"
     },
     "Wnck-1.0": {
         "debian_package": "gir1.2-wnck-1.0",

@@ -4,6 +4,6 @@ pgi
 _venv
 _docs*
 MANIFEST
-tools/_temp_data_dir
+tools/_temp_*
 .cache
 .coverage
