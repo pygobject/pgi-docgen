@@ -1,6 +1,6 @@
 {
     "Abi-3.0": {
-        "debian_package": "gir1.2-abi-3.0",
+        "debian_package": "gir1.2-abiword-3.0",
         "description": "AbiWord is a full-featured, efficient word processing application. It is suitable for a wide variety of word processing tasks, and is extensible with a variety of plugins.",
         "homepage": "http://www.abisource.com/",
         "lib": "abiword",
@@ -69,7 +69,7 @@
         "homepage": "https://github.com/hughsie/appstream-glib",
         "lib": "appstream-glib",
         "summary": "GNOME library to access AppStream services",
-        "version": "0.7.7"
+        "version": "0.7.10"
     },
     "Aravis-0.6": {
         "debian_package": "gir1.2-aravis-0.6",
@@ -93,7 +93,7 @@
         "homepage": "http://www.mate-desktop.org/",
         "lib": "atril",
         "summary": "MATE document rendering library",
-        "version": "1.20.1"
+        "version": "1.20.2"
     },
     "AtrilView-1.5.0": {
         "debian_package": "gir1.2-atrilview-1.5.0",
@@ -101,7 +101,7 @@
         "homepage": "http://www.mate-desktop.org/",
         "lib": "atril",
         "summary": "MATE document viewing library",
-        "version": "1.20.1"
+        "version": "1.20.2"
     },
     "Atspi-2.0": {
         "debian_package": "gir1.2-atspi-2.0",
@@ -184,12 +184,12 @@
         "version": "3.12.2"
     },
     "Budgie-1.0": {
-        "debian_package": "gir1.2-budgie-1.0",
+        "debian_package": "gir1.2-budgie-desktop-1.0",
         "description": "Budgie-Desktop is a GTK+ based desktop environment which focuses on simplicity and elegance.  It provides a traditional desktop metaphor based interface utilising customisable panel based menu driven system. Budgie-Desktop is written from scratch utilising many GNOME based sub-systems such as GNOME-Session and Mutter.\n\nThis is the introspection library and allows creating plugins in python3, C and Vala",
         "homepage": "https://solus-project.com/budgie/",
         "lib": "budgie-desktop",
         "summary": "GNOME introspection library for budgie-desktop",
-        "version": "10.4"
+        "version": "10.2.9"
     },
     "CDesktopEnums-3.0": {
         "debian_package": "gir1.2-cinnamondesktop-3.0",
@@ -455,6 +455,14 @@
         "summary": "Library providing documentation browser functionality",
         "version": "3.28.1"
     },
+    "Dfu-1.0": {
+        "debian_package": "libdfu1",
+        "description": "fwupd is a daemon to allow session software to update device firmware. You can either use a GUI software manager like GNOME Software to view and apply updates, the command-line tool or the system D-Bus interface directly. Currently, firmware updates using the UEFI capsule format and for the ColorHug are supported. More formats may be supported in the future. See <https://github.com/hughsie/fwupd> for details",
+        "homepage": "https://github.com/hughsie/fwupd",
+        "lib": "fwupd",
+        "summary": "Firmware update daemon library for DFU support",
+        "version": "0.7.4"
+    },
     "Diodon-1.0": {
         "debian_package": "gir1.2-diodon-1.0",
         "description": "Diodon is a lightweight clipboard manager for Linux written in Vala which \"aims to be the best integrated clipboard manager for the Gnome/Unity desktop\".\n\nDiodon features include Ubuntu indicator, clipboard sync (primary selection and Ctrl+C / Ctrl+V clipboard) and a zeitgeist integration for an infinite clipboard history.\n\n\nIt can be used by packages using the GIRepository format to generate dynamic bindings.",
@@ -509,7 +517,15 @@
         "homepage": "http://www.mate-desktop.org/",
         "lib": "eom",
         "summary": "GObject introspection data for the eom library",
-        "version": "1.20.0"
+        "version": "1.20.1"
+    },
+    "Evd-0.1": {
+        "debian_package": "gir1.2-evd-0.1",
+        "description": "EventDance is an open source library for interconnecting heterogeneous applications in a simple, secure and scalable fashion. It provides a nice API to send and receive data among distributed applications over different types of transports. This and other features like cryptography, make EventDance a perfect choice for peer-to-peer application development.",
+        "homepage": "https://gitorious.org/eventdance",
+        "lib": "event-dance",
+        "summary": "Peer-to-peer inter-process communication library",
+        "version": "0.1.28"
     },
     "Evd-0.2": {
         "debian_package": "gir1.2-evd-0.2",
@@ -546,7 +562,7 @@
     "Fcitx-1.0": {
         "debian_package": "gir1.2-fcitx-1.0",
         "description": "Fcitx is a input method framework with extension support, which provides an interface for entering characters of different scripts in applications using a variety of mapping systems.\n\nIt offers a pleasant and modern experience, with intuitive graphical configuration tools and customizable skins and mapping tables. It is highly modularized and extensible, with GTK+ 2/3 and Qt4 IM Modules, support for UIs based on Fbterm, pure Xlib, GTK+, or KDE, and a developer-friendly API.\n\n* libfcitx-gclient - D-Bus client library for Glib",
-        "homepage": "https://github.com/fcitx/fcitx",
+        "homepage": "https://gitlab.com/fcitx/fcitx",
         "lib": "fcitx",
         "summary": "Flexible Input Method Framework",
         "version": "4.2.9.6"
@@ -557,7 +573,7 @@
         "homepage": "http://flatpak.org/",
         "lib": "flatpak",
         "summary": "Application deployment framework for desktop apps (library)",
-        "version": "0.11.8.3"
+        "version": "0.99.3"
     },
     "Folks-0.6": {
         "debian_package": "gir1.2-folks-0.6",
@@ -591,16 +607,24 @@
         "summary": "library to aggregates people into metacontacts",
         "version": "0.11.4"
     },
+    "Fwupd-1.0": {
+        "debian_package": "gir1.2-fwupd-1.0",
+        "description": "fwupd is a daemon to allow session software to update device firmware. You can either use a GUI software manager like GNOME Software to view and apply updates, the command-line tool or the system D-Bus interface directly. Currently, firmware updates using the UEFI capsule format and for the ColorHug are supported. More formats may be supported in the future. See <https://github.com/hughsie/fwupd> for details",
+        "homepage": "https://github.com/hughsie/fwupd",
+        "lib": "fwupd",
+        "summary": "Firmware update daemon library",
+        "version": "0.7.4"
+    },
     "Fwupd-2.0": {
         "debian_package": "gir1.2-fwupd-2.0",
         "description": "fwupd is a daemon to allow session software to update device firmware. You can either use a GUI software manager like GNOME Software to view and apply updates, the command-line tool or the system D-Bus interface directly. Currently, firmware updates using the UEFI capsule format and for the ColorHug are supported. More formats may be supported in the future. See <https://github.com/hughsie/fwupd> for details",
         "homepage": "https://github.com/hughsie/fwupd",
         "lib": "fwupd",
         "summary": "Firmware update daemon library",
-        "version": "1.0.8"
+        "version": "1.1.0"
     },
     "GCab-1.0": {
-        "debian_package": "gir1.2-gcab-1.0",
+        "debian_package": "gir1.2-libgcab-1.0",
         "description": "libgcab provides functions to manipulate cabinet (.cab) files, both for reading and writing their contents.",
         "homepage": "https://wiki.gnome.org/msitools",
         "lib": "gcab",
@@ -637,7 +661,7 @@
         "homepage": "https://gstreamer.freedesktop.org",
         "lib": "gstreamer-editing-services1.0",
         "summary": "GStreamer editing services (shared library)",
-        "version": "1.14.1"
+        "version": "1.14.2"
     },
     "GExiv2-0.10": {
         "debian_package": "gir1.2-gexiv2-0.10",
@@ -725,15 +749,15 @@
         "homepage": "http://wiki.gnome.org/GnomeOffice",
         "lib": "goffice",
         "summary": "Document centric objects library",
-        "version": "0.10.39"
+        "version": "0.10.41"
     },
     "GPaste-1.0": {
-        "debian_package": "gir1.2-gpaste-1.0",
-        "description": "GPaste manages clipboard history and allows easy access to it using keyboard shortcuts, gnome-shell extension, command-line tools, gir bindings.",
+        "debian_package": "gir1.2-gpaste-6.0",
+        "description": "GPaste manages clipboard history and allows easy access to it using keyboard shortcuts, gnome-shell extension, command-line tools, gir bindings.\n\n\nIt can be used by packages using the GIRepository format to generate dynamic bindings.",
         "homepage": "https://github.com/Keruspe/GPaste",
         "lib": "gpaste",
-        "summary": "Clipboard management system for GNOME",
-        "version": "3.28.0"
+        "summary": "GObject introspection data for the libgpaste6 library",
+        "version": "3.22.0"
     },
     "GSSDP-1.0": {
         "debian_package": "gir1.2-gssdp-1.0",
@@ -756,7 +780,7 @@
         "description": "LibGSystem is a deprecated library used by OS components such as OSTree. Parts of its functionality have moved into GLib; other parts of its functionality have moved into the libglnx submodule.\n\nThis package can be used by other packages using the GIRepository format to generate dynamic bindings.",
         "homepage": "https://wiki.gnome.org/Projects/LibGSystem",
         "lib": "libgsystem",
-        "summary": "GIO-based library targeted at OS components (introspection)",
+        "summary": "GIO-based library targetd as OS components (introspection)",
         "version": "2015.2"
     },
     "GTop-2.0": {
@@ -895,6 +919,14 @@
         "summary": "data abstraction library based on GLib",
         "version": "5.2.4"
     },
+    "Gdict-1.0": {
+        "debian_package": "gir1.2-gdict-1.0",
+        "description": "",
+        "homepage": "https://wiki.gnome.org/Apps/Dictionary",
+        "lib": "gnome-dictionary",
+        "summary": "GNOME Dictionary base library",
+        "version": "3.20.0"
+    },
     "Gdk-2.0": {
         "debian_package": "gir1.2-gtk-2.0",
         "description": "GTK+ is a multi-platform toolkit for creating graphical user interfaces. Offering a complete set of widgets, GTK+ is suitable for projects ranging from small one-off tools to complete application suites.",
@@ -917,7 +949,7 @@
         "homepage": "http://www.gtk.org/",
         "lib": "gdk-pixbuf",
         "summary": "GDK Pixbuf library",
-        "version": "2.36.11"
+        "version": "2.36.12"
     },
     "GdkX11-2.0": {
         "debian_package": "gir1.2-gtk-2.0",
@@ -981,7 +1013,15 @@
         "homepage": "",
         "lib": "geocode-glib",
         "summary": "geocoding and reverse geocoding GLib library using Nominatim",
-        "version": "3.25.4.1"
+        "version": "3.26.0"
+    },
+    "Gepub-0.4": {
+        "debian_package": "gir1.2-gepub-0.4",
+        "description": "libgepub is a GObject based library for handling and rendering epub documents.",
+        "homepage": "",
+        "lib": "libgepub",
+        "summary": "library to read epub files",
+        "version": "0.4"
     },
     "Gepub-0.6": {
         "debian_package": "gir1.2-gepub-0.6",
@@ -992,12 +1032,12 @@
         "version": "0.6.0"
     },
     "Ggit-1.0": {
-        "debian_package": "gir1.2-ggit-1.0",
+        "debian_package": "gir1.2-git2-glib-1.0",
         "description": "libgit2-glib is a glib wrapper library around the libgit2 git access library.",
         "homepage": "https://wiki.gnome.org/Projects/Libgit2-glib",
         "lib": "libgit2-glib",
         "summary": "glib wrapper library around the libgit2 git access library",
-        "version": "0.26.2"
+        "version": "0.26.4"
     },
     "Gio-2.0": {
         "debian_package": "gir1.2-glib-2.0",
@@ -1029,7 +1069,7 @@
         "homepage": "http://www.gnumeric.org/",
         "lib": "gnumeric",
         "summary": "GObject introspection data for the Gnumeric spreadsheet",
-        "version": "1.12.39"
+        "version": "1.12.41"
     },
     "GnomeAutoar-0.1": {
         "debian_package": "gir1.2-gnomeautoar-0.1",
@@ -1105,11 +1145,11 @@
     },
     "Granite-1.0": {
         "debian_package": "gir1.2-granite-1.0",
-        "description": "Granite is an extension of GTK+. Among other things, it provides complex widgets and convenience functions designed for use in apps built for elementary OS.",
+        "description": "Granite is an extension of GTK+. Among other things, it provides complex widgets and convenience functions designed for use in apps built for elementary OS.\n\nThis package can be used by other packages using the GIRepository format to generate dynamic bindings.",
         "homepage": "https://github.com/elementary/granite",
         "lib": "granite",
-        "summary": "extension of GTK+ libraries",
-        "version": "0.5"
+        "summary": "extension of GTK+ libraries (introspection files)",
+        "version": "5.0"
     },
     "Graphene-1.0": {
         "debian_package": "gir1.2-graphene-1.0",
@@ -1125,7 +1165,7 @@
         "homepage": "https://wiki.gnome.org/Projects/Grilo",
         "lib": "grilo",
         "summary": "Framework for discovering and browsing media",
-        "version": "0.3.4"
+        "version": "0.3.6"
     },
     "GrlNet-0.3": {
         "debian_package": "gir1.2-grilo-0.3",
@@ -1133,7 +1173,7 @@
         "homepage": "https://wiki.gnome.org/Projects/Grilo",
         "lib": "grilo",
         "summary": "Framework for discovering and browsing media",
-        "version": "0.3.4"
+        "version": "0.3.6"
     },
     "GrlPls-0.3": {
         "debian_package": "gir1.2-grilo-0.3",
@@ -1141,7 +1181,7 @@
         "homepage": "https://wiki.gnome.org/Projects/Grilo",
         "lib": "grilo",
         "summary": "Framework for discovering and browsing media",
-        "version": "0.3.4"
+        "version": "0.3.6"
     },
     "Grss-0.7": {
         "debian_package": "gir1.2-grss-0.7",
@@ -1173,7 +1213,7 @@
         "homepage": "https://gstreamer.freedesktop.org",
         "lib": "gstreamer1.0",
         "summary": "Core GStreamer libraries and elements",
-        "version": "1.14.1"
+        "version": "1.14.2"
     },
     "GstAllocators-1.0": {
         "debian_package": "gir1.2-gst-plugins-base-1.0",
@@ -1181,7 +1221,7 @@
         "homepage": "https://gstreamer.freedesktop.org",
         "lib": "gst-plugins-base1.0",
         "summary": "GStreamer GL libraries",
-        "version": "1.14.1"
+        "version": "1.14.2"
     },
     "GstApp-1.0": {
         "debian_package": "gir1.2-gst-plugins-base-1.0",
@@ -1189,7 +1229,7 @@
         "homepage": "https://gstreamer.freedesktop.org",
         "lib": "gst-plugins-base1.0",
         "summary": "GStreamer GL libraries",
-        "version": "1.14.1"
+        "version": "1.14.2"
     },
     "GstAudio-1.0": {
         "debian_package": "gir1.2-gst-plugins-base-1.0",
@@ -1197,7 +1237,7 @@
         "homepage": "https://gstreamer.freedesktop.org",
         "lib": "gst-plugins-base1.0",
         "summary": "GStreamer GL libraries",
-        "version": "1.14.1"
+        "version": "1.14.2"
     },
     "GstBase-1.0": {
         "debian_package": "gir1.2-gstreamer-1.0",
@@ -1205,7 +1245,7 @@
         "homepage": "https://gstreamer.freedesktop.org",
         "lib": "gstreamer1.0",
         "summary": "Core GStreamer libraries and elements",
-        "version": "1.14.1"
+        "version": "1.14.2"
     },
     "GstCheck-1.0": {
         "debian_package": "gir1.2-gstreamer-1.0",
@@ -1213,7 +1253,7 @@
         "homepage": "https://gstreamer.freedesktop.org",
         "lib": "gstreamer1.0",
         "summary": "Core GStreamer libraries and elements",
-        "version": "1.14.1"
+        "version": "1.14.2"
     },
     "GstController-1.0": {
         "debian_package": "gir1.2-gstreamer-1.0",
@@ -1221,7 +1261,15 @@
         "homepage": "https://gstreamer.freedesktop.org",
         "lib": "gstreamer1.0",
         "summary": "Core GStreamer libraries and elements",
-        "version": "1.14.1"
+        "version": "1.14.2"
+    },
+    "GstFft-1.0": {
+        "debian_package": "gir1.2-gst-plugins-base-1.0",
+        "description": "GStreamer is a streaming media framework, based on graphs of filters which operate on media data.  Applications using this library can do anything from real-time sound processing to playing videos, and just about anything else media-related.  Its plugin-based architecture means that new data types or processing capabilities can be added simply by installing new plug-ins.",
+        "homepage": "https://gstreamer.freedesktop.org",
+        "lib": "gst-plugins-base1.0",
+        "summary": "GStreamer GL libraries",
+        "version": "1.14.2"
     },
     "GstGL-1.0": {
         "debian_package": "gir1.2-gst-plugins-base-1.0",
@@ -1229,7 +1277,7 @@
         "homepage": "https://gstreamer.freedesktop.org",
         "lib": "gst-plugins-base1.0",
         "summary": "GStreamer GL libraries",
-        "version": "1.14.1"
+        "version": "1.14.2"
     },
     "GstInsertBin-1.0": {
         "debian_package": "gir1.2-gst-plugins-bad-1.0",
@@ -1237,7 +1285,7 @@
         "homepage": "https://gstreamer.freedesktop.org",
         "lib": "gst-plugins-bad1.0",
         "summary": "GStreamer libraries from the \"bad\" set",
-        "version": "1.14.1"
+        "version": "1.14.2"
     },
     "GstMpegts-1.0": {
         "debian_package": "gir1.2-gst-plugins-bad-1.0",
@@ -1245,7 +1293,7 @@
         "homepage": "https://gstreamer.freedesktop.org",
         "lib": "gst-plugins-bad1.0",
         "summary": "GStreamer libraries from the \"bad\" set",
-        "version": "1.14.1"
+        "version": "1.14.2"
     },
     "GstNet-1.0": {
         "debian_package": "gir1.2-gstreamer-1.0",
@@ -1253,7 +1301,7 @@
         "homepage": "https://gstreamer.freedesktop.org",
         "lib": "gstreamer1.0",
         "summary": "Core GStreamer libraries and elements",
-        "version": "1.14.1"
+        "version": "1.14.2"
     },
     "GstPbutils-1.0": {
         "debian_package": "gir1.2-gst-plugins-base-1.0",
@@ -1261,7 +1309,7 @@
         "homepage": "https://gstreamer.freedesktop.org",
         "lib": "gst-plugins-base1.0",
         "summary": "GStreamer GL libraries",
-        "version": "1.14.1"
+        "version": "1.14.2"
     },
     "GstPlayer-1.0": {
         "debian_package": "gir1.2-gst-plugins-bad-1.0",
@@ -1269,7 +1317,7 @@
         "homepage": "https://gstreamer.freedesktop.org",
         "lib": "gst-plugins-bad1.0",
         "summary": "GStreamer libraries from the \"bad\" set",
-        "version": "1.14.1"
+        "version": "1.14.2"
     },
     "GstRtp-1.0": {
         "debian_package": "gir1.2-gst-plugins-base-1.0",
@@ -1277,7 +1325,7 @@
         "homepage": "https://gstreamer.freedesktop.org",
         "lib": "gst-plugins-base1.0",
         "summary": "GStreamer GL libraries",
-        "version": "1.14.1"
+        "version": "1.14.2"
     },
     "GstRtsp-1.0": {
         "debian_package": "gir1.2-gst-plugins-base-1.0",
@@ -1285,7 +1333,7 @@
         "homepage": "https://gstreamer.freedesktop.org",
         "lib": "gst-plugins-base1.0",
         "summary": "GStreamer GL libraries",
-        "version": "1.14.1"
+        "version": "1.14.2"
     },
     "GstRtspServer-1.0": {
         "debian_package": "gir1.2-gst-rtsp-server-1.0",
@@ -1293,7 +1341,7 @@
         "homepage": "https://gstreamer.freedesktop.org",
         "lib": "gst-rtsp-server1.0",
         "summary": "GStreamer RTSP Server (shared library)",
-        "version": "1.14.1"
+        "version": "1.14.2"
     },
     "GstSdp-1.0": {
         "debian_package": "gir1.2-gst-plugins-base-1.0",
@@ -1301,7 +1349,7 @@
         "homepage": "https://gstreamer.freedesktop.org",
         "lib": "gst-plugins-base1.0",
         "summary": "GStreamer GL libraries",
-        "version": "1.14.1"
+        "version": "1.14.2"
     },
     "GstTag-1.0": {
         "debian_package": "gir1.2-gst-plugins-base-1.0",
@@ -1309,7 +1357,7 @@
         "homepage": "https://gstreamer.freedesktop.org",
         "lib": "gst-plugins-base1.0",
         "summary": "GStreamer GL libraries",
-        "version": "1.14.1"
+        "version": "1.14.2"
     },
     "GstTranscoder-1.0": {
         "debian_package": "pitivi",
@@ -1325,7 +1373,7 @@
         "homepage": "https://gstreamer.freedesktop.org",
         "lib": "gst-plugins-base1.0",
         "summary": "GStreamer GL libraries",
-        "version": "1.14.1"
+        "version": "1.14.2"
     },
     "GstWebRTC-1.0": {
         "debian_package": "gir1.2-gst-plugins-bad-1.0",
@@ -1333,14 +1381,14 @@
         "homepage": "https://gstreamer.freedesktop.org",
         "lib": "gst-plugins-bad1.0",
         "summary": "GStreamer libraries from the \"bad\" set",
-        "version": "1.14.1"
+        "version": "1.14.2"
     },
     "Gtd-1.0": {
-        "debian_package": "gir1.2-gtd-1.0",
-        "description": "GNOME To Do is a simplistic personal task manager designed to perfectly fit the GNOME desktop. Designed from ground up to seamlessly integrate with the GNOME desktop environment, To Do enables you to be as productive as you want.\n\n\nIt can be used by packages using the GIRepository format to generate dynamic bindings.",
+        "debian_package": "gnome-todo",
+        "description": "Library that provides GObject-based interface of GNOME To Do, simplistic personal task manager designed to perfectly fit the GNOME desktop.",
         "homepage": "https://wiki.gnome.org/Apps/Todo",
         "lib": "gnome-todo",
-        "summary": "GObject introspection data for GNOME To Do",
+        "summary": "library data for GNOME To Do",
         "version": "3.28.1"
     },
     "Gtk-2.0": {
@@ -1413,7 +1461,7 @@
         "homepage": "https://wiki.gnome.org/Apps/Gucharmap",
         "lib": "gucharmap",
         "summary": "Unicode browser widget library (shared library)",
-        "version": "10.0.4"
+        "version": "11.0.1"
     },
     "Guestfs-1.0": {
         "debian_package": "gir1.2-guestfs-1.0",
@@ -1421,7 +1469,7 @@
         "homepage": "http://libguestfs.org",
         "lib": "libguestfs",
         "summary": "guest disk image management system",
-        "version": "1.38.1"
+        "version": "1.38.3"
     },
     "HarfBuzz-0.0": {
         "debian_package": "gir1.2-harfbuzz-0.0",
@@ -1429,7 +1477,7 @@
         "homepage": "https://www.freedesktop.org/wiki/Software/HarfBuzz",
         "lib": "harfbuzz",
         "summary": "OpenType text shaping engine ICU backend (GObject library)",
-        "version": "1.7.6"
+        "version": "1.8.4"
     },
     "Hinawa-1.0": {
         "debian_package": "gir1.2-hinawa-1.0",
@@ -1438,6 +1486,14 @@
         "lib": "libhinawa",
         "summary": "I/O library for IEEE 1394 asynchronous transactions",
         "version": "0.9.0"
+    },
+    "Hinawa-2.0": {
+        "debian_package": "gir1.2-hinawa-2.0",
+        "description": "This is an I/O library for units on IEEE 1394 bus. This library supports any types of asynchronous transactions over IEEE 1394 bus. Additionally, this library also supports some functionalities which ALSA firewire stack produces.",
+        "homepage": "https://github.com/takaswie/libhinawa",
+        "lib": "libhinawa",
+        "summary": "I/O library for IEEE 1394 asynchronous transactions",
+        "version": "1.0.0"
     },
     "Hkl-5.0": {
         "debian_package": "gir1.2-hkl-5.0",
@@ -1541,7 +1597,7 @@
         "homepage": "http://www.libreoffice.org",
         "lib": "libreoffice",
         "summary": "GTK3 widget wrapping LibreOffice functionality",
-        "version": "6.0.5"
+        "version": "6.1.0"
     },
     "LangTag-0.6": {
         "debian_package": "gir1.2-langtag-0.6",
@@ -1552,7 +1608,7 @@
         "version": "0.6.2"
     },
     "Libmsi-1.0": {
-        "debian_package": "gir1.2-libmsi-1.0",
+        "debian_package": "gir1.2-libmsi0",
         "description": "libmsi provides functions to manipulate Windows Installer (.msi) files, both for reading and writing their contents and querying their databases.",
         "homepage": "https://wiki.gnome.org/msitools",
         "lib": "msitools",
@@ -1645,7 +1701,7 @@
         "homepage": "http://www.mate-desktop.org/",
         "lib": "mate-desktop",
         "summary": "Library with common API for various MATE modules (library)",
-        "version": "1.20.1"
+        "version": "1.20.3"
     },
     "MateMenu-2.0": {
         "debian_package": "gir1.2-matemenu-2.0",
@@ -1653,7 +1709,7 @@
         "homepage": "http://www.mate-desktop.org/",
         "lib": "mate-menus",
         "summary": "implementation of the freedesktop menu specification for MATE (library)",
-        "version": "1.20.0"
+        "version": "1.20.1"
     },
     "MatePanelApplet-4.0": {
         "debian_package": "gir1.2-matepanelapplet-4.0",
@@ -1661,7 +1717,7 @@
         "homepage": "http://www.mate-desktop.org/",
         "lib": "mate-panel",
         "summary": "library for MATE Panel applets",
-        "version": "1.20.1"
+        "version": "1.20.2"
     },
     "Matekbd-1.0": {
         "debian_package": "gir1.2-matekbd-1.0",
@@ -1669,7 +1725,7 @@
         "homepage": "http://www.mate-desktop.org/",
         "lib": "libmatekbd",
         "summary": "MATE library to manage keyboard configuration",
-        "version": "1.20.1"
+        "version": "1.20.2"
     },
     "MediaArt-2.0": {
         "debian_package": "gir1.2-mediaart-2.0",
@@ -1703,6 +1759,14 @@
         "summary": "D-Bus service for managing modems",
         "version": "1.7.990"
     },
+    "Mx-2.0": {
+        "debian_package": "gir1.2-mx-2.0",
+        "description": "The MX toolkit is a GUI toolkit library, using Clutter and is optimized for the Moblin user experience. It consists of various classes useful for building UIs such as Buttons, Tooltips, Scrollbars and others. It also supports styling through CSS stylesheets.",
+        "homepage": "http://www.clutter-project.org/",
+        "lib": "mx",
+        "summary": "toolkit for the Moblin user experience",
+        "version": "1.99.4"
+    },
     "MyPaint-1.3": {
         "debian_package": "gir1.2-mypaint-1.3",
         "description": "MyPaint is a pressure- and tilt-sensitive painting program which works well with Wacom graphics tablets and other similar devices. It comes with a large brush collection including charcoal and ink to emulate real media, but the highly configurable brush engine allows you to experiment with your own brushes and with not-quite-natural painting.",
@@ -1717,7 +1781,7 @@
         "homepage": "https://wiki.gnome.org/Projects/NetworkManager",
         "lib": "network-manager",
         "summary": "GObject-based client library for NetworkManager",
-        "version": "1.10.8"
+        "version": "1.12.2"
     },
     "NMA-1.0": {
         "debian_package": "gir1.2-nma-1.0",
@@ -1725,7 +1789,7 @@
         "homepage": "https://www.gnome.org/projects/NetworkManager/",
         "lib": "network-manager-applet",
         "summary": "library for wireless and mobile dialogs (libnm version)",
-        "version": "1.8.12"
+        "version": "1.8.14"
     },
     "NMClient-1.0": {
         "debian_package": "gir1.2-networkmanager-1.0",
@@ -1734,6 +1798,14 @@
         "lib": "network-manager",
         "summary": "network management framework (GLib shared library)",
         "version": "1.10.6"
+    },
+    "NMGtk-1.0": {
+        "debian_package": "gir1.2-nmgtk-1.0",
+        "description": "This library provides Gtk+ dialogs for NetworkManager.",
+        "homepage": "https://www.gnome.org/projects/NetworkManager/",
+        "lib": "network-manager-applet",
+        "summary": "library for wireless and mobile dialogs (libnm-glib version)",
+        "version": "1.4.4"
     },
     "Nautilus-3.0": {
         "debian_package": "gir1.2-nautilus-3.0",
@@ -1781,7 +1853,7 @@
         "homepage": "https://github.com/ostreedev/ostree/",
         "lib": "ostree",
         "summary": "content-addressed filesystem for operating system binaries (library)",
-        "version": "2018.5"
+        "version": "2018.7"
     },
     "OsmGpsMap-1.0": {
         "debian_package": "gir1.2-osmgpsmap-1.0",
@@ -1798,6 +1870,14 @@
         "lib": "packagekit",
         "summary": "Library for accessing PackageKit using GLib",
         "version": "1.1.10"
+    },
+    "PanelApplet-5.0": {
+        "debian_package": "gir1.2-panelapplet-5.0",
+        "description": "This library is used by GNOME Panel applets.",
+        "homepage": "https://wiki.gnome.org/Projects/GnomePanel",
+        "lib": "gnome-panel",
+        "summary": "library for GNOME Panel applets",
+        "version": "3.20.1"
     },
     "Pango-1.0": {
         "debian_package": "gir1.2-pango-1.0",
@@ -1837,7 +1917,7 @@
         "homepage": "https://gkarsay.github.io/parlatype/",
         "lib": "parlatype",
         "summary": "Library for Parlatype",
-        "version": "1.5.4"
+        "version": "1.5.5"
     },
     "Peas-1.0": {
         "debian_package": "gir1.2-peas-1.0",
@@ -1861,7 +1941,7 @@
         "homepage": "http://www.ukui.org/",
         "lib": "peony",
         "summary": "libraries for Peony components",
-        "version": "1.0.3"
+        "version": "1.1.3"
     },
     "Playerctl-1.0": {
         "debian_package": "gir1.2-playerctl-1.0",
@@ -1877,7 +1957,7 @@
         "homepage": "http://www.mate-desktop.org/",
         "lib": "pluma",
         "summary": "GObject introspection data for Pluma",
-        "version": "1.20.1"
+        "version": "1.20.2"
     },
     "Polkit-1.0": {
         "debian_package": "gir1.2-polkit-1.0",
@@ -1894,6 +1974,14 @@
         "lib": "policykit-1",
         "summary": "PolicyKit Authentication Agent API",
         "version": "0.105"
+    },
+    "PolkitGtkMate-1.0": {
+        "debian_package": "gir1.2-mate-polkit",
+        "description": "The mate-polkit package provides a D-Bus session bus service that is used to bring up authentication dialogs used for obtaining privileges.",
+        "homepage": "http://www.mate-desktop.org/",
+        "lib": "mate-polkit",
+        "summary": "MATE authentication agent for PolicyKit-1 (library)",
+        "version": "1.16.0"
     },
     "Poppler-0.18": {
         "debian_package": "gir1.2-poppler-0.18",
@@ -1961,11 +2049,11 @@
     },
     "Skk-1.0": {
         "debian_package": "gir1.2-skk-1.0",
-        "description": "Library that provides GObject-based interface of Japanese input methods.  Currently it supports SKK (Simple Kana Kanji) with various typing rules including romaji-to-kana, AZIK, ACT, TUT-Code, T-Code, and NICOLA.",
+        "description": "Libskk is a library that provides GObject-based interface of Japanese input methods.  Currently it supports SKK (Simple Kana Kanji) with various typing rules including romaji-to-kana, AZIK, ACT, TUT-Code, T-Code, and NICOLA.",
         "homepage": "https://github.com/ueno/libskk",
         "lib": "libskk",
         "summary": "library to deal with Japanese kana-kanji conversion method",
-        "version": "1.0.2"
+        "version": "1.0.4"
     },
     "Snapd-1": {
         "debian_package": "gir1.2-snapd-1",
@@ -2061,7 +2149,7 @@
         "homepage": "https://wiki.gnome.org/Apps/Videos",
         "lib": "totem",
         "summary": "Main library for the Totem media player",
-        "version": "3.26.0"
+        "version": "3.26.1"
     },
     "TotemPlParser-1.0": {
         "debian_package": "gir1.2-totemplparser-1.0",
@@ -2071,6 +2159,14 @@
         "summary": "Totem Playlist Parser library",
         "version": "3.26.0"
     },
+    "Tracker-1.0": {
+        "debian_package": "gir1.2-tracker-1.0",
+        "description": "Tracker is an advanced framework for first class objects with associated metadata and tags. It provides a one stop solution for all metadata, tags, shared object databases, search tools and indexing.",
+        "homepage": "https://wiki.gnome.org/Projects/Tracker",
+        "lib": "tracker",
+        "summary": "library to control/monitor tracker miners",
+        "version": "1.10.5"
+    },
     "Tracker-2.0": {
         "debian_package": "gir1.2-tracker-2.0",
         "description": "Tracker is an advanced framework for first class objects with associated metadata and tags. It provides a one stop solution for all metadata, tags, shared object databases, search tools and indexing.",
@@ -2079,6 +2175,14 @@
         "summary": "library to control/monitor tracker miners",
         "version": "2.0.3"
     },
+    "TrackerControl-1.0": {
+        "debian_package": "gir1.2-tracker-1.0",
+        "description": "Tracker is an advanced framework for first class objects with associated metadata and tags. It provides a one stop solution for all metadata, tags, shared object databases, search tools and indexing.",
+        "homepage": "https://wiki.gnome.org/Projects/Tracker",
+        "lib": "tracker",
+        "summary": "library to control/monitor tracker miners",
+        "version": "1.10.5"
+    },
     "TrackerControl-2.0": {
         "debian_package": "gir1.2-tracker-2.0",
         "description": "Tracker is an advanced framework for first class objects with associated metadata and tags. It provides a one stop solution for all metadata, tags, shared object databases, search tools and indexing.",
@@ -2086,6 +2190,14 @@
         "lib": "tracker",
         "summary": "library to control/monitor tracker miners",
         "version": "2.0.3"
+    },
+    "TrackerMiner-1.0": {
+        "debian_package": "gir1.2-tracker-1.0",
+        "description": "Tracker is an advanced framework for first class objects with associated metadata and tags. It provides a one stop solution for all metadata, tags, shared object databases, search tools and indexing.",
+        "homepage": "https://wiki.gnome.org/Projects/Tracker",
+        "lib": "tracker",
+        "summary": "library to control/monitor tracker miners",
+        "version": "1.10.5"
     },
     "TrackerMiner-2.0": {
         "debian_package": "gir1.2-tracker-2.0",
@@ -2117,7 +2229,7 @@
         "homepage": "https://upower.freedesktop.org/",
         "lib": "upower",
         "summary": "abstraction for power management",
-        "version": "0.99.7"
+        "version": "0.99.8"
     },
     "Ufo-0.0": {
         "debian_package": "gir1.2-ufo-0.0",
@@ -2135,6 +2247,14 @@
         "summary": "HTTP web service mocking",
         "version": "0.5.0"
     },
+    "UkuiMenu-2.0": {
+        "debian_package": "gir1.2-ukuimenu-2.0",
+        "description": "The package contains an implementation of the draft \"Desktop Menu Specification\" from freedesktop.org:\n\nhttp://www.freedesktop.org/Standards/menu-spec",
+        "homepage": "http://www.ukui.org",
+        "lib": "ukui-menus",
+        "summary": "implementation of the freedesktop menu specification for UKUI (library)",
+        "version": "1.1.3"
+    },
     "Urfkill-0.5": {
         "debian_package": "gir1.2-urfkill-0.5",
         "description": "liburfkill provides the basic functions for urfkilld, which handles the configuration of the rfkill-related function keys and provides the management of the wireless killswitches.",
@@ -2146,10 +2266,10 @@
     "Vips-8.0": {
         "debian_package": "gir1.2-vips-8.0",
         "description": "VIPS is an image processing system designed with efficiency in mind. It is good with large images (ones that larger than the amount of RAM in your machine), and for working with colour.  It can perform many image manipulation tasks much faster than other packages such as ImageMagick and the GIMP and includes some special features such as creating single \"mosaic\" images from multiple parts.\n\nVIPS consists of two main components: an image processing library with some command-line tools and a spreadsheet-like graphical user interface.  The graphical interface is available in the nip2 package.",
-        "homepage": "http://www.vips.ecs.soton.ac.uk",
+        "homepage": "https://jcupitt.github.io/libvips/",
         "lib": "vips",
         "summary": "image processing system good for very large ones",
-        "version": "8.4.5"
+        "version": "8.6.5"
     },
     "Vte-2.91": {
         "debian_package": "gir1.2-vte-2.91",

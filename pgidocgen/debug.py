@@ -158,7 +158,7 @@ def get_compile_units(library_path):
     cu_dir = None
     cu_low_pc = None
     type_ = None
-    for line in data.decode("utf-8").splitlines():
+    for line in data.decode("utf-8", "surrogateescape").splitlines():
         parts = line.split()
         if len(parts) < 2:
             continue

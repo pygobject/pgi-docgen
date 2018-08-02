@@ -53,6 +53,14 @@
     </foaf:Person>
   </maintainer>
 
+  <maintainer>
+    <foaf:Person>
+      <foaf:name>Christoph Reiter</foaf:name>
+      <foaf:mbox rdf:resource="mailto:creiter@src.gnome.org" />
+      <gnome:userid>creiter</gnome:userid>
+    </foaf:Person>
+  </maintainer>
+
   <repository>
     <GitRepository>
       <browse rdf:resource="http://git.gnome.org/browse/gobject-introspection"/>

@@ -68,6 +68,7 @@ BLACKLIST = [
 
     # crashes
     'GUPnPIgd-1.0',
+    'Granite-1.0',
 
     # criticals.. better skip
     "NMClient-1.0",
@@ -126,16 +127,16 @@ BUILD = [
     "Totem-1.0", "Uhm-0.0", "AppStreamGlib-1.0", "CDesktopEnums-3.0",
     "CMenu-3.0", "CinnamonDesktop-3.0", "ModemManager-1.0",
     "Cattle-1.0", "GCab-1.0", "GPaste-1.0", "GVnc-1.0", "GVncPulse-1.0",
-    "Ggit-1.0", "GtkVnc-2.0", "JavaScriptCore-4.0", "SocialWebClient-0.25",
+    "Ggit-1.0", "GtkVnc-2.0", "JavaScriptCore-4.0",
     "WebKit2-4.0", "WebKit2WebExtension-4.0", "NM-1.0", "GstGL-1.0",
     "GstInsertBin-1.0", "GstMpegts-1.0", 'Anthy-9000', 'MediaArt-2.0',
     'CoglGst-2.0', 'GstRtspServer-1.0', 'ClutterGst-3.0', 'Gom-1.0',
     'Limba-1.0', 'Abi-3.0', 'Gnm-1.12', 'Libmsi-1.0', 'Vips-8.0',
     'GooCanvas-2.0', 'GSound-1.0', 'Accounts-1.0', 'Signon-1.0', 'Grss-0.7',
     'AppStream-1.0', 'LibvirtSandbox-1.0', 'GrlNet-0.3', 'Grl-0.3',
-    'Hinawa-1.0', 'GstPlayer-1.0', 'LOKDocView-0.1', 'GrlPls-0.3',
+    'GstPlayer-1.0', 'LOKDocView-0.1', 'GrlPls-0.3',
     'GoVirt-1.0', 'Cvc-1.0', 'Workrave-1.0', 'OSTree-1.0', 'Flatpak-1.0',
-    'GstTranscoder-1.0', 'GSystem-1.0', 'GMime-2.6', 'Budgie-1.0',
+    'GstTranscoder-1.0', 'GMime-2.6', 'Budgie-1.0',
     'GnomeAutoarGtk-0.1', 'GnomeAutoar-0.1', 'LangTag-0.6', 'Gspell-1',
     'Urfkill-0.5', 'Bamf-3', 'Ufo-0.0', 'XApp-1.0', 'CScreensaver-1.0',
     'Camel-1.2', 'Graphene-1.0',
@@ -145,8 +146,8 @@ BUILD = [
     'AyatanaIdo3-0.4', 'Tracker-2.0', 'Fwupd-2.0', 'Snapd-1',
     'Parlatype-1.0', 'Peony-2.0', 'Evd-0.2', 'Manette-0.2',
     'MessagingMenu-1.0', 'Playerctl-1.0', 'Gepub-0.6', 'Gegl-0.4',
-    'Granite-1.0', 'GstWebRTC-1.0', 'Retro-0.14', 'MyPaint-1.3',
-    'GtkSource-4', 'Aravis-0.6',
+    'GstWebRTC-1.0', 'Retro-0.14', 'MyPaint-1.3',
+    'GtkSource-4', 'Aravis-0.6', 'UkuiMenu-2.0', 'Hinawa-2.0',
 ]
 
 

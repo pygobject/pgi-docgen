@@ -5,7 +5,8 @@
          xmlns="http://usefulinc.com/ns/doap#">
 
   <name xml:lang="en">Zapojit</name>
-  <shortdesc xml:lang="en">GLib/GObject wrapper for the SkyDrive and Hotmail REST APIs</shortdesc>
+  <description xml:lang="en">GLib / GObject wrapper for the SkyDrive and Hotmail REST APIs</description>
+  <shortdesc xml:lang="en">GLib / GObject wrapper for the SkyDrive and Hotmail REST APIs</shortdesc>
 
   <download-page rdf:resource="http://download.gnome.org/sources/libzapojit" />
   <bug-database rdf:resource="https://bugzilla.gnome.org/enter_bug.cgi?product=libzapojit" />

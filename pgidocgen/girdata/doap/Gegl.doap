@@ -6,21 +6,11 @@
 
   <name xml:lang="en">GEGL</name>
 
-  <shortdesc xml:lang="en">
-    GEGL (Generic Graphics Library) is a graph based image processing framework.
-  </shortdesc>
-  <shortdesc xml:lang="de">
-    GEGL (Generic Graphics Library) ist ein graph-basiertes Framework für die
-    Bildverarbeitung.
-  </shortdesc>
+  <shortdesc xml:lang="en">GEGL (Generic Graphics Library) is a graph based image processing framework.</shortdesc>
+  <shortdesc xml:lang="de">GEGL (Generic Graphics Library) ist ein graph-basiertes Framework für die Bildverarbeitung.</shortdesc>
 
-  <description xml:lang="en">
-    GEGL (Generic Graphics Library) is a graph based image processing framework.
-  </description>
-  <description xml:lang="de">
-    GEGL (Generic Graphics Library) ist ein graph-basiertes Framework für die
-    Bildverarbeitung.
-  </description>
+  <description xml:lang="en">GEGL (Generic Graphics Library) is a graph based image processing framework.</description>
+  <description xml:lang="de">GEGL (Generic Graphics Library) ist ein graph-basiertes Framework für die Bildverarbeitung.</description>
 
   <homepage rdf:resource="http://www.gegl.org" />
 

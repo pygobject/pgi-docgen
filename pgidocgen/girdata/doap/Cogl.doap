@@ -15,9 +15,9 @@
 
   <homepage rdf:resource="https://wiki.gnome.org/Projects/Clutter" />
   <license rdf:resource="http://usefulinc.com/doap/licenses/lgpl" />
-  <bug-database rdf:resource="https://bugzilla.gnome.org/enter_bug.cgi?product=cogl"/>
+  <bug-database rdf:resource="https://gitlab.gnome.org/GNOME/cogl/issues"/>
   <download-page rdf:resource="http://download.gnome.org/sources/cogl" />
-  <mailing-list rdf:resource="mailto:clutter-devel-list@clutter-project.org" />
+  <mailing-list rdf:resource="mailto:cogl@lists.freedesktop.org" />
 
   <programming-language>C</programming-language>
 
@@ -37,10 +37,18 @@
     </foaf:Person>
   </maintainer>
 
+  <maintainer>
+    <foaf:Person>
+      <foaf:name>Emmanuele Bassi</foaf:name>
+      <foaf:mbox rdf:resource="mailto:ebassi@gnome.org"/>
+      <gnome:userid>ebassi</gnome:userid>
+    </foaf:Person>
+  </maintainer>
+
   <repository>
     <GitRepository>
-      <browse rdf:resource="http://git.gnome.org/browse/cogl/"/>
-      <location rdf:resource="git://git.gnome.org/cogl"/>
+      <browse rdf:resource="https://gitlab.gnome.org/GNOME/cogl/"/>
+      <location rdf:resource="https://gitlab.gnome.org/GNOME/cogl.git"/>
     </GitRepository>
   </repository>
 

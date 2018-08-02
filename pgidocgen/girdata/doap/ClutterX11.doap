@@ -15,7 +15,7 @@
 
   <homepage rdf:resource="http://www.clutter-project.org" />
   <license rdf:resource="http://usefulinc.com/doap/licenses/lgpl" />
-  <bug-database rdf:resource="http://bugzilla.gnome.org/enter_bug.cgi?product=clutter"/>
+  <bug-database rdf:resource="https://gitlab.gnome.org/GNOME/clutter/issues"/>
   <download-page rdf:resource="http://download.gnome.org/sources/clutter" />
   <mailing-list rdf:resource="mailto:clutter-devel-list@clutter-project.org" />
 
@@ -85,8 +85,8 @@
 
   <repository>
     <GitRepository>
-        <browse rdf:resource="http://git.gnome.org/browse/clutter/"/>
-      <location rdf:resource="git://git.gnome.org/clutter"/>
+        <browse rdf:resource="https://gitlab.gnome.org/GNOME/clutter"/>
+      <location rdf:resource="https://gitlab.gnome.org/GNOME/clutter.git"/>
     </GitRepository>
   </repository>
 
