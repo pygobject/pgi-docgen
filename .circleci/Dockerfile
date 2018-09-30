@@ -8,6 +8,7 @@ RUN apt-get update && apt-get install -y \
     virtualenv \
     git \
     python3.6-dev \
+    python3-venv \
     dbus \
     xauth \
     xvfb \
