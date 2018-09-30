@@ -83,7 +83,6 @@ class TGIRData(unittest.TestCase):
         import_namespace("GstApp", "1.0")
         import_namespace("GstAllocators", "1.0")
         import_namespace("GstAudio", "1.0")
-        import_namespace("GstFft", "1.0")
         import_namespace("GstPbutils", "1.0")
 
         url = get_url("Gtk", "gtk/gtktoolshell.c:30")

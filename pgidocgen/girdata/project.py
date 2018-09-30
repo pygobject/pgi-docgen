@@ -223,7 +223,7 @@ PROJECTS = [
     Project(['Grl', 'GrlNet'], 'https://gitlab.gnome.org/GNOME/grilo/raw/master/grilo.doap'),
     Project(['GMenu'], 'https://gitlab.gnome.org/GNOME/gnome-menus/raw/master/gnome-menus.doap'),
     Project(['Json'], 'https://gitlab.gnome.org/GNOME/json-glib/raw/master/json-glib.doap'),
-    Project(['GstAllocators', 'GstApp', 'GstAudio', 'GstFft', 'GstInterfaces', 'GstNetbuffer', 'GstPbutils', 'GstRiff', 'GstRtp', 'GstRtsp', 'GstSdp', 'GstTag', 'GstVideo'], 'https://cgit.freedesktop.org/gstreamer/gst-plugins-base/plain/gst-plugins-base.doap'),
+    Project(['GstAllocators', 'GstApp', 'GstAudio', 'GstInterfaces', 'GstNetbuffer', 'GstPbutils', 'GstRiff', 'GstRtp', 'GstRtsp', 'GstSdp', 'GstTag', 'GstVideo'], 'https://cgit.freedesktop.org/gstreamer/gst-plugins-base/plain/gst-plugins-base.doap'),
     Project(['GstRtspServer'], 'https://cgit.freedesktop.org/gstreamer/gst-rtsp-server/plain/gst-rtsp-server.doap'),
     Project(['GUdev'], 'https://gitlab.gnome.org/GNOME/libgudev/raw/master/libgudev.doap'),
     Project(['Champlain', 'GtkChamplain'], 'https://gitlab.gnome.org/GNOME/libchamplain/raw/master/libchamplain.doap'),
