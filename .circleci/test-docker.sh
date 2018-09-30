@@ -2,7 +2,7 @@
 
 set -e
 
-virtualenv --python=/usr/bin/python3.6 /tmp/venv
+python3.6 -m venv /tmp/venv
 source /tmp/venv/bin/activate
 
 pip install git+https://github.com/pygobject/pgi.git
