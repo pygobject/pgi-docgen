@@ -532,7 +532,7 @@ def import_namespace(namespace, version=None, ignore_version=False):
         except ValueError as e:
             raise ImportError(e, version)
 
-    with warnings.catch_warnings(record=True) as w:
+    with warnings.catch_warnings(record=True) as warns:
         mod = getattr(
                 __import__("gi.repository." + namespace).repository, namespace)
 
@@ -542,7 +542,9 @@ def import_namespace(namespace, version=None, ignore_version=False):
             mod.init()
 
         if not ignore_version:
-            assert not w, namespace
+            for w in warns:
+                if not issubclass(w.category, DeprecationWarning):
+                    raise ValueError((namespace, w.message))
         return mod
 
 
