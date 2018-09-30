@@ -20,4 +20,7 @@ def main(argv):
     build.add_parser(subparser)
 
     args = parser.parse_args(argv[1:])
+    if not hasattr(args, "func"):
+        parser.print_help()
+        return 1
     return args.func(args)
