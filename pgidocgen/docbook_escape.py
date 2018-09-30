@@ -105,6 +105,6 @@ def docbook_escape(text):
             return "".join(match.groups())
         return escape(match.group(1)) + tag + escape(match.group(3))
 
-    text = re.sub("(</?)([^\s]+?)(>)", to_escape,
+    text = re.sub(r"(</?)([^\s]+?)(>)", to_escape,
                   text, flags=re.MULTILINE | re.DOTALL)
     return text

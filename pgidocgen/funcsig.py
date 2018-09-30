@@ -91,7 +91,7 @@ class FuncSignature(object):
 
     @classmethod
     def from_string(cls, orig_name, line):
-        match = re.match("(.*?)\((.*?)\)\s*(raises|)\s*(-> )?(.*)", line)
+        match = re.match(r"(.*?)\((.*?)\)\s*(raises|)\s*(-> )?(.*)", line)
         if not match:
             return
 

@@ -359,7 +359,7 @@ def _docstring_to_docbook(docstring):
         escaped = escape(match.group(1))
         return "<programlisting>%s</programlisting>" % escaped
 
-    docstring = re.sub("\|\[(.*?)\]\|", to_programlisting,
+    docstring = re.sub(r"\|\[(.*?)\]\|", to_programlisting,
                        docstring, flags=re.MULTILINE | re.DOTALL)
 
     return docstring
@@ -426,7 +426,7 @@ def docstring_to_rest(repo, docstring, current_type=None, current_func=None):
         return text
 
     # skip inline code when escaping xml
-    reg = re.compile("(\|\[.*?\]\|)", flags=re.MULTILINE | re.DOTALL)
+    reg = re.compile(r"(\|\[.*?\]\|)", flags=re.MULTILINE | re.DOTALL)
     docstring = "".join([
         p if reg.match(p) else esc_xml(p) for p in reg.split(docstring)])
 

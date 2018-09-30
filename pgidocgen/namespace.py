@@ -97,7 +97,7 @@ def fixup_since(text):
         return ""
 
     text = re.sub(
-        '(^|\s+)@?Since\s*\\\\?:?\s+([^\s]+)(\\n|$|\. )', fixup_since, text)
+        '(^|\\s+)@?Since\\s*\\\\?:?\\s+([^\\s]+)(\\n|$|\\. )', fixup_since, text)
 
     return text, added_since[0]
 
@@ -538,7 +538,7 @@ def _parse_types(dom, module, namespace):
         types.update(get_base_types())
 
         for k in dir(GLib):
-            if re.match("MINU?INT\d+", k) or re.match("MAXU?INT\d+", k):
+            if re.match("MINU?INT\\d+", k) or re.match("MAXU?INT\\d+", k):
                 types["G_" + k].add("GLib." + k)
 
         # there is a weird type called "s" in VariantBuilder

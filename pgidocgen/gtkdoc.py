@@ -355,7 +355,7 @@ def MarkDownParseBlocks(linesref, symbol, context):
             continue
 
         # list item
-        list_item_match = re.search("^([ ]{0,4})\d+[.][ ]+(.*)", line)
+        list_item_match = re.search(r"^([ ]{0,4})\d+[.][ ]+(.*)", line)
         if list_item_match:
             md_blocks.append(md_block)
             lines = list_item_match.group(2)

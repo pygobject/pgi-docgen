@@ -56,7 +56,7 @@ def to_names(hierarchy):
 def to_short_desc(docs):
     """Extracts the first sentence."""
 
-    parts = re.split("\.[\s$]", docs, 1, re.MULTILINE)
+    parts = re.split(r"\.[\s$]", docs, 1, re.MULTILINE)
     if len(parts) > 1:
         return parts[0] + "."
     else:
