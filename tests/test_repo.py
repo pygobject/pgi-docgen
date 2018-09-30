@@ -87,10 +87,6 @@ class TRepository(unittest.TestCase):
         # we include a note containing the shadowed docs
         self.assertTrue(func.info.shadowed_desc)
 
-        klass = find(mod.structures, "IConv")
-        func = find(klass.methods, "_")
-        self.assertTrue(func.info.desc)
-
         self.assertEqual(repo.get_shadowed("g_idle_add"), "g_idle_add_full")
 
         self.assertEqual(repo.lookup_py_id("g_idle_add"), "GLib.idle_add")
