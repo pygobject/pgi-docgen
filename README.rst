@@ -52,7 +52,7 @@ The following creates docs for the in gnome-music included libgd::
 
     XDG_DATA_DIRS=$XDG_DATA_DIRS:/usr/share/gnome-music/ \
     GI_TYPELIB_PATH=/usr/lib/x86_64-linux-gnu/gnome-music/girepository-1.0/ \
-    LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu/gnome-music/ ./build.sh Gd-1.0
+    LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu/gnome-music/ ./tools/build.sh Gd-1.0
 
 
 Intersphinx
