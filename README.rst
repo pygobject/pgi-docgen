@@ -48,11 +48,27 @@ The resulting docs can be found in ``_docs/_build``
 How do I build docs for private libraries?
 ------------------------------------------
 
-The following creates docs for the in gnome-music included libgd::
+The following creates docs for the libgd bundled and included in gnome-music::
 
     XDG_DATA_DIRS=$XDG_DATA_DIRS:/usr/share/gnome-music/ \
     GI_TYPELIB_PATH=/usr/lib/x86_64-linux-gnu/gnome-music/girepository-1.0/ \
     LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu/gnome-music/ ./tools/build.sh Gd-1.0
+
+Explanations:
+
+1) ``$XDG_DATA_DIR/gir-1.0`` (not ``$XDG_DATA_DIR``!) contains ``Gd-1.0.gir``.
+
+2) ``$GI_TYPELIB_PATH`` contains ``Gd-1.0.typelib``.
+
+3) ``$LD_LIBRARY_PATH`` contains ``libgd.so``.
+
+Another example. For the case of HarfBuzz freshly built from source,
+``HarfBuzz-0.0.gir``, ``HarfBuzz-0.0.typelib`` are both inside a ``src``
+sub-directory in the HarfBuzz source tree, while ``libharfbuzz.so``
+is in a ``src/.libs`` sub-directory. So you need to create a directory
+``gir-1.0`` further inside, copy ``HarfBuzz-0.0.gir`` over there, and set
+``$XDG_DATA_DIR`` to the **parent directory** of your newly created ``gir-1.0``,
+``$GI_TYPELIB_PATH`` to ``src``, and ``$LD_LIBRARY_PATH`` to ``src/.libs``.
 
 
 Intersphinx
