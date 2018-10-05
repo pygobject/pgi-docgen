@@ -29,6 +29,9 @@ Requirements
 Calling ``source ./tools/bootstrap.sh`` will put you in a
 virtualenv with all dependencies installed (except graphviz).
 
+Afterwards, you may need to set ``PYTHONPATH`` to
+``_venv/lib/python*/site-packages/``, where ``*`` is the
+version number of your python installation.
 
 How do I get started?
 ---------------------
