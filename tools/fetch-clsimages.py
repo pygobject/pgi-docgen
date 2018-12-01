@@ -120,7 +120,7 @@ def main(dest, mapping):
     resp = requests.get("https://gitlab.gnome.org/GNOME/gtk/tree/master/docs/reference/gtk/images/")
     mapped_images = GTK_MAPPING.values()
     not_mapped = []
-    for image in set(re.findall("([^>/'\"]+?)\.png", resp.text)):
+    for image in set(re.findall("([^>/'\"]+?)\\.png", resp.text)):
         if image not in mapped_images:
             not_mapped.append(image)
     not_mapped.sort()

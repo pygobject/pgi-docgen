@@ -186,7 +186,7 @@ def _fetch(args):
     for i in range(5):
         try:
             r = requests.get(uri)
-        except requests.RequestException as e:
+        except requests.RequestException:
             time.sleep(i * i)
             continue
         break

@@ -332,7 +332,7 @@ bla:
 foo
 """,
             """bla bla
-bla\:
+bla\\:
 
 
 * The channel was just created, and has not been written to or read from yet.

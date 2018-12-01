@@ -421,7 +421,7 @@ def docstring_to_rest(repo, docstring, current_type=None, current_func=None):
             etree.tostring(etree.fromstring(
                 "<dummy>%s</dummy>" % text.replace(
                     "&nbsp;", "&#160;")))
-        except etree.XMLSyntaxError as e:
+        except etree.XMLSyntaxError:
             text = escape(text)
         return text
 
