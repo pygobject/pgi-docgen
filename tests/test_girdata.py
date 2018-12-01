@@ -91,18 +91,20 @@ class TGIRData(unittest.TestCase):
                      r"\d+\.\d+\.\d+/gtk/gtktoolshell\.c#L30", url))
 
         url = get_url("Gst", "gst/gstelementfactory.c:430")
+        # https://gitlab.freedesktop.org/gstreamer/gstreamer/blob/1.14.4/gst/gstelementfactory.c#L430
         self.assertTrue(
-            re.match(r"http://cgit\.freedesktop\.org/gstreamer/gstreamer/tree"
-                     r"/gst/gstelementfactory\.c\?h=\d+\.\d+\.\d+#n\d+", url))
+            re.match(r"https://gitlab\.freedesktop\.org/gstreamer/"
+                     r"gstreamer/blob/\d+\.\d+\.\d+/"
+                     r"gst/gstelementfactory\.c\#L\d+", url))
 
         url = get_url("GstApp", "app/gstappsrc.c:1237")
         self.assertTrue(
-            re.match(r"http://cgit\.freedesktop\.org/gstreamer/"
-                     r"gst-plugins-base/tree/gst-libs/gst/app/"
-                     r"gstappsrc\.c\?h=\d+\.\d+\.\d+#n\d+", url))
+            re.match(r"https://gitlab\.freedesktop\.org/gstreamer/"
+                     r"gst-plugins-base/blob/\d+\.\d+\.\d+/"
+                     r"gst-libs/gst/app/gstappsrc\.c\#L\d+", url))
 
         url = get_url("GstRtsp", "rtsp/gstrtspurl.c:97")
         self.assertTrue(
-            re.match(r"http://cgit\.freedesktop\.org/gstreamer/"
-                     r"gst-plugins-base/tree/gst-libs/gst/rtsp/"
-                     r"gstrtspurl\.c\?h=\d+\.\d+\.\d+#n\d+", url))
+            re.match(r"https://gitlab\.freedesktop\.org/gstreamer/"
+                     r"gst-plugins-base/blob/\d+\.\d+\.\d+/"
+                     r"gst-libs/gst/rtsp/gstrtspurl\.c\#L\d+", url))
