@@ -249,7 +249,7 @@ PROJECTS = [
     Project(['GData'], 'https://gitlab.gnome.org/GNOME/libgdata/raw/master/libgdata.doap'),
     Project(['Folks', 'FolksEds', 'FolksTelepathy'], 'https://gitlab.gnome.org/GNOME/folks/raw/master/folks.doap'),
     Project(['Gucharmap'], 'https://gitlab.gnome.org/GNOME/gucharmap/raw/master/gucharmap.doap'),
-    Project(['GdkPixbuf'], 'https://gitlab.gnome.org/GNOME/gdk-pixbuf/raw/master/gdk-pixbuf.doap'),
+    Project(['GdkPixbuf', 'GdkPixdata'], 'https://gitlab.gnome.org/GNOME/gdk-pixbuf/raw/master/gdk-pixbuf.doap'),
     Project(['GUPnPAV'], 'https://gitlab.gnome.org/GNOME/gupnp-av/raw/master/gupnp-av.doap'),
     Project(['BraseroBurn', 'BraseroMedia'], 'https://gitlab.gnome.org/GNOME/brasero/raw/master/brasero.doap'),
     Project(['GES'], 'https://gitlab.freedesktop.org/gstreamer/gst-editing-services/raw/master/gst-editing-services.doap'),
