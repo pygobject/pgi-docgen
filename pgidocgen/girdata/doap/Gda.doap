@@ -27,4 +27,11 @@ See http://www.gnome-db.org for more information.</description>
       <gnome:userid>vivien</gnome:userid>
     </foaf:Person>
   </maintainer>
+  <maintainer>
+    <foaf:Person>
+      <foaf:name>Daniel Espinosa</foaf:name>
+      <foaf:mbox rdf:resource="mailto:esodan@gmail.com" />
+      <gnome:userid>despinosa</gnome:userid>
+    </foaf:Person>
+  </maintainer>
 </Project>
