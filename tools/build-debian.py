@@ -29,6 +29,7 @@ DEB_BLACKLIST = [
     "gir1.2-totem-plparser-1.0",
     "gir1.2-gpaste-6.0",
     "libgstreamer-gl1.0-0",
+    "gir1.2-gconf-2.0",
 ]
 
 BLACKLIST = [
@@ -41,6 +42,7 @@ BLACKLIST = [
     'AtrilDocument-1.5.0',
     'Eom-1.0',
     'Matekbd-1.0',
+    'GConf-2.0',
 
     # broken
     "Pluma-1.0",
@@ -54,7 +56,6 @@ BLACKLIST = [
     "Entangle-0.1",
     "Diodon-1.0",
     "Gee-0.8",
-    "JSCore-3.0",
     "Skk-1.0",
     "SugarExt-1.0",
     "Meta-Muffin.0",
@@ -62,6 +63,8 @@ BLACKLIST = [
     'Nice-0.1',
     "Geoclue-2.0",
     "Gtd-1.0",
+    'BurnerMedia-3.1',
+    'BurnerBurn-3.1',
 
     # hangs?
     'NMA-1.0',
@@ -69,9 +72,6 @@ BLACKLIST = [
     # crashes
     'GUPnPIgd-1.0',
     'Granite-1.0',
-
-    # criticals.. better skip
-    "NMClient-1.0",
 
     # depends on one of the above
     "Ganv-1.0",
@@ -91,11 +91,11 @@ BUILD = [
     'AccountsService-1.0', 'Anjuta-3.0', 'AppIndicator3-0.1', 'Atk-1.0',
     'Atspi-2.0', 'Cally-1.0', 'Caribou-1.0', 'Champlain-0.12', 'Cheese-3.0',
     'Clutter-1.0', 'ClutterGdk-1.0', 'ClutterX11-1.0', 'Cogl-1.0', 'Cogl-2.0',
-    'CoglPango-1.0', 'ColorHug-1.0', 'Colord-1.0', 'ColordGtk-1.0',
+    'CoglPango-1.0', 'Colord-1.0', 'ColordGtk-1.0',
     'CryptUI-0.0', 'DBus-1.0', 'DBusGLib-1.0', 'Dbusmenu-0.4',
     'DbusmenuGtk3-0.4', 'Dee-1.0', 'EBook-1.2', 'EBookContacts-1.2',
     'EDataServer-1.2', 'EvinceDocument-3.0', 'EvinceView-3.0',
-    'Farstream-0.2', 'Fcitx-1.0', 'GConf-2.0', 'GData-0.0',
+    'Farstream-0.2', 'Fcitx-1.0', 'GData-0.0',
     'GDesktopEnums-3.0', 'GES-1.0', 'GExiv2-0.10', 'GIRepository-2.0',
     'GL-1.0', 'GLib-2.0', 'GMenu-3.0', 'GModule-2.0', 'GObject-2.0',
     'GOffice-0.10', 'GSSDP-1.0', 'GUPnP-1.0', 'GUPnPAV-1.0', 'GUPnPDLNA-2.0',
@@ -109,17 +109,17 @@ BUILD = [
     'GstPbutils-1.0', 'GstRtp-1.0', 'GstRtsp-1.0', 'GstSdp-1.0', 'GstTag-1.0',
     'GstVideo-1.0', 'Gtk-3.0', 'GtkChamplain-0.12', 'GtkClutter-1.0',
     'GtkSource-3.0', 'GtkSpell-3.0', 'Gucharmap-2.90', 'IBus-1.0',
-    'Indicate-0.7', 'Itl-1.0', 'JavaScriptCore-3.0', 'Json-1.0',
+    'Indicate-0.7', 'Itl-1.0', 'Json-1.0',
     'Keybinder-0.0', 'Libosinfo-1.0', 'LibvirtGConfig-1.0', 'LibvirtGLib-1.0',
     'LibvirtGObject-1.0', 'LunarDate-2.0', 'MPID-3.0', 'Nautilus-3.0',
-    'Nemo-3.0', 'NetworkManager-1.0', 'Notify-0.7', 'PackageKitGlib-1.0',
+    'Nemo-3.0', 'Notify-0.7', 'PackageKitGlib-1.0',
     'Pango-1.0', 'PangoCairo-1.0', 'PangoFT2-1.0', 'PangoXft-1.0', 'Peas-1.0',
     'PeasGtk-1.0', 'Polkit-1.0', 'PolkitAgent-1.0', 'Poppler-0.18', 'RB-3.0',
     'Rest-0.7', 'RestExtras-0.7', 'Rsvg-2.0', 'Secret-1', 'Soup-2.4',
     'SoupGNOME-2.4', 'SpiceClientGLib-2.0', 'SpiceClientGtk-3.0',
     'SugarGestures-1.0', 'TelepathyGLib-0.12', 'TelepathyLogger-0.2',
     'TotemPlParser-1.0', 'UDisks-2.0', 'UMockdev-1.0', 'UPowerGlib-1.0',
-    'Vte-2.91', 'WebKit-3.0', 'Wnck-3.0', 'Xkl-1.0', 'Zeitgeist-2.0',
+    'Vte-2.91', 'Wnck-3.0', 'Xkl-1.0', 'Zeitgeist-2.0',
     'Zpj-0.0', 'cairo-1.0', 'fontconfig-2.0', 'freetype2-2.0', 'libxml2-2.0',
     'xfixes-4.0', 'xft-2.0', 'xlib-2.0', 'xrandr-1.3', "CoglPango-2.0",
     "GFBGraph-0.2", "Guestfs-1.0", "HarfBuzz-0.0", "InputPad-1.0",
@@ -148,6 +148,8 @@ BUILD = [
     'MessagingMenu-1.0', 'Playerctl-1.0', 'Gepub-0.6', 'Gegl-0.4',
     'GstWebRTC-1.0', 'Retro-0.14', 'MyPaint-1.3',
     'GtkSource-4', 'Aravis-0.6', 'UkuiMenu-2.0', 'Hinawa-2.0',
+    'rda-1.0', 'Amtk-5', 'Colorhug-1.0', 'GdkPixdata-2.0',
+    'Endless-0', 'UkuiPanelApplet-4.0', 'Handy-0.0',
 ]
 
 
