@@ -9,6 +9,7 @@ import sys
 import subprocess
 import tempfile
 import os
+import typing
 
 from .repo import Repository
 from .util import get_gir_files
@@ -71,6 +72,38 @@ class StubClass:
         )
 
 
+def get_typing_name(type_: typing.Any) -> str:
+    """Gives a name for a type that is suitable for a typing annotation.
+
+    This is the Python annotation counterpart to funcsig.get_type_name().
+
+    int -> "int"
+    Gtk.Window -> "Gtk.Window"
+    [int] -> "Sequence[int]"
+    {int: Gtk.Button} -> "Mapping[int, Gtk.Button]"
+    """
+
+    if type_ is None:
+        return ""
+    elif isinstance(type_, str):
+        return type_
+    elif isinstance(type_, list):
+        assert len(type_) == 1
+        return "Sequence[%s]" % get_typing_name(type_[0])
+    elif isinstance(type_, dict):
+        assert len(type_) == 1
+        key, value = type_.popitem()
+        return "Mapping[%s, %s]" % (get_typing_name(key), get_typing_name(value))
+    elif type_.__module__ in ("__builtin__", "builtins"):
+        return type_.__name__
+    else:
+        # FIXME: We need better module handling here. I think we need to strip
+        # the module if the type's module is the *current* module being
+        # annotated, and if not then we need to track imports and probably add
+        # a "gi.repository." prefix.
+        return "%s.%s" % (type_.__module__, type_.__name__)
+
+
 def stub_flag(flag) -> str:
     stub = StubClass(flag.name)
     for v in flag.values:
@@ -83,6 +116,11 @@ def stub_flag(flag) -> str:
             "Flag support doesn't annotate methods or vfuncs")
 
     return str(stub)
+
+
+def stub_constant(constant) -> str:
+    type_ = get_typing_name(type(constant.raw_value))
+    return f"{constant.name} = ...  # type: {type_}"
 
 
 def main(args):
@@ -145,6 +183,5 @@ def {}(*args, **kwargs): ...
 """.format(func.name))
 
             for const in mod.constants:
-                h.write("""\
-{} = ...
-""".format(const.name))
+                h.write(stub_constant(const))
+                h.write("\n")
