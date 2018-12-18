@@ -39,6 +39,52 @@ def _main_many(target, namespaces):
             pass
 
 
+class StubClass:
+    def __init__(self, classname):
+        self.classname = classname
+        self.parents = []
+        self.members = []
+
+    def add_member(self, member):
+        self.members.append(member)
+
+    @property
+    def class_line(self):
+        if self.parents:
+            parents = "({})".format(', '.join(self.parents))
+        else:
+            parents = ""
+        return "class {}{}:".format(self.classname, parents)
+
+    @property
+    def member_lines(self):
+        return [
+            "    {}".format(member)
+            for member in sorted(self.members)
+        ]
+
+    def __str__(self):
+        return '\n'.join(
+            [self.class_line] +
+            self.member_lines +
+            ['']
+        )
+
+
+def stub_flag(flag) -> str:
+    stub = StubClass(flag.name)
+    for v in flag.values:
+        stub.add_member(f"{v.name} = ...  # type: {flag.name}")
+
+    if flag.methods or flag.vfuncs:
+        # This is unsupported simply because I can't find any GIR that
+        # has methods or vfuncs on its flag types.
+        raise NotImplementedError(
+            "Flag support doesn't annotate methods or vfuncs")
+
+    return str(stub)
+
+
 def main(args):
     if not args.namespace:
         print("No namespace given")
@@ -81,13 +127,17 @@ def main(args):
     for namespace, version in get_to_write(args.target, namespace, version):
         mod = Repository(namespace, version).parse()
         module_path = os.path.join(args.target, namespace + ".pyi")
-        types = mod.classes + mod.flags + mod.enums + \
+        types = mod.classes + mod.enums + \
             mod.structures + mod.unions
         with open(module_path, "w", encoding="utf-8") as h:
             for cls in types:
                 h.write("""\
 class {}: ...
 """.format(cls.name))
+
+            for cls in mod.flags:
+                h.write(stub_flag(cls))
+                h.write("\n\n")
 
             for func in mod.functions:
                 h.write("""\
