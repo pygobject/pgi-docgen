@@ -45,9 +45,13 @@ class StubClass:
         self.classname = classname
         self.parents = []
         self.members = []
+        self.functions = []
 
     def add_member(self, member):
         self.members.append(member)
+
+    def add_function(self, function):
+        self.functions.append(function)
 
     @property
     def class_line(self):
@@ -64,10 +68,20 @@ class StubClass:
             for member in sorted(self.members)
         ]
 
+    @property
+    def function_lines(self):
+        lines = []
+        for function in self.functions:
+            lines.append('')
+            for line in function.splitlines():
+                lines.append(f'    {line}')
+        return lines
+
     def __str__(self):
         return '\n'.join(
             [self.class_line] +
             self.member_lines +
+            self.function_lines +
             ['']
         )
 
@@ -187,6 +201,23 @@ def stub_flag(flag) -> str:
     return str(stub)
 
 
+def stub_enum(enum) -> str:
+    stub = StubClass(enum.name)
+    for v in enum.values:
+        stub.add_member(f"{v.name} = ...  # type: {enum.name}")
+
+    for v in enum.methods:
+        stub.add_function(stub_function(v))
+
+    if enum.vfuncs:
+        # This is unsupported simply because I can't find any GIR that
+        # has vfuncs on its enum types.
+        raise NotImplementedError(
+            "Enum support doesn't annotate vfuncs")
+
+    return str(stub)
+
+
 def stub_constant(constant) -> str:
     type_ = get_typing_name(type(constant.raw_value))
     return f"{constant.name} = ...  # type: {type_}"
@@ -234,8 +265,7 @@ def main(args):
     for namespace, version in get_to_write(args.target, namespace, version):
         mod = Repository(namespace, version).parse()
         module_path = os.path.join(args.target, namespace + ".pyi")
-        types = mod.classes + mod.enums + \
-            mod.structures + mod.unions
+        types = mod.classes + mod.structures + mod.unions
         with open(module_path, "w", encoding="utf-8") as h:
             for cls in types:
                 h.write("""\
@@ -244,6 +274,10 @@ class {}: ...
 
             for cls in mod.flags:
                 h.write(stub_flag(cls))
+                h.write("\n\n")
+
+            for cls in mod.enums:
+                h.write(stub_enum(cls))
                 h.write("\n\n")
 
             for func in mod.functions:
