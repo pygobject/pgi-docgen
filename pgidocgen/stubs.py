@@ -104,6 +104,75 @@ def get_typing_name(type_: typing.Any) -> str:
         return "%s.%s" % (type_.__module__, type_.__name__)
 
 
+def arg_to_annotation(text):
+    """Convert a docstring argument to a Python annotation string
+
+    This is the Python annotation counterpart to funcsig.arg_to_class_ref().
+    """
+
+    if not text.startswith(("[", "{")) or not text.endswith(("}", "]")):
+        parts = text.split(" or ")
+    else:
+        parts = [text]
+
+    out = []
+    for p in parts:
+        if p.startswith("["):
+            out.append("Sequence[%s]" % arg_to_annotation(p[1:-1]))
+        elif p.startswith("{"):
+            p = p[1:-1]
+            k, v = p.split(":", 1)
+            k = arg_to_annotation(k.strip())
+            v = arg_to_annotation(v.strip())
+            out.append("Mapping[%s, %s]" % (k, v))
+        elif p:
+            out.append(p)
+
+    if len(out) == 1:
+        return out[0]
+    elif len(out) == 2 and 'None' in out:
+        # This is not strictly necessary, but it's easier to read than the Union
+        out.pop(out.index('None'))
+        return f"Optional[{out[0]}]"
+    else:
+        return f"Union[{', '.join(out)}]"
+
+
+def stub_function(function) -> str:
+    # We require the full signature details for argument types, and fallback
+    # to the simplest possible function signature if it's not available.
+    signature = getattr(function, 'full_signature', None)
+    if not signature:
+        print(f"Missing full signature for {function}; falling back")
+        return f"def {function.name}(*args, **kwargs): ..."
+
+    # Decorator handling
+    decorator = "@staticmethod\n" if function.is_static else ""
+
+    # Format argument types
+    arg_specs = []
+    for key, value in signature.args:
+        arg_specs.append(f'{key}: {arg_to_annotation(value)}')
+    args = f'({", ".join(arg_specs)})'
+
+    # Format return values
+    return_values = []
+    for r in signature.res:
+        # We have either a (name, return type) pair, or just the return type.
+        type_ = r[1] if len(r) > 1 else r[0]
+        return_values.append(arg_to_annotation(type_))
+
+    # Additional handling for structuring return values
+    if len(return_values) == 0:
+        returns = 'None'
+    elif len(return_values) == 1:
+        returns = return_values[0]
+    else:
+        returns = f'Tuple[{", ".join(return_values)}]'
+
+    return f'{decorator}def {function.name}{args} -> {returns}: ...'
+
+
 def stub_flag(flag) -> str:
     stub = StubClass(flag.name)
     for v in flag.values:
@@ -178,9 +247,9 @@ class {}: ...
                 h.write("\n\n")
 
             for func in mod.functions:
-                h.write("""\
-def {}(*args, **kwargs): ...
-""".format(func.name))
+                h.write(stub_function(func))
+                # Extra \n because the signature lacks one.
+                h.write("\n\n\n")
 
             for const in mod.constants:
                 h.write(stub_constant(const))

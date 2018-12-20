@@ -336,6 +336,7 @@ class Signal(BaseDocObject):
             print("FIXME: signal: %s " % inst.fullname)
             signature_desc = "(FIXME pgi-docgen: arguments are missing here)"
 
+        inst.full_signature = fsig
         inst.signature_desc = signature_desc
         inst.info = DocInfo.from_object(repo, "signals", inst,
                                         current_type=parent_fullname)
@@ -788,6 +789,7 @@ class Function(BaseDocObject):
                     signature = get_signature_string(obj)
 
         assert signature
+        instance.full_signature = func_sig
         instance.signature_desc = signature_desc
         instance.signature = signature
         instance.info.desc = desc
