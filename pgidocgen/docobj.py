@@ -649,6 +649,7 @@ class Field(BaseDocObject):
         name = field_info.name
         field = cls(parent_fullname, name)
 
+        field.py_type = field_info.py_type
         field.type_desc = py_type_to_class_ref(field_info.py_type)
         field.readable = field_info.readable
         field.writable = field_info.writeable

@@ -218,6 +218,27 @@ def stub_enum(enum) -> str:
     return str(stub)
 
 
+def stub_class(cls) -> str:
+    stub = StubClass(cls.name)
+
+    # TODO: These parent classes may require namespace prefix sanitising.
+    stub.parents = [b.name for b in cls.bases]
+
+    # TODO: We don't handle:
+    #  * child_properties: It's not clear how to annotate these
+    #  * gtype_struct: I'm not sure what we'd use this for.
+    #  * properties: It's not clear how to annotate these
+    #  * signals: It's not clear how to annotate these
+
+    for f in cls.fields:
+        stub.add_member(format_field(f))
+
+    for v in cls.methods + cls.vfuncs:
+        stub.add_function(stub_function(v))
+
+    return str(stub)
+
+
 def format_field(field) -> str:
     return f"{field.name} = ...  # type: {get_typing_name(field.py_type)}"
 
@@ -264,12 +285,16 @@ def main(args):
     for namespace, version in get_to_write(args.target, namespace, version):
         mod = Repository(namespace, version).parse()
         module_path = os.path.join(args.target, namespace + ".pyi")
-        types = mod.classes + mod.structures + mod.unions
+        types = mod.structures + mod.unions
         with open(module_path, "w", encoding="utf-8") as h:
             for cls in types:
                 h.write("""\
 class {}: ...
 """.format(cls.name))
+
+            for cls in mod.classes:
+                h.write(stub_class(cls))
+                h.write("\n\n")
 
             for cls in mod.flags:
                 h.write(stub_flag(cls))
