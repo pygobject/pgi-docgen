@@ -165,6 +165,10 @@ def stub_function(function) -> str:
 
     # Format argument types
     arg_specs = []
+
+    if (function.is_method or function.is_vfunc) and not function.is_static:
+        arg_specs.append('self')
+
     for key, value in signature.args:
         arg_specs.append(f'{key}: {arg_to_annotation(value)}')
     args = f'({", ".join(arg_specs)})'
