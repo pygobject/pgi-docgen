@@ -290,18 +290,25 @@ def main(args):
     for namespace, version in get_to_write(args.target, namespace, version):
         mod = Repository(namespace, version).parse()
         module_path = os.path.join(args.target, namespace + ".pyi")
-        types = mod.unions
+
         with open(module_path, "w", encoding="utf-8") as h:
-            for cls in types:
-                h.write("""\
-class {}: ...
-""".format(cls.name))
 
             for cls in mod.classes:
                 h.write(stub_class(cls))
                 h.write("\n\n")
 
             for cls in mod.structures:
+                # From a GI point of view, structures are really just classes
+                # that can't inherit from anything.
+                h.write(stub_class(cls))
+                h.write("\n\n")
+
+            for cls in mod.unions:
+                # The semantics of a GI-mapped union type don't really map
+                # nicely to typing structures. It *is* a typing.Union[], but
+                # you can't add e.g., function signatures to one of those.
+                #
+                # In practical terms, treating these as classes seems best.
                 h.write(stub_class(cls))
                 h.write("\n\n")
 
