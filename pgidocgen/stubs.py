@@ -218,9 +218,8 @@ def stub_enum(enum) -> str:
     return str(stub)
 
 
-def stub_constant(constant) -> str:
-    type_ = get_typing_name(type(constant.raw_value))
-    return f"{constant.name} = ...  # type: {type_}"
+def format_field(field) -> str:
+    return f"{field.name} = ...  # type: {get_typing_name(field.py_type)}"
 
 
 def main(args):
@@ -286,5 +285,5 @@ class {}: ...
                 h.write("\n\n\n")
 
             for const in mod.constants:
-                h.write(stub_constant(const))
+                h.write(format_field(const))
                 h.write("\n")

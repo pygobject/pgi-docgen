@@ -883,13 +883,13 @@ class Flags(BaseDocObject, MethodsMixin):
 
 class Constant(BaseDocObject):
 
-    def __init__(self, parent_fullname, name, value, raw_value):
+    def __init__(self, parent_fullname, name, value, py_type):
         self.fullname = parent_fullname + "." + name
         self.name = name
         self.info = None
 
         self.value = value
-        self.raw_value = raw_value
+        self.py_type = py_type
 
     @classmethod
     def from_object(cls, repo, parent_fullname, name, obj):
@@ -901,7 +901,7 @@ class Constant(BaseDocObject):
         else:
             value = repr(obj)
 
-        instance = Constant(parent_fullname, name, value, obj)
+        instance = Constant(parent_fullname, name, value, type(obj))
         instance.info = DocInfo.from_object(repo, "all", instance)
         return instance
 
