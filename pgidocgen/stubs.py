@@ -225,8 +225,9 @@ def stub_enum(enum) -> str:
 def stub_class(cls) -> str:
     stub = StubClass(cls.name)
 
+    bases = getattr(cls, 'bases', [])
     # TODO: These parent classes may require namespace prefix sanitising.
-    stub.parents = [b.name for b in cls.bases]
+    stub.parents = [b.name for b in bases]
 
     # TODO: We don't handle:
     #  * child_properties: It's not clear how to annotate these
@@ -289,7 +290,7 @@ def main(args):
     for namespace, version in get_to_write(args.target, namespace, version):
         mod = Repository(namespace, version).parse()
         module_path = os.path.join(args.target, namespace + ".pyi")
-        types = mod.structures + mod.unions
+        types = mod.unions
         with open(module_path, "w", encoding="utf-8") as h:
             for cls in types:
                 h.write("""\
@@ -297,6 +298,10 @@ class {}: ...
 """.format(cls.name))
 
             for cls in mod.classes:
+                h.write(stub_class(cls))
+                h.write("\n\n")
+
+            for cls in mod.structures:
                 h.write(stub_class(cls))
                 h.write("\n\n")
 
