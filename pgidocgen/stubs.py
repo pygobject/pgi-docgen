@@ -145,7 +145,9 @@ def arg_to_annotation(text):
         elif p:
             out.append(p)
 
-    if len(out) == 1:
+    if len(out) == 0:
+        return "Any"
+    elif len(out) == 1:
         return out[0]
     elif len(out) == 2 and 'None' in out:
         # This is not strictly necessary, but it's easier to read than the Union
