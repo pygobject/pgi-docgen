@@ -106,11 +106,11 @@ def get_typing_name(type_: typing.Any) -> str:
         return type_
     elif isinstance(type_, list):
         assert len(type_) == 1
-        return "Sequence[%s]" % get_typing_name(type_[0])
+        return "typing.Sequence[%s]" % get_typing_name(type_[0])
     elif isinstance(type_, dict):
         assert len(type_) == 1
         key, value = type_.popitem()
-        return "Mapping[%s, %s]" % (get_typing_name(key), get_typing_name(value))
+        return "typing.Mapping[%s, %s]" % (get_typing_name(key), get_typing_name(value))
     elif type_.__module__ in ("__builtin__", "builtins"):
         return type_.__name__
     else:
@@ -135,26 +135,26 @@ def arg_to_annotation(text):
     out = []
     for p in parts:
         if p.startswith("["):
-            out.append("Sequence[%s]" % arg_to_annotation(p[1:-1]))
+            out.append("typing.Sequence[%s]" % arg_to_annotation(p[1:-1]))
         elif p.startswith("{"):
             p = p[1:-1]
             k, v = p.split(":", 1)
             k = arg_to_annotation(k.strip())
             v = arg_to_annotation(v.strip())
-            out.append("Mapping[%s, %s]" % (k, v))
+            out.append("typing.Mapping[%s, %s]" % (k, v))
         elif p:
             out.append(p)
 
     if len(out) == 0:
-        return "Any"
+        return "typing.Any"
     elif len(out) == 1:
         return out[0]
     elif len(out) == 2 and 'None' in out:
         # This is not strictly necessary, but it's easier to read than the Union
         out.pop(out.index('None'))
-        return f"Optional[{out[0]}]"
+        return f"typing.Optional[{out[0]}]"
     else:
-        return f"Union[{', '.join(out)}]"
+        return f"typing.Union[{', '.join(out)}]"
 
 
 def stub_function(function) -> str:
@@ -191,7 +191,7 @@ def stub_function(function) -> str:
     elif len(return_values) == 1:
         returns = return_values[0]
     else:
-        returns = f'Tuple[{", ".join(return_values)}]'
+        returns = f'typing.Tuple[{", ".join(return_values)}]'
 
     return f'{decorator}def {function.name}{args} -> {returns}: ...'
 
