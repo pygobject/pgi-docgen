@@ -5,15 +5,15 @@
 # License as published by the Free Software Foundation; either
 # version 2.1 of the License, or (at your option) any later version.
 
-import sys
-import subprocess
-import tempfile
 import os
+import subprocess
+import sys
+import tempfile
 import typing
 
+from .namespace import get_namespace
 from .repo import Repository
 from .util import get_gir_files
-from .namespace import get_namespace
 
 
 def add_parser(subparsers):
