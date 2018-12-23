@@ -253,6 +253,17 @@ def format_field(field) -> str:
     return f"{field.name} = ...  # type: {get_typing_name(field.py_type)}"
 
 
+def format_imports(namespace, version):
+    ns = get_namespace(namespace, version)
+    import_lines = [
+        "import typing",
+        "",
+        *(f"from gi.repository import {dep[0]}" for dep in ns.dependencies),
+        ""
+    ]
+    return "\n".join(import_lines)
+
+
 def main(args):
     if not args.namespace:
         print("No namespace given")
@@ -297,6 +308,9 @@ def main(args):
         module_path = os.path.join(args.target, namespace + ".pyi")
 
         with open(module_path, "w", encoding="utf-8") as h:
+            # Start by handling all required imports for type annotations
+            h.write(format_imports(namespace, version))
+            h.write("\n\n")
 
             for cls in mod.classes:
                 h.write(stub_class(cls))
