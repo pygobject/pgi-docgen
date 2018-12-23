@@ -16,6 +16,16 @@ from .repo import Repository
 from .util import get_gir_files
 
 
+current_module: str = '-'
+
+
+def strip_current_module(clsname: str) -> str:
+    # Strip GI module prefix from names in the current module
+    if clsname.startswith(current_module + "."):
+        return '"%s"' % clsname[len(current_module + "."):]
+    return clsname
+
+
 def add_parser(subparsers):
     parser = subparsers.add_parser("stubs", help="Create a typing stubs")
     parser.add_argument('target',
@@ -56,7 +66,8 @@ class StubClass:
     @property
     def class_line(self):
         if self.parents:
-            parents = "({})".format(', '.join(self.parents))
+            parents = "({})".format(
+                ', '.join(strip_current_module(p) for p in self.parents))
         else:
             parents = ""
         return "class {}{}:".format(self.classname, parents)
@@ -112,12 +123,11 @@ def get_typing_name(type_: typing.Any) -> str:
         key, value = type_.popitem()
         return "typing.Mapping[%s, %s]" % (get_typing_name(key), get_typing_name(value))
     elif type_.__module__ in ("__builtin__", "builtins"):
+        return '"%s"' % type_.__name__
+    elif type_.__module__ == current_module:
+        # Strip GI module prefix from current-module types
         return type_.__name__
     else:
-        # FIXME: We need better module handling here. I think we need to strip
-        # the module if the type's module is the *current* module being
-        # annotated, and if not then we need to track imports and probably add
-        # a "gi.repository." prefix.
         return "%s.%s" % (type_.__module__, type_.__name__)
 
 
@@ -143,7 +153,7 @@ def arg_to_annotation(text):
             v = arg_to_annotation(v.strip())
             out.append("typing.Mapping[%s, %s]" % (k, v))
         elif p:
-            out.append(p)
+            out.append(strip_current_module(p))
 
     if len(out) == 0:
         return "typing.Any"
@@ -303,9 +313,16 @@ def main(args):
 
         return mods
 
+    # We track the module currently being stubbed for naming reasons. e.g.,
+    # within GObject stubs, referring to "GObject.Object" is incorrect; we
+    # need the typing reference to be simply "Object".
+    global current_module
+
     for namespace, version in get_to_write(args.target, namespace, version):
         mod = Repository(namespace, version).parse()
         module_path = os.path.join(args.target, namespace + ".pyi")
+
+        current_module = namespace
 
         with open(module_path, "w", encoding="utf-8") as h:
             # Start by handling all required imports for type annotations
