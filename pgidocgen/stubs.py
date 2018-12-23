@@ -209,6 +209,8 @@ def stub_function(function) -> str:
 def stub_flag(flag) -> str:
     stub = StubClass(flag.name)
     for v in flag.values:
+        if not v.name.isidentifier():
+            continue
         stub.add_member(f"{v.name} = ...  # type: {flag.name}")
 
     if flag.methods or flag.vfuncs:
@@ -223,6 +225,8 @@ def stub_flag(flag) -> str:
 def stub_enum(enum) -> str:
     stub = StubClass(enum.name)
     for v in enum.values:
+        if not v.name.isidentifier():
+            continue
         stub.add_member(f"{v.name} = ...  # type: {enum.name}")
 
     for v in enum.methods:
@@ -251,6 +255,8 @@ def stub_class(cls) -> str:
     #  * signals: It's not clear how to annotate these
 
     for f in cls.fields:
+        if not f.name.isidentifier():
+            continue
         stub.add_member(format_field(f))
 
     for v in cls.methods + cls.vfuncs:
