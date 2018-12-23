@@ -78,10 +78,13 @@ class StubClass:
         return lines
 
     def __str__(self):
+        body_lines = self.member_lines + self.function_lines
+        if not body_lines:
+            body_lines = ['    ...']
+
         return '\n'.join(
             [self.class_line] +
-            self.member_lines +
-            self.function_lines +
+            body_lines +
             ['']
         )
 
