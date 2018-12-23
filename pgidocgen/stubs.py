@@ -276,14 +276,14 @@ def main(args):
         build directory is found, skipping it and all its deps.
         """
 
-        mods = []
+        mods = set()
         if os.path.exists(os.path.join(dir_, namespace + ".pyi")):
             return mods
-        mods.append((namespace, version))
+        mods.add((namespace, version))
 
         ns = get_namespace(namespace, version)
         for dep in ns.dependencies:
-            mods.extend(get_to_write(dir_, *dep))
+            mods |= get_to_write(dir_, *dep)
 
         return mods
 
