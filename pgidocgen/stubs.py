@@ -134,10 +134,10 @@ def get_typing_name(type_: typing.Any) -> str:
         key, value = type_.popitem()
         return "typing.Mapping[%s, %s]" % (get_typing_name(key), get_typing_name(value))
     elif type_.__module__ in ("__builtin__", "builtins"):
-        return '"%s"' % type_.__name__
+        return type_.__name__
     elif type_.__module__ == current_module:
         # Strip GI module prefix from current-module types
-        return type_.__name__
+        return '"%s"' % type_.__name__
     else:
         add_dependent_module(type_.__module__)
         return "%s.%s" % (type_.__module__, type_.__name__)
