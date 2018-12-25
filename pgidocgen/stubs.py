@@ -71,7 +71,9 @@ class StubClass:
     def add_member(self, member):
         self.members.append(member)
 
-    def add_function(self, function):
+    def add_function(self, function, *, ignore_type_error=False):
+        if ignore_type_error:
+            function += "  # type: ignore"
         self.functions.append(function)
 
     @property
@@ -283,7 +285,17 @@ def stub_class(cls) -> str:
         stub.add_member(format_field(f))
 
     for v in cls.methods + cls.vfuncs:
-        stub.add_function(stub_function(v))
+        # GObject-based constructors often violate Liskov substitution,
+        # leading to typing errors such as:
+        #     Signature of "new" incompatible with supertype "Object"
+        # While we're waiting for a more general solution (see
+        # https://github.com/python/mypy/issues/1237) we'll just ignore
+        # the typing errors.
+
+        # TODO: Extract constructor information from GIR and add it to
+        # docobj.Function to use here.
+        ignore = v.name == "new"
+        stub.add_function(stub_function(v), ignore_type_error=ignore)
 
     return str(stub)
 
