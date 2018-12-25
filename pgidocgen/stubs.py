@@ -5,6 +5,7 @@
 # License as published by the Free Software Foundation; either
 # version 2.1 of the License, or (at your option) any later version.
 
+import io
 import os
 import subprocess
 import sys
@@ -16,7 +17,9 @@ from .repo import Repository
 from .util import get_gir_files
 
 
+# Initialising the current module to an invalid name
 current_module: str = '-'
+current_module_dependencies = set()
 
 
 def strip_current_module(clsname: str) -> str:
@@ -24,6 +27,14 @@ def strip_current_module(clsname: str) -> str:
     if clsname.startswith(current_module + "."):
         return '"%s"' % clsname[len(current_module + "."):]
     return clsname
+
+
+def add_dependent_module(module: str):
+    # FIXME: Find a better way to check this. This currently won't work for GI
+    # modules that aren't installed in the current venv.
+    import gi.repository
+    if hasattr(gi.repository, module):
+        current_module_dependencies.add(module)
 
 
 def add_parser(subparsers):
@@ -128,6 +139,7 @@ def get_typing_name(type_: typing.Any) -> str:
         # Strip GI module prefix from current-module types
         return type_.__name__
     else:
+        add_dependent_module(type_.__module__)
         return "%s.%s" % (type_.__module__, type_.__name__)
 
 
@@ -153,7 +165,10 @@ def arg_to_annotation(text):
             v = arg_to_annotation(v.strip())
             out.append("typing.Mapping[%s, %s]" % (k, v))
         elif p:
-            out.append(strip_current_module(p))
+            class_str = strip_current_module(p)
+            if '.' in class_str:
+                add_dependent_module(class_str.split('.', 1)[0])
+            out.append(class_str)
 
     if len(out) == 0:
         return "typing.Any"
@@ -271,10 +286,13 @@ def format_field(field) -> str:
 
 def format_imports(namespace, version):
     ns = get_namespace(namespace, version)
+    for dep in ns.dependencies:
+        current_module_dependencies.add(dep[0])
+
     import_lines = [
         "import typing",
         "",
-        *(f"from gi.repository import {dep[0]}" for dep in ns.dependencies),
+        *sorted(f"from gi.repository import {dep}" for dep in current_module_dependencies),
         ""
     ]
     return "\n".join(import_lines)
@@ -323,50 +341,55 @@ def main(args):
     # within GObject stubs, referring to "GObject.Object" is incorrect; we
     # need the typing reference to be simply "Object".
     global current_module
+    global current_module_dependencies
 
     for namespace, version in get_to_write(args.target, namespace, version):
         mod = Repository(namespace, version).parse()
         module_path = os.path.join(args.target, namespace + ".pyi")
 
         current_module = namespace
+        current_module_dependencies = set()
 
-        with open(module_path, "w", encoding="utf-8") as h:
-            # Start by handling all required imports for type annotations
-            h.write(format_imports(namespace, version))
+        h = io.StringIO()
+
+        for cls in mod.classes:
+            h.write(stub_class(cls))
             h.write("\n\n")
 
-            for cls in mod.classes:
-                h.write(stub_class(cls))
-                h.write("\n\n")
+        for cls in mod.structures:
+            # From a GI point of view, structures are really just classes
+            # that can't inherit from anything.
+            h.write(stub_class(cls))
+            h.write("\n\n")
 
-            for cls in mod.structures:
-                # From a GI point of view, structures are really just classes
-                # that can't inherit from anything.
-                h.write(stub_class(cls))
-                h.write("\n\n")
+        for cls in mod.unions:
+            # The semantics of a GI-mapped union type don't really map
+            # nicely to typing structures. It *is* a typing.Union[], but
+            # you can't add e.g., function signatures to one of those.
+            #
+            # In practical terms, treating these as classes seems best.
+            h.write(stub_class(cls))
+            h.write("\n\n")
 
-            for cls in mod.unions:
-                # The semantics of a GI-mapped union type don't really map
-                # nicely to typing structures. It *is* a typing.Union[], but
-                # you can't add e.g., function signatures to one of those.
-                #
-                # In practical terms, treating these as classes seems best.
-                h.write(stub_class(cls))
-                h.write("\n\n")
+        for cls in mod.flags:
+            h.write(stub_flag(cls))
+            h.write("\n\n")
 
-            for cls in mod.flags:
-                h.write(stub_flag(cls))
-                h.write("\n\n")
+        for cls in mod.enums:
+            h.write(stub_enum(cls))
+            h.write("\n\n")
 
-            for cls in mod.enums:
-                h.write(stub_enum(cls))
-                h.write("\n\n")
+        for func in mod.functions:
+            h.write(stub_function(func))
+            # Extra \n because the signature lacks one.
+            h.write("\n\n\n")
 
-            for func in mod.functions:
-                h.write(stub_function(func))
-                # Extra \n because the signature lacks one.
-                h.write("\n\n\n")
+        for const in mod.constants:
+            h.write(format_field(const))
+            h.write("\n")
 
-            for const in mod.constants:
-                h.write(format_field(const))
-                h.write("\n")
+        with open(module_path, "w", encoding="utf-8") as f:
+            # Start by handling all required imports for type annotations
+            f.write(format_imports(namespace, version))
+            f.write("\n\n")
+            f.write(h.getvalue())
