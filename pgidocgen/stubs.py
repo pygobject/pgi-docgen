@@ -182,6 +182,25 @@ def arg_to_annotation(text):
         return f"typing.Union[{', '.join(out)}]"
 
 
+def format_function_returns(signature_result) -> str:
+    # Format return values
+    return_values = []
+    for r in signature_result:
+        # We have either a (name, return type) pair, or just the return type.
+        type_ = r[1] if len(r) > 1 else r[0]
+        return_values.append(arg_to_annotation(type_))
+
+    # Additional handling for structuring return values
+    if len(return_values) == 0:
+        returns = 'None'
+    elif len(return_values) == 1:
+        returns = return_values[0]
+    else:
+        returns = f'typing.Tuple[{", ".join(return_values)}]'
+
+    return returns
+
+
 def stub_function(function) -> str:
     # We require the full signature details for argument types, and fallback
     # to the simplest possible function signature if it's not available.
@@ -203,20 +222,7 @@ def stub_function(function) -> str:
         arg_specs.append(f'{key}: {arg_to_annotation(value)}')
     args = f'({", ".join(arg_specs)})'
 
-    # Format return values
-    return_values = []
-    for r in signature.res:
-        # We have either a (name, return type) pair, or just the return type.
-        type_ = r[1] if len(r) > 1 else r[0]
-        return_values.append(arg_to_annotation(type_))
-
-    # Additional handling for structuring return values
-    if len(return_values) == 0:
-        returns = 'None'
-    elif len(return_values) == 1:
-        returns = return_values[0]
-    else:
-        returns = f'typing.Tuple[{", ".join(return_values)}]'
+    returns = format_function_returns(signature.res)
 
     return f'{decorator}def {function.name}{args} -> {returns}: ...'
 
