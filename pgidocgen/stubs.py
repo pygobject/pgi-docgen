@@ -268,8 +268,10 @@ def stub_class(cls) -> str:
     #  * gtype_struct: I'm not sure what we'd use this for.
     #  * properties: It's not clear how to annotate these
     #  * signals: It's not clear how to annotate these
+    #  * pyprops: These have no type information, and I'm not certain
+    #    what they cover, etc.
 
-    for f in cls.fields:
+    for f in getattr(cls, 'fields', []):
         if not f.name.isidentifier():
             continue
         stub.add_member(format_field(f))
@@ -351,6 +353,10 @@ def main(args):
         current_module_dependencies = set()
 
         h = io.StringIO()
+
+        for cls in mod.pyclasses:
+            h.write(stub_class(cls))
+            h.write("\n\n")
 
         for cls in mod.classes:
             h.write(stub_class(cls))
