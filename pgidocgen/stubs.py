@@ -292,6 +292,13 @@ def format_field(field) -> str:
     return f"{field.name} = ...  # type: {get_typing_name(field.py_type)}"
 
 
+def format_callback(fn) -> str:
+    # We're formatting a callback signature here, not an actual function.
+    args = ", ".join(arg_to_annotation(v) for k, v in fn.full_signature.args)
+    returns = format_function_returns(fn.full_signature.res)
+    return f"{fn.name} = typing.Callable[[{args}], {returns}]"
+
+
 def format_imports(namespace, version):
     ns = get_namespace(namespace, version)
     for dep in ns.dependencies:
@@ -389,6 +396,13 @@ def main(args):
 
         for cls in mod.enums:
             h.write(stub_enum(cls))
+            h.write("\n\n")
+
+        for fn in mod.callbacks:
+            h.write(format_callback(fn))
+            h.write("\n")
+
+        if mod.callbacks:
             h.write("\n\n")
 
         for func in mod.functions:
