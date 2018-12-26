@@ -62,6 +62,9 @@ def _main_many(target, namespaces):
 
 
 class StubClass:
+
+    indent = " " * 4
+
     def __init__(self, classname):
         self.classname = classname
         self.parents = []
@@ -76,39 +79,19 @@ class StubClass:
             function += "  # type: ignore"
         self.functions.append(function)
 
-    @property
-    def class_line(self):
-        if self.parents:
-            parents = "({})".format(
-                ', '.join(strip_current_module(p) for p in self.parents))
-        else:
-            parents = ""
-        return "class {}{}:".format(self.classname, parents)
-
-    @property
-    def member_lines(self):
-        return [
-            "    {}".format(member)
-            for member in sorted(self.members)
-        ]
-
-    @property
-    def function_lines(self):
-        lines = []
-        for function in self.functions:
-            lines.append('')
-            for line in function.splitlines():
-                lines.append(f'    {line}')
-        return lines
-
     def __str__(self):
-        body_lines = self.member_lines + self.function_lines
+        parents = ', '.join(strip_current_module(p) for p in self.parents)
+        class_line = "class {}({}):".format(self.classname, parents)
+
+        body_lines = sorted(self.members)
+        for function in self.functions:
+            body_lines.extend([''] + function.splitlines())
         if not body_lines:
-            body_lines = ['    ...']
+            body_lines = ['...']
 
         return '\n'.join(
-            [self.class_line] +
-            body_lines +
+            [class_line] +
+            [(self.indent + line).rstrip() for line in body_lines] +
             ['']
         )
 
