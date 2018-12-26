@@ -377,28 +377,23 @@ def main(args):
         current_module = namespace
         current_module_dependencies = set()
 
-        h = io.StringIO()
-
-        for cls in mod.pyclasses:
-            h.write(stub_class(cls))
-            h.write("\n\n")
-
-        for cls in mod.classes:
-            h.write(stub_class(cls))
-            h.write("\n\n")
-
-        for cls in mod.structures:
+        class_likes = (
+            mod.pyclasses +
+            mod.classes +
             # From a GI point of view, structures are really just classes
             # that can't inherit from anything.
-            h.write(stub_class(cls))
-            h.write("\n\n")
-
-        for cls in mod.unions:
+            mod.structures +
             # The semantics of a GI-mapped union type don't really map
             # nicely to typing structures. It *is* a typing.Union[], but
             # you can't add e.g., function signatures to one of those.
             #
             # In practical terms, treating these as classes seems best.
+            mod.unions
+        )
+
+        h = io.StringIO()
+
+        for cls in class_likes:
             h.write(stub_class(cls))
             h.write("\n\n")
 
