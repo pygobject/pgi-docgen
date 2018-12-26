@@ -229,31 +229,13 @@ def stub_function(function) -> str:
     return f'{decorator}def {function.name}{args} -> {returns}: ...'
 
 
-def stub_enum(cls) -> str:
-    stub = StubClass(cls.name)
-    for v in cls.values:
-        if not v.name.isidentifier():
-            continue
-        stub.add_member(f"{v.name} = ...  # type: {cls.name}")
-
-    for v in cls.methods:
-        stub.add_function(stub_function(v))
-
-    if cls.vfuncs:
-        # This is unsupported simply because I can't find any GIR that
-        # has vfuncs on its enum types.
-        raise NotImplementedError(
-            "Enum support doesn't annotate vfuncs")
-
-    return str(stub)
-
-
 def stub_class(cls) -> str:
     stub = StubClass(cls.name)
 
-    bases = getattr(cls, 'bases', [])
-    # TODO: These parent classes may require namespace prefix sanitising.
-    stub.parents = [b.name for b in bases]
+    if hasattr(cls, 'bases'):
+        stub.parents = [b.name for b in cls.bases]
+    elif hasattr(cls, 'base'):
+        stub.parents = [cls.base] if cls.base else []
 
     # TODO: We don't handle:
     #  * child_properties: It's not clear how to annotate these
@@ -267,6 +249,13 @@ def stub_class(cls) -> str:
         if not f.name.isidentifier():
             continue
         stub.add_member(format_field(f))
+
+    # The `values` attribute is available on enums and flags, and its
+    # type will always be the current class.
+    for v in getattr(cls, 'values', []):
+        if not v.name.isidentifier():
+            continue
+        stub.add_member(f"{v.name} = ...  # type: {cls.name}")
 
     for v in cls.methods + cls.vfuncs:
         # GObject-based constructors often violate Liskov substitution,
@@ -372,17 +361,17 @@ def main(args):
             # you can't add e.g., function signatures to one of those.
             #
             # In practical terms, treating these as classes seems best.
-            mod.unions
+            mod.unions +
+            # `GFlag`s and `GEnum`s are slightly different to classes, but
+            # easily covered by the same code.
+            mod.flags +
+            mod.enums
         )
 
         h = io.StringIO()
 
         for cls in class_likes:
             h.write(stub_class(cls))
-            h.write("\n\n")
-
-        for cls in mod.flags + mod.enums:
-            h.write(stub_enum(cls))
             h.write("\n\n")
 
         for fn in mod.callbacks:
