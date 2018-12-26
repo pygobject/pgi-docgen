@@ -184,10 +184,26 @@ def arg_to_annotation(text):
         return f"typing.Union[{', '.join(out)}]"
 
 
-def format_function_returns(signature_result) -> str:
-    # Format return values
+def format_function_args(function, *, include_arg_names=True) -> str:
+    """Format function arguments as a type annotation fragment"""
+
+    arg_specs = []
+
+    if (function.is_method or function.is_vfunc) and not function.is_static:
+        arg_specs.append('self')
+
+    for key, value in function.full_signature.args:
+        spec = "{key}: {type}" if include_arg_names else "{type}"
+        arg_specs.append(spec.format(key=key, type=arg_to_annotation(value)))
+
+    return ", ".join(arg_specs)
+
+
+def format_function_returns(function) -> str:
+    """Format function return values as a type annotation fragment"""
+
     return_values = []
-    for r in signature_result:
+    for r in function.full_signature.res:
         # We have either a (name, return type) pair, or just the return type.
         type_ = r[1] if len(r) > 1 else r[0]
         return_values.append(arg_to_annotation(type_))
@@ -203,30 +219,19 @@ def format_function_returns(signature_result) -> str:
     return returns
 
 
-def stub_function(function) -> str:
+def format_function(function) -> str:
     # We require the full signature details for argument types, and fallback
     # to the simplest possible function signature if it's not available.
-    signature = getattr(function, 'full_signature', None)
-    if not signature:
-        print(f"Missing full signature for {function}; falling back")
-        return f"def {function.name}(*args, **kwargs): ..."
+    if not getattr(function, 'full_signature', None):
+        print("Missing full signature for {}".format(function))
+        return "def {}(*args, **kwargs): ...".format(function.name)
 
-    # Decorator handling
-    decorator = "@staticmethod\n" if function.is_static else ""
-
-    # Format argument types
-    arg_specs = []
-
-    if (function.is_method or function.is_vfunc) and not function.is_static:
-        arg_specs.append('self')
-
-    for key, value in signature.args:
-        arg_specs.append(f'{key}: {arg_to_annotation(value)}')
-    args = f'({", ".join(arg_specs)})'
-
-    returns = format_function_returns(signature.res)
-
-    return f'{decorator}def {function.name}{args} -> {returns}: ...'
+    return '{decorator}def {name}({args}) -> {returns}: ...'.format(
+        decorator="@staticmethod\n" if function.is_static else "",
+        name=function.name,
+        args=format_function_args(function),
+        returns=format_function_returns(function),
+    )
 
 
 def stub_class(cls) -> str:
@@ -268,7 +273,7 @@ def stub_class(cls) -> str:
         # TODO: Extract constructor information from GIR and add it to
         # docobj.Function to use here.
         ignore = v.name == "new"
-        stub.add_function(stub_function(v), ignore_type_error=ignore)
+        stub.add_function(format_function(v), ignore_type_error=ignore)
 
     return str(stub)
 
@@ -277,11 +282,13 @@ def format_field(field) -> str:
     return f"{field.name} = ...  # type: {get_typing_name(field.py_type)}"
 
 
-def format_callback(fn) -> str:
+def format_callback(function) -> str:
     # We're formatting a callback signature here, not an actual function.
-    args = ", ".join(arg_to_annotation(v) for k, v in fn.full_signature.args)
-    returns = format_function_returns(fn.full_signature.res)
-    return f"{fn.name} = typing.Callable[[{args}], {returns}]"
+    return "{name} = typing.Callable[[{args}], {returns}]".format(
+        name=function.name,
+        args=format_function_args(function, include_arg_names=False),
+        returns=format_function_returns(function),
+    )
 
 
 def format_imports(namespace, version):
@@ -382,7 +389,7 @@ def main(args):
             h.write("\n\n")
 
         for func in mod.functions:
-            h.write(stub_function(func))
+            h.write(format_function(func))
             # Extra \n because the signature lacks one.
             h.write("\n\n\n")
 
