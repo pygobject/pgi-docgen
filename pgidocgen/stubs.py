@@ -229,33 +229,17 @@ def stub_function(function) -> str:
     return f'{decorator}def {function.name}{args} -> {returns}: ...'
 
 
-def stub_flag(flag) -> str:
-    stub = StubClass(flag.name)
-    for v in flag.values:
+def stub_enum(cls) -> str:
+    stub = StubClass(cls.name)
+    for v in cls.values:
         if not v.name.isidentifier():
             continue
-        stub.add_member(f"{v.name} = ...  # type: {flag.name}")
+        stub.add_member(f"{v.name} = ...  # type: {cls.name}")
 
-    if flag.methods or flag.vfuncs:
-        # This is unsupported simply because I can't find any GIR that
-        # has methods or vfuncs on its flag types.
-        raise NotImplementedError(
-            "Flag support doesn't annotate methods or vfuncs")
-
-    return str(stub)
-
-
-def stub_enum(enum) -> str:
-    stub = StubClass(enum.name)
-    for v in enum.values:
-        if not v.name.isidentifier():
-            continue
-        stub.add_member(f"{v.name} = ...  # type: {enum.name}")
-
-    for v in enum.methods:
+    for v in cls.methods:
         stub.add_function(stub_function(v))
 
-    if enum.vfuncs:
+    if cls.vfuncs:
         # This is unsupported simply because I can't find any GIR that
         # has vfuncs on its enum types.
         raise NotImplementedError(
@@ -397,11 +381,7 @@ def main(args):
             h.write(stub_class(cls))
             h.write("\n\n")
 
-        for cls in mod.flags:
-            h.write(stub_flag(cls))
-            h.write("\n\n")
-
-        for cls in mod.enums:
+        for cls in mod.flags + mod.enums:
             h.write(stub_enum(cls))
             h.write("\n\n")
 
