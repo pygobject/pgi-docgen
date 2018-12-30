@@ -109,6 +109,10 @@ def get_typing_name(type_: typing.Any) -> str:
 
     if type_ is None:
         return ""
+    elif type_ is type(None):
+        # As a weird corner-case, some non-introspectable base types
+        # actually give NoneType here. We treat them as very special.
+        return "typing.Any"
     elif isinstance(type_, str):
         return type_
     elif isinstance(type_, list):
