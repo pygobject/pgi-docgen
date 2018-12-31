@@ -5,6 +5,7 @@
 # License as published by the Free Software Foundation; either
 # version 2.1 of the License, or (at your option) any later version.
 
+import builtins
 import io
 import os
 import subprocess
@@ -20,6 +21,13 @@ from .util import get_gir_files
 # Initialising the current module to an invalid name
 current_module: str = '-'
 current_module_dependencies = set()
+
+# Set of type names that can be unwittingly shadowed and will cause
+# trouble with the type checker.
+shadowed_builtins = {
+    builtin for builtin in builtins.__dict__
+    if isinstance(builtins.__dict__[builtin], type)
+}
 
 
 def strip_current_module(clsname: str) -> str:
@@ -123,7 +131,7 @@ def get_typing_name(type_: typing.Any) -> str:
         key, value = type_.popitem()
         return "typing.Mapping[%s, %s]" % (get_typing_name(key), get_typing_name(value))
     elif type_.__module__ in ("__builtin__", "builtins"):
-        return type_.__name__
+        return "builtins.%s" % type_.__name__
     elif type_.__module__ == current_module:
         # Strip GI module prefix from current-module types
         return '"%s"' % type_.__name__
@@ -153,6 +161,8 @@ def arg_to_annotation(text):
             k = arg_to_annotation(k.strip())
             v = arg_to_annotation(v.strip())
             out.append("typing.Mapping[%s, %s]" % (k, v))
+        elif p in shadowed_builtins:
+            out.append("builtins.%s" % p)
         elif p:
             class_str = strip_current_module(p)
             if '.' in class_str:
@@ -284,6 +294,7 @@ def format_imports(namespace, version):
         current_module_dependencies.add(dep[0])
 
     import_lines = [
+        "import builtins",
         "import typing",
         "",
         *sorted(f"from gi.repository import {dep}" for dep in current_module_dependencies),
