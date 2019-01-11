@@ -104,6 +104,46 @@ class StubClass:
         )
 
 
+def topological_sort(class_nodes):
+    """
+    Topologically sort a list of class nodes according to inheritance
+
+    We use this as a workaround for typing stub order dependencies
+    (see python/mypy#6119).
+
+    Code adapted from https://stackoverflow.com/a/43702281/2963
+    """
+    # Map class name to actual class node being sorted
+    name_node_map = {node.fullname: node for node in class_nodes}
+    # Map class name to parent classes
+    name_parents_map = {}
+    # Map class name to child classes
+    name_children_map = {name: [] for name in name_node_map}
+
+    for name, node in name_node_map.items():
+        in_module_bases = [b.name for b in node.bases if b.name in name_node_map]
+        name_parents_map[name] = in_module_bases
+        for base_name in in_module_bases:
+            name_children_map[base_name].append(name)
+
+    # Establish bases
+    sorted_names = [n for n, preds in name_parents_map.items() if not preds]
+
+    for name in sorted_names:
+        for child in name_children_map[name]:
+            name_parents_map[child].remove(name)
+            if not name_parents_map[child]:
+                # Mutating list that we're iterating over, so that this
+                # class gets removed from subsequent pending parents
+                # lists.
+                sorted_names.append(child)
+
+    if len(sorted_names) < len(name_node_map):
+        raise RuntimeError("Couldn't establish a topological ordering")
+
+    return [name_node_map[name] for name in sorted_names]
+
+
 def get_typing_name(type_: typing.Any) -> str:
     """Gives a name for a type that is suitable for a typing annotation.
 
@@ -357,7 +397,7 @@ def main(args):
 
         class_likes = (
             mod.pyclasses +
-            mod.classes +
+            topological_sort(mod.classes) +
             # From a GI point of view, structures are really just classes
             # that can't inherit from anything.
             mod.structures +
