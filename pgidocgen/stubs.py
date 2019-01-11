@@ -33,7 +33,7 @@ shadowed_builtins = {
 def strip_current_module(clsname: str) -> str:
     # Strip GI module prefix from names in the current module
     if clsname.startswith(current_module + "."):
-        return '"%s"' % clsname[len(current_module + "."):]
+        return clsname[len(current_module + "."):]
     return clsname
 
 
@@ -134,7 +134,7 @@ def get_typing_name(type_: typing.Any) -> str:
         return "builtins.%s" % type_.__name__
     elif type_.__module__ == current_module:
         # Strip GI module prefix from current-module types
-        return '"%s"' % type_.__name__
+        return type_.__name__
     else:
         add_dependent_module(type_.__module__)
         return "%s.%s" % (type_.__module__, type_.__name__)
@@ -276,7 +276,7 @@ def stub_class(cls) -> str:
 
 
 def format_field(field) -> str:
-    return f"{field.name} = ...  # type: {get_typing_name(field.py_type)}"
+    return f"{field.name}: {get_typing_name(field.py_type)}"
 
 
 def format_callback(function) -> str:
