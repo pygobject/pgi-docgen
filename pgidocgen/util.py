@@ -26,13 +26,16 @@ def get_signature_string(callable_):
             return u"()"
 
     try:
-        argspec = inspect.getargspec(callable_)
+        sig = inspect.signature(callable_)
     except TypeError:
         # ... is not a Python function
         return u"()"
-    if argspec[0] and argspec[0][0] in ('cls', 'self'):
-        del argspec[0][0]
-    return inspect.formatargspec(*argspec)
+
+    parameters = list(sig.parameters.keys())
+    if parameters and parameters[0] in ("cls", "self"):
+        sig = sig.replace(parameters=list(sig.parameters.values())[1:])
+
+    return str(sig)
 
 
 def rest2html(text):

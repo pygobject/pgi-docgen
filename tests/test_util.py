@@ -9,6 +9,9 @@
 import os
 import unittest
 
+import pgi
+pgi.require_version("Gtk", "3.0")
+
 from pgidocgen.util import is_staticmethod, \
     is_method_owner, is_fundamental, is_object, instance_to_rest, \
     get_child_properties, fake_subclasses, get_style_properties, \
@@ -19,12 +22,18 @@ from pgidocgen.util import is_staticmethod, \
 class TUtil(unittest.TestCase):
 
     def test_get_signature_string(self):
-        from pgi.repository import GLib
+        from pgi.repository import GLib, Gio
 
         func = GLib.Error.__init__
         assert get_signature_string(func) == "()"
         assert get_signature_string(GLib.IOChannel.new_file) == \
             "(filename, mode)"
+        assert get_signature_string(GLib.IOChannel) == \
+            "(filedes=None, filename=None, mode=None, hwnd=None)"
+        assert get_signature_string(GLib.MainLoop) == \
+            "(context=None)"
+        assert get_signature_string(Gio.Menu.append) == \
+            "(label, detailed_action)"
 
     def test_get_csv_line(self):
         assert get_csv_line(["foo"]) == '"foo"'
