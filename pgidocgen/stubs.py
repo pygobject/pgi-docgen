@@ -13,6 +13,7 @@ import sys
 import tempfile
 import typing
 
+from .docobj import Flags
 from .namespace import get_namespace
 from .repo import Repository
 from .util import get_gir_files
@@ -278,6 +279,9 @@ def stub_class(cls) -> str:
         stub.parents = [b.name for b in cls.bases]
     elif hasattr(cls, 'base'):
         stub.parents = [cls.base] if cls.base else []
+        # GObject.Flags and GObject.Enum types support Python integer methods
+        if isinstance(cls, Flags):
+            stub.parents.append('builtins.int')
 
     # TODO: We don't handle:
     #  * child_properties: It's not clear how to annotate these
