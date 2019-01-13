@@ -348,6 +348,26 @@ def format_imports(namespace, version):
     return "\n".join(import_lines)
 
 
+def get_module_classlikes(module):
+    return (
+        module.pyclasses +
+        topological_sort(module.classes) +
+        # From a GI point of view, structures are really just classes
+        # that can't inherit from anything.
+        module.structures +
+        # The semantics of a GI-mapped union type don't really map
+        # nicely to typing structures. It *is* a typing.Union[], but
+        # you can't add e.g., function signatures to one of those.
+        #
+        # In practical terms, treating these as classes seems best.
+        module.unions +
+        # `GFlag`s and `GEnum`s are slightly different to classes, but
+        # easily covered by the same code.
+        module.flags +
+        module.enums
+    )
+
+
 def main(args):
     if not args.namespace:
         print("No namespace given")
@@ -400,27 +420,9 @@ def main(args):
         current_module = namespace
         current_module_dependencies = set()
 
-        class_likes = (
-            mod.pyclasses +
-            topological_sort(mod.classes) +
-            # From a GI point of view, structures are really just classes
-            # that can't inherit from anything.
-            mod.structures +
-            # The semantics of a GI-mapped union type don't really map
-            # nicely to typing structures. It *is* a typing.Union[], but
-            # you can't add e.g., function signatures to one of those.
-            #
-            # In practical terms, treating these as classes seems best.
-            mod.unions +
-            # `GFlag`s and `GEnum`s are slightly different to classes, but
-            # easily covered by the same code.
-            mod.flags +
-            mod.enums
-        )
-
         h = io.StringIO()
 
-        for cls in class_likes:
+        for cls in get_module_classlikes(mod):
             h.write(stub_class(cls))
             h.write("\n\n")
 
