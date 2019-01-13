@@ -290,6 +290,11 @@ def stub_class(cls) -> str:
     for f in getattr(cls, 'fields', []):
         if not f.name.isidentifier():
             continue
+
+        # Special case handling for weird annotations
+        if cls.fullname == 'GObject.Value' and f.name == 'data':
+            continue
+
         stub.add_member(format_field(f))
 
     # The `values` attribute is available on enums and flags, and its
