@@ -19,7 +19,7 @@ evolving support for arbitrary languages via the GObject
 Introspection system.</description>
   <homepage rdf:resource="https://wiki.gnome.org/Projects/gtk-vnc" />
   <download-page rdf:resource="http://download.gnome.org/sources/gtk-vnc/" />
-  <bug-database rdf:resource="http://bugzilla.gnome.org/browse.cgi?product=gtk-vnc" />
+  <bug-database rdf:resource="https://gitlab.gnome.org/GNOME/gtk-vnc/issues/" />
   <programming-language>C</programming-language>
 
   <category rdf:resource="http://api.gnome.org/doap-extensions#core" />

@@ -17,7 +17,7 @@ mixing contacts with files, locations, activities and etc.).</description>
   <homepage rdf:resource="https://wiki.gnome.org/Projects/Tracker" />
   <mailing-list rdf:resource="http://mail.gnome.org/mailman/listinfo/tracker-list" />
   <download-page rdf:resource="http://download.gnome.org/sources/tracker/" />
-  <bug-database rdf:resource="https://bugzilla.gnome.org/browse.cgi?product=tracker" />
+  <bug-database rdf:resource="https://gitlab.gnome.org/GNOME/tracker/issues/" />
   <category rdf:resource="http://api.gnome.org/doap-extensions#core" />
   <programming-language>C</programming-language>
   <programming-language>Vala</programming-language>

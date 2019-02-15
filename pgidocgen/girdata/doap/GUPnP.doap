@@ -26,7 +26,7 @@ level libraries utilizing the GUPnP framework.</description>
   <download-page
   rdf:resource="http://gupnp.org/download"/>
   <bug-database
-  rdf:resource="http://bugzilla.gnome.org/browse.cgi?product=GUPnP"/>
+  rdf:resource="https://gitlab.gnome.org/GNOME/gupnp/issues/" />
 
   <maintainer>
     <foaf:Person>

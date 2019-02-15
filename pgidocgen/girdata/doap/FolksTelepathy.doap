@@ -16,7 +16,7 @@
   <homepage rdf:resource="https://wiki.gnome.org/Projects/Folks" />
   <download-page rdf:resource="https://download.gnome.org/sources/folks/" />
   <bug-database
-    rdf:resource="https://bugzilla.gnome.org/browse.cgi?product=folks" />
+    rdf:resource="https://gitlab.gnome.org/GNOME/folks/issues/" />
   <mailing-list rdf:resource="https://lists.freedesktop.org/mailman/listinfo/telepathy" />
   <programming-language>Vala</programming-language>
 

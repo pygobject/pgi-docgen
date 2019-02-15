@@ -5,7 +5,7 @@
 	<homepage rdf:resource="https://wiki.gnome.org/Projects/libgdata"/>
 	<license rdf:resource="http://usefulinc.com/doap/licenses/lgpl"/>
 	<download-page rdf:resource="http://download.gnome.org/sources/libgdata/"/>
-	<bug-database rdf:resource="https://bugzilla.gnome.org/browse.cgi?product=libgdata"/>
+	<bug-database rdf:resource="https://gitlab.gnome.org/GNOME/libgdata/issues/" />
 	<category rdf:resource="http://api.gnome.org/doap-extensions#core" />
 	<programming-language>C</programming-language>
 	<maintainer>

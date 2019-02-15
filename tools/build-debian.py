@@ -72,6 +72,7 @@ BLACKLIST = [
     # crashes
     'GUPnPIgd-1.0',
     'Granite-1.0',
+    'Midori-0.6',
 
     # depends on one of the above
     "Ganv-1.0",
@@ -145,11 +146,12 @@ BUILD = [
     'AvahiCore-0.6', 'TrackerMiner-2.0', 'Avahi-0.6', 'TrackerControl-2.0',
     'AyatanaIdo3-0.4', 'Tracker-2.0', 'Fwupd-2.0', 'Snapd-1',
     'Parlatype-1.0', 'Peony-2.0', 'Evd-0.2', 'Manette-0.2',
-    'MessagingMenu-1.0', 'Playerctl-1.0', 'Gepub-0.6', 'Gegl-0.4',
+    'MessagingMenu-1.0', 'Gepub-0.6', 'Gegl-0.4',
     'GstWebRTC-1.0', 'Retro-0.14', 'MyPaint-1.3',
     'GtkSource-4', 'Aravis-0.6', 'UkuiMenu-2.0', 'Hinawa-2.0',
     'rda-1.0', 'Amtk-5', 'Colorhug-1.0', 'GdkPixdata-2.0',
     'Endless-0', 'UkuiPanelApplet-4.0', 'Handy-0.0',
+    'Playerctl-2.0', 'ICal-3.0', 'Tepl-4', 'ICalGLib-3.0',
 ]
 
 

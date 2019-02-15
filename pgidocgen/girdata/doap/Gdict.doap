@@ -11,7 +11,7 @@ or translation of a word in existing databases over the internet.</description>
   <homepage rdf:resource="https://wiki.gnome.org/Apps/Dictionary" />
   <mailing-list rdf:resource="http://mail.gnome.org/mailman/listinfo/gnome-utils-list" />
   <download-page rdf:resource="http://download.gnome.org/sources/gnome-dictionary/"/>
-  <bug-database rdf:resource="https://bugzilla.gnome.org/enter_bug.cgi?product=gnome-dictionary"/>
+  <bug-database rdf:resource="https://gitlab.gnome.org/GNOME/gnome-dictionary/issues/" />
   <license rdf:resource="http://usefulinc.com/doap/licenses/gpl"/>
   <category rdf:resource="http://api.gnome.org/doap-extensions#apps" />
   <programming-language>C</programming-language>

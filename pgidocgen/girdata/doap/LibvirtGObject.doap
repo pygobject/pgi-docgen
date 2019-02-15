@@ -9,7 +9,7 @@
 	access oVirt REST API. It uses GObject and librest to integrate well with
 	GNOME applications.</description>
 	<download-page rdf:resource="http://ftp.gnome.org/pub/GNOME/sources/libgovirt/"/>
-	<bug-database rdf:resource="http://bugzilla.gnome.org/browse.cgi?product=libgovirt"/>
+	<bug-database rdf:resource="https://gitlab.gnome.org/GNOME/libgovirt/issues/" />
 	<maintainer>
 		<foaf:Person>
 			<foaf:name>Christophe Fergeau</foaf:name>

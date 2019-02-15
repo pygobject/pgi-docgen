@@ -16,7 +16,7 @@
 	<homepage rdf:resource="https://wiki.gnome.org/Projects/Clutter" />
         <download-page rdf:resource="http://download.gnome.org/sources/clutter-gtk/" />
 	<license rdf:resource="http://usefulinc.com/doap/licenses/lgpl" />
-        <bug-database rdf:resource="https://bugzilla.gnome.org/enter_bug.cgi?product=clutter-gtk"/>
+        <bug-database rdf:resource="https://gitlab.gnome.org/GNOME/clutter-gtk/issues/"/>
         <mailing-list rdf:resource="mailto:clutter-list@gnome.org" />
 
         <programming-language>C</programming-language>
