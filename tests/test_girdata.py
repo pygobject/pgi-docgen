@@ -20,7 +20,7 @@ class TGIRData(unittest.TestCase):
     def test_get_project_summary(self):
         s = get_project_summary("Gtk", "3.0")
         assert s.name == "gtk (Multi-platform toolkit)"
-        assert s.description.startswith("GTK+ is a")
+        assert s.description.startswith("GTK is a")
         assert s.homepage
         assert s.bugtracker
         assert s.mailinglists
