@@ -23,7 +23,7 @@ _KWD_RE = re.compile("^(%s)$" % "|".join(keyword.kwlist + ["print", "exec"]))
 
 def get_signature_string(callable_):
     if type(callable_).__name__ == "wrapper_descriptor":
-            return u"()"
+        return u"()"
 
     try:
         sig = inspect.signature(callable_)
