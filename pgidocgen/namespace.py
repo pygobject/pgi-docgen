@@ -307,7 +307,7 @@ def get_cairo_types():
     except ImportError:
         import cairocffi as cairo
 
-    lib = ctypes.CDLL("libcairo.so")
+    lib = ctypes.CDLL("libcairo.so.2")
 
     def get_mapping(obj, prefix):
         map_ = {}
