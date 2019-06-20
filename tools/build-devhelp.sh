@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # Copyright 2013 Christoph Reiter
 #
 # This library is free software; you can redistribute it and/or
