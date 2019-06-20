@@ -7,3 +7,4 @@ MANIFEST
 tools/_temp_*
 .cache
 .coverage
+coverage.xml

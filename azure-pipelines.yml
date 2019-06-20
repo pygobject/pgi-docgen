@@ -1,19 +1,42 @@
-# Starter pipeline
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
-
-trigger:
-- master
-
-pool:
-  vmImage: 'ubuntu-latest'
-
-steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
-
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+jobs:
+- job: main
+  pool:
+    vmImage: 'ubuntu-latest'
+  steps:
+    - script: |
+        docker pull lazka/pgi-docgen
+      displayName: Pull Docker image
+      condition: not(eq(variables['build.sourceBranch'], 'refs/heads/deploy'))
+    - script: |
+        cd docker
+        bash -x ./build-image.sh
+      displayName: Build Docker image
+      condition: eq(variables['build.sourceBranch'], 'refs/heads/deploy')
+    - script: |
+        cd docker
+        bash -x ./test.sh
+      displayName: Run Tests
+      env:
+        CODECOV_TOKEN: $(CODECOV_TOKEN)
+    - script: |
+        cd docker
+        bash -x ./build-docs.sh
+      displayName: Build Docs
+      condition: eq(variables['build.sourceBranch'], 'refs/heads/deploy')
+    - task: DownloadSecureFile@1
+      inputs:
+        secureFile: deploy_key
+      displayName: 'Deploy Key'
+      condition: eq(variables['build.sourceBranch'], 'refs/heads/deploy')
+    - script: |
+        git config --global user.name "Christoph Reiter"
+        git config --global user.email "reiter.christoph@gmail.com"
+        mkdir ~/.ssh && mv $DOWNLOADSECUREFILE_SECUREFILEPATH ~/.ssh/id_rsa
+        chmod 700 ~/.ssh && chmod 600 ~/.ssh/id_rsa
+        ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
+      displayName: GitHub Setup
+      condition: eq(variables['build.sourceBranch'], 'refs/heads/deploy')
+    - script: |
+        bash -x ./tools/push.sh
+      displayName: Publish Docs
+      condition: eq(variables['build.sourceBranch'], 'refs/heads/deploy')

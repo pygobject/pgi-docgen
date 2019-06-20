@@ -34,7 +34,11 @@ RUN pip3 install --user --upgrade \
     jinja2==2.10.1 \
     sphinx==1.8.5 \
     cairocffi==1.0.2 \
-    beautifulsoup4==4.7.1
+    beautifulsoup4==4.7.1 \
+    pytest \
+    flake8 \
+    coverage \
+    pytest-cov
 
 WORKDIR /home/user
 COPY --chown=user:user . ./install
