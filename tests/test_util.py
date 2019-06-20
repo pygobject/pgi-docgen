@@ -16,7 +16,7 @@ from pgidocgen.util import is_staticmethod, \
     is_method_owner, is_fundamental, is_object, instance_to_rest, \
     get_child_properties, fake_subclasses, get_style_properties, \
     unescape_parameter, fake_bases, is_attribute_owner, unindent, \
-    get_csv_line, get_signature_string
+    get_csv_line, get_signature_string, sanitize_instance_repr
 
 
 class TUtil(unittest.TestCase):
@@ -156,3 +156,9 @@ class TUtil(unittest.TestCase):
 
         self.assertEqual(
             fake_bases(Gtk.Dialog, ignore_redundant=True), [Gtk.Window])
+
+    def test_sanitize_instance_repr(self):
+        san = sanitize_instance_repr
+        assert san("") == ""
+        assert san("42") == "42"
+        assert san("<Color structure at 0x7f805e890b38 (ClutterColor at 0x2d028b0)>") == "<Color structure at 0x000000000000 (ClutterColor at 0x0000000)>"

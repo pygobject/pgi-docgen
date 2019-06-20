@@ -29,7 +29,7 @@ USER user
 ENV PATH="/home/user/.local/bin:${PATH}"
 
 RUN pip3 install --user --upgrade \
-    "git+https://github.com/pygobject/pgi.git@2090435df6241a15ec2a7" \
+    "git+https://github.com/pygobject/pgi.git" \
     requests==2.22.0 \
     jinja2==2.10.1 \
     sphinx==1.8.5 \

@@ -498,6 +498,15 @@ def get_csv_line(values):
     return result
 
 
+def sanitize_instance_repr(text):
+    """Strips pointers from repr() output so we get a reproducible result"""
+
+    def repl(m):
+        return "0x" + len(m.group(1)) * "0"
+
+    return re.sub("0x([a-f0-9]+)", repl, text)
+
+
 def instance_to_rest(cls, inst):
     """Reference some python instance.
 
@@ -523,7 +532,7 @@ def instance_to_rest(cls, inst):
         else:
             inst = int(inst)
 
-    return "``%s``" % repr(inst)
+    return "``%s``" % sanitize_instance_repr(repr(inst))
 
 
 def import_namespace(namespace, version=None, ignore_version=False):
