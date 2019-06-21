@@ -162,3 +162,5 @@ class TUtil(unittest.TestCase):
         assert san("") == ""
         assert san("42") == "42"
         assert san("<Color structure at 0x7f805e890b38 (ClutterColor at 0x2d028b0)>") == "<Color structure at 0x000000000000 (ClutterColor at 0x0000000)>"
+
+        assert san("<GType EvdConnection (31362256)>") == "<GType EvdConnection>"

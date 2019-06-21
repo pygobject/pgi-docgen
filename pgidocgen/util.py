@@ -502,9 +502,15 @@ def sanitize_instance_repr(text):
     """Strips pointers from repr() output so we get a reproducible result"""
 
     def repl(m):
-        return "0x" + len(m.group(1)) * "0"
+        return m.group(1) + len(m.group(2)) * "0"
 
-    return re.sub("0x([a-f0-9]+)", repl, text)
+    text = re.sub("(0x)([a-f0-9]+)", repl, text)
+
+    def repl2(m):
+        return m.group(2)
+
+    text = re.sub("( \\([0-9]+\\))(>)", repl2, text)
+    return text
 
 
 def instance_to_rest(cls, inst):
