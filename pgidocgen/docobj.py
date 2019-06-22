@@ -934,7 +934,7 @@ class SymbolMapping(object):
                 source_url = func(source_path) if source_path else u""
             else:
                 source_url = u""
-            for value in values:
+            for value in sorted(values):
                 if not value.startswith(repo.namespace + "."):
                     continue
                 if repo.is_private(value):
