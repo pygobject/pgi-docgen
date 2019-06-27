@@ -358,7 +358,7 @@ def _parse_types(dom, module, namespace):
     instance_params = {}
 
     def add(c_name, py_name):
-        assert py_name.count("."), py_name
+        assert py_name.count(".") and c_name, (c_name, py_name)
         # escape each potential attribute
         py_name = ".".join(
             map(util.escape_parameter, py_name.split(".")))
@@ -485,7 +485,8 @@ def _parse_types(dom, module, namespace):
     # G_TIME_SPAN_MINUTE -> GLib.TIME_SPAN_MINUTE
     for t in dom.getElementsByTagName("constant"):
         c_name = t.getAttribute("c:type")
-        if t.parentNode.tagName == "namespace":
+        c_name = c_name or t.getAttribute("c:identifier")
+        if t.parentNode.tagName == "namespace" and c_name:
             name = namespace + "." + t.getAttribute("name")
             add(c_name, name)
 
