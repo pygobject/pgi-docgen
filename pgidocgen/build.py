@@ -179,7 +179,7 @@ def main(args):
     devhelp = args.devhelp
 
     for entry in os.listdir(args.source):
-        if entry.startswith("_"):
+        if entry.startswith("_") or entry.startswith("."):
             continue
         path = os.path.join(args.source, entry)
 
