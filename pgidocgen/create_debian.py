@@ -7,9 +7,9 @@
 # version 2.1 of the License, or (at your option) any later version.
 
 import os
+import sys
 import subprocess
 import shutil
-import argparse
 import requests
 import time
 from multiprocessing.pool import ThreadPool
@@ -21,7 +21,6 @@ import apt_pkg
 from .debian import get_repo_girs, get_debug_packages_for_libs, \
     get_repo_typelibs, get_missing_lib_packages
 from .util import parse_gir_shared_libs
-from .create import main as create_main
 
 
 DEB_BLACKLIST = [
@@ -291,13 +290,7 @@ def main(args):
         return
 
     print("starting the build..")
-
-    if not os.environ.get("DISPLAY", ""):
-        raise SystemExit(
-            "DISPLAY not set, some libs require a working X server:"
-            " use 'xvfb-run -a' for example")
-
     os.environ["XDG_DATA_DIRS"] = data_dir
-    create_args = argparse.Namespace(
-        target=args.target, namespace=sorted(can_build))
-    create_main(create_args)
+    subprocess.check_call(
+        ["xvfb-run", "-a", sys.executable, sys.argv[0],
+         "create", args.target] + sorted(can_build))
