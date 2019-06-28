@@ -14,6 +14,8 @@ import csv
 import warnings
 import subprocess
 import io
+import sys
+from contextlib import contextmanager
 
 from docutils.core import publish_parts
 
@@ -613,3 +615,29 @@ class VersionedNamespace(str):
     @property
     def version(self):
         return self.split("-", 1)[-1]
+
+
+@contextmanager
+def progress(total):
+    width = 70
+    last_blocks = [-1]
+
+    def update(current, clear=False):
+        if total == 0:
+            blocks = 0
+        else:
+            blocks = int((float(current) / total) * width)
+        if blocks == last_blocks[0] and not clear:
+            return
+        last_blocks[0] = blocks
+        line = "[" + "#" * blocks + " " * (width - blocks) + "]"
+        line += (" %%%dd/%%d" % len(str(total))) % (current, total)
+        if clear:
+            line = " " * len(line)
+        sys.stdout.write(line)
+        sys.stdout.write("\b" * len(line))
+        sys.stdout.flush()
+
+    update(0)
+    yield update
+    update(0, True)

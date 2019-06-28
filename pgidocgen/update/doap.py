@@ -9,9 +9,8 @@ from multiprocessing.pool import ThreadPool
 
 import requests
 
-from ..util import get_gir_files
+from ..util import get_gir_files, progress
 from ..girdata import PROJECTS, get_doap_path
-from .util import progress
 
 
 def fetch(project):

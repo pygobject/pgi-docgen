@@ -7,7 +7,7 @@
 
 import json
 
-from ..debian import _extract_control_field, get_repo_typelibs
+from ..debian import get_repo_typelibs
 from ..girdata import get_debian_path
 
 
@@ -16,7 +16,6 @@ def update_debian_info():
 
     cache = apt.Cache()
     cache.open(None)
-    homepages = _extract_control_field("Homepage")
 
     typelibs = get_repo_typelibs()
 

@@ -9,4 +9,4 @@ from .doap import update_doap
 from .debian_info import update_debian_info
 
 
-update_doap, debian_info
+update_doap, update_debian_info
