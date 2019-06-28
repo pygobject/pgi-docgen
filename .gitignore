@@ -8,3 +8,4 @@ tools/_temp_*
 .cache
 .coverage
 coverage.xml
+.mypy_cache
