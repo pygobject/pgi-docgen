@@ -5,7 +5,7 @@
 # License as published by the Free Software Foundation; either
 # version 2.1 of the License, or (at your option) any later version.
 
-from .update import update_doap
+from .update import update_doap, update_debian_info
 
 
 def add_parser(subparsers):
@@ -15,5 +15,7 @@ def add_parser(subparsers):
 
 
 def main(args):
-    print("Update doap files:")
+    print("Update doap files..")
     update_doap()
+    print("Update debian info..")
+    update_debian_info()

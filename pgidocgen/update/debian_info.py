@@ -1,4 +1,3 @@
-#!/usr/bin/python3
 # Copyright 2016 Christoph Reiter
 #
 # This library is free software; you can redistribute it and/or
@@ -7,13 +6,14 @@
 # version 2.1 of the License, or (at your option) any later version.
 
 import json
-import apt
 
-from pgidocgen.debian import _extract_control_field, get_repo_typelibs
-from pgidocgen.girdata import get_debian_path
+from ..debian import _extract_control_field, get_repo_typelibs
+from ..girdata import get_debian_path
 
 
-if __name__ == "__main__":
+def update_debian_info():
+    import apt
+
     cache = apt.Cache()
     cache.open(None)
     homepages = _extract_control_field("Homepage")
