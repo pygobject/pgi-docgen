@@ -1,4 +1,3 @@
-#!/usr/bin/python3
 # Copyright 2014 Christoph Reiter
 #
 # This library is free software; you can redistribute it and/or
@@ -9,16 +8,17 @@
 import os
 import re
 import requests
-from multiprocessing import Pool
+from multiprocessing.pool import ThreadPool
 
-import pgi
-pgi.require_version("Gtk", "3.0")
-
-from pgi.repository import Gtk
-from pgidocgen.girdata import get_class_image_dir
+from ..girdata import get_class_image_dir
+from ..util import progress
 
 
-DESTINATION = get_class_image_dir("Gtk", "3.0")
+def add_parser(subparsers):
+    parser = subparsers.add_parser(
+        "update-images", help="Update the class images")
+    parser.set_defaults(func=main)
+
 
 GTK_MAPPING = {
     "Button": "button",
@@ -35,7 +35,6 @@ GTK_MAPPING = {
     "ComboBox": "combo-box",
     "ComboBoxText": "combo-box-text",
     "InfoBar": "info-bar",
-    "RecentChooserDialog": "recentchooserdialog",
     "TextView": "multiline-text",
     "TreeView": "list-and-tree",
     "IconView": "icon-view",
@@ -93,12 +92,20 @@ MAPPING = dict([(k, GTK_URL % v) for k, v in GTK_MAPPING.items()])
 
 def fetch(args):
     key, url = args
-    print(key)
     resp = requests.get(url)
+    resp.raise_for_status()
     return key, resp.content
 
 
-def main(dest, mapping):
+def main(args):
+    import pgi
+    pgi.require_version("Gtk", "3.0")
+
+    from pgi.repository import Gtk
+
+    dest = get_class_image_dir("Gtk", "3.0")
+    mapping = MAPPING
+
     # make sure there are no typos in the mapping
     for key in mapping.keys():
         if not hasattr(Gtk, key):
@@ -129,12 +136,11 @@ def main(dest, mapping):
     print("https://gitlab.gnome.org/GNOME/gtk/tree/master/docs/reference/gtk/images")
     print(not_mapped)
 
-    pool = Pool(20)
-    for key, data in pool.imap_unordered(fetch, mapping.items()):
-        dest_path = os.path.join(dest, key + ".png")
-        with open(dest_path, "wb") as h:
-            h.write(data)
-
-
-if __name__ == "__main__":
-    main(DESTINATION, MAPPING)
+    with ThreadPool(20) as pool:
+        items = mapping.items()
+        with progress(len(items)) as update:
+            for i, (key, data) in enumerate(pool.imap_unordered(fetch, items)):
+                update(i + 1)
+                dest_path = os.path.join(dest, key + ".png")
+                with open(dest_path, "wb") as h:
+                    h.write(data)

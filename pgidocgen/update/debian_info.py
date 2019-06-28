@@ -11,7 +11,13 @@ from ..debian import get_repo_typelibs
 from ..girdata import get_debian_path
 
 
-def update_debian_info():
+def add_parser(subparsers):
+    parser = subparsers.add_parser(
+        "update-debian-info", help="Update the debian package information")
+    parser.set_defaults(func=main)
+
+
+def main(args):
     import apt
 
     cache = apt.Cache()

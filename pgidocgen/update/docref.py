@@ -12,9 +12,9 @@ import requests
 from bs4 import BeautifulSoup
 from multiprocessing.pool import ThreadPool
 
-from .girdata import get_docref_path
-from .girdata.library import LIBRARIES
-from .util import progress
+from ..girdata import get_docref_path
+from ..girdata.library import LIBRARIES
+from ..util import progress
 
 
 def add_parser(subparsers):

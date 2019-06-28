@@ -13,6 +13,12 @@ from ..util import get_gir_files, progress
 from ..girdata import PROJECTS, get_doap_path
 
 
+def add_parser(subparsers):
+    parser = subparsers.add_parser(
+        "update-doap", help="Update the doap files")
+    parser.set_defaults(func=main)
+
+
 def fetch(project):
     resp = requests.get(project.doap)
     if resp.status_code != requests.codes.ok:
@@ -20,7 +26,7 @@ def fetch(project):
     return resp.content, project
 
 
-def update_doap():
+def main(args):
     ns_list = set([n.split("-")[0] for n in get_gir_files().keys()])
     for p in PROJECTS:
         ns_list -= set(p.namespaces)
