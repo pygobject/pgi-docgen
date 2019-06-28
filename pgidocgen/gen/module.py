@@ -242,6 +242,7 @@ class ModuleGenerator(object):
             try:
                 inv_url = url + "/objects.inv"
                 r = requests.get(inv_url)
+                r.raise_for_status()
                 with open(inv_path, "wb") as f:
                     f.write(r.content)
             except requests.exceptions.RequestException as e:

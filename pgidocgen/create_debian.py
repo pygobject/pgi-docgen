@@ -120,6 +120,7 @@ def _fetch(args):
     for i in range(5):
         try:
             r = requests.get(uri)
+            r.raise_for_status()
         except requests.RequestException:
             time.sleep(i * i)
             continue

@@ -125,6 +125,7 @@ def main(args):
     print(missing)
 
     resp = requests.get("https://gitlab.gnome.org/GNOME/gtk/tree/master/docs/reference/gtk/images/")
+    resp.raise_for_status()
     mapped_images = GTK_MAPPING.values()
     not_mapped = []
     for image in set(re.findall("([^>/'\"]+?)\\.png", resp.text)):

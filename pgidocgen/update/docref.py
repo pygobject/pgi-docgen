@@ -27,6 +27,7 @@ def fetch_pages(lib):
     pages = set()
     keywords = set()
     r = requests.get(lib.devhelp_url)
+    r.raise_for_status()
     soup = BeautifulSoup(r.text, "html.parser")
 
     for tag in soup.findAll("sub"):
@@ -52,6 +53,7 @@ def fetch_page(arg):
 
     names = {}
     r = requests.get(lib.url + page)
+    r.raise_for_status()
     soup = BeautifulSoup(r.text, "html.parser")
     for link in soup.findAll("a"):
         if not link.get("name"):

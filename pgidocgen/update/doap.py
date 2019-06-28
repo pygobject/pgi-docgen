@@ -21,8 +21,7 @@ def add_parser(subparsers):
 
 def fetch(project):
     resp = requests.get(project.doap)
-    if resp.status_code != requests.codes.ok:
-        raise Exception(project.doap)
+    resp.raise_for_status()
     return resp.content, project
 
 
