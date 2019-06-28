@@ -69,7 +69,7 @@
         "homepage": "https://www.freedesktop.org/wiki/Distributions/AppStream/",
         "lib": "appstream",
         "summary": "Library to access AppStream services",
-        "version": "0.12.5"
+        "version": "0.12.7"
     },
     "AppStreamGlib-1.0": {
         "debian_package": "gir1.2-appstreamglib-1.0",
@@ -293,7 +293,7 @@
         "homepage": "https://wiki.gnome.org/Apps/Cheese",
         "lib": "cheese",
         "summary": "tool to take pictures and videos from your webcam",
-        "version": "3.31.90"
+        "version": "3.32.1"
     },
     "CinnamonDesktop-3.0": {
         "debian_package": "gir1.2-cinnamondesktop-3.0",
@@ -325,7 +325,7 @@
         "homepage": "http://www.clutter-project.org/",
         "lib": "clutter-gst-3.0",
         "summary": "Open GL based interactive canvas library GStreamer elements",
-        "version": "3.0.26"
+        "version": "3.0.27"
     },
     "ClutterX11-1.0": {
         "debian_package": "gir1.2-clutter-1.0",
@@ -589,7 +589,7 @@
         "homepage": "http://flatpak.org/",
         "lib": "flatpak",
         "summary": "Application deployment framework for desktop apps (library)",
-        "version": "1.2.3"
+        "version": "1.2.4"
     },
     "Folks-0.6": {
         "debian_package": "gir1.2-folks-0.6",
@@ -629,7 +629,7 @@
         "homepage": "https://github.com/hughsie/fwupd",
         "lib": "fwupd",
         "summary": "Firmware update daemon library",
-        "version": "1.2.4"
+        "version": "1.2.6"
     },
     "GCab-1.0": {
         "debian_package": "gir1.2-gcab-1.0",
@@ -717,7 +717,7 @@
         "homepage": "",
         "lib": "gnome-menus",
         "summary": "GNOME implementation of the freedesktop menu specification",
-        "version": "3.31.4"
+        "version": "3.32.0"
     },
     "GMime-2.6": {
         "debian_package": "gir1.2-gmime-2.6",
@@ -869,7 +869,7 @@
         "homepage": "https://wiki.gnome.org/Projects/LibGWeather",
         "lib": "libgweather",
         "summary": "GWeather shared library",
-        "version": "3.28.2"
+        "version": "3.28.3"
     },
     "GXPS-0.1": {
         "debian_package": "gir1.2-gxps-0.1",
@@ -941,7 +941,7 @@
         "homepage": "http://www.gtk.org/",
         "lib": "gdk-pixbuf",
         "summary": "GDK Pixbuf library",
-        "version": "2.38.0"
+        "version": "2.38.1"
     },
     "GdkPixdata-2.0": {
         "debian_package": "gir1.2-gdkpixbuf-2.0",
@@ -949,7 +949,7 @@
         "homepage": "http://www.gtk.org/",
         "lib": "gdk-pixbuf",
         "summary": "GDK Pixbuf library",
-        "version": "2.38.0"
+        "version": "2.38.1"
     },
     "GdkX11-2.0": {
         "debian_package": "gir1.2-gtk-2.0",
@@ -997,7 +997,7 @@
         "homepage": "http://gegl.org/",
         "lib": "gegl",
         "summary": "GObject introspection data for the Generic Graphics Library",
-        "version": "0.4.12"
+        "version": "0.4.14"
     },
     "Geoclue-2.0": {
         "debian_package": "gir1.2-geoclue-2.0",
@@ -1013,7 +1013,7 @@
         "homepage": "",
         "lib": "geocode-glib",
         "summary": "geocoding and reverse geocoding GLib library using Nominatim",
-        "version": "3.26.0"
+        "version": "3.26.1"
     },
     "Gepub-0.6": {
         "debian_package": "gir1.2-gepub-0.6",
@@ -1045,7 +1045,7 @@
         "homepage": "",
         "lib": "libgnomekbd",
         "summary": "GNOME library to manage keyboard configuration",
-        "version": "3.26.0"
+        "version": "3.26.1"
     },
     "Gladeui-2.0": {
         "debian_package": "gir1.2-gladeui-2.0",
@@ -1141,7 +1141,7 @@
         "homepage": "https://github.com/elementary/granite",
         "lib": "granite",
         "summary": "extension of GTK+ libraries (introspection files)",
-        "version": "5.2.2"
+        "version": "5.2.3"
     },
     "Graphene-1.0": {
         "debian_package": "gir1.2-graphene-1.0",
@@ -1149,7 +1149,7 @@
         "homepage": "https://ebassi.github.io/graphene/",
         "lib": "graphene",
         "summary": "library of graphic data types",
-        "version": "1.8.2"
+        "version": "1.8.4"
     },
     "Grl-0.3": {
         "debian_package": "gir1.2-grilo-0.3",
@@ -1453,7 +1453,7 @@
         "homepage": "http://libguestfs.org",
         "lib": "libguestfs",
         "summary": "guest disk image management system",
-        "version": "1.38.6"
+        "version": "1.40.2"
     },
     "Handy-0.0": {
         "debian_package": "gir1.2-handy-0.0",
@@ -1461,7 +1461,7 @@
         "homepage": "https://source.puri.sm/Librem5/libhandy",
         "lib": "libhandy",
         "summary": "Library with GTK+ widgets for mobile phones",
-        "version": "0.0.7"
+        "version": "0.0.9"
     },
     "HarfBuzz-0.0": {
         "debian_package": "gir1.2-harfbuzz-0.0",
@@ -1477,7 +1477,7 @@
         "homepage": "https://github.com/takaswie/libhinawa",
         "lib": "libhinawa",
         "summary": "I/O library for IEEE 1394 asynchronous transactions",
-        "version": "1.1.0"
+        "version": "1.3.1"
     },
     "Hkl-5.0": {
         "debian_package": "gir1.2-hkl-5.0",
@@ -1501,7 +1501,7 @@
         "homepage": "https://github.com/libical/libical",
         "lib": "libical3",
         "summary": "iCalendar library implementation in C (runtime)",
-        "version": "3.0.4"
+        "version": "3.0.5"
     },
     "ICalGLib-3.0": {
         "debian_package": "gir1.2-ical-3.0",
@@ -1509,7 +1509,7 @@
         "homepage": "https://github.com/libical/libical",
         "lib": "libical3",
         "summary": "iCalendar library implementation in C (runtime)",
-        "version": "3.0.4"
+        "version": "3.0.5"
     },
     "Indicate-0.7": {
         "debian_package": "gir1.2-indicate-0.7",
@@ -1537,11 +1537,11 @@
     },
     "JavaScriptCore-4.0": {
         "debian_package": "gir1.2-javascriptcoregtk-4.0",
-        "description": "JavaScriptCore is the JavaScript engine used in WebKit. It consists of the following building blocks: lexer, parser, start-up interpreter (LLInt), baseline JIT, a low-latency optimizing JIT (DFG), and a high-throughput optimizing JIT (FTL).\n\nThis build comes from the GTK+ port of WebKit (API version 4.0).",
+        "description": "JavaScriptCore is the JavaScript engine used in WebKit. It consists of the following building blocks: lexer, parser, start-up interpreter (LLInt), baseline JIT, a low-latency optimizing JIT (DFG), and a high-throughput optimizing JIT (FTL).\n\nThis build comes from the GTK port of WebKit (API version 4.0).",
         "homepage": "https://webkitgtk.org/",
         "lib": "webkit2gtk",
-        "summary": "JavaScript engine library from WebKitGTK+",
-        "version": "2.22.6"
+        "summary": "JavaScript engine library from WebKitGTK",
+        "version": "2.24.2"
     },
     "Json-1.0": {
         "debian_package": "gir1.2-json-1.0",
@@ -1644,16 +1644,8 @@
         "description": "",
         "homepage": "https://launchpad.net/lightdm",
         "lib": "lightdm",
-        "summary": "simple display manager (Gobject library)",
+        "summary": "simple display manager (GObject library)",
         "version": "1.26.0"
-    },
-    "Limba-1.0": {
-        "debian_package": "gir1.2-limba-1.0",
-        "description": "Limba allows 3rd-party developers to easily distribute their software on multiple Linux distributions. It provides atomic upgrades of software, simultaneous installation of multiple software versions and a simple way to obtain and upgrade software.",
-        "homepage": "http://people.freedesktop.org/~mak/limba/",
-        "lib": "limba",
-        "summary": "Library for the Limba 3rd-party software manager",
-        "version": "0.5.6"
     },
     "LunarDate-2.0": {
         "debian_package": "gir1.2-lunar-date-2.0",
@@ -1765,7 +1757,7 @@
         "homepage": "https://wiki.gnome.org/Projects/NetworkManager",
         "lib": "network-manager",
         "summary": "GObject-based client library for NetworkManager",
-        "version": "1.14.4"
+        "version": "1.14.6"
     },
     "NMA-1.0": {
         "debian_package": "gir1.2-nma-1.0",
@@ -1773,7 +1765,7 @@
         "homepage": "https://www.gnome.org/projects/NetworkManager/",
         "lib": "network-manager-applet",
         "summary": "library for wireless and mobile dialogs (libnm version)",
-        "version": "1.8.18"
+        "version": "1.8.20"
     },
     "Nautilus-3.0": {
         "debian_package": "gir1.2-nautilus-3.0",
@@ -2101,7 +2093,7 @@
         "homepage": "",
         "lib": "totem-pl-parser",
         "summary": "Totem Playlist Parser library",
-        "version": "3.26.2"
+        "version": "3.26.3"
     },
     "Tracker-2.0": {
         "debian_package": "gir1.2-tracker-2.0",
@@ -2109,7 +2101,7 @@
         "homepage": "https://wiki.gnome.org/Projects/Tracker",
         "lib": "tracker",
         "summary": "library to control/monitor tracker miners",
-        "version": "2.1.7"
+        "version": "2.1.8"
     },
     "TrackerControl-2.0": {
         "debian_package": "gir1.2-tracker-2.0",
@@ -2117,7 +2109,7 @@
         "homepage": "https://wiki.gnome.org/Projects/Tracker",
         "lib": "tracker",
         "summary": "library to control/monitor tracker miners",
-        "version": "2.1.7"
+        "version": "2.1.8"
     },
     "TrackerMiner-2.0": {
         "debian_package": "gir1.2-tracker-2.0",
@@ -2125,7 +2117,7 @@
         "homepage": "https://wiki.gnome.org/Projects/Tracker",
         "lib": "tracker",
         "summary": "library to control/monitor tracker miners",
-        "version": "2.1.7"
+        "version": "2.1.8"
     },
     "UDisks-2.0": {
         "debian_package": "gir1.2-udisks-2.0",
@@ -2133,7 +2125,7 @@
         "homepage": "https://www.freedesktop.org/wiki/Software/udisks",
         "lib": "udisks2",
         "summary": "GObject based library to access udisks2",
-        "version": "2.8.1"
+        "version": "2.8.2"
     },
     "UMockdev-1.0": {
         "debian_package": "gir1.2-umockdev-1.0",
@@ -2149,7 +2141,7 @@
         "homepage": "https://upower.freedesktop.org/",
         "lib": "upower",
         "summary": "abstraction for power management",
-        "version": "0.99.9"
+        "version": "0.99.10"
     },
     "Ufo-0.0": {
         "debian_package": "gir1.2-ufo-0.0",
@@ -2209,19 +2201,19 @@
     },
     "WebKit2-4.0": {
         "debian_package": "gir1.2-webkit2-4.0",
-        "description": "JavaScriptCore is the JavaScript engine used in WebKit. It consists of the following building blocks: lexer, parser, start-up interpreter (LLInt), baseline JIT, a low-latency optimizing JIT (DFG), and a high-throughput optimizing JIT (FTL).\n\nThis build comes from the GTK+ port of WebKit (API version 4.0).",
+        "description": "JavaScriptCore is the JavaScript engine used in WebKit. It consists of the following building blocks: lexer, parser, start-up interpreter (LLInt), baseline JIT, a low-latency optimizing JIT (DFG), and a high-throughput optimizing JIT (FTL).\n\nThis build comes from the GTK port of WebKit (API version 4.0).",
         "homepage": "https://webkitgtk.org/",
         "lib": "webkit2gtk",
-        "summary": "JavaScript engine library from WebKitGTK+",
-        "version": "2.22.6"
+        "summary": "JavaScript engine library from WebKitGTK",
+        "version": "2.24.2"
     },
     "WebKit2WebExtension-4.0": {
         "debian_package": "gir1.2-webkit2-4.0",
-        "description": "JavaScriptCore is the JavaScript engine used in WebKit. It consists of the following building blocks: lexer, parser, start-up interpreter (LLInt), baseline JIT, a low-latency optimizing JIT (DFG), and a high-throughput optimizing JIT (FTL).\n\nThis build comes from the GTK+ port of WebKit (API version 4.0).",
+        "description": "JavaScriptCore is the JavaScript engine used in WebKit. It consists of the following building blocks: lexer, parser, start-up interpreter (LLInt), baseline JIT, a low-latency optimizing JIT (DFG), and a high-throughput optimizing JIT (FTL).\n\nThis build comes from the GTK port of WebKit (API version 4.0).",
         "homepage": "https://webkitgtk.org/",
         "lib": "webkit2gtk",
-        "summary": "JavaScript engine library from WebKitGTK+",
-        "version": "2.22.6"
+        "summary": "JavaScript engine library from WebKitGTK",
+        "version": "2.24.2"
     },
     "Wnck-1.0": {
         "debian_package": "gir1.2-wnck-1.0",
@@ -2269,7 +2261,7 @@
         "homepage": "https://github.com/hughsie/libxmlb",
         "lib": "libxmlb",
         "summary": "GObject introspection data for libxmlb",
-        "version": "0.1.6"
+        "version": "0.1.8"
     },
     "Zeitgeist-2.0": {
         "debian_package": "gir1.2-zeitgeist-2.0",
