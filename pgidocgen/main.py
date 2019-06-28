@@ -9,7 +9,7 @@
 
 import argparse
 
-from . import create, build, stubs, create_debian
+from . import create, build, stubs, create_debian, update_girdata
 
 
 def main(argv):
@@ -20,6 +20,7 @@ def main(argv):
     build.add_parser(subparser)
     stubs.add_parser(subparser)
     create_debian.add_parser(subparser)
+    update_girdata.add_parser(subparser)
 
     args = parser.parse_args(argv[1:])
     if not hasattr(args, "func"):
