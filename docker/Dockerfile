@@ -45,7 +45,7 @@ COPY --chown=user:user . ./install
 WORKDIR /home/user/install
 
 ENV PYTHONPATH /home/user/install
-RUN ./tools/build-debian.py --install --no-build 
+RUN ./pgi-docgen create-debian --install --no-build _docs
 ENV PGI_DOCGEN_DEBIAN_DATA_DIR /home/user/install/_debian_build_cache
 
 WORKDIR /home/user/app
