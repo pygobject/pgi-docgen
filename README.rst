@@ -10,10 +10,10 @@ What is this?
 A tool to create sphinx documentation for gi modules using python
 introspection.
 
-``pgidocgen.py create`` introspects the gi module, pulls in the gir docs and
+``pgi-docgen create`` introspects the gi module, pulls in the gir docs and
 creates a sphinx environment.
 
-``pgidocgen.py build`` builds html docs using sphinx.
+``pgi-docgen build`` builds html docs using sphinx.
 
 Requirements
 ------------

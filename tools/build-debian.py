@@ -289,14 +289,14 @@ def main(argv):
     print("starting the build..")
     os.environ["XDG_DATA_DIRS"] = data_dir
     subprocess.check_call(
-        ["xvfb-run", "-a", "./pgidocgen.py", "create", "_docs"] +
+        ["xvfb-run", "-a", "./pgi-docgen", "create", "_docs"] +
         sorted(can_build))
     subprocess.check_call(
-        ["./pgidocgen.py", "build", "_docs", "_docs/_build"])
+        ["./pgi-docgen", "build", "_docs", "_docs/_build"])
 
     if args.devhelp:
         subprocess.check_call(
-            ["./pgidocgen.py", "build", "--devhelp",
+            ["./pgi-docgen", "build", "--devhelp",
              "_docs", "_docs/_build_devhelp"])
 
 

@@ -11,5 +11,5 @@
 
 set -e
 
-./pgidocgen.py create _docs "$@"
-./pgidocgen.py build --devhelp _docs _docs/_build_devhelp
+./pgi-docgen create _docs "$@"
+./pgi-docgen build --devhelp _docs _docs/_build_devhelp
