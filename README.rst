@@ -87,7 +87,7 @@ Everything in the ``pgidocgen/gen/data/theme`` sub directory:
 
     MIT License
 
-Fonts embedded in ``pgidocgen/gen/data/theme/static/css/pgi.css``
+Fonts in ``pgidocgen/gen/data/theme/static/fonts``
 
     Lato:
         http://www.latofonts.com
