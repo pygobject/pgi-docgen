@@ -19,9 +19,10 @@ from functools import cmp_to_key
 import apt
 import apt_pkg
 
-from pgidocgen.debian import get_repo_girs, get_debug_packages_for_libs, \
+from .debian import get_repo_girs, get_debug_packages_for_libs, \
     get_repo_typelibs, get_missing_lib_packages
-from pgidocgen.util import parse_gir_shared_libs
+from .util import parse_gir_shared_libs
+from .create import main as create_main
 
 
 DEB_BLACKLIST = [
@@ -245,13 +246,17 @@ def check_debug_packages(shared_libs, install=False):
     handle_missing_packages(to_install, install=install)
 
 
-def main(argv):
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--devhelp', action='store_true')
+def add_parser(subparsers):
+    parser = subparsers.add_parser(
+        "create-debian", help="Create a sphinx environ for all of Debian")
     parser.add_argument('--install', action='store_true')
     parser.add_argument('--no-build', action='store_true')
-    args = parser.parse_args(argv[1:])
+    parser.add_argument('target',
+                        help='path to where the resulting source should be')
+    parser.set_defaults(func=main)
 
+
+def main(args):
     print("[don't forget to apt-file update/apt-get update!]")
 
     print("searching for typelibs..")
@@ -287,18 +292,13 @@ def main(argv):
         return
 
     print("starting the build..")
+
+    if not os.environ.get("DISPLAY", ""):
+        raise SystemExit(
+            "DISPLAY not set, some libs require a working X server:"
+            " use 'xvfb-run -a' for example")
+
     os.environ["XDG_DATA_DIRS"] = data_dir
-    subprocess.check_call(
-        ["xvfb-run", "-a", "./pgi-docgen", "create", "_docs"] +
-        sorted(can_build))
-    subprocess.check_call(
-        ["./pgi-docgen", "build", "_docs", "_docs/_build"])
-
-    if args.devhelp:
-        subprocess.check_call(
-            ["./pgi-docgen", "build", "--devhelp",
-             "_docs", "_docs/_build_devhelp"])
-
-
-if __name__ == "__main__":
-    main(sys.argv)
+    create_args = argparse.Namespace(
+        target=args.target, namespace=sorted(can_build))
+    create_main(create_args)

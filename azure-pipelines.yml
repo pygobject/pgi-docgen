@@ -30,6 +30,11 @@ jobs:
         bash -x ./build-docs.sh
       displayName: Build Docs
       condition: eq(variables['build.sourceBranch'], 'refs/heads/deploy')
+    - script: |
+        cd docker
+        bash -x ./build-docs-sphinx.sh
+      displayName: Sphinx Build
+      condition: eq(variables['build.sourceBranch'], 'refs/heads/deploy')
     - task: DownloadSecureFile@1
       inputs:
         secureFile: deploy_key
