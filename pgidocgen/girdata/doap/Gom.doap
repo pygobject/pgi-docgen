@@ -5,6 +5,7 @@
          xmlns="http://usefulinc.com/ns/doap#">
 
   <name xml:lang="en">Gom</name>
+  <description xml:lang="en">A GObject to SQLite object mapper.</description>
   <shortdesc xml:lang="en">A GObject to SQLite object mapper.</shortdesc>
   <homepage rdf:resource="https://wiki.gnome.org/Projects/Gom" />
   <download-page rdf:resource="http://download.gnome.org/sources/gom/" />
@@ -17,6 +18,13 @@
       <foaf:name>Christian Hergert</foaf:name>
       <foaf:mbox rdf:resource="mailto:christian@hergert.me" />
       <gnome:userid>chergert</gnome:userid>
+    </foaf:Person>
+  </maintainer>
+  <maintainer>
+    <foaf:Person>
+      <foaf:name>Bastien Nocera</foaf:name>
+      <foaf:mbox rdf:resource="mailto:hadess@hadess.net" />
+      <gnome:userid>hadess</gnome:userid>
     </foaf:Person>
   </maintainer>
 </Project>

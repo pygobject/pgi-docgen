@@ -7,7 +7,7 @@
 
   <name>libdazzle</name>
   <shortname>libdazzle</shortname>
-  <shortdesc>A library to delight your users with fancy features</shortdesc>
+  <shortdesc>A GPLv3-based library to delight your users with fancy features</shortdesc>
   <description>libdazzle is a collection of fancy features for GLib and Gtk+ that aren't quite ready or generic enough for use inside those libraries. This is often a proving ground for new widget prototypes. Applications such as Builder tend to drive development of this project.</description>
   <homepage rdf:resource="https://wiki.gnome.org/Apps/Builder" />
   <download-page rdf:resource="http://download.gnome.org/sources/libdazzle/" />

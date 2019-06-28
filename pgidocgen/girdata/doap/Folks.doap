@@ -9,10 +9,9 @@
   <shortdesc xml:lang="en">People aggregation library</shortdesc>
   <category rdf:resource="http://api.gnome.org/doap-extensions#core" />
   <description>Folks is a contact aggregation library. It retrieves contacts
-  from various sources (including Telepathy IM accounts, libsocialweb web
-  service contacts, and local contact stores) and compiles them into
-  fully-fledged people objects. The ultimate goal is to provide the platform
-  with easy access to all of the user's contacts.</description>
+  from various sources (including Telepathy IM accounts, and local contact stores)
+  and compiles them into fully-fledged people objects. The ultimate goal isto provide
+  the platform with easy access to all of the user's contacts.</description>
   <homepage rdf:resource="https://wiki.gnome.org/Projects/Folks" />
   <download-page rdf:resource="https://download.gnome.org/sources/folks/" />
   <bug-database
