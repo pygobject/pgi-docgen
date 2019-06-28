@@ -7,12 +7,11 @@
 
 import sys
 import subprocess
-import tempfile
 import os
 
 from .repo import Repository
 from .util import get_gir_files
-from .namespace import get_namespace
+from .namespace import get_namespace, set_cache_prefix_path
 
 
 def add_parser(subparsers):
@@ -25,18 +24,9 @@ def add_parser(subparsers):
 
 
 def _main_many(target, namespaces):
-    fd, temp_cache = tempfile.mkstemp("pgidocgen-cache")
-    os.close(fd)
-    try:
-        os.environ["PGIDOCGEN_CACHE"] = temp_cache
-        for namespace in namespaces:
-            subprocess.check_call(
-                [sys.executable, sys.argv[0], "stubs", target, namespace])
-    finally:
-        try:
-            os.unlink(temp_cache)
-        except OSError:
-            pass
+    for namespace in namespaces:
+        subprocess.check_call(
+            [sys.executable, sys.argv[0], "stubs", target, namespace])
 
 
 def main(args):
@@ -53,6 +43,9 @@ def main(args):
     if namespace not in girs:
         print("GIR file for %s not found, aborting." % namespace)
         raise SystemExit(1)
+
+    cache_prefix = os.path.join(args.target, ".pgidocgen.cache", 'namespace')
+    set_cache_prefix_path(cache_prefix)
 
     namespace, version = namespace.split("-", 1)
     try:

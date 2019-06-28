@@ -20,26 +20,25 @@ from .girdata import load_doc_references
 from .overrides import parse_override_docs
 
 
-# Enable caching during building multiples modules if PGIDOCGEN_CACHE is set
-# Not enabled by default since it would need versioning and
-# only caches by gir name and not the source path...
-SHELVE_CACHE = os.environ.get("PGIDOCGEN_CACHE", None)
+SHELVE_CACHE = None
+
+
+def set_cache_prefix_path(path):
+    global SHELVE_CACHE
+
+    path = os.path.abspath(path)
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    SHELVE_CACHE = path
 
 
 def get_namespace(namespace, version, _cache={}):
 
     key = str(namespace + "-" + version)
+    protocol = 3
 
     if key not in _cache:
         if SHELVE_CACHE:
-            try:
-                if os.path.getsize(SHELVE_CACHE) == 0:
-                    # created by tempfile, replace here
-                    os.remove(SHELVE_CACHE)
-            except OSError:
-                pass
-
-            d = shelve.open(SHELVE_CACHE, protocol=2)
+            d = shelve.open(SHELVE_CACHE, protocol=protocol)
             if key in d:
                 _cache[key] = d[key]
                 d.close()
@@ -50,7 +49,7 @@ def get_namespace(namespace, version, _cache={}):
                 for k, v in list(type(ns).__dict__.items()):
                     if isinstance(v, util.cached_property):
                         getattr(ns, k)
-                d = shelve.open(SHELVE_CACHE, protocol=2)
+                d = shelve.open(SHELVE_CACHE, protocol=protocol)
                 d[key] = ns
                 d.close()
                 _cache[key] = ns
