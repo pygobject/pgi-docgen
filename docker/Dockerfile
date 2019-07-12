@@ -1,8 +1,8 @@
-FROM debian:buster
+FROM debian:testing
 
 ENV LANG C.UTF-8
 
-RUN echo "deb http://debug.mirrors.debian.org/debian-debug/ buster-debug main" >> /etc/apt/sources.list
+RUN echo "deb http://debug.mirrors.debian.org/debian-debug/ testing-debug main" >> /etc/apt/sources.list
 
 RUN apt-get update
 
