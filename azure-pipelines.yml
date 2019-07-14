@@ -4,6 +4,7 @@ schedules:
   branches:
     include:
     - deploy
+  always: true
 
 jobs:
 - job: main
