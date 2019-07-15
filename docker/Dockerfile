@@ -3,6 +3,7 @@ FROM debian:testing
 ENV LANG C.UTF-8
 
 RUN echo "deb http://debug.mirrors.debian.org/debian-debug/ testing-debug main" >> /etc/apt/sources.list
+RUN rm /etc/apt/apt.conf.d/docker-no-languages
 
 RUN apt-get update
 
