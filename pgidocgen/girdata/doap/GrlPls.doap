@@ -18,7 +18,7 @@
   <download-page
   rdf:resource="http://download.gnome.org/sources/grilo-plugins/"/>
   <bug-database
-  rdf:resource="https://bugzilla.gnome.org/browse.cgi?product=grilo&amp;component=plugins" />
+  rdf:resource="https://gitlab.gnome.org/GNOME/grilo-plugins/issues/" />
 
   <maintainer>
     <foaf:Person>

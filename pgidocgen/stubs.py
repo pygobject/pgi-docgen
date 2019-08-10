@@ -14,7 +14,7 @@ import tempfile
 import typing
 
 from .docobj import Flags
-from .namespace import get_namespace
+from .namespace import get_namespace, set_cache_prefix_path
 from .repo import Repository
 from .util import get_gir_files
 
@@ -44,8 +44,6 @@ def add_dependent_module(module: str):
     import gi.repository
     if hasattr(gi.repository, module):
         current_module_dependencies.add(module)
-
-
 def add_parser(subparsers):
     parser = subparsers.add_parser("stubs", help="Create a typing stubs")
     parser.add_argument('target',
@@ -56,18 +54,9 @@ def add_parser(subparsers):
 
 
 def _main_many(target, namespaces):
-    fd, temp_cache = tempfile.mkstemp("pgidocgen-cache")
-    os.close(fd)
-    try:
-        os.environ["PGIDOCGEN_CACHE"] = temp_cache
-        for namespace in namespaces:
-            subprocess.check_call(
-                [sys.executable, sys.argv[0], "stubs", target, namespace])
-    finally:
-        try:
-            os.unlink(temp_cache)
-        except OSError:
-            pass
+    for namespace in namespaces:
+        subprocess.check_call(
+            [sys.executable, sys.argv[0], "stubs", target, namespace])
 
 
 class StubClass:
@@ -386,6 +375,9 @@ def main(args):
     if namespace not in girs:
         print("GIR file for %s not found, aborting." % namespace)
         raise SystemExit(1)
+
+    cache_prefix = os.path.join(args.target, ".pgidocgen.cache", 'namespace')
+    set_cache_prefix_path(cache_prefix)
 
     namespace, version = namespace.split("-", 1)
     try:

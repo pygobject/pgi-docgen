@@ -11,7 +11,9 @@ import re
 import types
 import inspect
 import copy
+import warnings
 
+import gi
 from gi.repository import GObject
 
 from . import util
@@ -504,6 +506,8 @@ class Class(BaseDocObject, MethodsMixin, PropertiesMixin, SignalsMixin,
         if obj in cls._cache:
             return cls._cache[obj]
 
+        warnings.filterwarnings("ignore", category=gi.PyGIDeprecationWarning)
+
         namespace = util.get_namespace(obj)
         name = obj.__name__
         module = util.import_namespace(namespace)
@@ -934,7 +938,7 @@ class SymbolMapping(object):
                 source_url = func(source_path) if source_path else u""
             else:
                 source_url = u""
-            for value in values:
+            for value in sorted(values):
                 if not value.startswith(repo.namespace + "."):
                     continue
                 if repo.is_private(value):
@@ -972,6 +976,8 @@ class Module(BaseDocObject):
 
     @classmethod
     def from_repo(cls, repo):
+        warnings.filterwarnings("ignore", category=gi.PyGIDeprecationWarning)
+
         mod = Module(repo.namespace)
         mod.dependencies = repo.get_all_dependencies()
 

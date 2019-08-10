@@ -221,18 +221,14 @@ def get_line_numbers_for_file(library_path):
 
     def find_nearest_cu(addr):
         i = bisect.bisect_right(cu_index, addr)
-        if i:
-            return cus[cu_index[i - 1]]
-        raise ValueError
+        return cus[cu_index[max(i, 1) - 1]]
 
     lines = get_lines(library_path)
     line_index = sorted(lines.keys())
 
     def find_nearest_line(addr):
         i = bisect.bisect_right(line_index, addr)
-        if i:
-            return lines[line_index[i - 1]]
-        raise ValueError
+        return lines[line_index[max(i, 1) - 1]]
 
     public = get_public_symbols(library_path)
     symbols = {}
@@ -272,12 +268,14 @@ def get_line_numbers_for_file(library_path):
 def get_abs_library_path(library_name):
     """e.g. returns /usr/lib/x86_64-linux-gnu/libgobject-2.0.so.0 for
     libgobject-2.0.so.0
-
-    FIXME: error handling
     """
 
     if "LD_LIBRARY_PATH" in os.environ:
-        return os.path.join(os.environ["LD_LIBRARY_PATH"], library_name)
+        path = os.path.join(os.environ["LD_LIBRARY_PATH"], library_name)
+        path = os.path.abs(path)
+        if not os.path.exists(path):
+            raise LookupError(library_name)
+        return path
 
     # On debian ldconfig is in /sbin which isn't in PATH by default
     env = os.environ.copy()
@@ -297,7 +295,7 @@ def get_abs_library_path(library_name):
                 assert os.path.isabs(path)
                 return path
 
-    return ""
+    raise LookupError(library_name)
 
 
 def get_line_numbers_for_name(library_name):

@@ -9,22 +9,31 @@
 import os
 import unittest
 
+import pgi
+pgi.require_version("Gtk", "3.0")
+
 from pgidocgen.util import is_staticmethod, \
     is_method_owner, is_fundamental, is_object, instance_to_rest, \
     get_child_properties, fake_subclasses, get_style_properties, \
     unescape_parameter, fake_bases, is_attribute_owner, unindent, \
-    get_csv_line, get_signature_string
+    get_csv_line, get_signature_string, sanitize_instance_repr
 
 
 class TUtil(unittest.TestCase):
 
     def test_get_signature_string(self):
-        from pgi.repository import GLib
+        from pgi.repository import GLib, Gio
 
         func = GLib.Error.__init__
         assert get_signature_string(func) == "()"
         assert get_signature_string(GLib.IOChannel.new_file) == \
             "(filename, mode)"
+        assert get_signature_string(GLib.IOChannel) == \
+            "(filedes=None, filename=None, mode=None, hwnd=None)"
+        assert get_signature_string(GLib.MainLoop) == \
+            "(context=None)"
+        assert get_signature_string(Gio.Menu.append) == \
+            "(label, detailed_action)"
 
     def test_get_csv_line(self):
         assert get_csv_line(["foo"]) == '"foo"'
@@ -147,3 +156,11 @@ class TUtil(unittest.TestCase):
 
         self.assertEqual(
             fake_bases(Gtk.Dialog, ignore_redundant=True), [Gtk.Window])
+
+    def test_sanitize_instance_repr(self):
+        san = sanitize_instance_repr
+        assert san("") == ""
+        assert san("42") == "42"
+        assert san("<Color structure at 0x7f805e890b38 (ClutterColor at 0x2d028b0)>") == "<Color structure at 0x000000000000 (ClutterColor at 0x0000000)>"
+
+        assert san("<GType EvdConnection (31362256)>") == "<GType EvdConnection>"

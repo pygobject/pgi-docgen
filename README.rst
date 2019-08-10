@@ -1,9 +1,8 @@
-.. image:: https://circleci.com/gh/pygobject/pgi-docgen.svg?style=svg
-    :target: https://circleci.com/gh/pygobject/pgi-docgen
+.. image:: https://dev.azure.com/pygobject/pgi-docgen/_apis/build/status/pygobject.pgi-docgen?branchName=master
+    :target: https://dev.azure.com/pygobject/pgi-docgen/_build/latest?definitionId=2&branchName=master
 
 .. image:: https://codecov.io/gh/pygobject/pgi-docgen/branch/master/graph/badge.svg
     :target: https://codecov.io/gh/pygobject/pgi-docgen
-
 
 What is this?
 =============
@@ -11,10 +10,10 @@ What is this?
 A tool to create sphinx documentation for gi modules using python
 introspection.
 
-``pgidocgen.py create`` introspects the gi module, pulls in the gir docs and
+``pgi-docgen create`` introspects the gi module, pulls in the gir docs and
 creates a sphinx environment.
 
-``pgidocgen.py build`` builds html docs using sphinx.
+``pgi-docgen build`` builds html docs using sphinx.
 
 Requirements
 ------------
@@ -37,10 +36,6 @@ How do I get started?
 
     # API docs for Gtk/Gst:
     ./tools/build.sh Gtk-3.0 Gst-1.0
-
-    # Create docs for all (working) packages in Debian Jessie
-    # Warning: This can take about an hour.
-    ./tools/build-debian.py
 
 The resulting docs can be found in ``_docs/_build``
 
@@ -88,7 +83,7 @@ Everything in the ``pgidocgen/gen/data/theme`` sub directory:
 
     MIT License
 
-Fonts embedded in ``pgidocgen/gen/data/theme/static/css/pgi.css``
+Fonts in ``pgidocgen/gen/data/theme/static/fonts``
 
     Lato:
         http://www.latofonts.com

@@ -12,7 +12,7 @@
   <homepage rdf:resource="https://wiki.gnome.org/Projects/JsonGlib"/>
   <license rdf:resource="http://spdx.org/licenses/LGPL-2.1+"/>
   <download-page rdf:resource="http://download.gnome.org/sources/json-glib/"/>
-  <bug-database rdf:resource="https://bugzilla.gnome.org/enter_bug.cgi?product=json-glib"/>
+  <bug-database rdf:resource="https://gitlab.gnome.org/GNOME/json-glib/issues/" />
   <repository>
     <GitRepository>
       <location rdf:resource="https://gitlab.gnome.org/GNOME/json-glib.git"/>

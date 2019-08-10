@@ -10,7 +10,7 @@
 	Nominatim</description>
 	<category rdf:resource="http://api.gnome.org/doap-extensions#core" />
 	<programming-language>C</programming-language>
-	<homepage rdf:resource="http://git.gnome.org/browse/geocode-glib" />
+	<bug-database rdf:resource="https://gitlab.gnome.org/GNOME/geocode-glib/issues/" />
 	<maintainer>
 		<foaf:Person>
 			<foaf:name>Jonas Danielsson</foaf:name>

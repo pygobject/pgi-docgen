@@ -20,7 +20,7 @@ implementation of UPnP A/V profiles.</description>
   <download-page
   rdf:resource="http://gupnp.org/download"/>
   <bug-database
-  rdf:resource="http://bugzilla.gnome.org/browse.cgi?product=GUPnP"/>
+  rdf:resource="https://gitlab.gnome.org/GNOME/gupnp-av/issues/" />
 
   <maintainer>
     <foaf:Person>

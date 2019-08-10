@@ -27,16 +27,17 @@ class TestCommand(Command):
             raise SystemExit(status)
 
 
-setup(name='pgidocgen',
+setup(name='pgi-docgen',
       version="0.0.1",
       description='Docs Generator for PGI/PyGObject',
       author='Christoph Reiter',
       author_email='reiter.christoph@gmail.com',
       url='https://github.com/pygobject/pgi-docgen',
-      scripts=['pgidocgen.py'],
+      scripts=['pgi-docgen'],
       packages=[
           'pgidocgen',
           'pgidocgen.gen',
+          'pgidocgen.update',
       ],
       package_data={'pgidocgen': ['data/*', 'data/*/*', 'data/*/*/*']},
       license='LGPL-2.1+',

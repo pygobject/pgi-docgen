@@ -1,4 +1,3 @@
-#!/usr/bin/python3
 # Copyright 2015,2017 Christoph Reiter
 #
 # This library is free software; you can redistribute it and/or
@@ -6,23 +5,29 @@
 # License as published by the Free Software Foundation; either
 # version 2.1 of the License, or (at your option) any later version.
 
-import sys
-import argparse
 import json
 from urllib.parse import unquote
 
 import requests
 from bs4 import BeautifulSoup
-from multiprocessing import Pool
+from multiprocessing.pool import ThreadPool
 
-from pgidocgen.girdata import get_docref_path
-from pgidocgen.girdata.library import LIBRARIES
+from ..girdata import get_docref_path
+from ..girdata.library import LIBRARIES
+from ..util import progress
+
+
+def add_parser(subparsers):
+    parser = subparsers.add_parser(
+        "update-docref", help="Update the doc references")
+    parser.set_defaults(func=main)
 
 
 def fetch_pages(lib):
     pages = set()
     keywords = set()
     r = requests.get(lib.devhelp_url)
+    r.raise_for_status()
     soup = BeautifulSoup(r.text, "html.parser")
 
     for tag in soup.findAll("sub"):
@@ -48,6 +53,7 @@ def fetch_page(arg):
 
     names = {}
     r = requests.get(lib.url + page)
+    r.raise_for_status()
     soup = BeautifulSoup(r.text, "html.parser")
     for link in soup.findAll("a"):
         if not link.get("name"):
@@ -64,43 +70,20 @@ def fetch_page(arg):
     return names, page
 
 
-def main(argv):
-    pool = Pool(20)
+def main(args):
+    with ThreadPool(30) as pool:
+        for lib in LIBRARIES:
+            print("Update %s.." % lib.namespace)
+            pages, keywords = fetch_pages(lib)
+            mapping = {}
+            with progress(len(pages)) as update:
+                for i, (names, page) in enumerate(pool.imap_unordered(
+                        fetch_page, [(lib, p, keywords) for p in pages])):
+                    update(i + 1)
+                    mapping.update(names)
 
-    parser = argparse.ArgumentParser(description='Fetch docrefs')
-    parser.add_argument('namespace', nargs="*",
-                        help='namespace including version e.g. Gtk-3.0')
-
-    try:
-        args = parser.parse_args(argv[1:])
-    except SystemExit:
-        raise SystemExit(1)
-
-    if not args.namespace:
-        libraries = LIBRARIES
-    else:
-        libraries = []
-        for l in LIBRARIES:
-            if l.namespace in args.namespace:
-                libraries.append(l)
-        if len(args.namespace) != len(libraries):
-            print("Invalid namespaces in %s" % args.namespace)
-            raise SystemExit(1)
-
-    for lib in libraries:
-        pages, keywords = fetch_pages(lib)
-        mapping = {}
-        for names, page in pool.imap_unordered(
-                fetch_page, [(lib, p, keywords) for p in pages]):
-            print(page)
-            mapping.update(names)
-
-        ns = lib.namespace
-        namespace, version = ns.split("-")
-        with open(get_docref_path(namespace, version), "wb") as h:
-            h.write(
-                json.dumps(mapping, sort_keys=True, indent=4).encode("utf-8"))
-
-
-if __name__ == "__main__":
-    sys.exit(main(sys.argv))
+            ns = lib.namespace
+            namespace, version = ns.split("-")
+            with open(get_docref_path(namespace, version), "wb") as h:
+                h.write(
+                    json.dumps(mapping, sort_keys=True, indent=4).encode("utf-8"))

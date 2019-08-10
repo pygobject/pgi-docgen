@@ -18,7 +18,7 @@ See http://www.gnome-db.org for more information.</description>
   <homepage rdf:resource="http://www.gnome-db.org/" />
   <mailing-list rdf:resource="http://mail.gnome.org/mailman/listinfo/gnome-db-list" />
   <download-page rdf:resource="http://download.gnome.org/sources/libgda/" />
-  <bug-database rdf:resource="https://bugzilla.gnome.org/browse.cgi?product=libgda" />
+  <bug-database rdf:resource="https://gitlab.gnome.org/GNOME/libgda/issues/" />
 
   <maintainer>
     <foaf:Person>

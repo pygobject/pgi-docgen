@@ -20,26 +20,25 @@ from .girdata import load_doc_references
 from .overrides import parse_override_docs
 
 
-# Enable caching during building multiples modules if PGIDOCGEN_CACHE is set
-# Not enabled by default since it would need versioning and
-# only caches by gir name and not the source path...
-SHELVE_CACHE = os.environ.get("PGIDOCGEN_CACHE", None)
+SHELVE_CACHE = None
+
+
+def set_cache_prefix_path(path):
+    global SHELVE_CACHE
+
+    path = os.path.abspath(path)
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    SHELVE_CACHE = path
 
 
 def get_namespace(namespace, version, _cache={}):
 
     key = str(namespace + "-" + version)
+    protocol = 3
 
     if key not in _cache:
         if SHELVE_CACHE:
-            try:
-                if os.path.getsize(SHELVE_CACHE) == 0:
-                    # created by tempfile, replace here
-                    os.remove(SHELVE_CACHE)
-            except OSError:
-                pass
-
-            d = shelve.open(SHELVE_CACHE, protocol=2)
+            d = shelve.open(SHELVE_CACHE, protocol=protocol)
             if key in d:
                 _cache[key] = d[key]
                 d.close()
@@ -50,7 +49,7 @@ def get_namespace(namespace, version, _cache={}):
                 for k, v in list(type(ns).__dict__.items()):
                     if isinstance(v, util.cached_property):
                         getattr(ns, k)
-                d = shelve.open(SHELVE_CACHE, protocol=2)
+                d = shelve.open(SHELVE_CACHE, protocol=protocol)
                 d[key] = ns
                 d.close()
                 _cache[key] = ns
@@ -307,7 +306,7 @@ def get_cairo_types():
     except ImportError:
         import cairocffi as cairo
 
-    lib = ctypes.CDLL("libcairo.so")
+    lib = ctypes.CDLL("libcairo.so.2")
 
     def get_mapping(obj, prefix):
         map_ = {}
@@ -358,7 +357,7 @@ def _parse_types(dom, module, namespace):
     instance_params = {}
 
     def add(c_name, py_name):
-        assert py_name.count("."), py_name
+        assert py_name.count(".") and c_name, (c_name, py_name)
         # escape each potential attribute
         py_name = ".".join(
             map(util.escape_parameter, py_name.split(".")))
@@ -485,7 +484,8 @@ def _parse_types(dom, module, namespace):
     # G_TIME_SPAN_MINUTE -> GLib.TIME_SPAN_MINUTE
     for t in dom.getElementsByTagName("constant"):
         c_name = t.getAttribute("c:type")
-        if t.parentNode.tagName == "namespace":
+        c_name = c_name or t.getAttribute("c:identifier")
+        if t.parentNode.tagName == "namespace" and c_name:
             name = namespace + "." + t.getAttribute("name")
             add(c_name, name)
 

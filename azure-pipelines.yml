@@ -1,0 +1,63 @@
+schedules:
+- cron: '0 0 * * 4'
+  displayName: weekly build
+  branches:
+    include:
+    - deploy
+  always: true
+
+jobs:
+- job: main
+  pool:
+    vmImage: 'ubuntu-latest'
+  steps:
+    - script: |
+        docker pull lazka/pgi-docgen
+      displayName: Pull Docker image
+      condition: not(eq(variables['build.sourceBranch'], 'refs/heads/deploy'))
+      continueOnError: false
+    - script: |
+        cd docker
+        bash -x ./build-image.sh
+      displayName: Build Docker image
+      condition: eq(variables['build.sourceBranch'], 'refs/heads/deploy')
+      continueOnError: false
+    - script: |
+        cd docker
+        bash -x ./test.sh
+      displayName: Run Tests
+      env:
+        CODECOV_TOKEN: $(CODECOV_TOKEN)
+      continueOnError: false
+    - script: |
+        cd docker
+        bash -x ./build-docs.sh
+      displayName: Build Docs
+      condition: eq(variables['build.sourceBranch'], 'refs/heads/deploy')
+      continueOnError: false
+    - script: |
+        cd docker
+        bash -x ./build-docs-sphinx.sh
+      displayName: Sphinx Build
+      condition: eq(variables['build.sourceBranch'], 'refs/heads/deploy')
+      continueOnError: false
+    - task: DownloadSecureFile@1
+      inputs:
+        secureFile: deploy_key
+      displayName: 'Deploy Key'
+      condition: eq(variables['build.sourceBranch'], 'refs/heads/deploy')
+      continueOnError: false
+    - script: |
+        git config --global user.name "Christoph Reiter"
+        git config --global user.email "reiter.christoph@gmail.com"
+        mkdir ~/.ssh && mv $DOWNLOADSECUREFILE_SECUREFILEPATH ~/.ssh/id_rsa
+        chmod 700 ~/.ssh && chmod 600 ~/.ssh/id_rsa
+        ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
+      displayName: GitHub Setup
+      condition: eq(variables['build.sourceBranch'], 'refs/heads/deploy')
+      continueOnError: false
+    - script: |
+        bash -x ./tools/push.sh
+      displayName: Publish Docs
+      condition: eq(variables['build.sourceBranch'], 'refs/heads/deploy')
+      continueOnError: false

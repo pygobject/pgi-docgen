@@ -42,7 +42,7 @@
     "Anthy-9000": {
         "debian_package": "ibus-anthy",
         "description": "IBus is an Intelligent Input Bus. It is a new input framework for Linux OS. It provides full featured and user friendly input method user interface. It also may help developers to develop input method easily.\n\nIBus-Anthy is an input method (IM) for Japanese, based on IBus.",
-        "homepage": "https://github.com/ibus/ibus/wiki",
+        "homepage": "https://github.com/fujiwarat/ibus-anthy/wiki",
         "lib": "ibus-anthy",
         "summary": "anthy engine for IBus",
         "version": "1.5.10"
@@ -69,7 +69,7 @@
         "homepage": "https://www.freedesktop.org/wiki/Distributions/AppStream/",
         "lib": "appstream",
         "summary": "Library to access AppStream services",
-        "version": "0.12.3"
+        "version": "0.12.7"
     },
     "AppStreamGlib-1.0": {
         "debian_package": "gir1.2-appstreamglib-1.0",
@@ -77,7 +77,7 @@
         "homepage": "https://github.com/hughsie/appstream-glib",
         "lib": "appstream-glib",
         "summary": "GNOME library to access AppStream services",
-        "version": "0.7.12"
+        "version": "0.7.14"
     },
     "Aravis-0.6": {
         "debian_package": "gir1.2-aravis-0.6",
@@ -98,18 +98,18 @@
     "AtrilDocument-1.5.0": {
         "debian_package": "gir1.2-atrildocument-1.5.0",
         "description": "Atril is a simple multi-page document viewer.  It can display and print PostScript (PS), Encapsulated PostScript (EPS), DJVU, DVI and Portable Document Format (PDF) files.",
-        "homepage": "http://www.mate-desktop.org/",
+        "homepage": "https://mate-desktop.org/",
         "lib": "atril",
         "summary": "MATE document rendering library",
-        "version": "1.20.2"
+        "version": "1.20.3"
     },
     "AtrilView-1.5.0": {
         "debian_package": "gir1.2-atrilview-1.5.0",
         "description": "Atril is a simple multi-page document viewer.  It can display and print PostScript (PS), Encapsulated PostScript (EPS), DJVU, DVI and Portable Document Format (PDF) files.",
-        "homepage": "http://www.mate-desktop.org/",
+        "homepage": "https://mate-desktop.org/",
         "lib": "atril",
         "summary": "MATE document viewing library",
-        "version": "1.20.2"
+        "version": "1.20.3"
     },
     "Atspi-2.0": {
         "debian_package": "gir1.2-atspi-2.0",
@@ -197,7 +197,7 @@
         "homepage": "https://solus-project.com/budgie/",
         "lib": "budgie-desktop",
         "summary": "GNOME introspection library for budgie-desktop",
-        "version": "10.4"
+        "version": "10.5"
     },
     "BurnerBurn-3.1": {
         "debian_package": "gir1.2-burner-3.1",
@@ -242,10 +242,10 @@
     "Caja-2.0": {
         "debian_package": "gir1.2-caja-2.0",
         "description": "Caja is the official file manager for the MATE desktop. It allows one to browse directories, preview files and launch applications associated with them. It is also responsible for handling the icons on the MATE desktop. It works on local and remote filesystems.",
-        "homepage": "http://www.mate-desktop.org/",
+        "homepage": "https://mate-desktop.org/",
         "lib": "caja",
         "summary": "libraries for Caja components",
-        "version": "1.20.2"
+        "version": "1.20.3"
     },
     "Cally-1.0": {
         "debian_package": "gir1.2-clutter-1.0",
@@ -261,7 +261,7 @@
         "homepage": "https://wiki.gnome.org/Apps/Evolution",
         "lib": "evolution-data-server",
         "summary": "Evolution MIME message handling library",
-        "version": "3.30.2"
+        "version": "3.30.5"
     },
     "Caribou-1.0": {
         "debian_package": "gir1.2-caribou-1.0",
@@ -293,7 +293,7 @@
         "homepage": "https://wiki.gnome.org/Apps/Cheese",
         "lib": "cheese",
         "summary": "tool to take pictures and videos from your webcam",
-        "version": "3.30.0"
+        "version": "3.32.1"
     },
     "CinnamonDesktop-3.0": {
         "debian_package": "gir1.2-cinnamondesktop-3.0",
@@ -325,7 +325,7 @@
         "homepage": "http://www.clutter-project.org/",
         "lib": "clutter-gst-3.0",
         "summary": "Open GL based interactive canvas library GStreamer elements",
-        "version": "3.0.26"
+        "version": "3.0.27"
     },
     "ClutterX11-1.0": {
         "debian_package": "gir1.2-clutter-1.0",
@@ -421,7 +421,7 @@
         "homepage": "https://wiki.gnome.org/GObjectIntrospection",
         "lib": "gobject-introspection",
         "summary": "Introspection data for some FreeDesktop components",
-        "version": "1.58.1"
+        "version": "1.58.3"
     },
     "DBusGLib-1.0": {
         "debian_package": "gir1.2-freedesktop",
@@ -429,7 +429,7 @@
         "homepage": "https://wiki.gnome.org/GObjectIntrospection",
         "lib": "gobject-introspection",
         "summary": "Introspection data for some FreeDesktop components",
-        "version": "1.58.1"
+        "version": "1.58.3"
     },
     "Dazzle-1.0": {
         "debian_package": "gir1.2-dazzle-1.0",
@@ -477,7 +477,7 @@
         "homepage": "https://wiki.gnome.org/Apps/Devhelp",
         "lib": "devhelp",
         "summary": "Library providing documentation browser functionality",
-        "version": "3.28.1"
+        "version": "3.30.1"
     },
     "Diodon-1.0": {
         "debian_package": "gir1.2-diodon-1.0",
@@ -493,7 +493,7 @@
         "homepage": "https://wiki.gnome.org/Apps/Evolution",
         "lib": "evolution-data-server",
         "summary": "Evolution MIME message handling library",
-        "version": "3.30.2"
+        "version": "3.30.5"
     },
     "EBookContacts-1.2": {
         "debian_package": "gir1.2-ebookcontacts-1.2",
@@ -501,7 +501,7 @@
         "homepage": "https://wiki.gnome.org/Apps/Evolution",
         "lib": "evolution-data-server",
         "summary": "Client library for evolution contacts books",
-        "version": "3.30.2"
+        "version": "3.30.5"
     },
     "EDataServer-1.2": {
         "debian_package": "gir1.2-edataserver-1.2",
@@ -509,7 +509,7 @@
         "homepage": "https://wiki.gnome.org/Apps/Evolution",
         "lib": "evolution-data-server",
         "summary": "Evolution MIME message handling library",
-        "version": "3.30.2"
+        "version": "3.30.5"
     },
     "EDataServerUI-1.2": {
         "debian_package": "gir1.2-edataserverui-1.2",
@@ -517,7 +517,7 @@
         "homepage": "https://wiki.gnome.org/Apps/Evolution",
         "lib": "evolution-data-server",
         "summary": "Evolution MIME message handling library",
-        "version": "3.30.2"
+        "version": "3.30.5"
     },
     "Endless-0": {
         "debian_package": "gir1.2-endless-0",
@@ -533,7 +533,7 @@
         "homepage": "http://entangle-photo.org/",
         "lib": "entangle",
         "summary": "GObject introspection data for entangle",
-        "version": "1.0"
+        "version": "2.0"
     },
     "Eom-1.0": {
         "debian_package": "gir1.2-eom-1.0",
@@ -541,7 +541,7 @@
         "homepage": "http://www.mate-desktop.org/",
         "lib": "eom",
         "summary": "GObject introspection data for the eom library",
-        "version": "1.20.1"
+        "version": "1.20.2"
     },
     "Evd-0.2": {
         "debian_package": "gir1.2-evd-0.2",
@@ -589,7 +589,7 @@
         "homepage": "http://flatpak.org/",
         "lib": "flatpak",
         "summary": "Application deployment framework for desktop apps (library)",
-        "version": "1.0.6"
+        "version": "1.2.4"
     },
     "Folks-0.6": {
         "debian_package": "gir1.2-folks-0.6",
@@ -625,11 +625,11 @@
     },
     "Fwupd-2.0": {
         "debian_package": "gir1.2-fwupd-2.0",
-        "description": "fwupd is a daemon to allow session software to update device firmware. You can either use a GUI software manager like GNOME Software to view and apply updates, the command-line tool or the system D-Bus interface directly. Currently, firmware updates using the UEFI capsule format and for the ColorHug are supported. More formats may be supported in the future. See <https://github.com/hughsie/fwupd> for details",
+        "description": "fwupd is a daemon to allow session software to update device firmware. You can either use a GUI software manager like GNOME Software to view and apply updates, the command-line tool or the system D-Bus interface directly. Firmware updates are supported for a variety of technologies. See <https://github.com/hughsie/fwupd> for details",
         "homepage": "https://github.com/hughsie/fwupd",
         "lib": "fwupd",
         "summary": "Firmware update daemon library",
-        "version": "1.1.4"
+        "version": "1.2.6"
     },
     "GCab-1.0": {
         "debian_package": "gir1.2-gcab-1.0",
@@ -637,7 +637,7 @@
         "homepage": "https://wiki.gnome.org/msitools",
         "lib": "gcab",
         "summary": "Microsoft Cabinet file manipulation library",
-        "version": "1.1"
+        "version": "1.2"
     },
     "GConf-2.0": {
         "debian_package": "gir1.2-gconf-2.0",
@@ -677,7 +677,7 @@
         "homepage": "https://wiki.gnome.org/Projects/gexiv2",
         "lib": "gexiv2",
         "summary": "GObject-based wrapper around the Exiv2 library",
-        "version": "0.10.8"
+        "version": "0.10.9"
     },
     "GFBGraph-0.2": {
         "debian_package": "gir1.2-gfbgraph-0.2",
@@ -693,7 +693,7 @@
         "homepage": "https://wiki.gnome.org/GObjectIntrospection",
         "lib": "gobject-introspection",
         "summary": "Library for handling GObject introspection data (runtime library)",
-        "version": "1.58.1"
+        "version": "1.58.3"
     },
     "GL-1.0": {
         "debian_package": "gir1.2-freedesktop",
@@ -701,7 +701,7 @@
         "homepage": "https://wiki.gnome.org/GObjectIntrospection",
         "lib": "gobject-introspection",
         "summary": "Introspection data for some FreeDesktop components",
-        "version": "1.58.1"
+        "version": "1.58.3"
     },
     "GLib-2.0": {
         "debian_package": "gir1.2-glib-2.0",
@@ -709,7 +709,7 @@
         "homepage": "https://wiki.gnome.org/GObjectIntrospection",
         "lib": "gobject-introspection",
         "summary": "Library for handling GObject introspection data (runtime library)",
-        "version": "1.58.1"
+        "version": "1.58.3"
     },
     "GMenu-3.0": {
         "debian_package": "gir1.2-gmenu-3.0",
@@ -717,7 +717,7 @@
         "homepage": "",
         "lib": "gnome-menus",
         "summary": "GNOME implementation of the freedesktop menu specification",
-        "version": "3.13.3"
+        "version": "3.32.0"
     },
     "GMime-2.6": {
         "debian_package": "gir1.2-gmime-2.6",
@@ -741,7 +741,7 @@
         "homepage": "https://wiki.gnome.org/GObjectIntrospection",
         "lib": "gobject-introspection",
         "summary": "Library for handling GObject introspection data (runtime library)",
-        "version": "1.58.1"
+        "version": "1.58.3"
     },
     "GObject-2.0": {
         "debian_package": "gir1.2-glib-2.0",
@@ -749,7 +749,7 @@
         "homepage": "https://wiki.gnome.org/GObjectIntrospection",
         "lib": "gobject-introspection",
         "summary": "Library for handling GObject introspection data (runtime library)",
-        "version": "1.58.1"
+        "version": "1.58.3"
     },
     "GOffice-0.10": {
         "debian_package": "gir1.2-goffice-0.10",
@@ -757,7 +757,7 @@
         "homepage": "http://wiki.gnome.org/GnomeOffice",
         "lib": "goffice",
         "summary": "Document centric objects library",
-        "version": "0.10.43"
+        "version": "0.10.44"
     },
     "GPaste-1.0": {
         "debian_package": "gir1.2-gpaste-1.0",
@@ -765,7 +765,7 @@
         "homepage": "https://github.com/Keruspe/GPaste",
         "lib": "gpaste",
         "summary": "Clipboard management system for GNOME",
-        "version": "3.30.1"
+        "version": "3.30.2"
     },
     "GSSDP-1.0": {
         "debian_package": "gir1.2-gssdp-1.0",
@@ -869,7 +869,7 @@
         "homepage": "https://wiki.gnome.org/Projects/LibGWeather",
         "lib": "libgweather",
         "summary": "GWeather shared library",
-        "version": "3.28.2"
+        "version": "3.28.3"
     },
     "GXPS-0.1": {
         "debian_package": "gir1.2-gxps-0.1",
@@ -877,7 +877,7 @@
         "homepage": "https://wiki.gnome.org/libgxps",
         "lib": "libgxps",
         "summary": "handling and rendering XPS documents (library)",
-        "version": "0.3.0"
+        "version": "0.3.1"
     },
     "Ganv-1.0": {
         "debian_package": "gir1.2-ganv-1.0",
@@ -893,7 +893,7 @@
         "homepage": "https://wiki.gnome.org/Projects/GnomeKeyring",
         "lib": "gcr",
         "summary": "Glib wrapper library for PKCS#11",
-        "version": "3.28.0"
+        "version": "3.28.1"
     },
     "Gcr-3": {
         "debian_package": "gir1.2-gcr-3",
@@ -901,7 +901,7 @@
         "homepage": "https://wiki.gnome.org/Projects/GnomeKeyring",
         "lib": "gcr",
         "summary": "Library for Crypto related tasks",
-        "version": "3.28.0"
+        "version": "3.28.1"
     },
     "GcrUi-3": {
         "debian_package": "gir1.2-gcr-3",
@@ -909,7 +909,7 @@
         "homepage": "https://wiki.gnome.org/Projects/GnomeKeyring",
         "lib": "gcr",
         "summary": "Library for Crypto related tasks",
-        "version": "3.28.0"
+        "version": "3.28.1"
     },
     "Gda-5.0": {
         "debian_package": "gir1.2-gda-5.0",
@@ -917,7 +917,7 @@
         "homepage": "http://www.gnome-db.org/",
         "lib": "libgda5",
         "summary": "data abstraction library based on GLib",
-        "version": "5.2.4"
+        "version": "5.2.8"
     },
     "Gdk-2.0": {
         "debian_package": "gir1.2-gtk-2.0",
@@ -933,7 +933,7 @@
         "homepage": "https://www.gtk.org/",
         "lib": "gtk+3.0",
         "summary": "GTK+ graphical user interface library",
-        "version": "3.24.1"
+        "version": "3.24.5"
     },
     "GdkPixbuf-2.0": {
         "debian_package": "gir1.2-gdkpixbuf-2.0",
@@ -941,7 +941,7 @@
         "homepage": "http://www.gtk.org/",
         "lib": "gdk-pixbuf",
         "summary": "GDK Pixbuf library",
-        "version": "2.38.0"
+        "version": "2.38.1"
     },
     "GdkPixdata-2.0": {
         "debian_package": "gir1.2-gdkpixbuf-2.0",
@@ -949,7 +949,7 @@
         "homepage": "http://www.gtk.org/",
         "lib": "gdk-pixbuf",
         "summary": "GDK Pixbuf library",
-        "version": "2.38.0"
+        "version": "2.38.1"
     },
     "GdkX11-2.0": {
         "debian_package": "gir1.2-gtk-2.0",
@@ -965,7 +965,7 @@
         "homepage": "https://www.gtk.org/",
         "lib": "gtk+3.0",
         "summary": "GTK+ graphical user interface library",
-        "version": "3.24.1"
+        "version": "3.24.5"
     },
     "Gdl-3": {
         "debian_package": "gir1.2-gdl-3",
@@ -997,7 +997,7 @@
         "homepage": "http://gegl.org/",
         "lib": "gegl",
         "summary": "GObject introspection data for the Generic Graphics Library",
-        "version": "0.4.12"
+        "version": "0.4.14"
     },
     "Geoclue-2.0": {
         "debian_package": "gir1.2-geoclue-2.0",
@@ -1005,7 +1005,7 @@
         "homepage": "https://gitlab.freedesktop.org/geoclue/geoclue/wikis/home",
         "lib": "geoclue-2.0",
         "summary": "convenience library to interact with geoinformation service",
-        "version": "2.5.1"
+        "version": "2.5.2"
     },
     "GeocodeGlib-1.0": {
         "debian_package": "gir1.2-geocodeglib-1.0",
@@ -1013,7 +1013,7 @@
         "homepage": "",
         "lib": "geocode-glib",
         "summary": "geocoding and reverse geocoding GLib library using Nominatim",
-        "version": "3.26.0"
+        "version": "3.26.1"
     },
     "Gepub-0.6": {
         "debian_package": "gir1.2-gepub-0.6",
@@ -1029,7 +1029,7 @@
         "homepage": "https://wiki.gnome.org/Projects/Libgit2-glib",
         "lib": "libgit2-glib",
         "summary": "glib wrapper library around the libgit2 git access library",
-        "version": "0.26.4"
+        "version": "0.27.7"
     },
     "Gio-2.0": {
         "debian_package": "gir1.2-glib-2.0",
@@ -1037,7 +1037,7 @@
         "homepage": "https://wiki.gnome.org/GObjectIntrospection",
         "lib": "gobject-introspection",
         "summary": "Library for handling GObject introspection data (runtime library)",
-        "version": "1.58.1"
+        "version": "1.58.3"
     },
     "Gkbd-3.0": {
         "debian_package": "gir1.2-gkbd-3.0",
@@ -1045,7 +1045,7 @@
         "homepage": "",
         "lib": "libgnomekbd",
         "summary": "GNOME library to manage keyboard configuration",
-        "version": "3.26.0"
+        "version": "3.26.1"
     },
     "Gladeui-2.0": {
         "debian_package": "gir1.2-gladeui-2.0",
@@ -1061,7 +1061,7 @@
         "homepage": "http://www.gnumeric.org/",
         "lib": "gnumeric",
         "summary": "GObject introspection data for the Gnumeric spreadsheet",
-        "version": "1.12.43"
+        "version": "1.12.44"
     },
     "GnomeAutoar-0.1": {
         "debian_package": "gir1.2-gnomeautoar-0.1",
@@ -1093,7 +1093,7 @@
         "homepage": "",
         "lib": "gnome-desktop3",
         "summary": "Utility library for loading .desktop files",
-        "version": "3.30.2"
+        "version": "3.30.2.1"
     },
     "GnomeKeyring-1.0": {
         "debian_package": "gir1.2-gnomekeyring-1.0",
@@ -1117,7 +1117,7 @@
         "homepage": "https://wiki.gnome.org/Projects/GnomeOnlineAccounts",
         "lib": "gnome-online-accounts",
         "summary": "library for GNOME Online Accounts",
-        "version": "3.30.0"
+        "version": "3.30.1"
     },
     "Gom-1.0": {
         "debian_package": "gir1.2-gom-1.0",
@@ -1141,7 +1141,7 @@
         "homepage": "https://github.com/elementary/granite",
         "lib": "granite",
         "summary": "extension of GTK+ libraries (introspection files)",
-        "version": "5.2.1"
+        "version": "5.2.3"
     },
     "Graphene-1.0": {
         "debian_package": "gir1.2-graphene-1.0",
@@ -1149,7 +1149,7 @@
         "homepage": "https://ebassi.github.io/graphene/",
         "lib": "graphene",
         "summary": "library of graphic data types",
-        "version": "1.8.2"
+        "version": "1.8.4"
     },
     "Grl-0.3": {
         "debian_package": "gir1.2-grilo-0.3",
@@ -1189,7 +1189,7 @@
         "homepage": "http://projects.gnome.org/libgsf/",
         "lib": "libgsf",
         "summary": "Structured File Library",
-        "version": "1.14.44"
+        "version": "1.14.45"
     },
     "Gspell-1": {
         "debian_package": "gir1.2-gspell-1",
@@ -1389,7 +1389,7 @@
         "homepage": "https://www.gtk.org/",
         "lib": "gtk+3.0",
         "summary": "GTK+ graphical user interface library",
-        "version": "3.24.1"
+        "version": "3.24.5"
     },
     "GtkChamplain-0.12": {
         "debian_package": "gir1.2-gtkchamplain-0.12",
@@ -1453,7 +1453,7 @@
         "homepage": "http://libguestfs.org",
         "lib": "libguestfs",
         "summary": "guest disk image management system",
-        "version": "1.38.6"
+        "version": "1.40.2"
     },
     "Handy-0.0": {
         "debian_package": "gir1.2-handy-0.0",
@@ -1461,7 +1461,7 @@
         "homepage": "https://source.puri.sm/Librem5/libhandy",
         "lib": "libhandy",
         "summary": "Library with GTK+ widgets for mobile phones",
-        "version": "0.0.5"
+        "version": "0.0.9"
     },
     "HarfBuzz-0.0": {
         "debian_package": "gir1.2-harfbuzz-0.0",
@@ -1469,7 +1469,7 @@
         "homepage": "https://www.freedesktop.org/wiki/Software/HarfBuzz",
         "lib": "harfbuzz",
         "summary": "OpenType text shaping engine ICU backend (GObject library)",
-        "version": "2.1.1"
+        "version": "2.3.1"
     },
     "Hinawa-2.0": {
         "debian_package": "gir1.2-hinawa-2.0",
@@ -1477,15 +1477,15 @@
         "homepage": "https://github.com/takaswie/libhinawa",
         "lib": "libhinawa",
         "summary": "I/O library for IEEE 1394 asynchronous transactions",
-        "version": "1.0.1"
+        "version": "1.3.1"
     },
     "Hkl-5.0": {
         "debian_package": "gir1.2-hkl-5.0",
         "description": "The hkl library is a framework for diffraction computation and diffractometer control, heavily used at the SOLEIL synchrotron. It supports various types of diffractometer geometry: Eulerian 4-circle, Eulerian 6-circle, kappa 4-circle, kappa 6-circle, and z-axis geometry. For each of these it provides several numerically computed modes, such as bisector and constant psi.",
-        "homepage": "http://www.synchrotron-soleil.fr/portal/page/portal/Instrumentation/EnvironnementInstrumental/hkl",
+        "homepage": "https://www.synchrotron-soleil.fr/portal/page/portal/Instrumentation/EnvironnementInstrumental/hkl",
         "lib": "hkl",
         "summary": "diffractometer computation control library",
-        "version": "5.0.0.2449"
+        "version": "5.0.0.2456"
     },
     "IBus-1.0": {
         "debian_package": "gir1.2-ibus-1.0",
@@ -1494,6 +1494,22 @@
         "lib": "ibus",
         "summary": "Intelligent Input Bus",
         "version": "1.5.19"
+    },
+    "ICal-3.0": {
+        "debian_package": "gir1.2-ical-3.0",
+        "description": "libical is an open source implementation of the IETF's iCalendar calendaring and scheduling protocols (RFC 2445, 2446, and 2447). It parses iCal components and provides a C API for manipulating the component properties, parameters, and subcomponents.",
+        "homepage": "https://github.com/libical/libical",
+        "lib": "libical3",
+        "summary": "iCalendar library implementation in C (runtime)",
+        "version": "3.0.5"
+    },
+    "ICalGLib-3.0": {
+        "debian_package": "gir1.2-ical-3.0",
+        "description": "libical is an open source implementation of the IETF's iCalendar calendaring and scheduling protocols (RFC 2445, 2446, and 2447). It parses iCal components and provides a C API for manipulating the component properties, parameters, and subcomponents.",
+        "homepage": "https://github.com/libical/libical",
+        "lib": "libical3",
+        "summary": "iCalendar library implementation in C (runtime)",
+        "version": "3.0.5"
     },
     "Indicate-0.7": {
         "debian_package": "gir1.2-indicate-0.7",
@@ -1521,11 +1537,11 @@
     },
     "JavaScriptCore-4.0": {
         "debian_package": "gir1.2-javascriptcoregtk-4.0",
-        "description": "JavaScriptCore is the JavaScript engine used in WebKit. It consists of the following building blocks: lexer, parser, start-up interpreter (LLInt), baseline JIT, a low-latency optimizing JIT (DFG), and a high-throughput optimizing JIT (FTL).\n\nThis build comes from the GTK+ port of WebKit (API version 4.0).",
+        "description": "JavaScriptCore is the JavaScript engine used in WebKit. It consists of the following building blocks: lexer, parser, start-up interpreter (LLInt), baseline JIT, a low-latency optimizing JIT (DFG), and a high-throughput optimizing JIT (FTL).\n\nThis build comes from the GTK port of WebKit (API version 4.0).",
         "homepage": "https://webkitgtk.org/",
         "lib": "webkit2gtk",
-        "summary": "JavaScript engine library from WebKitGTK+",
-        "version": "2.22.4"
+        "summary": "JavaScript engine library from WebKitGTK",
+        "version": "2.24.2"
     },
     "Json-1.0": {
         "debian_package": "gir1.2-json-1.0",
@@ -1565,7 +1581,7 @@
         "homepage": "http://www.libreoffice.org",
         "lib": "libreoffice",
         "summary": "GTK3 widget wrapping LibreOffice functionality",
-        "version": "6.1.3"
+        "version": "6.1.5"
     },
     "LangTag-0.6": {
         "debian_package": "gir1.2-langtag-0.6",
@@ -1628,16 +1644,8 @@
         "description": "",
         "homepage": "https://launchpad.net/lightdm",
         "lib": "lightdm",
-        "summary": "simple display manager (Gobject library)",
+        "summary": "simple display manager (GObject library)",
         "version": "1.26.0"
-    },
-    "Limba-1.0": {
-        "debian_package": "gir1.2-limba-1.0",
-        "description": "Limba allows 3rd-party developers to easily distribute their software on multiple Linux distributions. It provides atomic upgrades of software, simultaneous installation of multiple software versions and a simple way to obtain and upgrade software.",
-        "homepage": "http://people.freedesktop.org/~mak/limba/",
-        "lib": "limba",
-        "summary": "Library for the Limba 3rd-party software manager",
-        "version": "0.5.6"
     },
     "LunarDate-2.0": {
         "debian_package": "gir1.2-lunar-date-2.0",
@@ -1653,7 +1661,7 @@
         "homepage": "https://wiki.gnome.org/Apps/Rhythmbox",
         "lib": "rhythmbox",
         "summary": "support library for the rhythmbox music player",
-        "version": "3.4.2"
+        "version": "3.4.3"
     },
     "Manette-0.2": {
         "debian_package": "gir1.2-manette-0.2",
@@ -1669,7 +1677,7 @@
         "homepage": "http://www.mate-desktop.org/",
         "lib": "mate-desktop",
         "summary": "Library with common API for various MATE modules (library)",
-        "version": "1.20.3"
+        "version": "1.20.4"
     },
     "MateMenu-2.0": {
         "debian_package": "gir1.2-matemenu-2.0",
@@ -1677,7 +1685,7 @@
         "homepage": "http://www.mate-desktop.org/",
         "lib": "mate-menus",
         "summary": "implementation of the freedesktop menu specification for MATE (library)",
-        "version": "1.20.1"
+        "version": "1.20.2"
     },
     "MatePanelApplet-4.0": {
         "debian_package": "gir1.2-matepanelapplet-4.0",
@@ -1685,7 +1693,7 @@
         "homepage": "http://www.mate-desktop.org/",
         "lib": "mate-panel",
         "summary": "library for MATE Panel applets",
-        "version": "1.20.3"
+        "version": "1.20.5"
     },
     "Matekbd-1.0": {
         "debian_package": "gir1.2-matekbd-1.0",
@@ -1719,18 +1727,26 @@
         "summary": "lightweight window and compositing manager (shared library)",
         "version": "3.8.2"
     },
+    "Midori-0.6": {
+        "debian_package": "midori",
+        "description": "Midori is a lightweight web browser based on WebKit.\n\nIts features include:\n\n* Full integration with GTK+2.\n* Fast rendering with WebKit.\n* Tabs, windows and session management.\n* Flexibly configurable Web Search.\n* User scripts and user styles support.\n* Straightforward bookmark management.\n* Customizable and extensible interface.\n* Support for extensions (written in C).\n* Custom context menu actions.",
+        "homepage": "https://www.midori-browser.org/",
+        "lib": "midori",
+        "summary": "fast, lightweight graphical web browser",
+        "version": "7.0"
+    },
     "ModemManager-1.0": {
         "debian_package": "gir1.2-modemmanager-1.0",
         "description": "ModemManager is a DBus-activated daemon which controls mobile broadband (2G/3G/4G) devices and connections. Whether built-in devices, USB dongles, Bluetooth-paired telephones or professional RS232/USB devices with external power supplies, ModemManager is able to prepare and configure the modems and setup connections with them.",
         "homepage": "https://www.freedesktop.org/wiki/Software/ModemManager/",
         "lib": "modemmanager",
         "summary": "D-Bus service for managing modems",
-        "version": "1.8.2"
+        "version": "1.10.0"
     },
     "MyPaint-1.3": {
         "debian_package": "gir1.2-mypaint-1.3",
         "description": "MyPaint is a pressure- and tilt-sensitive painting program which works well with Wacom graphics tablets and other similar devices. It comes with a large brush collection including charcoal and ink to emulate real media, but the highly configurable brush engine allows you to experiment with your own brushes and with not-quite-natural painting.",
-        "homepage": "https://github.com/Jehan/mypaint-brushes",
+        "homepage": "https://github.com/Jehan/mypaint",
         "lib": "libmypaint",
         "summary": "brush library for mypaint",
         "version": "1.3.0"
@@ -1741,7 +1757,7 @@
         "homepage": "https://wiki.gnome.org/Projects/NetworkManager",
         "lib": "network-manager",
         "summary": "GObject-based client library for NetworkManager",
-        "version": "1.14.4"
+        "version": "1.14.6"
     },
     "NMA-1.0": {
         "debian_package": "gir1.2-nma-1.0",
@@ -1749,7 +1765,7 @@
         "homepage": "https://www.gnome.org/projects/NetworkManager/",
         "lib": "network-manager-applet",
         "summary": "library for wireless and mobile dialogs (libnm version)",
-        "version": "1.8.18"
+        "version": "1.8.20"
     },
     "Nautilus-3.0": {
         "debian_package": "gir1.2-nautilus-3.0",
@@ -1757,7 +1773,7 @@
         "homepage": "https://wiki.gnome.org/action/show/Apps/Nautilus",
         "lib": "nautilus",
         "summary": "libraries for nautilus components",
-        "version": "3.30.4"
+        "version": "3.30.5"
     },
     "Nemo-3.0": {
         "debian_package": "gir1.2-nemo-3.0",
@@ -1789,7 +1805,7 @@
         "homepage": "https://github.com/ostreedev/ostree/",
         "lib": "ostree",
         "summary": "content-addressed filesystem for operating system binaries (library)",
-        "version": "2018.9.1"
+        "version": "2019.1"
     },
     "OsmGpsMap-1.0": {
         "debian_package": "gir1.2-osmgpsmap-1.0",
@@ -1805,7 +1821,7 @@
         "homepage": "https://www.freedesktop.org/software/PackageKit/",
         "lib": "packagekit",
         "summary": "Library for accessing PackageKit using GLib",
-        "version": "1.1.11"
+        "version": "1.1.12"
     },
     "Pango-1.0": {
         "debian_package": "gir1.2-pango-1.0",
@@ -1869,15 +1885,15 @@
         "homepage": "http://www.ukui.org/",
         "lib": "peony",
         "summary": "libraries for Peony components",
-        "version": "1.1.4"
+        "version": "1.1.5"
     },
-    "Playerctl-1.0": {
-        "debian_package": "gir1.2-playerctl-1.0",
+    "Playerctl-2.0": {
+        "debian_package": "gir1.2-playerctl-2.0",
         "description": "Playerctl is a command-line utility and library for controlling media players that implement the MPRIS D-Bus Interface Specification. Compatible players include audacious, cmus, mopidy, mpd, quod libet, rhythmbox, spotify, vlc and xmms2.\n\nPlayerctl makes it easy to bind player actions, such as play and pause, to media keys. Playerctl also provides an introspectable library accessible in many popular scripting languages that allows more detailed control like the ability to subscribe to media player events or get metadata such as artist and title for the playing track.",
         "homepage": "https://github.com/acrisci/playerctl",
         "lib": "playerctl",
         "summary": "utility to control media players via MPRIS (library)",
-        "version": "0.6.1"
+        "version": "2.0.1"
     },
     "Pluma-1.0": {
         "debian_package": "gir1.2-pluma-1.0",
@@ -1885,7 +1901,7 @@
         "homepage": "http://www.mate-desktop.org/",
         "lib": "pluma",
         "summary": "GObject introspection data for Pluma",
-        "version": "1.20.3"
+        "version": "1.20.4"
     },
     "Polkit-1.0": {
         "debian_package": "gir1.2-polkit-1.0",
@@ -1909,7 +1925,7 @@
         "homepage": "http://poppler.freedesktop.org/",
         "lib": "poppler",
         "summary": "PDF rendering library (GLib-based shared library)",
-        "version": "0.69.0"
+        "version": "0.71.0"
     },
     "RB-3.0": {
         "debian_package": "gir1.2-rb-3.0",
@@ -1917,7 +1933,7 @@
         "homepage": "https://wiki.gnome.org/Apps/Rhythmbox",
         "lib": "rhythmbox",
         "summary": "support library for the rhythmbox music player",
-        "version": "3.4.2"
+        "version": "3.4.3"
     },
     "Rest-0.7": {
         "debian_package": "gir1.2-rest-0.7",
@@ -1949,7 +1965,7 @@
         "homepage": "https://wiki.gnome.org/Projects/LibRsvg",
         "lib": "librsvg",
         "summary": "SAX-based renderer library for SVG files (runtime)",
-        "version": "2.44.9"
+        "version": "2.44.10"
     },
     "Secret-1": {
         "debian_package": "gir1.2-secret-1",
@@ -1957,7 +1973,7 @@
         "homepage": "https://wiki.gnome.org/Projects/Libsecret",
         "lib": "libsecret",
         "summary": "Secret store",
-        "version": "0.18.6"
+        "version": "0.18.7"
     },
     "Signon-1.0": {
         "debian_package": "gir1.2-signon-1.0",
@@ -1981,7 +1997,7 @@
         "homepage": "https://github.com/snapcore/snapd-glib",
         "lib": "snapd-glib",
         "summary": "GLib snapd library",
-        "version": "1.44"
+        "version": "1.45"
     },
     "Soup-2.4": {
         "debian_package": "gir1.2-soup-2.4",
@@ -2055,13 +2071,21 @@
         "summary": "templating library for GLib",
         "version": "3.30.0"
     },
+    "Tepl-4": {
+        "debian_package": "gir1.2-tepl-4",
+        "description": "Tepl is a library that eases the development of GtkSourceView-based text editors and IDEs. Tepl is the acronym for \u201cText editor product line\u201d. It serves as an incubator for GtkSourceView.",
+        "homepage": "https://wiki.gnome.org/Projects/Tepl",
+        "lib": "tepl",
+        "summary": "Text editor library for GTK+",
+        "version": "4.2.0"
+    },
     "Totem-1.0": {
         "debian_package": "gir1.2-totem-1.0",
         "description": "This library is only useful within Totem. You should not have to manually install this package.",
         "homepage": "https://wiki.gnome.org/Apps/Videos",
         "lib": "totem",
         "summary": "Main library for the Totem media player",
-        "version": "3.26.2"
+        "version": "3.30.0"
     },
     "TotemPlParser-1.0": {
         "debian_package": "gir1.2-totemplparser-1.0",
@@ -2069,7 +2093,7 @@
         "homepage": "",
         "lib": "totem-pl-parser",
         "summary": "Totem Playlist Parser library",
-        "version": "3.26.1"
+        "version": "3.26.3"
     },
     "Tracker-2.0": {
         "debian_package": "gir1.2-tracker-2.0",
@@ -2077,7 +2101,7 @@
         "homepage": "https://wiki.gnome.org/Projects/Tracker",
         "lib": "tracker",
         "summary": "library to control/monitor tracker miners",
-        "version": "2.1.6"
+        "version": "2.1.8"
     },
     "TrackerControl-2.0": {
         "debian_package": "gir1.2-tracker-2.0",
@@ -2085,7 +2109,7 @@
         "homepage": "https://wiki.gnome.org/Projects/Tracker",
         "lib": "tracker",
         "summary": "library to control/monitor tracker miners",
-        "version": "2.1.6"
+        "version": "2.1.8"
     },
     "TrackerMiner-2.0": {
         "debian_package": "gir1.2-tracker-2.0",
@@ -2093,7 +2117,7 @@
         "homepage": "https://wiki.gnome.org/Projects/Tracker",
         "lib": "tracker",
         "summary": "library to control/monitor tracker miners",
-        "version": "2.1.6"
+        "version": "2.1.8"
     },
     "UDisks-2.0": {
         "debian_package": "gir1.2-udisks-2.0",
@@ -2101,7 +2125,7 @@
         "homepage": "https://www.freedesktop.org/wiki/Software/udisks",
         "lib": "udisks2",
         "summary": "GObject based library to access udisks2",
-        "version": "2.8.1"
+        "version": "2.8.2"
     },
     "UMockdev-1.0": {
         "debian_package": "gir1.2-umockdev-1.0",
@@ -2117,7 +2141,7 @@
         "homepage": "https://upower.freedesktop.org/",
         "lib": "upower",
         "summary": "abstraction for power management",
-        "version": "0.99.9"
+        "version": "0.99.10"
     },
     "Ufo-0.0": {
         "debian_package": "gir1.2-ufo-0.0",
@@ -2149,7 +2173,7 @@
         "homepage": "http://www.ukui.org/",
         "lib": "ukui-panel",
         "summary": "library for UKUI Panel applets",
-        "version": "1.1.4"
+        "version": "1.1.5"
     },
     "Urfkill-0.5": {
         "debian_package": "gir1.2-urfkill-0.5",
@@ -2165,7 +2189,7 @@
         "homepage": "https://jcupitt.github.io/libvips/",
         "lib": "vips",
         "summary": "image processing system good for very large ones",
-        "version": "8.7.0"
+        "version": "8.7.4"
     },
     "Vte-2.91": {
         "debian_package": "gir1.2-vte-2.91",
@@ -2177,19 +2201,19 @@
     },
     "WebKit2-4.0": {
         "debian_package": "gir1.2-webkit2-4.0",
-        "description": "JavaScriptCore is the JavaScript engine used in WebKit. It consists of the following building blocks: lexer, parser, start-up interpreter (LLInt), baseline JIT, a low-latency optimizing JIT (DFG), and a high-throughput optimizing JIT (FTL).\n\nThis build comes from the GTK+ port of WebKit (API version 4.0).",
+        "description": "JavaScriptCore is the JavaScript engine used in WebKit. It consists of the following building blocks: lexer, parser, start-up interpreter (LLInt), baseline JIT, a low-latency optimizing JIT (DFG), and a high-throughput optimizing JIT (FTL).\n\nThis build comes from the GTK port of WebKit (API version 4.0).",
         "homepage": "https://webkitgtk.org/",
         "lib": "webkit2gtk",
-        "summary": "JavaScript engine library from WebKitGTK+",
-        "version": "2.22.4"
+        "summary": "JavaScript engine library from WebKitGTK",
+        "version": "2.24.2"
     },
     "WebKit2WebExtension-4.0": {
         "debian_package": "gir1.2-webkit2-4.0",
-        "description": "JavaScriptCore is the JavaScript engine used in WebKit. It consists of the following building blocks: lexer, parser, start-up interpreter (LLInt), baseline JIT, a low-latency optimizing JIT (DFG), and a high-throughput optimizing JIT (FTL).\n\nThis build comes from the GTK+ port of WebKit (API version 4.0).",
+        "description": "JavaScriptCore is the JavaScript engine used in WebKit. It consists of the following building blocks: lexer, parser, start-up interpreter (LLInt), baseline JIT, a low-latency optimizing JIT (DFG), and a high-throughput optimizing JIT (FTL).\n\nThis build comes from the GTK port of WebKit (API version 4.0).",
         "homepage": "https://webkitgtk.org/",
         "lib": "webkit2gtk",
-        "summary": "JavaScript engine library from WebKitGTK+",
-        "version": "2.22.4"
+        "summary": "JavaScript engine library from WebKitGTK",
+        "version": "2.24.2"
     },
     "Wnck-1.0": {
         "debian_package": "gir1.2-wnck-1.0",
@@ -2231,6 +2255,14 @@
         "summary": "X Keyboard Extension high-level API",
         "version": "5.4"
     },
+    "Xmlb-1.0": {
+        "debian_package": "gir1.2-xmlb-1.0",
+        "description": "It can be used by packages using the GIRepository format to generate dynamic bindings.",
+        "homepage": "https://github.com/hughsie/libxmlb",
+        "lib": "libxmlb",
+        "summary": "GObject introspection data for libxmlb",
+        "version": "0.1.8"
+    },
     "Zeitgeist-2.0": {
         "debian_package": "gir1.2-zeitgeist-2.0",
         "description": "Zeitgeist is a service which logs the user's activities and events (files opened, websites visited, conversations hold with other people, etc.) and makes the relevant information available to other applications.\n\nIt serves as a comprehensive activity log and also makes it possible to determine relationships between items based on usage patterns.\n\nLibzeitgeist is a client library to access and manage the Zeitgeist event log from languages such as C and Vala.",
@@ -2253,7 +2285,7 @@
         "homepage": "https://wiki.gnome.org/GObjectIntrospection",
         "lib": "gobject-introspection",
         "summary": "Introspection data for some FreeDesktop components",
-        "version": "1.58.1"
+        "version": "1.58.3"
     },
     "fontconfig-2.0": {
         "debian_package": "gir1.2-freedesktop",
@@ -2261,7 +2293,7 @@
         "homepage": "https://wiki.gnome.org/GObjectIntrospection",
         "lib": "gobject-introspection",
         "summary": "Introspection data for some FreeDesktop components",
-        "version": "1.58.1"
+        "version": "1.58.3"
     },
     "freetype2-2.0": {
         "debian_package": "gir1.2-freedesktop",
@@ -2269,7 +2301,7 @@
         "homepage": "https://wiki.gnome.org/GObjectIntrospection",
         "lib": "gobject-introspection",
         "summary": "Introspection data for some FreeDesktop components",
-        "version": "1.58.1"
+        "version": "1.58.3"
     },
     "libisocodes-1.2.2": {
         "debian_package": "gir1.2-isocodes-1.2",
@@ -2285,7 +2317,7 @@
         "homepage": "https://wiki.gnome.org/GObjectIntrospection",
         "lib": "gobject-introspection",
         "summary": "Introspection data for some FreeDesktop components",
-        "version": "1.58.1"
+        "version": "1.58.3"
     },
     "rda-1.0": {
         "debian_package": "gir1.2-rda-1.0",
@@ -2293,7 +2325,7 @@
         "homepage": "https://github.com/ArcticaProject/librda",
         "lib": "librda",
         "summary": "GObject introspection data for librda",
-        "version": "0.0.2"
+        "version": "0.0.5"
     },
     "v_sim-3.7": {
         "debian_package": "gir1.2-v-sim-1.0",
@@ -2309,7 +2341,7 @@
         "homepage": "https://wiki.gnome.org/GObjectIntrospection",
         "lib": "gobject-introspection",
         "summary": "Introspection data for some FreeDesktop components",
-        "version": "1.58.1"
+        "version": "1.58.3"
     },
     "xft-2.0": {
         "debian_package": "gir1.2-freedesktop",
@@ -2317,7 +2349,7 @@
         "homepage": "https://wiki.gnome.org/GObjectIntrospection",
         "lib": "gobject-introspection",
         "summary": "Introspection data for some FreeDesktop components",
-        "version": "1.58.1"
+        "version": "1.58.3"
     },
     "xlib-2.0": {
         "debian_package": "gir1.2-freedesktop",
@@ -2325,7 +2357,7 @@
         "homepage": "https://wiki.gnome.org/GObjectIntrospection",
         "lib": "gobject-introspection",
         "summary": "Introspection data for some FreeDesktop components",
-        "version": "1.58.1"
+        "version": "1.58.3"
     },
     "xrandr-1.3": {
         "debian_package": "gir1.2-freedesktop",
@@ -2333,6 +2365,6 @@
         "homepage": "https://wiki.gnome.org/GObjectIntrospection",
         "lib": "gobject-introspection",
         "summary": "Introspection data for some FreeDesktop components",
-        "version": "1.58.1"
+        "version": "1.58.3"
     }
 }

@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # Copyright 2013, 2016, 2017 Christoph Reiter
 #
 # This library is free software; you can redistribute it and/or
@@ -14,7 +14,7 @@ BUILD="$DIR/../_docs/_build"
 if [ -d "$BUILD" ]; then
     TEMP_BUILD="$DIR/_temp_build"
     rm -rf "$TEMP_BUILD"
-    git clone https://github.com/lazka/pgi-docs.git "$TEMP_BUILD"
+    git clone git@github.com:lazka/pgi-docs.git "$TEMP_BUILD" || git clone https://github.com/lazka/pgi-docs.git "$TEMP_BUILD"
     cd "$TEMP_BUILD"
     git checkout master
 

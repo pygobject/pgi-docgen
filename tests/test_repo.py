@@ -104,6 +104,10 @@ class TRepository(unittest.TestCase):
         klass = find(mod.flags, "Flags")
         self.assertEqual(klass.base, None)
 
+        struct = find(mod.structures, "MemVTable")
+        field = find(struct.fields, "realloc")
+        self.assertTrue("object" in field.type_desc)
+
     def test_gio(self):
         repo = Repository("Gio", "2.0")
         Gio = repo.import_module()

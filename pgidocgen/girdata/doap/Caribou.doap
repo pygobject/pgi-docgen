@@ -10,7 +10,7 @@
 pointer users.</description>
   <homepage rdf:resource="https://wiki.gnome.org/Projects/Caribou" />
   <mailing-list rdf:resource="http://mail.gnome.org/mailman/listinfo/gok-list" />
-  <bug-database rdf:resource="https://bugzilla.gnome.org/browse.cgi?product=caribou" />
+  <bug-database rdf:resource="https://gitlab.gnome.org/GNOME/caribou/issues/" />
   <category rdf:resource="http://api.gnome.org/doap-extensions#core" />
   <programming-language>Python</programming-language>
   <programming-language>Vala</programming-language>

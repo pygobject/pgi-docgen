@@ -9,7 +9,7 @@
   <shortdesc xml:lang="en">GObject-based wrapper around the Exiv2 library</shortdesc>
   <homepage rdf:resource="https://wiki.gnome.org/gexiv2" />
   <mailing-list rdf:resource="https://mail.gnome.org/mailman/listinfo/gexiv2-list" />
-  <bug-database rdf:resource="https://bugzilla.gnome.org/browse.cgi?product=gexiv2" />
+  <bug-database rdf:resource="https://gitlab.gnome.org/GNOME/gexiv2/issues/" />
   <programming-language>C++</programming-language>
 
   <maintainer>
