@@ -502,8 +502,9 @@ class Class(BaseDocObject, MethodsMixin, PropertiesMixin, SignalsMixin,
     @classmethod
     def from_object(cls, repo, obj):
         # cache as we need them multiple times for the inheritance counts
-        if obj in cls._cache:
-            return cls._cache[obj]
+        cache_key = repo.get_cache_key(obj)
+        if cache_key in cls._cache:
+            return cls._cache[cache_key]
 
         warnings.filterwarnings("ignore", category=gi.PyGIDeprecationWarning)
 
@@ -623,7 +624,7 @@ class Class(BaseDocObject, MethodsMixin, PropertiesMixin, SignalsMixin,
             klass.info.desc = repo.render_override_docs(
                 util.unindent(obj.__doc__, True), all=all_, docs=docs)
 
-        cls._cache[obj] = klass
+        cls._cache[cache_key] = klass
         return klass
 
 
@@ -815,8 +816,9 @@ class Structure(BaseDocObject, MethodsMixin, FieldsMixin):
     @classmethod
     def from_object(cls, repo, obj):
         # cache as we need them multiple times for the inheritance counts
-        if obj in cls._cache:
-            return cls._cache[obj]
+        cache_key = repo.get_cache_key(obj)
+        if cache_key in cls._cache:
+            return cls._cache[cache_key]
 
         namespace = util.get_namespace(obj)
 
@@ -827,7 +829,7 @@ class Structure(BaseDocObject, MethodsMixin, FieldsMixin):
         instance._parse_methods(repo, obj)
         instance._parse_fields(repo, obj)
 
-        cls._cache[obj] = instance
+        cls._cache[cache_key] = instance
         return instance
 
 

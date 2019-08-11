@@ -28,6 +28,10 @@ class Repository(object):
 
         self._rst_env = jinja2.Environment(undefined=jinja2.StrictUndefined)
 
+    def get_cache_key(self, obj):
+        # If you want to cache a docobj, use this key
+        return (self.namespace, self.version, obj)
+
     def parse(self):
         """Returns a Module instance containing the whole documentation tree"""
 
