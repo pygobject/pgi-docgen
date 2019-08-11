@@ -111,15 +111,22 @@ class ModuleGenerator(object):
             sub_dir = os.path.join(dir_, nick)
             if os.path.exists(sub_dir):
                 return mods
-            mods.append((namespace, version))
+
+            def add_mod(namespace, version):
+                value = (namespace, version)
+                if value not in mods:
+                    mods.append(value)
+
+            add_mod(namespace, version)
 
             ns = get_namespace(namespace, version)
             for dep in ns.dependencies:
-                mods.extend(get_to_write(dir_, *dep))
+                for res in get_to_write(dir_, *dep):
+                    add_mod(*res)
 
             return mods
 
-        mods = set(get_to_write(dir_, self._namespace, self._version))
+        mods = get_to_write(dir_, self._namespace, self._version)
         for namespace, version in mods:
             nick = "%s-%s" % (namespace, version)
             sub_dir = os.path.join(dir_, nick)
