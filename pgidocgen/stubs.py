@@ -220,7 +220,8 @@ def arg_to_annotation(text):
         return f"typing.Union[{', '.join(out)}]"
 
 
-def format_function_args(function, *, include_arg_names=True) -> str:
+def format_function_args(
+        function, *, accepts_kwargs: bool = False, include_arg_names=True) -> str:
     """Format function arguments as a type annotation fragment"""
 
     arg_specs = []
@@ -231,6 +232,9 @@ def format_function_args(function, *, include_arg_names=True) -> str:
     for key, value in function.full_signature.args:
         spec = "{key}: {type}" if include_arg_names else "{type}"
         arg_specs.append(spec.format(key=key, type=arg_to_annotation(value)))
+
+    if accepts_kwargs:
+        arg_specs.append('**kwargs')
 
     return ", ".join(arg_specs)
 
@@ -255,7 +259,7 @@ def format_function_returns(function) -> str:
     return returns
 
 
-def format_function(function) -> str:
+def format_function(function, *, accepts_kwargs=False) -> str:
     # We require the full signature details for argument types, and fallback
     # to the simplest possible function signature if it's not available.
     if not getattr(function, 'full_signature', None):
@@ -265,7 +269,7 @@ def format_function(function) -> str:
     return '{decorator}def {name}({args}) -> {returns}: ...'.format(
         decorator="@staticmethod\n" if function.is_static else "",
         name=function.name,
-        args=format_function_args(function),
+        args=format_function_args(function, accepts_kwargs=accepts_kwargs),
         returns=format_function_returns(function),
     )
 
@@ -316,8 +320,18 @@ def stub_class(cls) -> str:
 
         # TODO: Extract constructor information from GIR and add it to
         # docobj.Function to use here.
-        ignore = v.name == "new"
-        stub.add_function(format_function(v), ignore_type_error=ignore)
+        is_constructor = v.name == "new"
+
+        # All GObject-inheriting classes should accept keyword
+        # arguments to set GObject properties in their default
+        # constructor.
+        inherits_gobject = any(p == 'GObject.Object' for p in stub.parents)
+        accepts_kwargs = is_constructor and inherits_gobject
+
+        stub.add_function(
+            format_function(v, accepts_kwargs=accepts_kwargs),
+            ignore_type_error=is_constructor
+        )
 
     return str(stub)
 
