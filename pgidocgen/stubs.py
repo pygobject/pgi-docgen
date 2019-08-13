@@ -19,6 +19,13 @@ from .repo import Repository
 from .util import get_gir_files
 
 
+#: Mapping from namespace to a list of tuples of (class name, alias)
+MODULE_ALIASES = {
+    'GObject': [
+        ('Object', 'GObject'),
+    ],
+}
+
 #: Methods that are left out of the type stub *entirely*. In general,
 #: these are methods that have Liskov violations and are not in common
 #: use or are deprecated.
@@ -473,6 +480,12 @@ def main(args):
         for const in mod.constants:
             h.write(format_field(const))
             h.write("\n")
+
+        aliases = MODULE_ALIASES.get(namespace, [])
+        if aliases:
+            h.write("\n\n")
+        for (real, alias) in aliases:
+            h.write('{} = {}\n'.format(alias, real))
 
         with open(module_path, "w", encoding="utf-8") as f:
             # Start by handling all required imports for type annotations
