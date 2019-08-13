@@ -44,6 +44,8 @@ def add_dependent_module(module: str):
     import gi.repository
     if hasattr(gi.repository, module):
         current_module_dependencies.add(module)
+
+
 def add_parser(subparsers):
     parser = subparsers.add_parser("stubs", help="Create a typing stubs")
     parser.add_argument('target',
@@ -68,6 +70,7 @@ class StubClass:
         self.parents = []
         self.members = []
         self.functions = []
+        self.ignore_type_errors = False
 
     def add_member(self, member):
         self.members.append(member)
@@ -77,9 +80,15 @@ class StubClass:
             function += "  # type: ignore"
         self.functions.append(function)
 
-    def __str__(self):
+    @property
+    def class_line(self):
         parents = ', '.join(strip_current_module(p) for p in self.parents)
-        class_line = "class {}({}):".format(self.classname, parents)
+        line = 'class {}({}):'.format(self.classname, parents)
+        if self.ignore_type_errors:
+            line += '  # type: ignore'
+        return line
+
+    def __str__(self):
 
         body_lines = sorted(self.members)
         for function in self.functions:
@@ -88,7 +97,7 @@ class StubClass:
             body_lines = ['...']
 
         return '\n'.join(
-            [class_line] +
+            [self.class_line] +
             [(self.indent + line).rstrip() for line in body_lines] +
             ['']
         )
