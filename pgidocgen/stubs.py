@@ -19,6 +19,15 @@ from .repo import Repository
 from .util import get_gir_files
 
 
+#: Methods that are left out of the type stub *entirely*. In general,
+#: these are methods that have Liskov violations and are not in common
+#: use or are deprecated.
+OMITTED_METHODS = {
+    ('Gio.Initable', 'newv'),
+    ('GObject.Object', 'newv'),
+}
+
+
 # Initialising the current module to an invalid name
 current_module: str = '-'
 current_module_dependencies = set()
@@ -311,6 +320,10 @@ def stub_class(cls) -> str:
         stub.add_member(f"{v.name} = ...  # type: {cls.name}")
 
     for v in cls.methods + cls.vfuncs:
+        # Check our ignored methods list before doing anything else
+        if (cls.fullname, v.name) in OMITTED_METHODS:
+            continue
+
         # GObject-based constructors often violate Liskov substitution,
         # leading to typing errors such as:
         #     Signature of "new" incompatible with supertype "Object"
