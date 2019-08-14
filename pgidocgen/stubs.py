@@ -34,6 +34,32 @@ OMITTED_METHODS = {
     ('GObject.Object', 'newv'),
 }
 
+#: Methods that have explicit `type: ignore` annotations added. These
+#: are methods that violate Liskov by overriding superclass methods
+#: with an incompatible signature.
+LISKOV_VIOLATING_METHODS = {
+    ('Gio.Cancellable', 'connect'),
+    ('Gio.Cancellable', 'disconnect'),
+    ('Gio.MemoryOutputStream', 'get_data'),
+    ('Gio.MemoryOutputStream', 'steal_data'),
+    ('Gio.Socket', 'condition_wait'),
+    ('Gio.Socket', 'connect'),
+    ('Gio.Socket', 'receive_messages'),
+    ('Gio.Socket', 'send_messages'),
+    ('Gio.SocketClient', 'connect'),
+    ('Gio.SocketConnection', 'connect'),
+    ('GObject.TypeModule', 'use'),
+    ('Gtk.AccelGroup', 'connect'),
+    ('Gtk.AccelGroup', 'disconnect'),
+    ('Gtk.FileFilter', 'get_name'),
+    ('Gtk.RecentFilter', 'get_name'),
+    ('Gtk.Settings', 'install_property'),
+    ('Gtk.StyleContext', 'get_property'),
+    ('Gtk.StyleProperties', 'get_property'),
+    ('Gtk.StyleProperties', 'set_property'),
+    ('Gtk.ThemingEngine', 'get_property'),
+}
+
 
 # Initialising the current module to an invalid name
 current_module: str = '-'
@@ -341,6 +367,10 @@ def stub_class(cls) -> str:
         # TODO: Extract constructor information from GIR and add it to
         # docobj.Function to use here.
         is_constructor = v.name == "new"
+        ignore_type_error = (
+            is_constructor or
+            (cls.fullname, v.name) in LISKOV_VIOLATING_METHODS
+        )
 
         # All GObject-inheriting classes should accept keyword
         # arguments to set GObject properties in their default
@@ -350,7 +380,7 @@ def stub_class(cls) -> str:
 
         stub.add_function(
             format_function(v, accepts_kwargs=accepts_kwargs),
-            ignore_type_error=is_constructor
+            ignore_type_error=ignore_type_error,
         )
 
     return str(stub)
