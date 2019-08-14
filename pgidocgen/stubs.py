@@ -366,7 +366,14 @@ def stub_class(cls) -> str:
 
         # TODO: Extract constructor information from GIR and add it to
         # docobj.Function to use here.
-        is_constructor = v.name == "new"
+        # FIXME: This list is overly broad and very fragile.
+        is_constructor = v.name in (
+            'new',
+            'new_from_stock',
+            'new_with_label',
+            'new_with_mnemonic',
+            'new_with_range',
+        )
         ignore_type_error = (
             is_constructor or
             (cls.fullname, v.name) in LISKOV_VIOLATING_METHODS
