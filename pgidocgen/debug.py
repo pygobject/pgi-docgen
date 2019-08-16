@@ -167,6 +167,7 @@ def parse_compile_units(data):
 
             if cu_name and cu_dir:
                 type_ = None
+                cu_name = os.path.normpath(cu_name)
                 path = os.path.normpath(os.path.join(cu_dir, cu_name))
                 # XXX
                 if path.startswith("obj-x86_64-linux-gnu/"):
@@ -191,11 +192,13 @@ def parse_lines(data, cus):
     lines = {}
     path = None
     for line in data.splitlines():
-        if line.endswith(":"):
+        if line.endswith((":", "]")):
+            line = line.strip(":[+]")
             if line.startswith("CU: "):
-                potential_cu = line.split(None, 1)[-1][:-1]
+                potential_cu = line.split(None, 1)[-1]
             else:
-                potential_cu = line[:-1]
+                potential_cu = line
+            potential_cu = os.path.normpath(potential_cu)
             if potential_cu in cus:
                 path = cus[potential_cu]
                 continue
