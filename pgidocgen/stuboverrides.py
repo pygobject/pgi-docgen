@@ -52,9 +52,16 @@ class Property(typing.Generic[T]):
         ...
 """
 
+FLAGS_TYPEVAR = """FlagsT = typing.TypeVar('FlagsT')
+"""
+
+
 #: Map of namespace to additional manually-written stub classes that
 #: should be added to the top of the generated stub.
 NAMESPACE_OVERRIDES = {
+    'GLib': [
+        FLAGS_TYPEVAR,
+    ],
     'GObject': [
         PROPERTY_STUB,
     ],
@@ -62,7 +69,12 @@ NAMESPACE_OVERRIDES = {
 
 #: Map of class full name to attributes to be added to the class.
 OBJECT_OVERRIDES = {
-    'GObject.Object': {
-        'Property': 'Property',
-    },
+    'GLib.Flags': [
+        'def __or__(self: FlagsT, other: typing.Union[int, FlagsT]) -> FlagsT: ...',
+        'def __and__(self: FlagsT, other: typing.Union[int, FlagsT]) -> FlagsT: ...',
+        'def __xor__(self: FlagsT, other: typing.Union[int, FlagsT]) -> FlagsT: ...',
+    ],
+    'GObject.Object': [
+        'Property = Property',
+    ],
 }

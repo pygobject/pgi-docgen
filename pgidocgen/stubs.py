@@ -327,9 +327,9 @@ def stub_class(cls) -> str:
         if isinstance(cls, Flags):
             stub.parents.append('builtins.int')
 
-    overrides = OBJECT_OVERRIDES.get(cls.fullname, {})
-    for name, value in overrides.items():
-        stub.add_member(f'{name} = {value}')
+    overrides = OBJECT_OVERRIDES.get(cls.fullname, [])
+    for member in overrides:
+        stub.add_member(member)
 
     # TODO: We don't handle:
     #  * child_properties: It's not clear how to annotate these
