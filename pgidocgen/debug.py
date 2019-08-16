@@ -189,17 +189,17 @@ def get_lines(library_path):
     try:
         data = subprocess.check_output(
             ["objdump", "--dwarf=decodedline", library_path],
-            stderr=subprocess.STDOUT)
+            stderr=subprocess.STDOUT, universal_newlines=True)
     except subprocess.CalledProcessError:
         return {}
 
     lines = {}
     for line in data.splitlines():
         parts = line.split()
-        if len(parts) != 3:
+        if len(parts) < 3:
             continue
         try:
-            addr = int(parts[-1], 16)
+            addr = int(parts[2], 16)
         except ValueError:
             continue
         lines[addr] = str(int(parts[1]) - 1)
