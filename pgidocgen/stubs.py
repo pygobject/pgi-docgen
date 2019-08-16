@@ -10,12 +10,12 @@ import io
 import os
 import subprocess
 import sys
-import tempfile
 import typing
 
 from .docobj import Flags
 from .namespace import get_namespace, set_cache_prefix_path
 from .repo import Repository
+from .stuboverrides import NAMESPACE_OVERRIDES, OBJECT_OVERRIDES
 from .util import get_gir_files
 
 
@@ -327,6 +327,10 @@ def stub_class(cls) -> str:
         if isinstance(cls, Flags):
             stub.parents.append('builtins.int')
 
+    overrides = OBJECT_OVERRIDES.get(cls.fullname, {})
+    for name, value in overrides.items():
+        stub.add_member(f'{name} = {value}')
+
     # TODO: We don't handle:
     #  * child_properties: It's not clear how to annotate these
     #  * gtype_struct: I'm not sure what we'd use this for.
@@ -497,6 +501,10 @@ def main(args):
         current_module_dependencies = set()
 
         h = io.StringIO()
+
+        for override in NAMESPACE_OVERRIDES.get(namespace, []):
+            h.write(override)
+            h.write("\n\n")
 
         for cls in get_module_classlikes(mod):
             h.write(stub_class(cls))
