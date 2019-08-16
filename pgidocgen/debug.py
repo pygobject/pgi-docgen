@@ -221,14 +221,18 @@ def get_line_numbers_for_file(library_path):
 
     def find_nearest_cu(addr):
         i = bisect.bisect_right(cu_index, addr)
-        return cus[cu_index[max(i, 1) - 1]]
+        if i:
+            return cus[cu_index[i - 1]]
+        raise ValueError
 
     lines = get_lines(library_path)
     line_index = sorted(lines.keys())
 
     def find_nearest_line(addr):
         i = bisect.bisect_right(line_index, addr)
-        return lines[line_index[max(i, 1) - 1]]
+        if i:
+            return lines[line_index[i - 1]]
+        raise ValueError
 
     public = get_public_symbols(library_path)
     symbols = {}
