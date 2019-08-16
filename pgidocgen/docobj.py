@@ -920,9 +920,10 @@ class SymbolMapping(object):
         project = Project.for_namespace(repo.namespace)
         func = project.get_source_func(repo.namespace)
 
-        source_map = repo.get_source_map()
+        source_map = {}
         pysource_map = {}
         if func:
+            source_map = repo.get_source_map()
             for key, value in source_map.items():
                 value = func(value)
                 for pyid in repo.lookup_all_py_id(key, shadowed=False):

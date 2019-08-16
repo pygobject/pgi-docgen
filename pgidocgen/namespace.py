@@ -15,7 +15,6 @@ import collections
 from xml.dom import minidom
 
 from . import util
-from .debug import get_line_numbers_for_name
 from .girdata import load_doc_references
 from .overrides import parse_override_docs
 
@@ -175,19 +174,6 @@ class Namespace(object):
     @util.cached_property
     def doc_references(self):
         return load_doc_references(self.namespace, self.version)
-
-    @util.cached_property
-    def source_map(self):
-        """Returns a dict mapping C symbols to relative source paths and line
-        numbers. In case no debug symbols are present the returned dict will
-        be empty.
-        """
-
-        source = {}
-        for lib in self.shared_libraries:
-            for symbol, path in get_line_numbers_for_name(lib).items():
-                source[symbol] = path
-        return source
 
     def import_module(self):
         """Imports the module and initializes all dependencies.
