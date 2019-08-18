@@ -10,6 +10,7 @@ jobs:
 - job: main
   pool:
     vmImage: 'ubuntu-latest'
+  timeoutInMinutes: 90
   steps:
     - script: |
         docker pull lazka/pgi-docgen
