@@ -591,6 +591,7 @@ def _parse_docs(dom):
         [("field",), fields],
         [("property",), properties],
         [("parameter", "glib:signal"), sparas],
+        [("parameter", "function-macro"), parameters],
         [("parameter", "function"), parameters],
         [("parameter", "method"), parameters],
         [("parameter", "callback"), parameters],
