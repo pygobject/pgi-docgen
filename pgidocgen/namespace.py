@@ -88,14 +88,14 @@ def fixup_since(text):
     def fixup_since(match):
         version = match.group(2)
         # e.g. "3.10."
-        version = version.rstrip(".")
+        version = version.rstrip(".)")
         # e.g. "ATK-2-16"
         version = version.split("-", 1)[-1].replace("-", ".")
         added_since[0] = version
         return ""
 
     text = re.sub(
-        '(^|\\s+)@?Since\\s*\\\\?:?\\s+([^\\s]+)(\\n|$|\\. )', fixup_since, text)
+        '(^|\\s+)[(@]?Since\\s*\\\\?:?\\s+([^\\s]+)(\\n|$|\\)|\\. )', fixup_since, text)
 
     return text, added_since[0]
 

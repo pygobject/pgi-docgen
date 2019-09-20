@@ -153,6 +153,8 @@ class TNamespace(unittest.TestCase):
         self.assertEqual(
             fixup_since("Foo\nSince: 3.14"), ("Foo", "3.14"))
         self.assertEqual(
+            fixup_since("Foo\n(Since: 3.14)"), ("Foo", "3.14"))
+        self.assertEqual(
             fixup_since("Foo\n@Since: ATK-3.14"), ("Foo", "3.14"))
         self.assertEqual(
             fixup_since("to the baseline. Since 3.10."),
