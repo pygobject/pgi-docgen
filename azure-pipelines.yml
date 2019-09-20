@@ -13,7 +13,7 @@ jobs:
   timeoutInMinutes: 90
   steps:
     - script: |
-        docker pull lazka/pgi-docgen
+        docker pull lazka/pgi-docgen:v2
       displayName: Pull Docker image
       condition: and(succeeded(), not(eq(variables['build.sourceBranch'], 'refs/heads/deploy')))
     - script: |

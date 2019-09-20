@@ -2,7 +2,7 @@
 
 set -e
 
-TAG="lazka/pgi-docgen"
+TAG="lazka/pgi-docgen:v2"
 
 sudo -E docker run -e CODECOV_TOKEN \
     --volume "$(pwd)/..:/home/user/app" --tty "${TAG}" \
