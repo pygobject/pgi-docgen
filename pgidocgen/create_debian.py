@@ -64,6 +64,7 @@ BLACKLIST = [
     "Gtd-1.0",
     'BurnerMedia-3.1',
     'BurnerBurn-3.1',
+    'CloudProviders-0.3.0',
 
     # hangs?
     'NMA-1.0',
