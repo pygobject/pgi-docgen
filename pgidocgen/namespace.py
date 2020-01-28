@@ -391,7 +391,9 @@ def _parse_types(dom, module, namespace):
             parent_name = full_name.rsplit(".", 1)[0]
             all_shadows[parent_name + "." + shadows] = c_name
         if shadowed_by:
-            all_shadowed_by[full_name] = c_name
+            # in case something shadows itself just ignore it
+            if shadowed_by != local_name:
+                all_shadowed_by[full_name] = c_name
 
         if not introspectable or shadowed_by:
             skipped.add(c_name)
@@ -403,7 +405,7 @@ def _parse_types(dom, module, namespace):
 
     for key, value in all_shadows.items():
         shadow_map[all_shadowed_by.pop(key)] = value
-    assert not all_shadowed_by
+    assert not all_shadowed_by, all_shadowed_by
     del all_shadowed_by
     del all_shadows
 
