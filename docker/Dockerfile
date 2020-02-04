@@ -17,7 +17,9 @@ RUN apt-get install -y \
     python3-apt \
     dctrl-tools \
     apt-file \
-    xvfb
+    xvfb \
+    libgirepository-1.0 \
+    gir1.2-glib-2.0
 
 RUN apt-file update
 
