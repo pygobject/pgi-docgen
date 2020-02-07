@@ -296,7 +296,7 @@ def get_abs_library_path(library_name):
 
     if "LD_LIBRARY_PATH" in os.environ:
         path = os.path.join(os.environ["LD_LIBRARY_PATH"], library_name)
-        path = os.path.abs(path)
+        path = os.path.abspath(path)
         if not os.path.exists(path):
             raise LookupError(library_name)
         return path
