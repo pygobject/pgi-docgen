@@ -8,9 +8,9 @@
 # version 2.1 of the License, or (at your option) any later version.
 
 import argparse
+import shutil
 
-from . import create, build, stubs, create_debian, update
-
+from . import create, build, stubs, update
 
 def main(argv):
     parser = argparse.ArgumentParser(description="pgi-docgen")
@@ -19,7 +19,9 @@ def main(argv):
     create.add_parser(subparser)
     build.add_parser(subparser)
     stubs.add_parser(subparser)
-    create_debian.add_parser(subparser)
+    if shutil.which("dpkg"):
+        from . import create_debian
+        create_debian.add_parser(subparser)
     update.add_parser(subparser)
 
     args = parser.parse_args(argv[1:])
