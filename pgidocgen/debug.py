@@ -181,9 +181,11 @@ def get_compile_units(library_path):
     try:
         data = subprocess.check_output(
             ["objdump", "--dwarf=info", "--wide", library_path],
-            stderr=subprocess.STDOUT, universal_newlines=True)
+            stderr=subprocess.STDOUT)
     except subprocess.CalledProcessError:
         return {}
+
+    data = data.decode("utf-8", "surrogateescape")
 
     return parse_compile_units(data)
 
