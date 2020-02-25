@@ -548,17 +548,23 @@ def _parse_types(dom, module, namespace):
 def _parse_private(dom, namespace):
     private = set()
 
+    def is_empty(node):
+        for child in record.childNodes:
+            if child.nodeType == child.TEXT_NODE:
+                continue
+            if child.tagName == "source-position":
+                continue
+            return False
+        return True
+
     # if disguised and no record content... not perfect, but
     # we have no other way
     for record in dom.getElementsByTagName("record"):
-        disguised = bool(int(record.getAttribute("disguised") or "0"))
         is_gtype_struct = bool(record.getAttribute("glib:is-gtype-struct-for"))
-        if disguised and not is_gtype_struct:
-            children = record.childNodes
-            if len(children) == 1 and \
-                    children[0].nodeType == children[0].TEXT_NODE:
-                name = namespace + "." + record.getAttribute("name")
-                private.add(name)
+        is_private = record.getAttribute("name").endswith("Private")
+        if is_private and not is_gtype_struct and is_empty(record):
+            name = namespace + "." + record.getAttribute("name")
+            private.add(name)
 
     return private
 
