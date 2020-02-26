@@ -15,9 +15,6 @@ import time
 from multiprocessing.pool import ThreadPool
 from functools import cmp_to_key
 
-import apt
-import apt_pkg
-
 from .debian import get_repo_girs, get_debug_packages_for_libs, \
     get_repo_typelibs, get_missing_lib_packages
 from .util import parse_gir_shared_libs
@@ -91,6 +88,8 @@ BLACKLIST = [
 
 
 def check_typelibs(typelibs, install=False):
+    import apt
+
     cache = apt.Cache()
     cache.open(None)
 
@@ -109,6 +108,8 @@ def check_typelibs(typelibs, install=False):
 
 
 def compare_deb_packages(a, b):
+    import apt_pkg
+
     va = subprocess.check_output(["dpkg", "--field", a, "Version"]).strip()
     vb = subprocess.check_output(["dpkg", "--field", b, "Version"]).strip()
     va = va.decode("utf-8")
@@ -136,6 +137,8 @@ def _fetch(args):
 
 
 def fetch_girs(girs, dest):
+    import apt
+
     dest = os.path.abspath(dest)
     assert not os.path.exists(dest)
 
@@ -229,6 +232,8 @@ def check_shared_libs(shared_libs, install=False):
 
 
 def check_debug_packages(shared_libs, install=False):
+    import apt
+
     debug_packages = get_debug_packages_for_libs(shared_libs)
 
     cache = apt.Cache()
@@ -257,7 +262,14 @@ def add_parser(subparsers):
     parser.set_defaults(func=main)
 
 
+def is_debian():
+    return shutil.which("dpkg") is not None
+
+
 def main(args):
+    if not is_debian():
+        raise SystemExit("Only available on debian")
+
     print("[don't forget to apt-file update/apt-get update!]")
 
     print("searching for typelibs..")
