@@ -63,6 +63,7 @@ BLACKLIST = [
     'BurnerBurn-3.1',
     'CloudProviders-0.3.0',
     'Kkc-1.0',
+    'Unity-7.0',
 
     # hangs?
     'NMA-1.0',
