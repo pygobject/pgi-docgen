@@ -129,10 +129,7 @@ class Project(object):
             git_name = match.group(1)
 
             path_prefix = ""
-            if namespace.startswith("Gst") and \
-                    "/gst-plugins-base/" in self.doap:
-                path_prefix = "gst-libs/gst/"
-            elif "Gst" in self.namespaces and namespace != "Gst":
+            if "Gst" in self.namespaces and namespace != "Gst":
                 path_prefix = "libs/gst/"
 
             def gst_func(path):

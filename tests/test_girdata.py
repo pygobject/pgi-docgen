@@ -97,13 +97,13 @@ class TGIRData(unittest.TestCase):
                      r"gstreamer/blob/\d+\.\d+\.\d+/"
                      r"gst/gstelementfactory\.c\#L\d+", url))
 
-        url = get_url("GstApp", "app/gstappsrc.c:1237")
+        url = get_url("GstApp", "gst-libs/gst/app/gstappsrc.c:1237")
         self.assertTrue(
             re.match(r"https://gitlab\.freedesktop\.org/gstreamer/"
                      r"gst-plugins-base/blob/\d+\.\d+\.\d+/"
                      r"gst-libs/gst/app/gstappsrc\.c\#L\d+", url))
 
-        url = get_url("GstRtsp", "rtsp/gstrtspurl.c:97")
+        url = get_url("GstRtsp", "gst-libs/gst/rtsp/gstrtspurl.c:97")
         self.assertTrue(
             re.match(r"https://gitlab\.freedesktop\.org/gstreamer/"
                      r"gst-plugins-base/blob/\d+\.\d+\.\d+/"
