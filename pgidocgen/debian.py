@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 # Copyright 2016 Christoph Reiter
 #
 # This library is free software; you can redistribute it and/or
