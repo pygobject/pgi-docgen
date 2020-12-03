@@ -21,7 +21,7 @@
   <download-page rdf:resource="http://www.gegl.org/#_download" />
 
   <bug-database
-    rdf:resource="https://bugzilla.gnome.org/browse.cgi?product=GEGL"
+    rdf:resource="https://gitlab.gnome.org/GNOME/gegl/issues/"
   />
 
   <programming-language>C</programming-language>

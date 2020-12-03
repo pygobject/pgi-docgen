@@ -144,67 +144,96 @@ def get_public_symbols(library_path):
     return symbols
 
 
-def get_compile_units(library_path):
-    try:
-        data = subprocess.check_output(
-            ["objdump", "--dwarf=info", library_path],
-            stderr=subprocess.STDOUT)
-    except subprocess.CalledProcessError:
-        return {}
-
+def parse_compile_units(data):
     cus = {}
 
     cu_name = None
     cu_dir = None
-    cu_low_pc = None
     type_ = None
-    for line in data.decode("utf-8", "surrogateescape").splitlines():
+    for line in data.splitlines():
         parts = line.split()
         if len(parts) < 2:
             continue
         if parts[1] == "Abbrev":
             type_ = parts[-1].strip("()")
-            cu_name = cu_dir = cu_low_pc = None
+            cu_name = cu_dir = None
             continue
 
         if type_ == "DW_TAG_compile_unit":
-            new = True
             if parts[1] == "DW_AT_name":
                 cu_name = parts[-1]
             elif parts[1] == "DW_AT_comp_dir":
                 cu_dir = parts[-1]
-            elif parts[1] == "DW_AT_low_pc":
-                cu_low_pc = parts[-1]
-            else:
-                new = False
 
-            if new and cu_name and cu_dir and cu_low_pc:
-                cus[int(cu_low_pc, 16)] = \
-                    os.path.normpath(os.path.join(cu_dir, cu_name))
+            if cu_name and cu_dir:
+                type_ = None
+                cu_name = os.path.normpath(cu_name)
+                path = os.path.normpath(os.path.join(cu_dir, cu_name))
+                # XXX
+                if path.startswith("obj-x86_64-linux-gnu/"):
+                    path = path.split("/", 1)[-1]
+                cus[cu_name] = path
 
     return cus
 
 
-def get_lines(library_path):
+def get_compile_units(library_path):
     try:
         data = subprocess.check_output(
-            ["objdump", "--dwarf=decodedline", library_path],
+            ["objdump", "--dwarf=info", "--wide", library_path],
             stderr=subprocess.STDOUT)
     except subprocess.CalledProcessError:
         return {}
 
+    data = data.decode("utf-8", "surrogateescape")
+
+    return parse_compile_units(data)
+
+
+def parse_lines(data, cus):
     lines = {}
+    path = None
     for line in data.splitlines():
-        parts = line.split()
-        if len(parts) != 3:
+        if line.endswith((":", "]")):
+            line = line.strip(":[+]")
+            if line.startswith("CU: "):
+                potential_cu = line.split(None, 1)[-1]
+            else:
+                potential_cu = line
+            potential_cu = os.path.normpath(potential_cu)
+            if potential_cu in cus:
+                path = cus[potential_cu]
+                continue
+
+        if not path:
             continue
+
+        parts = line.split()
+        if len(parts) < 3:
+            continue
+
         try:
-            addr = int(parts[-1], 16)
+            addr = int(parts[2], 16)
         except ValueError:
             continue
-        lines[addr] = str(int(parts[1]) - 1)
+        if addr not in lines:
+            try:
+                lines[addr] = (path, str(int(parts[1])))
+            except ValueError:
+                continue
 
     return lines
+
+
+def get_lines(library_path, cus):
+    try:
+        data = subprocess.check_output(
+            ["objdump", "--dwarf=decodedline", "--wide", library_path],
+            stderr=subprocess.STDOUT, universal_newlines=True)
+    except subprocess.CalledProcessError:
+        return {}
+
+    return parse_lines(data, cus)
 
 
 def get_line_numbers_for_file(library_path):
@@ -217,15 +246,7 @@ def get_line_numbers_for_file(library_path):
     """
 
     cus = get_compile_units(library_path)
-    cu_index = sorted(cus.keys())
-
-    def find_nearest_cu(addr):
-        i = bisect.bisect_right(cu_index, addr)
-        if i:
-            return cus[cu_index[i - 1]]
-        raise ValueError
-
-    lines = get_lines(library_path)
+    lines = get_lines(library_path, cus)
     line_index = sorted(lines.keys())
 
     def find_nearest_line(addr):
@@ -237,9 +258,10 @@ def get_line_numbers_for_file(library_path):
     public = get_public_symbols(library_path)
     symbols = {}
     for addr, symbol in sorted(public.items()):
-        cu, line = find_nearest_cu(addr), find_nearest_line(addr)
+        path, line = find_nearest_line(addr)
         if symbol not in symbols:
-            symbols[symbol] = "%s:%s" % (cu, line)
+            line = str(int(line) - 1)
+            symbols[symbol] = "%s:%s" % (path, line)
 
     if len(symbols) < 2:
         return {}
@@ -272,12 +294,14 @@ def get_line_numbers_for_file(library_path):
 def get_abs_library_path(library_name):
     """e.g. returns /usr/lib/x86_64-linux-gnu/libgobject-2.0.so.0 for
     libgobject-2.0.so.0
-
-    FIXME: error handling
     """
 
     if "LD_LIBRARY_PATH" in os.environ:
-        return os.path.join(os.environ["LD_LIBRARY_PATH"], library_name)
+        path = os.path.join(os.environ["LD_LIBRARY_PATH"], library_name)
+        path = os.path.abspath(path)
+        if not os.path.exists(path):
+            raise LookupError(library_name)
+        return path
 
     # On debian ldconfig is in /sbin which isn't in PATH by default
     env = os.environ.copy()
@@ -297,7 +321,7 @@ def get_abs_library_path(library_name):
                 assert os.path.isabs(path)
                 return path
 
-    return ""
+    raise LookupError(library_name)
 
 
 def get_line_numbers_for_name(library_name):

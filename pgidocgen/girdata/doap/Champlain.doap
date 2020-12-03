@@ -6,16 +6,16 @@
 
   <name xml:lang="en">libchamplain</name>
   <shortdesc xml:lang="en">A map widget</shortdesc>
-  <description>libchamplain is a Clutter based actor and a GTK widget displaying
-interactive maps. Various map sources can be used together with the possibility
-to draw custom overlays, markers and lines on top of the maps. Bindings to other
-languages are provided using GObject Introspection.</description>
+  <description>libchamplain is a Gtk widget displaying zoomable and pannable maps that can be
+loaded from various network sources. It supports overlay layers, markers, and
+custom elements displayed on top of the maps. The library is written in C but
+other language mappings are also available thanks to GObject-introspection.</description>
   <category rdf:resource="http://api.gnome.org/doap-extensions#core" />
   <programming-language>C</programming-language>
   <homepage rdf:resource="https://wiki.gnome.org/Projects/libchamplain" />
-  <download-page rdf:resource="http://download.gnome.org/sources/libchamplain/" />
-  <bug-database rdf:resource="https://bugzilla.gnome.org/browse.cgi?product=libchamplain" />
-  <mailing-list rdf:resource="http://mail.gnome.org/mailman/listinfo/libchamplain-list" />
+  <download-page rdf:resource="https://download.gnome.org/sources/libchamplain/" />
+  <bug-database rdf:resource="https://gitlab.gnome.org/GNOME/libchamplain/issues/" />
+  <mailing-list rdf:resource="https://mail.gnome.org/mailman/listinfo/libchamplain-list" />
 
   <maintainer>
     <foaf:Person>

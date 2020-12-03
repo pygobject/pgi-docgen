@@ -18,13 +18,20 @@ See http://www.gnome-db.org for more information.</description>
   <homepage rdf:resource="http://www.gnome-db.org/" />
   <mailing-list rdf:resource="http://mail.gnome.org/mailman/listinfo/gnome-db-list" />
   <download-page rdf:resource="http://download.gnome.org/sources/libgda/" />
-  <bug-database rdf:resource="https://bugzilla.gnome.org/browse.cgi?product=libgda" />
+  <bug-database rdf:resource="https://gitlab.gnome.org/GNOME/libgda/issues/" />
 
   <maintainer>
     <foaf:Person>
       <foaf:name>Vivien Malerba</foaf:name>
       <foaf:mbox rdf:resource="mailto:malerba@gnome-db.org" />
       <gnome:userid>vivien</gnome:userid>
+    </foaf:Person>
+  </maintainer>
+  <maintainer>
+    <foaf:Person>
+      <foaf:name>Daniel Espinosa</foaf:name>
+      <foaf:mbox rdf:resource="mailto:esodan@gmail.com" />
+      <gnome:userid>despinosa</gnome:userid>
     </foaf:Person>
   </maintainer>
 </Project>

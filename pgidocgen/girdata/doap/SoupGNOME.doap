@@ -11,7 +11,7 @@
   <homepage rdf:resource="https://wiki.gnome.org/Projects/libsoup" />
   <mailing-list rdf:resource="http://mail.gnome.org/mailman/listinfo/libsoup-list" />
   <download-page rdf:resource="http://download.gnome.org/sources/libsoup/" />
-  <bug-database rdf:resource="https://bugzilla.gnome.org/browse.cgi?product=libsoup" />
+  <bug-database rdf:resource="https://gitlab.gnome.org/GNOME/libsoup/issues/" />
   <category rdf:resource="http://api.gnome.org/doap-extensions#core" />
   <programming-language>C</programming-language>
 
@@ -20,6 +20,13 @@
       <foaf:name>Dan Winship</foaf:name>
       <foaf:mbox rdf:resource="mailto:danw@gnome.org" />
       <gnome:userid>danw</gnome:userid>
+    </foaf:Person>
+  </maintainer>
+  <maintainer>
+    <foaf:Person>
+      <foaf:name>Claudio Saavedra</foaf:name>
+      <foaf:mbox rdf:resource="mailto:csaavedra@igalia.com" />
+      <gnome:userid>csaavedra</gnome:userid>
     </foaf:Person>
   </maintainer>
 </Project>

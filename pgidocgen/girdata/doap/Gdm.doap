@@ -9,9 +9,11 @@
   <homepage rdf:resource="http://wiki.gnome.org/Projects/GDM/" />
   <mailing-list rdf:resource="http://mail.gnome.org/mailman/listinfo/gdm-list" />
   <download-page rdf:resource="http://download.gnome.org/sources/gdm/" />
-  <bug-database rdf:resource="https://bugzilla.gnome.org/browse.cgi?product=gdm" />
+  <bug-database rdf:resource="https://gitlab.gnome.org/GNOME/gdm/issues/" />
   <category rdf:resource="http://api.gnome.org/doap-extensions#core" />
   <programming-language>C</programming-language>
+  <description>The GNOME Display Manager is a system service responsible for
+providing graphical log-ins and managing local and remote displays.</description>
 
   <maintainer>
     <foaf:Person>

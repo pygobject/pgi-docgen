@@ -20,7 +20,7 @@ such as media profile guessing, transcoding to a given profile, etc.</descriptio
   <download-page
   rdf:resource="http://gupnp.org/download"/>
   <bug-database
-  rdf:resource="http://bugzilla.gnome.org/browse.cgi?product=GUPnP"/>
+  rdf:resource="https://gitlab.gnome.org/GNOME/gupnp-dlna/issues/" />
 
   <maintainer>
     <foaf:Person>

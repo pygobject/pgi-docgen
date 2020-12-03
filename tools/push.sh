@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # Copyright 2013, 2016, 2017 Christoph Reiter
 #
 # This library is free software; you can redistribute it and/or
@@ -14,7 +14,7 @@ BUILD="$DIR/../_docs/_build"
 if [ -d "$BUILD" ]; then
     TEMP_BUILD="$DIR/_temp_build"
     rm -rf "$TEMP_BUILD"
-    git clone https://github.com/lazka/pgi-docs.git "$TEMP_BUILD"
+    git clone git@github.com:lazka/pgi-docs.git "$TEMP_BUILD" || git clone https://github.com/lazka/pgi-docs.git "$TEMP_BUILD"
     cd "$TEMP_BUILD"
     git checkout master
 
@@ -22,9 +22,9 @@ if [ -d "$BUILD" ]; then
     cp -r "$BUILD"/* .
 
     # add readme
-    echo "This repository was created automatically using https://github.com/pygobject/pgi-docgen\n" >> README.rst
-    echo "It contains a static website which can be viewed at http://lazka.github.io/pgi-docs/\n" >> README.rst
-    echo "It also works offline: http://github.com/lazka/pgi-docs/archive/master.zip" >> README.rst
+    echo -e 'This repository was created automatically using https://github.com/pygobject/pgi-docgen\n' >> README.rst
+    echo -e 'It contains a static website which can be viewed at http://lazka.github.io/pgi-docs/\n' >> README.rst
+    echo -e 'It also works offline: http://github.com/lazka/pgi-docs/archive/master.zip' >> README.rst
 
     # disable jekyll
     touch  .nojekyll
@@ -46,13 +46,13 @@ if [ -d "$DEVHELPBUILD" ]; then
     cp -r "$DEVHELPBUILD"/* .
 
     # add readme
-    echo "This repository was created automatically using https://github.com/pygobject/pgi-docgen\n" >> README.rst
-    echo "It contains devhelp packages for PyGObject\n\n" >> README.rst
-    echo "1) git clone https://github.com/pygobject/pgi-docs-devhelp.git ~/.local/share/devhelp/books\n" >> README.rst
-    echo "2) devhelp\n" >> README.rst
-    echo "To update:\n" >> README.rst
-    echo "1) cd ~/.local/share/devhelp/books\n" >> README.rst
-    echo "2) git pull\n" >> README.rst
+    echo -e 'This repository was created automatically using https://github.com/pygobject/pgi-docgen\n' >> README.rst
+    echo -e 'It contains devhelp packages for PyGObject\n\n' >> README.rst
+    echo -e '1) git clone https://github.com/pygobject/pgi-docs-devhelp.git ~/.local/share/devhelp/books\n' >> README.rst
+    echo -e '2) devhelp\n' >> README.rst
+    echo -e 'To update:\n' >> README.rst
+    echo -e '1) cd ~/.local/share/devhelp/books\n' >> README.rst
+    echo -e '2) git pull\n' >> README.rst
 
     git add .
     git commit -m "update" || true

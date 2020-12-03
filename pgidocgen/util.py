@@ -14,6 +14,8 @@ import csv
 import warnings
 import subprocess
 import io
+import sys
+from contextlib import contextmanager
 
 from docutils.core import publish_parts
 
@@ -23,16 +25,19 @@ _KWD_RE = re.compile("^(%s)$" % "|".join(keyword.kwlist + ["print", "exec"]))
 
 def get_signature_string(callable_):
     if type(callable_).__name__ == "wrapper_descriptor":
-            return u"()"
+        return u"()"
 
     try:
-        argspec = inspect.getargspec(callable_)
+        sig = inspect.signature(callable_)
     except TypeError:
         # ... is not a Python function
         return u"()"
-    if argspec[0] and argspec[0][0] in ('cls', 'self'):
-        del argspec[0][0]
-    return inspect.formatargspec(*argspec)
+
+    parameters = list(sig.parameters.keys())
+    if parameters and parameters[0] in ("cls", "self"):
+        sig = sig.replace(parameters=list(sig.parameters.values())[1:])
+
+    return str(sig)
 
 
 def rest2html(text):
@@ -81,7 +86,10 @@ def cache_calls(func):
 def get_child_properties(cls):
     """Returns a list of GParamSpecs or an empty list"""
 
-    Gtk = import_namespace("Gtk", "3.0")
+    try:
+        Gtk = import_namespace("Gtk", "3.0")
+    except ImportError:
+        return []
 
     if not issubclass(cls, Gtk.Container):
         return []
@@ -106,7 +114,10 @@ def get_child_properties(cls):
 def get_style_properties(cls):
     """Returns a list of GParamSpecs or an empty list"""
 
-    Gtk = import_namespace("Gtk", "3.0")
+    try:
+        Gtk = import_namespace("Gtk", "3.0")
+    except ImportError:
+        return []
 
     if not issubclass(cls, Gtk.Widget):
         return []
@@ -489,6 +500,21 @@ def get_csv_line(values):
     return result
 
 
+def sanitize_instance_repr(text):
+    """Strips pointers from repr() output so we get a reproducible result"""
+
+    def repl(m):
+        return m.group(1) + len(m.group(2)) * "0"
+
+    text = re.sub("(0x)([a-f0-9]+)", repl, text)
+
+    def repl2(m):
+        return m.group(2)
+
+    text = re.sub("( \\([0-9]+\\))(>)", repl2, text)
+    return text
+
+
 def instance_to_rest(cls, inst):
     """Reference some python instance.
 
@@ -514,7 +540,7 @@ def instance_to_rest(cls, inst):
         else:
             inst = int(inst)
 
-    return "``%s``" % repr(inst)
+    return "``%s``" % sanitize_instance_repr(repr(inst))
 
 
 def import_namespace(namespace, version=None, ignore_version=False):
@@ -589,3 +615,29 @@ class VersionedNamespace(str):
     @property
     def version(self):
         return self.split("-", 1)[-1]
+
+
+@contextmanager
+def progress(total):
+    width = 70
+    last_blocks = [-1]
+
+    def update(current, clear=False):
+        if total == 0:
+            blocks = 0
+        else:
+            blocks = int((float(current) / total) * width)
+        if blocks == last_blocks[0] and not clear:
+            return
+        last_blocks[0] = blocks
+        line = "[" + "#" * blocks + " " * (width - blocks) + "]"
+        line += (" %%%dd/%%d" % len(str(total))) % (current, total)
+        if clear:
+            line = " " * len(line)
+        sys.stdout.write(line)
+        sys.stdout.write("\b" * len(line))
+        sys.stdout.flush()
+
+    update(0)
+    yield update
+    update(0, True)

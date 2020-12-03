@@ -19,8 +19,8 @@ class TGIRData(unittest.TestCase):
 
     def test_get_project_summary(self):
         s = get_project_summary("Gtk", "3.0")
-        assert s.name == "gtk+ (Multi-platform toolkit)"
-        assert s.description.startswith("GTK+ is a")
+        assert s.name == "gtk (Multi-platform toolkit)"
+        assert s.description.startswith("GTK is a")
         assert s.homepage
         assert s.bugtracker
         assert s.mailinglists
@@ -91,18 +91,20 @@ class TGIRData(unittest.TestCase):
                      r"\d+\.\d+\.\d+/gtk/gtktoolshell\.c#L30", url))
 
         url = get_url("Gst", "gst/gstelementfactory.c:430")
+        # https://gitlab.freedesktop.org/gstreamer/gstreamer/blob/1.14.4/gst/gstelementfactory.c#L430
         self.assertTrue(
-            re.match(r"http://cgit\.freedesktop\.org/gstreamer/gstreamer/tree"
-                     r"/gst/gstelementfactory\.c\?h=\d+\.\d+\.\d+#n\d+", url))
+            re.match(r"https://gitlab\.freedesktop\.org/gstreamer/"
+                     r"gstreamer/blob/\d+\.\d+\.\d+/"
+                     r"gst/gstelementfactory\.c\#L\d+", url))
 
-        url = get_url("GstApp", "app/gstappsrc.c:1237")
+        url = get_url("GstApp", "gst-libs/gst/app/gstappsrc.c:1237")
         self.assertTrue(
-            re.match(r"http://cgit\.freedesktop\.org/gstreamer/"
-                     r"gst-plugins-base/tree/gst-libs/gst/app/"
-                     r"gstappsrc\.c\?h=\d+\.\d+\.\d+#n\d+", url))
+            re.match(r"https://gitlab\.freedesktop\.org/gstreamer/"
+                     r"gst-plugins-base/blob/\d+\.\d+\.\d+/"
+                     r"gst-libs/gst/app/gstappsrc\.c\#L\d+", url))
 
-        url = get_url("GstRtsp", "rtsp/gstrtspurl.c:97")
+        url = get_url("GstRtsp", "gst-libs/gst/rtsp/gstrtspurl.c:97")
         self.assertTrue(
-            re.match(r"http://cgit\.freedesktop\.org/gstreamer/"
-                     r"gst-plugins-base/tree/gst-libs/gst/rtsp/"
-                     r"gstrtspurl\.c\?h=\d+\.\d+\.\d+#n\d+", url))
+            re.match(r"https://gitlab\.freedesktop\.org/gstreamer/"
+                     r"gst-plugins-base/blob/\d+\.\d+\.\d+/"
+                     r"gst-libs/gst/rtsp/gstrtspurl\.c\#L\d+", url))

@@ -10,6 +10,7 @@ import jinja2
 
 from .namespace import get_namespace
 from .parser import docstring_to_rest
+from .debug import get_line_numbers_for_name
 from .docobj import Module
 
 
@@ -27,6 +28,10 @@ class Repository(object):
         self._namespaces = loaded
 
         self._rst_env = jinja2.Environment(undefined=jinja2.StrictUndefined)
+
+    def get_cache_key(self, obj):
+        # If you want to cache a docobj, use this key
+        return (self.namespace, self.version, obj)
 
     def parse(self):
         """Returns a Module instance containing the whole documentation tree"""
@@ -182,14 +187,16 @@ class Repository(object):
         return self._ns.import_module()
 
     def get_source_map(self):
-        """Returns a dict mapping C symbols to an external url showing
-        the code of that symbol.
-
-        e.g. "g_idle_add" ->
-            https://gitlab.gnome.org/GNOME/glib/blob/2.46.2/glib/gmain.c#L5538
+        """Returns a dict mapping C symbols to relative source paths and line
+        numbers. In case no debug symbols are present the returned dict will
+        be empty.
         """
 
-        return self._ns.source_map
+        source_map = {}
+        for lib in self._ns.shared_libraries:
+            for symbol, path in get_line_numbers_for_name(lib).items():
+                source_map[symbol] = path
+        return source_map
 
     def get_types(self):
         return self._ns.types

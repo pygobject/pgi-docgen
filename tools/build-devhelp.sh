@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # Copyright 2013 Christoph Reiter
 #
 # This library is free software; you can redistribute it and/or
@@ -11,5 +11,5 @@
 
 set -e
 
-./pgidocgen.py create _docs "$@"
-./pgidocgen.py build --devhelp _docs _docs/_build_devhelp
+./pgi-docgen create _docs "$@"
+./pgi-docgen build --devhelp _docs _docs/_build_devhelp

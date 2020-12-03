@@ -29,9 +29,9 @@ typical of a source code editor.</description>
   </maintainer>
   <maintainer>
     <foaf:Person>
-      <foaf:name>Sébastien Wilmet</foaf:name>
-      <foaf:mbox rdf:resource="mailto:swilmet@gnome.org" />
-      <gnome:userid>swilmet</gnome:userid>
+      <foaf:name>Christian Hergert</foaf:name>
+      <foaf:mbox rdf:resource="mailto:chergert@gnome.org" />
+      <gnome:userid>chergert</gnome:userid>
     </foaf:Person>
   </maintainer>
 

@@ -25,10 +25,50 @@ GStreamer library for creating audio and video editors
 
  <repository>
    <GitRepository>
-     <location rdf:resource="git://anongit.freedesktop.org/gstreamer/gst-editing-services"/>
-     <browse rdf:resource="http://cgit.freedesktop.org/gstreamer/gst-editing-services"/>
+     <location rdf:resource="https://gitlab.freedesktop.org/gstreamer/gst-editing-services"/>
+     <browse rdf:resource="http://gitlab.freedesktop.org/gstreamer/gst-editing-services"/>
    </GitRepository>
  </repository>
+
+ <release>
+  <Version>
+   <revision>1.16.0</revision>
+   <branch>master</branch>
+   <name></name>
+   <created>2019-04-19</created>
+   <file-release rdf:resource="https://gstreamer.freedesktop.org/src/gst-editing-services/gst-editing-services-1.16.0.tar.xz" />
+  </Version>
+ </release>
+
+ <release>
+  <Version>
+   <revision>1.15.90</revision>
+   <branch>master</branch>
+   <name></name>
+   <created>2019-04-11</created>
+   <file-release rdf:resource="https://gstreamer.freedesktop.org/src/gst-editing-services/gst-editing-services-1.15.90.tar.xz" />
+  </Version>
+ </release>
+
+ <release>
+  <Version>
+   <revision>1.15.2</revision>
+   <branch>master</branch>
+   <name></name>
+   <created>2019-02-26</created>
+   <file-release rdf:resource="https://gstreamer.freedesktop.org/src/gst-editing-services/gst-editing-services-1.15.2.tar.xz" />
+  </Version>
+ </release>
+
+ <release>
+  <Version>
+   <revision>1.15.1</revision>
+   <branch>master</branch>
+   <name></name>
+   <created>2019-01-17</created>
+   <file-release rdf:resource="https://gstreamer.freedesktop.org/src/gst-editing-services/gst-editing-services-1.15.1.tar.xz" />
+  </Version>
+ </release>
 
  <release>
   <Version>

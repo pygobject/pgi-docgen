@@ -122,23 +122,20 @@ class Project(object):
                     git_name, tag, path, line)
 
             return gnome_func
-        elif "cgit.freedesktop.org/gstreamer/" in self.doap:
+        elif "gitlab.freedesktop.org/gstreamer/" in self.doap:
             match = re.search("/gstreamer/(.*?)/", self.doap)
             if match is None:
                 return
             git_name = match.group(1)
 
             path_prefix = ""
-            if namespace.startswith("Gst") and \
-                    "/gst-plugins-base/" in self.doap:
-                path_prefix = "gst-libs/gst/"
-            elif "Gst" in self.namespaces and namespace != "Gst":
+            if "Gst" in self.namespaces and namespace != "Gst":
                 path_prefix = "libs/gst/"
 
             def gst_func(path):
                 path, line = path.rsplit(":", 1)
-                return ("http://cgit.freedesktop.org/gstreamer/%s/tree/%s%s"
-                        "?h=%s#n%s" % (git_name, path_prefix, path, tag, line))
+                return ("https://gitlab.freedesktop.org/gstreamer/%s/blob/%s/%s%s"
+                        "#L%s" % (git_name, tag, path_prefix, path, line))
 
             return gst_func
         elif namespace in ("AppStreamGlib",):
@@ -223,8 +220,8 @@ PROJECTS = [
     Project(['Grl', 'GrlNet'], 'https://gitlab.gnome.org/GNOME/grilo/raw/master/grilo.doap'),
     Project(['GMenu'], 'https://gitlab.gnome.org/GNOME/gnome-menus/raw/master/gnome-menus.doap'),
     Project(['Json'], 'https://gitlab.gnome.org/GNOME/json-glib/raw/master/json-glib.doap'),
-    Project(['GstAllocators', 'GstApp', 'GstAudio', 'GstInterfaces', 'GstNetbuffer', 'GstPbutils', 'GstRiff', 'GstRtp', 'GstRtsp', 'GstSdp', 'GstTag', 'GstVideo'], 'https://cgit.freedesktop.org/gstreamer/gst-plugins-base/plain/gst-plugins-base.doap'),
-    Project(['GstRtspServer'], 'https://cgit.freedesktop.org/gstreamer/gst-rtsp-server/plain/gst-rtsp-server.doap'),
+    Project(['GstAllocators', 'GstApp', 'GstAudio', 'GstInterfaces', 'GstNetbuffer', 'GstPbutils', 'GstRiff', 'GstRtp', 'GstRtsp', 'GstSdp', 'GstTag', 'GstVideo'], 'https://gitlab.freedesktop.org/gstreamer/gst-plugins-base/raw/master/gst-plugins-base.doap'),
+    Project(['GstRtspServer'], 'https://gitlab.freedesktop.org/gstreamer/gst-rtsp-server/raw/master/gst-rtsp-server.doap'),
     Project(['GUdev'], 'https://gitlab.gnome.org/GNOME/libgudev/raw/master/libgudev.doap'),
     Project(['Champlain', 'GtkChamplain'], 'https://gitlab.gnome.org/GNOME/libchamplain/raw/master/libchamplain.doap'),
     Project(['Secret', 'SecretUnstable'], 'https://gitlab.gnome.org/GNOME/libsecret/raw/master/libsecret.doap'),
@@ -237,22 +234,22 @@ PROJECTS = [
     Project(['Gdm'], 'https://gitlab.gnome.org/GNOME/gdm/raw/master/gdm.doap'),
     Project(['Zpj'], 'https://gitlab.gnome.org/GNOME/libzapojit/raw/master/libzapojit.doap'),
     Project(['Atspi'], 'https://gitlab.gnome.org/GNOME/at-spi2-core/raw/master/at-spi2-core.doap'),
-    Project(['Gst', 'GstBase', 'GstCheck', 'GstController', 'GstNet'], 'https://cgit.freedesktop.org/gstreamer/gstreamer/plain/gstreamer.doap'),
+    Project(['Gst', 'GstBase', 'GstCheck', 'GstController', 'GstNet'], 'https://gitlab.freedesktop.org/gstreamer/gstreamer/raw/master/gstreamer.doap'),
     Project(['Gdl'], 'https://gitlab.gnome.org/GNOME/gdl/raw/master/gdl.doap'),
     Project(['Anjuta'], 'https://gitlab.gnome.org/GNOME/anjuta/raw/master/anjuta.doap'),
     Project(['TotemPlParser'], 'https://gitlab.gnome.org/GNOME/totem-pl-parser/raw/master/totem-pl-parser.doap'),
     Project(['Caribou'], 'https://gitlab.gnome.org/GNOME/caribou/raw/master/caribou.doap'),
     Project(['ClutterGst'], 'https://gitlab.gnome.org/GNOME/clutter-gst/raw/master/clutter-gst.doap'),
     Project(['GrlPls'], 'https://gitlab.gnome.org/GNOME/grilo-plugins/raw/master/grilo-plugins.doap'),
-    Project(['GstGL', 'GstInsertBin', 'GstMpegts'], 'https://cgit.freedesktop.org/gstreamer/gst-plugins-bad/plain/gst-plugins-bad.doap'),
+    Project(['GstGL', 'GstInsertBin', 'GstMpegts'], 'https://gitlab.freedesktop.org/gstreamer/gst-plugins-bad/raw/master/gst-plugins-bad.doap'),
     Project(['Nautilus'], 'https://gitlab.gnome.org/GNOME/nautilus/raw/master/nautilus.doap'),
     Project(['GData'], 'https://gitlab.gnome.org/GNOME/libgdata/raw/master/libgdata.doap'),
     Project(['Folks', 'FolksEds', 'FolksTelepathy'], 'https://gitlab.gnome.org/GNOME/folks/raw/master/folks.doap'),
     Project(['Gucharmap'], 'https://gitlab.gnome.org/GNOME/gucharmap/raw/master/gucharmap.doap'),
-    Project(['GdkPixbuf'], 'https://gitlab.gnome.org/GNOME/gdk-pixbuf/raw/master/gdk-pixbuf.doap'),
+    Project(['GdkPixbuf', 'GdkPixdata'], 'https://gitlab.gnome.org/GNOME/gdk-pixbuf/raw/master/gdk-pixbuf.doap'),
     Project(['GUPnPAV'], 'https://gitlab.gnome.org/GNOME/gupnp-av/raw/master/gupnp-av.doap'),
     Project(['BraseroBurn', 'BraseroMedia'], 'https://gitlab.gnome.org/GNOME/brasero/raw/master/brasero.doap'),
-    Project(['GES'], 'https://cgit.freedesktop.org/gstreamer/gst-editing-services/plain/gst-editing-services.doap'),
+    Project(['GES'], 'https://gitlab.freedesktop.org/gstreamer/gst-editing-services/raw/master/gst-editing-services.doap'),
     Project(['GWeather'], 'https://gitlab.gnome.org/GNOME/libgweather/raw/master/libgweather.doap'),
     Project(['GCab'], 'https://gitlab.gnome.org/GNOME/gcab/raw/master/gcab.doap'),
     Project(['GXPS'], 'https://gitlab.gnome.org/GNOME/libgxps/raw/master/libgxps.doap'),
@@ -268,7 +265,7 @@ PROJECTS = [
     Project(['Tracker', 'TrackerControl', 'TrackerExtract', 'TrackerMiner'], 'https://gitlab.gnome.org/GNOME/tracker/raw/master/tracker.doap'),
     Project(['GLib', 'GObject', 'Gio', 'GModule'], 'https://gitlab.gnome.org/GNOME/glib/raw/master/glib.doap'),
     Project(['MediaArt'], 'https://gitlab.gnome.org/GNOME/libmediaart/raw/master/libmediaart.doap'),
-    Project(['HarfBuzz'], 'https://cgit.freedesktop.org/harfbuzz/plain/harfbuzz.doap'),
+    Project(['HarfBuzz'], 'https://raw.githubusercontent.com/harfbuzz/harfbuzz/master/harfbuzz.doap'),
     Project(['Gom'], 'https://gitlab.gnome.org/GNOME/gom/raw/master/gom.doap'),
     Project(['Gnm'], 'https://gitlab.gnome.org/GNOME/gnumeric/raw/master/gnumeric.doap'),
     Project(['UDisks']),

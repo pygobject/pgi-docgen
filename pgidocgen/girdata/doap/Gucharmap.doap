@@ -6,6 +6,7 @@
 
   <name xml:lang="en">Character Map</name>
   <shortdesc xml:lang="en">Character map, based on the Unicode Character Database</shortdesc>
+  <description>Character Map, based on the Unicode Character Database</description>
   <homepage
   rdf:resource="https://wiki.gnome.org/Apps/Gucharmap" />
   <mailing-list
@@ -13,7 +14,7 @@
   <download-page
   rdf:resource="http://download.gnome.org/sources/gucharmap/" />
   <bug-database
-  rdf:resource="https://bugzilla.gnome.org/browse.cgi?product=gucharmap" />
+  rdf:resource="https://gitlab.gnome.org/GNOME/gucharmap/issues/" />
   <category rdf:resource="http://api.gnome.org/doap-extensions#core" />
   <programming-language>C</programming-language>
 

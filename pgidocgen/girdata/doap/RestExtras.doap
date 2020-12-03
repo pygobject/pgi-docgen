@@ -9,7 +9,7 @@
   <category rdf:resource="http://api.gnome.org/doap-extensions#core" />
   <description>librest is a helper library for RESTful services. It uses libsoup to provide HTTP communication.</description>
   <download-page rdf:resource="http://download.gnome.org/sources/rest/" />
-  <bug-database  rdf:resource="https://bugzilla.gnome.org/browse.cgi?product=librest" />
+  <bug-database rdf:resource="https://gitlab.gnome.org/GNOME/librest/issues/" />
   <programming-language>C</programming-language>
 
   <maintainer>

@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 # Copyright 2016 Christoph Reiter
 #
 # This library is free software; you can redistribute it and/or
@@ -64,7 +64,7 @@ def _extract_control_field(field):
         "/usr/lib/apt/apt-helper cat-file "
         "$(apt-get indextargets --format '$(FILENAME)' | grep '.*Packages') | "
         "grep-dctrl -sPackage,%s --field=%s ''" % (field, field))
-    assert ret == 0
+    assert ret == 0, (out, err)
 
     mapping = {}
     package = None
@@ -94,6 +94,24 @@ def get_build_ids():
             for v in value.split():
                 build_ids[v] = package
     return build_ids
+
+
+def get_missing_lib_packages(libraries):
+    notfound = []
+    for lib in libraries:
+        try:
+            get_debug_files_for_name(lib)
+        except LookupError:
+            notfound.append(lib)
+
+    data = b""
+    for lib in notfound:
+        data += subprocess.check_output(["apt-file", "search", lib])
+    data = data.decode("utf-8")
+    packages = set()
+    for line in data.splitlines():
+        packages.add(line.split(": ", 1)[0].strip())
+    return packages
 
 
 def get_debug_packages_for_libs(libraries):

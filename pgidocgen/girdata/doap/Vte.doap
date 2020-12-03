@@ -13,7 +13,7 @@
   <download-page
   rdf:resource="http://download.gnome.org/sources/vte"/>
   <bug-database
-  rdf:resource="http://bugzilla.gnome.org/browse.cgi?product=vte"/>
+  rdf:resource="https://gitlab.gnome.org/GNOME/vte/issues/" />
   <category rdf:resource="http://api.gnome.org/doap-extensions#core" />
   <programming-language>C++</programming-language>
   <programming-language>C</programming-language>
@@ -21,7 +21,7 @@
   <maintainer>
     <foaf:Person>
       <foaf:name>Christian Persch</foaf:name>
-      <foaf:mbox rdf:resource="mailto:chpe@gnome.org" />
+      <foaf:mbox rdf:resource="mailto:chpe@src.gnome.org" />
       <gnome:userid>chpe</gnome:userid>
     </foaf:Person>
   </maintainer>

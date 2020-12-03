@@ -1,8 +1,11 @@
 {
     "GBinding": "https://developer.gnome.org/gobject/stable/GBinding.html#GBinding",
+    "GClosure": "https://developer.gnome.org/gobject/stable/gobject-Closures.html#GClosure",
     "GObject": "https://developer.gnome.org/gobject/stable/gobject-The-Base-Object-Type.html#GObject",
     "GTypeModule": "https://developer.gnome.org/gobject/stable/GTypeModule.html#GTypeModule",
     "GTypePlugin": "https://developer.gnome.org/gobject/stable/GTypePlugin.html#GTypePlugin",
+    "GValue": "https://developer.gnome.org/gobject/stable/gobject-Generic-values.html#GValue",
+    "GValueArray": "https://developer.gnome.org/gobject/stable/gobject-Value-arrays.html#GValueArray",
     "canonical-parameter-names": "https://developer.gnome.org/gobject/stable/gobject-GParamSpec.html#canonical-parameter-names",
     "chapter-gobject": "https://developer.gnome.org/gobject/stable/chapter-gobject.html#chapter-gobject",
     "chapter-gtype": "https://developer.gnome.org/gobject/stable/chapter-gtype.html#chapter-gtype",

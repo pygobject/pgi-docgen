@@ -11,7 +11,9 @@ import re
 import types
 import inspect
 import copy
+import warnings
 
+import gi
 from gi.repository import GObject
 
 from . import util
@@ -500,8 +502,11 @@ class Class(BaseDocObject, MethodsMixin, PropertiesMixin, SignalsMixin,
     @classmethod
     def from_object(cls, repo, obj):
         # cache as we need them multiple times for the inheritance counts
-        if obj in cls._cache:
-            return cls._cache[obj]
+        cache_key = repo.get_cache_key(obj)
+        if cache_key in cls._cache:
+            return cls._cache[cache_key]
+
+        warnings.filterwarnings("ignore", category=gi.PyGIDeprecationWarning)
 
         namespace = util.get_namespace(obj)
         name = obj.__name__
@@ -619,7 +624,7 @@ class Class(BaseDocObject, MethodsMixin, PropertiesMixin, SignalsMixin,
             klass.info.desc = repo.render_override_docs(
                 util.unindent(obj.__doc__, True), all=all_, docs=docs)
 
-        cls._cache[obj] = klass
+        cls._cache[cache_key] = klass
         return klass
 
 
@@ -811,8 +816,9 @@ class Structure(BaseDocObject, MethodsMixin, FieldsMixin):
     @classmethod
     def from_object(cls, repo, obj):
         # cache as we need them multiple times for the inheritance counts
-        if obj in cls._cache:
-            return cls._cache[obj]
+        cache_key = repo.get_cache_key(obj)
+        if cache_key in cls._cache:
+            return cls._cache[cache_key]
 
         namespace = util.get_namespace(obj)
 
@@ -823,7 +829,7 @@ class Structure(BaseDocObject, MethodsMixin, FieldsMixin):
         instance._parse_methods(repo, obj)
         instance._parse_fields(repo, obj)
 
-        cls._cache[obj] = instance
+        cls._cache[cache_key] = instance
         return instance
 
 
@@ -914,9 +920,10 @@ class SymbolMapping(object):
         project = Project.for_namespace(repo.namespace)
         func = project.get_source_func(repo.namespace)
 
-        source_map = repo.get_source_map()
+        source_map = {}
         pysource_map = {}
         if func:
+            source_map = repo.get_source_map()
             for key, value in source_map.items():
                 value = func(value)
                 for pyid in repo.lookup_all_py_id(key, shadowed=False):
@@ -930,7 +937,7 @@ class SymbolMapping(object):
                 source_url = func(source_path) if source_path else u""
             else:
                 source_url = u""
-            for value in values:
+            for value in sorted(values):
                 if not value.startswith(repo.namespace + "."):
                     continue
                 if repo.is_private(value):
@@ -968,6 +975,8 @@ class Module(BaseDocObject):
 
     @classmethod
     def from_repo(cls, repo):
+        warnings.filterwarnings("ignore", category=gi.PyGIDeprecationWarning)
+
         mod = Module(repo.namespace)
         mod.dependencies = repo.get_all_dependencies()
 
