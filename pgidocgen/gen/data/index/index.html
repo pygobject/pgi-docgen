@@ -13,28 +13,26 @@ function applyHash() {
     // takes the current hash loads the path into the content frame
 
     var hash = window.location.hash.substring(1);
-    var contentFrame = document.getElementById("Content");
-    var newSrc = main_page;
+    var elm = document.getElementById('Content');
+    var new_src = main_page;
 
     if (hash) {
         if (hash.indexOf("#") < 0) {
-            if (hash.indexOf("%23") > 0) {
-                // unescape first percent-escaped hash
+            if (hash.indexOf("%23") > 0)
+                // unescape only first percent-escaped hash
                 hash = hash.replace("%23", "#");
-            } else if (!endsWith(hash, ".html") && !endsWith(hash, "/")) {
+            else if (!endsWith(hash, ".html") && !endsWith(hash, "/"))
                 hash += "/"; // needed for webkit
-            }
         }
-        newSrc = hash;
+        new_src = hash;
     }
 
     // create a dummy element so we can compare the URLs; prevents
     // flashing on chrome when the same url is set twice on start
     var dummy = document.createElement("a");
-    dummy.href = newSrc;
-    if(dummy.href != contentFrame.src) {
-        contentFrame.src = newSrc;
-    }
+    dummy.href = new_src;
+    if(dummy.href != elm.src)
+        elm.src = new_src;
 }
 
 
