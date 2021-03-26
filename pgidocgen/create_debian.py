@@ -65,7 +65,7 @@ BLACKLIST = [
     'Kkc-1.0',
     'Unity-7.0',  # invalid xml
     'UnityExtras-7.0',  # invalid xml
-    'Zpj-0.0',
+    'libisocodes-1.2.3',
 
     # hangs?
     'NMA-1.0',
