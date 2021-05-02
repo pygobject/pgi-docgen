@@ -2,8 +2,8 @@
 
 set -e
 
-TAG="lazka/pgi-docgen:v2"
+TAG="lazka/pgi-docgen:v3"
 
-sudo docker run --security-opt label=disable \
+docker run --security-opt label=disable \
     --rm  --volume "$(pwd)/..:/home/user/app" \
     --tty --interactive "${TAG}" bash

@@ -4,5 +4,5 @@ set -e
 
 TAG="lazka/pgi-docgen:v3"
 
-sudo docker build \
-    --build-arg HOST_USER_ID="$UID" --tag "${TAG}" --file "Dockerfile" ..
+docker build \
+    --build-arg HOST_USER_ID="$UID" --build-arg "http_proxy=$http_proxy" --tag "${TAG}" --file "Dockerfile" ..

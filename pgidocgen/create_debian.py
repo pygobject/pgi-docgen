@@ -21,23 +21,23 @@ from .util import parse_gir_shared_libs
 
 
 DEB_BLACKLIST = [
-    "gir1.2-hkl-5.0",
-    "gir1.2-totem-plparser-1.0",
-    "gir1.2-gpaste-6.0",
-    "libgstreamer-gl1.0-0",
-    "gir1.2-gconf-2.0",
+#    "gir1.2-hkl-5.0",
+#    "gir1.2-totem-plparser-1.0",
+#    "gir1.2-gpaste-6.0",
+#    "libgstreamer-gl1.0-0",
+#    "gir1.2-gconf-2.0",
 ]
 
 BLACKLIST = [
     # old gtk
     "Gtk-2.0",
-    "Gdk-2.0",
-    "GdkX11-2.0",
-    'MateDesktop-2.0',
+#    "Gdk-2.0",
+#    "GdkX11-2.0",
+#    'MateDesktop-2.0',
     'AtrilView-1.5.0',
     'AtrilDocument-1.5.0',
     'Eom-1.0',
-    'Matekbd-1.0',
+#    'Matekbd-1.0',
     'GConf-2.0',
 
     # broken
@@ -79,14 +79,14 @@ BLACKLIST = [
     "Ganv-1.0",
     "DbusmenuGtk-0.4",
     "GcrUi-3",
-    "Caja-2.0",
+#    "Caja-2.0",
     "AppIndicator-0.1",
-    "MatePanelApplet-4.0",
+#    "MatePanelApplet-4.0",
     "BraseroBurn-3.1",
     "v_sim-3.7",
     "FolksDummy-0.6",
     "Wnck-1.0",
-    "AyatanaAppIndicator-0.1",
+    "AyatanaAppIndicator-0.1"
 ]
 
 

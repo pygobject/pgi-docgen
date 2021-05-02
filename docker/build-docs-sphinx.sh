@@ -4,6 +4,6 @@ set -e
 
 TAG="lazka/pgi-docgen:v3"
 
-sudo docker run --security-opt label=disable \
+docker run --security-opt label=disable \
     --rm  --volume "$(pwd)/..:/home/user/app" \
     -t "${TAG}" ./pgi-docgen build _docs _docs/_build
