@@ -1,10 +1,10 @@
-FROM debian:testing
+FROM debian:buster
 
 ENV LANG C.UTF-8
 
 RUN bash -c 'if test -n "$http_proxy"; then echo "Acquire::http::proxy \"$http_proxy\";" > /etc/apt/apt.conf.d/99proxy; echo "export http_proxy=$http_proxy" > /etc/profile.d/proxy.sh; else echo "Using direct network connection."; fi'
 
-RUN echo "deb http://debug.mirrors.debian.org/debian-debug/ testing-debug main" >> /etc/apt/sources.list
+RUN echo "deb http://debug.mirrors.debian.org/debian-debug/ buster-debug main" >> /etc/apt/sources.list
 RUN rm /etc/apt/apt.conf.d/docker-no-languages
 
 RUN apt-get update

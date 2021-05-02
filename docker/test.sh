@@ -2,7 +2,7 @@
 
 set -e
 
-TAG="lazka/pgi-docgen:v3"
+TAG="lazka/pgi-docgen:debian-buster"
 
 sudo -E docker run -e CODECOV_TOKEN \
     --volume "$(pwd)/..:/home/user/app" --tty "${TAG}" \
