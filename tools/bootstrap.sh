@@ -19,4 +19,10 @@ else
     pip install beautifulsoup4
     pip install jinja2
     pip install cairocffi
+
+    # Redhat/Fedora systems may have a certifi package from cert.org,
+    # which is without cacert.pem .
+    if [ -f /etc/redhat-release ]; then
+        pip install --ignore-installed certifi
+    fi
 fi
