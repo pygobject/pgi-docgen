@@ -120,8 +120,7 @@ class SearchIndexMerger(object):
                     new_objects[k] = {}
                 new_attributes = new_objects[k]
 
-                for attr, v in attributes.items():
-                    fn_index, objtype_index, prio, shortanchor = v
+                for fn_index, objtype_index, prio, shortanchor, attr in attributes:
                     objtype_index = get_obj_index(ns, objtype_index)
                     new_v = [fn_index, objtype_index, prio, shortanchor]
 
