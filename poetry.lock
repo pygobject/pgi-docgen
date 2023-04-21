@@ -748,6 +748,22 @@ pytest = ">=4.6"
 testing = ["fields", "hunter", "process-tests", "pytest-xdist", "six", "virtualenv"]
 
 [[package]]
+name = "python-apt"
+version = "0.0.0"
+description = "Python bindings for APT"
+category = "main"
+optional = true
+python-versions = "*"
+files = []
+develop = false
+
+[package.source]
+type = "git"
+url = "https://salsa.debian.org/apt-team/python-apt.git"
+reference = "2.5.3"
+resolved_reference = "3252935b6224b3bd2e2250894b9559b47c61b2e1"
+
+[[package]]
 name = "pytz"
 version = "2023.3"
 description = "World timezone definitions, modern and historical"
@@ -783,14 +799,14 @@ use-chardet-on-py3 = ["chardet (>=3.0.2,<6)"]
 
 [[package]]
 name = "setuptools"
-version = "67.7.0"
+version = "67.7.1"
 description = "Easily download, build, install, upgrade, and uninstall Python packages"
 category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "setuptools-67.7.0-py3-none-any.whl", hash = "sha256:888be97fde8cc3afd60f7784e678fa29ee13c4e5362daa7104a93bba33646c50"},
-    {file = "setuptools-67.7.0.tar.gz", hash = "sha256:b7e53a01c6c654d26d2999ee033d8c6125e5fa55f03b7b193f937ae7ac999f22"},
+    {file = "setuptools-67.7.1-py3-none-any.whl", hash = "sha256:6f0839fbdb7e3cfef1fc38d7954f5c1c26bf4eebb155a55c9bf8faf997b9fb67"},
+    {file = "setuptools-67.7.1.tar.gz", hash = "sha256:bb16732e8eb928922eabaa022f881ae2b7cdcfaf9993ef1f5e841a96d32b8e0c"},
 ]
 
 [package.extras]
@@ -941,7 +957,10 @@ brotli = ["brotli (>=1.0.9)", "brotlicffi (>=0.8.0)", "brotlipy (>=0.6.0)"]
 secure = ["certifi", "cryptography (>=1.3.4)", "idna (>=2.0.0)", "ipaddress", "pyOpenSSL (>=0.14)", "urllib3-secure-extra"]
 socks = ["PySocks (>=1.5.6,!=1.5.7,<2.0)"]
 
+[extras]
+debian = ["python-apt"]
+
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8.1"
-content-hash = "a06483db41f5d923352d1332e4771f80982719e7999bf986b6f8b138e6d440cf"
+content-hash = "eb0e1848a17a5cbdcb0ed8eaaf51dc134edfd0a4ac1fdd0027d6ada79c97b37b"

@@ -17,6 +17,10 @@ sphinx = "^1.8.5"
 cairocffi = "^1.0.2"
 beautifulsoup4 = "^4.7.1"
 lxml = "^4.9.2"
+python-apt = { git="https://salsa.debian.org/apt-team/python-apt.git", tag="2.5.3", optional=true }
+
+[tool.poetry.extras]
+debian = ["python-apt"]
 
 [tool.poetry.group.dev.dependencies]
 flake8 = "^6.0.0"
