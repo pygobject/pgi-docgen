@@ -296,12 +296,15 @@ def get_abs_library_path(library_name):
     libgobject-2.0.so.0
     """
 
+    # If LD_LIBRARY_PATH is set, try it first
+    ld_paths = []
     if "LD_LIBRARY_PATH" in os.environ:
-        path = os.path.join(os.environ["LD_LIBRARY_PATH"], library_name)
+        ld_paths = os.environ["LD_LIBRARY_PATH"].split(os.pathsep)
+    for ld_path in ld_paths:
+        path = os.path.join(ld_path, library_name)
         path = os.path.abspath(path)
-        if not os.path.exists(path):
-            raise LookupError(library_name)
-        return path
+        if os.path.exists(path):
+            return path
 
     # On debian ldconfig is in /sbin which isn't in PATH by default
     env = os.environ.copy()
