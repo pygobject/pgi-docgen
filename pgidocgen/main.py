@@ -7,6 +7,7 @@
 # License as published by the Free Software Foundation; either
 # version 2.1 of the License, or (at your option) any later version.
 
+import sys
 import argparse
 
 from . import create, build, stubs, create_debian, update
@@ -27,3 +28,7 @@ def main(argv):
         parser.print_help()
         return 1
     return args.func(args)
+
+
+def run():
+    return main(sys.argv)

@@ -1,9 +1,11 @@
 [tool.poetry]
 name = "pgi-docgen"
 version = "0.1.0"
-description = ""
+description = "Docs Generator for PGI/PyGObject"
 authors = ["Christoph Reiter <reiter.christoph@gmail.com>"]
 readme = "README.rst"
+license = "LGPL-2.1-or-later"
+homepage = "https://github.com/pygobject/pgi-docgen"
 packages = [{include = "pgidocgen"}]
 
 [tool.poetry.dependencies]
@@ -21,6 +23,9 @@ flake8 = "^6.0.0"
 coverage = "^7.2.3"
 pytest-cov = "^4.0.0"
 pytest = "^6.0.0"
+
+[tool.poetry.scripts]
+pgi-docgen = 'pgidocgen.main:run'
 
 [build-system]
 requires = ["poetry-core"]
