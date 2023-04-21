@@ -1,6 +1,3 @@
-.. image:: https://dev.azure.com/pygobject/pgi-docgen/_apis/build/status/pygobject.pgi-docgen?branchName=master
-    :target: https://dev.azure.com/pygobject/pgi-docgen/_build/latest?definitionId=2&branchName=master
-
 .. image:: https://codecov.io/gh/pygobject/pgi-docgen/branch/master/graph/badge.svg
     :target: https://codecov.io/gh/pygobject/pgi-docgen
 
