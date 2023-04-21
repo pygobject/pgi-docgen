@@ -7,13 +7,13 @@
 What is this?
 =============
 
-A tool to create sphinx documentation for gi modules using python
+A tool to create Sphinx documentation for GI modules using Python
 introspection.
 
-``pgi-docgen create`` introspects the gi module, pulls in the gir docs and
-creates a sphinx environment.
+``pgi-docgen create`` introspects the GI module, pulls in the GIR docs and
+creates a Sphinx environment.
 
-``pgi-docgen build`` builds html docs using sphinx.
+``pgi-docgen build`` builds HTML documentation using Sphinx.
 
 Requirements
 ------------
