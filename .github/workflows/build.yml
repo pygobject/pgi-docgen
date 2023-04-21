@@ -1,0 +1,61 @@
+name: Build & Deploy
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Build image
+        run: |
+          cd docker
+          bash -x ./build-image.sh
+
+      - name: Run Tests
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+        run: |
+          cd docker
+          bash -x ./test.sh
+
+      - name: Build Docs
+        run: |
+          cd docker
+          bash -x ./build-docs.sh
+
+      - name: Sphinx Build
+        run: |
+          cd docker
+          bash -x ./build-docs-sphinx.sh
+
+      - name: Pack result
+        run: |
+          tar -cJf docs.tar.xz _docs/_build
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: docs
+          path: docs.tar.xz
+
+      - name: Set up SSH key
+        if: (github.repository == 'pygobject/pgi-docgen' && github.ref == 'refs/heads/master')
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
+          echo "${{ secrets.DEPLOY_KEY }}" | tr -d '\r' > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+
+      - name: Push
+        if: (github.repository == 'pygobject/pgi-docgen' && github.ref == 'refs/heads/master')
+        run: |
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
+          ./tools/push.sh

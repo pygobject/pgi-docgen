@@ -2,9 +2,10 @@
 
 set -e
 
-export XDG_DATA_DIRS="$PGI_DOCGEN_DEBIAN_DATA_DIR:$XDG_DATA_DIRS"
+export XDG_DATA_DIRS="/home/user/_debian_build_cache:$XDG_DATA_DIRS"
 
 sudo chown -R "$(whoami)" .
-python3 -m pytest tests --cov --cov-branch --cov-report=xml
+poetry install
+poetry run pytest tests --cov --cov-branch --cov-report=xml
 bash <(curl -s https://codecov.io/bash)
-python3 -m flake8
+poetry run flake8

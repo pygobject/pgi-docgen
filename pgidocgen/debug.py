@@ -180,7 +180,7 @@ def parse_compile_units(data):
 def get_compile_units(library_path):
     try:
         data = subprocess.check_output(
-            ["objdump", "--dwarf=info", "--wide", library_path],
+            ["readelf", "--debug-dump=info", "--wide", library_path],
             stderr=subprocess.STDOUT)
     except subprocess.CalledProcessError:
         return {}

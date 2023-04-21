@@ -87,6 +87,39 @@ BLACKLIST = [
     "FolksDummy-0.6",
     "Wnck-1.0",
     "AyatanaAppIndicator-0.1",
+
+    # FIXME: gtk4 and dwarf parsing etc.
+    "Adw-1",
+    "AgsAudio-4.0",
+    "AgsGui-4.0",
+    "Anthy-9000",
+    "Click-0.4",
+    "EDataServerUI4-1.0",
+    "Folks-0.7",
+    "FolksDummy-0.7",
+    "FolksEds-0.7",
+    "FolksTelepathy-0.7",
+    "GCalc-2",
+    "GCi-1",
+    "GPasteGtk-4",  # gtk4
+    "Gdk-4.0",  # gtk4
+    "Gtk-4.0",  # gtk4
+    "GdkWayland-4.0",  # gtk4
+    "GdkX11-4.0",  # gtk4
+    "GnomeBG-4.0",
+    "GnomeRR-4.0",
+    "Granite-7.0",
+    "Gsk-4.0",  # gtk4
+    "GtkSource-5",  # gtk4
+    "MalcontentUi-1",  # gtk4
+    "NMA4-1.0",  # gtk4
+    "Panel-1",  # gtk4
+    "Shumate-1.0",  # gtk4
+    "UDisks-2.0",  # debug
+    "Vte-3.91",  # gtk4
+    "WebKit-6.0",  # gtk4
+    "WebKitWebProcessExtension-6.0",  # gtk4
+    "XdpGtk4-1.0",  # gtk4
 ]
 
 
@@ -143,7 +176,7 @@ def fetch_girs(girs, dest):
     import apt
 
     dest = os.path.abspath(dest)
-    assert not os.path.exists(dest)
+    assert not os.listdir(dest)
 
     tmp_root = os.path.join(dest, "temp_root")
     tmp_download = os.path.join(dest, "tmp_download")
@@ -190,18 +223,17 @@ def fetch_girs(girs, dest):
         shutil.rmtree(tmp_root)
 
 
-def fetch_girs_cached():
-    env_dir = os.environ.get("PGI_DOCGEN_DEBIAN_DATA_DIR", None)
-    if env_dir is not None:
-        assert os.path.exists(env_dir)
-        return env_dir
-    temp_data = "_debian_build_cache"
-    if not os.path.exists(temp_data):
-        print("find girs..")
-        girs = get_repo_girs()
-        print("fetch and extract debian packages..")
-        fetch_girs(girs, temp_data)
-    return temp_data
+def fetch_girs_cached(cachedir):
+    cachedir = "_debian_build_cache" if cachedir is None else cachedir
+    cachedir = os.path.abspath(cachedir)
+    if os.path.exists(cachedir):
+        return cachedir
+    os.makedirs(cachedir)
+    print("find girs..")
+    girs = get_repo_girs()
+    print("fetch and extract debian packages..")
+    fetch_girs(girs, cachedir)
+    return cachedir
 
 
 def get_gir_shared_libraries(gir_dir, can_build):
@@ -260,6 +292,7 @@ def add_parser(subparsers):
         "create-debian", help="Create a sphinx environ for all of Debian")
     parser.add_argument('--install', action='store_true')
     parser.add_argument('--no-build', action='store_true')
+    parser.add_argument('--cachedir')
     parser.add_argument('target',
                         help='path to where the resulting source should be')
     parser.set_defaults(func=main)
@@ -280,7 +313,7 @@ def main(args):
     print("searching for uninstalled typelibs")
     check_typelibs(typelibs, args.install)
 
-    data_dir = fetch_girs_cached()
+    data_dir = fetch_girs_cached(args.cachedir)
     gir_dir = os.path.join(data_dir, "gir-1.0")
     gir_list = [os.path.splitext(e)[0] for e in os.listdir(gir_dir)]
 

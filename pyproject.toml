@@ -11,11 +11,11 @@ packages = [{include = "pgidocgen"}]
 [tool.poetry.dependencies]
 python = "^3.8.1"
 pgi = {git = "https://github.com/pygobject/pgi.git"}
-requests = "^2.22.0"
+requests = "^2.28.2"
 jinja2 = "^3.1.2"
-sphinx = "^1.8.5"
-cairocffi = "^1.0.2"
-beautifulsoup4 = "^4.7.1"
+sphinx = "^4.5.0"
+cairocffi = "^1.5.1"
+beautifulsoup4 = "^4.12.2"
 lxml = "^4.9.2"
 python-apt = { git="https://salsa.debian.org/apt-team/python-apt.git", tag="2.5.3", optional=true }
 
@@ -26,7 +26,7 @@ debian = ["python-apt"]
 flake8 = "^6.0.0"
 coverage = "^7.2.3"
 pytest-cov = "^4.0.0"
-pytest = "^6.0.0"
+pytest = "^7.3.1"
 
 [tool.poetry.scripts]
 pgi-docgen = 'pgidocgen.main:run'
