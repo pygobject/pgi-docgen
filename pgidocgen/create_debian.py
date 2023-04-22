@@ -57,7 +57,6 @@ BLACKLIST = [
     "Meta-Muffin.0",
     "libisocodes-1.2.2",
     'Nice-0.1',
-    "Geoclue-2.0",
     "Gtd-1.0",
     'BurnerMedia-3.1',
     'BurnerBurn-3.1',
