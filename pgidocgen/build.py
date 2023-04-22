@@ -135,7 +135,8 @@ def do_build(package):
     if os.name != "nt":
         for d in ["structs", "unions", "interfaces", "iface-structs",
                   "class-structs"]:
-            os.symlink("classes", os.path.join(package.build_path, d))
+            if os.path.exists(os.path.join(package.build_path, "classes")):
+                os.symlink("classes", os.path.join(package.build_path, d))
 
     return package
 
