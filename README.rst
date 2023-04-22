@@ -12,25 +12,13 @@ creates a Sphinx environment.
 
 ``pgi-docgen build`` builds HTML documentation using Sphinx.
 
-Requirements
-------------
-
-* Python 3
-* pgi (trunk)
-* jinja2
-* Sphinx
-* BeautifulSoup4
-* graphviz
-
-Calling ``source ./tools/bootstrap.sh`` will put you in a
-virtualenv with all dependencies installed (except graphviz).
-
-
 How do I get started?
 ---------------------
 
 ::
 
+    poetry install
+    poetry shell
     # API docs for Gtk/Gst:
     ./tools/build.sh Gtk-3.0 Gst-1.0
 
