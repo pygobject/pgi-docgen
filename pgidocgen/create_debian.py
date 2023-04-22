@@ -22,9 +22,6 @@ from .util import parse_gir_shared_libs
 
 DEB_BLACKLIST = [
     "gir1.2-hkl-5.0",
-    "gir1.2-totem-plparser-1.0",
-    "gir1.2-gpaste-6.0",
-    "libgstreamer-gl1.0-0",
     "gir1.2-gconf-2.0",
 ]
 
@@ -46,25 +43,17 @@ BLACKLIST = [
     "Gcr-3",
     "GTop-2.0",
     "BraseroMedia-3.1",
-    "FolksTelepathy-0.6",
-    "Folks-0.6",
-    "FolksEds-0.6",
     "Entangle-0.1",
     "Diodon-1.0",
     "Gee-0.8",
     "Skk-1.0",
     "SugarExt-1.0",
-    "Meta-Muffin.0",
-    "libisocodes-1.2.2",
     'Nice-0.1',
-    "Gtd-1.0",
     'BurnerMedia-3.1',
     'BurnerBurn-3.1',
-    'CloudProviders-0.3.0',
     'Kkc-1.0',
     'Unity-7.0',  # invalid xml
     'UnityExtras-7.0',  # invalid xml
-    'libisocodes-1.2.3',
 
     # hangs?
     'NMA-1.0',
@@ -72,18 +61,15 @@ BLACKLIST = [
     # crashes
     'GUPnPIgd-1.0',
     'Granite-1.0',
-    'Midori-0.6',
 
     # depends on one of the above
     "Ganv-1.0",
     "DbusmenuGtk-0.4",
     "GcrUi-3",
     "Caja-2.0",
-    "AppIndicator-0.1",
     "MatePanelApplet-4.0",
     "BraseroBurn-3.1",
     "v_sim-3.7",
-    "FolksDummy-0.6",
     "Wnck-1.0",
     "AyatanaAppIndicator-0.1",
 
@@ -319,6 +305,9 @@ def main(args):
     typelib_ns = set()
     for namespaces in typelibs.values():
         typelib_ns.update(namespaces)
+
+    print("Unknown in deb blacklist: %r" % sorted([p for p in DEB_BLACKLIST if p not in typelibs]))
+    print("Unknown in typelib blacklist: %r" % sorted([n for n in BLACKLIST if n not in typelib_ns]))
 
     print("Missing gir files: %r" % sorted(typelib_ns - set(gir_list)))
     print("Missing typelib files: %r" % sorted(set(gir_list) - typelib_ns))
