@@ -20,12 +20,12 @@ from .debian import get_repo_girs, get_debug_packages_for_libs, \
 from .util import parse_gir_shared_libs
 
 
-DEB_BLACKLIST = [
+DEB_SKIPLIST = [
     "gir1.2-hkl-5.0",
     "gir1.2-gconf-2.0",
 ]
 
-BLACKLIST = [
+SKIPLIST = [
     # old gtk
     "Gtk-2.0",
     "Gdk-2.0",
@@ -116,7 +116,7 @@ def check_typelibs(typelibs, install=False):
 
     to_install = set()
     for package in typelibs:
-        if package in DEB_BLACKLIST:
+        if package in DEB_SKIPLIST:
             continue
         if cache[package].candidate is None:
             continue
@@ -264,7 +264,7 @@ def check_debug_packages(shared_libs, install=False):
             if package.startswith(("libwebkit", "libjavascriptcore")):
                 # 5GB of debug data.. nope
                 continue
-            if package in DEB_BLACKLIST:
+            if package in DEB_SKIPLIST:
                 continue
             to_install.add(package)
     cache.close()
@@ -306,16 +306,16 @@ def main(args):
     for namespaces in typelibs.values():
         typelib_ns.update(namespaces)
 
-    print("Unknown in deb blacklist: %r" % sorted([p for p in DEB_BLACKLIST if p not in typelibs]))
-    print("Unknown in typelib blacklist: %r" % sorted([n for n in BLACKLIST if n not in typelib_ns]))
+    print("Unknown in deb skiplist: %r" % sorted([p for p in DEB_SKIPLIST if p not in typelibs]))
+    print("Unknown in typelib skiplist: %r" % sorted([n for n in SKIPLIST if n not in typelib_ns]))
 
     print("Missing gir files: %r" % sorted(typelib_ns - set(gir_list)))
     print("Missing typelib files: %r" % sorted(set(gir_list) - typelib_ns))
     can_build = sorted(set(gir_list) & typelib_ns)
     print("%d ready to build" % len(can_build))
 
-    can_build = set(can_build) - set(BLACKLIST)
-    print("%d ready to build after blacklisting" % len(can_build))
+    can_build = set(can_build) - set(SKIPLIST)
+    print("%d ready to build after filtering" % len(can_build))
 
     print("searching for required shared libraries..")
     shared_libs = get_gir_shared_libraries(gir_dir, can_build)
