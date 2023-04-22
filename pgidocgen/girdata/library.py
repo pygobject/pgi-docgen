@@ -51,12 +51,12 @@ LIBRARIES = [
     Library("GdkPixbuf-2.0", "https://developer.gnome.org/gdk-pixbuf/unstable/", "gdk-pixbuf"),
     Library("Gdk-3.0", "https://developer.gnome.org/gdk3/stable/", "gdk3"),
     Library("Gtk-3.0", "https://developer.gnome.org/gtk3/stable/", "gtk3"),
-    Library("WebKit2-4.0", "http://webkitgtk.org/reference/webkit2gtk/stable/", "webkit2gtk-4.0"),
+    Library("WebKit2-4.0", "https://webkitgtk.org/reference/webkit2gtk/stable/", "webkit2gtk-4.0"),
     Library("cairo-1.0", "https://developer.gnome.org/cairo/stable/", "cairo"),
     Library("Clutter-1.0", "https://developer.gnome.org/clutter/stable/", "clutter"),
-    Library("Gst-1.0", "http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/", "gstreamer-1.0"),
-    Library("GES-1.0", "http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer-editing-services/html/", "ges-1.0"),
-    Library("UDisks-2.0", "http://storaged.org/doc/udisks2-api/latest/", "udisks2"),
+    Library("Gst-1.0", "https://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/", "gstreamer-1.0"),
+    Library("GES-1.0", "https://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer-editing-services/html/", "ges-1.0"),
+    Library("UDisks-2.0", "https://storaged.org/doc/udisks2-api/latest/", "udisks2"),
 ]
 
 

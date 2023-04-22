@@ -58,8 +58,8 @@ generated documentation:
    ::
 
         intersphinx_mapping = {
-            'gtk': ('http://lazka.github.io/pgi-docs/#Gtk-3.0/',
-                    'http://lazka.github.io/pgi-docs/Gtk-3.0/objects.inv'),
+            'gtk': ('https://lazka.github.io/pgi-docs/#Gtk-3.0/',
+                    'https://lazka.github.io/pgi-docs/Gtk-3.0/objects.inv'),
         }
 
 2) Without the sidebar
@@ -67,7 +67,7 @@ generated documentation:
    ::
 
         intersphinx_mapping = {
-            'gtk': ('http://lazka.github.io/pgi-docs/Gtk-3.0', None),
+            'gtk': ('https://lazka.github.io/pgi-docs/Gtk-3.0', None),
         }
 
 
@@ -83,7 +83,7 @@ Everything in the ``pgidocgen/gen/data/theme`` sub directory:
 Fonts in ``pgidocgen/gen/data/theme/static/fonts``
 
     Lato:
-        http://www.latofonts.com
+        https://www.latofonts.com
 
         SIL Open Font License 1.1
 
@@ -93,7 +93,7 @@ Fonts in ``pgidocgen/gen/data/theme/static/fonts``
         Public Domain
 
     FontAwesome:
-        http://fontawesome.io
+        https://fontawesome.io
 
         SIL OFL 1.1
 

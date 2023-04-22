@@ -25,7 +25,7 @@ release = mversion
 exclude_patterns = ['_build', 'README.rst']
 
 intersphinx_mapping = {
-    "python": ('http://docs.python.org/3',
+    "python": ('https://docs.python.org/3',
                "../_intersphinx/python.inv"),
 }
 

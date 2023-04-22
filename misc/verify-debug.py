@@ -52,7 +52,7 @@ DATA = {
     "GdkX11-3.0": (),
     "GES-1.0": (
         "1.8.0", "ges_effect_new",
-        "http://cgit.freedesktop.org/gstreamer/gst-editing-services/tree/ges/ges-effect.c?h=1.8.0#n267"),
+        "https://cgit.freedesktop.org/gstreamer/gst-editing-services/tree/ges/ges-effect.c?h=1.8.0#n267"),
     "GLib-2.0": (
         "2.54.2", "g_base64_decode_step",
         "https://gitlab.gnome.org/GNOME/glib/blob/2.54.2/glib/gbase64.c#L326"),
