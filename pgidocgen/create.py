@@ -9,8 +9,6 @@ import sys
 import subprocess
 import os
 
-import pgi
-
 from .gen import ModuleGenerator
 from .util import get_gir_files
 from .namespace import set_cache_prefix_path
@@ -40,12 +38,6 @@ def main(args):
         return _main_many(args.target, args.namespace)
     else:
         namespace = args.namespace[0]
-
-    # this catches the "pip install pgi" case
-    if pgi.version_info[-1] != -1:
-        print("atm pgi-docgen needs pgi trunk and not a stable release")
-        print("Get it here: https://github.com/pygobject/pgi")
-        raise SystemExit(1)
 
     girs = get_gir_files()
 

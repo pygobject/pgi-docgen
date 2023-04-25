@@ -592,19 +592,23 @@ files = [
 
 [[package]]
 name = "pgi"
-version = "0.0.11.2.dev0"
+version = "0.0.12"
 description = "Pure Python GObject Introspection Bindings"
 category = "main"
 optional = false
-python-versions = "*"
+python-versions = "^3.8.1"
 files = []
 develop = false
+
+[package.dependencies]
+cairocffi = "^1.5.1"
+cffi = "^1.15.1"
 
 [package.source]
 type = "git"
 url = "https://github.com/pygobject/pgi.git"
 reference = "HEAD"
-resolved_reference = "df95a40e600aed1a71144569283270cefb4ba2ac"
+resolved_reference = "4d53918112db2755911a599b71a0856184409cec"
 
 [[package]]
 name = "pluggy"
