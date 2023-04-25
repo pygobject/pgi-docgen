@@ -608,7 +608,7 @@ cffi = "^1.15.1"
 type = "git"
 url = "https://github.com/pygobject/pgi.git"
 reference = "HEAD"
-resolved_reference = "4d53918112db2755911a599b71a0856184409cec"
+resolved_reference = "869fe50a903830b214c04d8bcc5c011b9c612729"
 
 [[package]]
 name = "pluggy"
