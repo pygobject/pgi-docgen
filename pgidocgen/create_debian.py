@@ -55,9 +55,6 @@ SKIPLIST = [
     'Unity-7.0',  # invalid xml
     'UnityExtras-7.0',  # invalid xml
 
-    # hangs?
-    'NMA-1.0',
-
     # crashes
     'GUPnPIgd-1.0',
     'Granite-1.0',
@@ -73,38 +70,17 @@ SKIPLIST = [
     "Wnck-1.0",
     "AyatanaAppIndicator-0.1",
 
-    # FIXME: gtk4 and dwarf parsing etc.
-    "Adw-1",
-    "AgsAudio-4.0",
-    "AgsGui-4.0",
-    "Anthy-9000",
-    "Click-0.4",
-    "EDataServerUI4-1.0",
-    "Folks-0.7",
+    # more broken things
+    "AgsAudio-4.0",  # gir parsing
+    "Anthy-9000",  # debug
+    "Click-0.4",  # gir parsing
+    "Folks-0.7",  # gir parsing
     "FolksDummy-0.7",
     "FolksEds-0.7",
     "FolksTelepathy-0.7",
-    "GCalc-2",
-    "GCi-1",
-    "GPasteGtk-4",  # gtk4
-    "Gdk-4.0",  # gtk4
-    "Gtk-4.0",  # gtk4
-    "GdkWayland-4.0",  # gtk4
-    "GdkX11-4.0",  # gtk4
-    "GnomeBG-4.0",
-    "GnomeRR-4.0",
-    "Granite-7.0",
-    "Gsk-4.0",  # gtk4
-    "GtkSource-5",  # gtk4
-    "MalcontentUi-1",  # gtk4
-    "NMA4-1.0",  # gtk4
-    "Panel-1",  # gtk4
-    "Shumate-1.0",  # gtk4
+    "GCalc-2",  # gir parsing
+    "Granite-7.0",  # gir parsing
     "UDisks-2.0",  # debug
-    "Vte-3.91",  # gtk4
-    "WebKit-6.0",  # gtk4
-    "WebKitWebProcessExtension-6.0",  # gtk4
-    "XdpGtk4-1.0",  # gtk4
 ]
 
 
