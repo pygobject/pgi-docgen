@@ -314,15 +314,15 @@ def main(args):
     can_build = sorted(set(gir_list) & typelib_ns)
     print("%d ready to build" % len(can_build))
 
-    can_build = set(can_build) - set(SKIPLIST)
-    print("%d ready to build after filtering" % len(can_build))
-
     print("searching for required shared libraries..")
     shared_libs = get_gir_shared_libraries(gir_dir, can_build)
     check_shared_libs(shared_libs, args.install)
 
     print("searching for debug packages..")
     check_debug_packages(shared_libs, args.install)
+
+    do_build = set(can_build) - set(SKIPLIST)
+    print("%d ready to build after filtering" % len(do_build))
 
     if args.no_build:
         print("build skipped, done.")
@@ -332,4 +332,4 @@ def main(args):
     os.environ["XDG_DATA_DIRS"] = data_dir
     subprocess.check_call(
         ["xvfb-run", "-a", sys.executable, sys.argv[0],
-         "create", args.target] + sorted(can_build))
+         "create", args.target] + sorted(do_build))
