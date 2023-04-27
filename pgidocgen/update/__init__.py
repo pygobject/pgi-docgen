@@ -9,6 +9,7 @@ from .doap import add_parser as add_parser_doap
 from .debian_info import add_parser as add_parser_debian
 from .docref import add_parser as add_parser_docref
 from .clsimages import add_parser as add_parser_clsimages
+from .clsimages4 import add_parser as add_parser_clsimages4
 
 
 def add_parser(subparser):
@@ -16,3 +17,4 @@ def add_parser(subparser):
     add_parser_debian(subparser)
     add_parser_docref(subparser)
     add_parser_clsimages(subparser)
+    add_parser_clsimages4(subparser)
