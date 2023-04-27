@@ -7,19 +7,22 @@
   <shortname>libnotify</shortname>
   <category rdf:resource="http://api.gnome.org/doap-extensions#core" />
   <programming-language>C</programming-language>
-  <shortdesc xml:lang="en">libnotify is a library for sending desktop notifications</shortdesc>
+  <shortdesc xml:lang="en">Send desktop notifications</shortdesc>
+  <description>Library to send desktop notifications that follows the FDO
+specifications:
+  https://gitlab.freedesktop.org/xdg/xdg-specs/-/blob/master/notification/notification-spec.xml</description>
   <maintainer>
     <foaf:Person>
-      <foaf:name>Christian Hammond</foaf:name>
-      <foaf:mbox rdf:resource="mailto:chipx86@chipx86.com" />
-      <gnome:userid>chammond</gnome:userid>
+      <foaf:name>Marco Trevisan</foaf:name>
+      <foaf:mbox rdf:resource="mailto:mail@3v1n0.net" />
+      <gnome:userid>marcotrevi</gnome:userid>
     </foaf:Person>
   </maintainer>
   <maintainer>
     <foaf:Person>
-      <foaf:name>William Jon McCann</foaf:name>
-      <foaf:mbox rdf:resource="mailto:william.jon.mccann@gmail.com" />
-      <gnome:userid>mccann</gnome:userid>
+      <foaf:name>Logan Rathbone</foaf:name>
+      <foaf:mbox rdf:resource="mailto:poprocks@gmail.com" />
+      <gnome:userid>larathbone</gnome:userid>
     </foaf:Person>
   </maintainer>
 </Project>

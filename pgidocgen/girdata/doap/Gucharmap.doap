@@ -20,20 +20,8 @@
 
   <maintainer>
     <foaf:Person>
-      <foaf:name>Behdad Esfahbod</foaf:name>
-      <gnome:userid>behdad</gnome:userid>
-    </foaf:Person>
-  </maintainer>
-  <maintainer>
-    <foaf:Person>
       <foaf:name>Christian Persch</foaf:name>
       <gnome:userid>chpe</gnome:userid>
-    </foaf:Person>
-  </maintainer>
-  <maintainer>
-    <foaf:Person>
-      <foaf:name>Behnam Esfahbod</foaf:name>
-      <gnome:userid>behnam</gnome:userid>
     </foaf:Person>
   </maintainer>
 </Project>

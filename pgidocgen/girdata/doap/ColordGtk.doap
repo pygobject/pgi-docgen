@@ -10,7 +10,7 @@
     colord-gtk is a Gtk helper library for colord.
   </description>
 
-  <homepage rdf:resource="http://colord.hughsie.com/" />
+  <homepage rdf:resource="https://www.freedesktop.org/software/colord/" />
 
   <maintainer>
     <foaf:Person>

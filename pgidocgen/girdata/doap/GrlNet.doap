@@ -36,7 +36,7 @@
   <maintainer>
     <foaf:Person>
       <foaf:name>Victor Toso de Carvalho</foaf:name>
-      <foaf:mbox rdf:resource="mailto:me@victortoso.com" />
+      <foaf:mbox rdf:resource="mailto:victortoso@gnome.org" />
       <gnome:userid>victortoso</gnome:userid>
     </foaf:Person>
   </maintainer>

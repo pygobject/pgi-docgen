@@ -21,20 +21,13 @@ level libraries utilizing the GUPnP framework.</description>
 
   <homepage
   rdf:resource="http://gupnp.org" />
-  <mailing-list
-  rdf:resource="http://mail.gnome.org/mailman/listinfo/gupnp-list" />
+  <support-forum
+  rdf:resource="https://discourse.gnome.org/tag/gupnp" />
   <download-page
-  rdf:resource="http://gupnp.org/download"/>
+  rdf:resource="https://download.gnome.org/sources/gupnp/"/>
   <bug-database
   rdf:resource="https://gitlab.gnome.org/GNOME/gupnp/issues/" />
 
-  <maintainer>
-    <foaf:Person>
-      <foaf:name>Ross Burton</foaf:name>
-      <foaf:mbox rdf:resource="mailto:ross.burton@intel.com" />
-      <gnome:userid>rburton</gnome:userid>
-    </foaf:Person>
-  </maintainer>
   <maintainer>
     <foaf:Person>
       <foaf:name>Jens Georg</foaf:name>

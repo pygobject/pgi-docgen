@@ -8,15 +8,14 @@
   <name xml:lang="en">gexiv2</name>
   <shortdesc xml:lang="en">GObject-based wrapper around the Exiv2 library</shortdesc>
   <homepage rdf:resource="https://wiki.gnome.org/gexiv2" />
-  <mailing-list rdf:resource="https://mail.gnome.org/mailman/listinfo/gexiv2-list" />
+  <support-forum rdf:resource="https://discourse.gnome.org/tag/gexiv2" />
   <bug-database rdf:resource="https://gitlab.gnome.org/GNOME/gexiv2/issues/" />
   <programming-language>C++</programming-language>
 
   <maintainer>
     <foaf:Person>
-      <foaf:name>Jens Georg</foaf:name>
-      <foaf:mbox rdf:resource="mailto:mail@jensge.org" />
-      <gnome:userid>jensgeorg</gnome:userid>
+      <foaf:name>Nobody</foaf:name>
+      <gnome:userid>root</gnome:userid>
     </foaf:Person>
   </maintainer>
 

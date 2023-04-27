@@ -9,7 +9,7 @@
   <shortdesc xml:lang="en">Default file manager for GNOME</shortdesc>
   <description xml:lang="en">Default file manager for GNOME</description>
   <homepage rdf:resource="https://wiki.gnome.org/Apps/Nautilus" />
-  <mailing-list rdf:resource="https://mail.gnome.org/mailman/listinfo/nautilus-list" />
+  <mailing-list rdf:resource="https://discourse.gnome.org/tags/nautilus" />
   <download-page rdf:resource="https://download.gnome.org/sources/nautilus/" />
   <bug-database rdf:resource="https://gitlab.gnome.org/GNOME/nautilus/issues" />
 
@@ -18,9 +18,17 @@
 
   <maintainer>
     <foaf:Person>
-      <foaf:name>Carlos Soriano Sanchez</foaf:name>
-      <foaf:mbox rdf:resource="mailto:csoriano@gnome.org" />
-      <gnome:userid>csoriano</gnome:userid>
+      <foaf:name>António Fernandes</foaf:name>
+      <foaf:mbox rdf:resource="mailto:antoniof@gnome.org" />
+      <gnome:userid>antoniof</gnome:userid>
+    </foaf:Person>
+  </maintainer>
+
+  <maintainer>
+    <foaf:Person>
+      <foaf:name>Ondrej Holy</foaf:name>
+      <foaf:mbox rdf:resource="mailto:oholy@gnome.org" />
+      <gnome:userid>oholy</gnome:userid>
     </foaf:Person>
   </maintainer>
 </Project>

@@ -15,20 +15,6 @@
 
   <maintainer>
     <foaf:Person>
-      <foaf:name>Josselin Mouette</foaf:name>
-      <foaf:mbox rdf:resource="mailto:joss@malsain.org" />
-      <gnome:userid>jmouette</gnome:userid>
-    </foaf:Person>
-  </maintainer>
-  <maintainer>
-    <foaf:Person>
-      <foaf:name>Philipp Kaluza</foaf:name>
-      <foaf:mbox_sha1sum>7faa9deab8273280bfc99d2c8231d32c7e7f8824</foaf:mbox_sha1sum>
-      <gnome:userid>phk</gnome:userid>
-    </foaf:Person>
-  </maintainer>
-  <maintainer>
-    <foaf:Person>
       <foaf:name>Alberts Muktupāvels</foaf:name>
       <foaf:mbox rdf:resource="mailto:alberts.muktupavels@gmail.com" />
       <gnome:userid>muktupavels</gnome:userid>

@@ -10,7 +10,7 @@
     manage packages in a secure way using a cross-distro, cross-architecture API.
   </description>
 
-  <homepage rdf:resource="http://www.packagekit.org/" />
+  <homepage rdf:resource="https://www.freedesktop.org/software/PackageKit/" />
   <mailing-list rdf:resource="http://lists.freedesktop.org/mailman/listinfo/packagekit/" />
 
   <maintainer>
@@ -22,6 +22,5 @@
 
   <license rdf:resource="http://www.gnu.org/licenses/gpl-2.0.txt" />
   <bug-database rdf:resource="http://bugzilla.freedesktop.org/" />
-  <screenshots rdf:resource="http://www.packagekit.org/pk-screenshots.html#gnome" />
 
 </Project>

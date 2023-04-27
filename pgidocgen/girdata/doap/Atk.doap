@@ -7,6 +7,7 @@
 
   <name xml:lang="en">atk</name>
   <shortdesc xml:lang="en">The interface definitions of accessibility infrastructure</shortdesc>
+  <description xml:lang="en">ATK is a library providing interface definitions that are consumed by toolkits that wish to integrate with the GNOME accessibility infrastructure.</description>
   <homepage rdf:resource="http://developer.gnome.org/atk"/>
   <mailing-list rdf:resource="http://mail.gnome.org/mailman/listinfo/gnome-accessibility-devel"/>
   <category rdf:resource="http://api.gnome.org/doap-extensions#core" />
@@ -39,5 +40,12 @@
       <gnome:userid>leonfan</gnome:userid>
     </foaf:Person>
   </author>
+  <maintainer>
+    <foaf:Person>
+      <foaf:name>Emmanuele Bassi</foaf:name>
+      <foaf:mbox rdf:resource="mailto:ebassi@gnome.org" />
+      <gnome:userid>ebassi</gnome:userid>
+    </foaf:Person>
+  </maintainer>
 
 </Project>

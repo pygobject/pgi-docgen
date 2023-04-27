@@ -10,6 +10,8 @@
   <shortdesc xml:lang="en">
   CD/DVD mastering tool
   </shortdesc>
+  <description>Brasero is a CD/DVD mastering tool for the GNOME Desktop. It is
+designed to be simple and easy to use.</description>
   
   <homepage rdf:resource="https://wiki.gnome.org/Apps/Brasero" />
   <mailing-list rdf:resource="http://mail.gnome.org/mailman/listinfo/brasero-list" />
@@ -39,4 +41,11 @@
       <gnome:userid>joshuagl</gnome:userid>
     </foaf:Person>
   </maintainer>
+  <helper>
+    <foaf:Person>
+      <foaf:name>Bastien Nocera</foaf:name>
+      <foaf:mbox rdf:resource="mailto:hadess@hadess.net" />
+      <gnome:userid>hadess</gnome:userid>
+    </foaf:Person>
+  </helper>
 </Project>

@@ -26,9 +26,9 @@ the GNOME keyring system.</description>
 	
 	<maintainer>
 		<foaf:Person>
-			<foaf:name>Stef Walter</foaf:name>
-			<foaf:mbox rdf:resource="mailto:stef@memberwebs.com" />
-			<gnome:userid>stefw</gnome:userid>
+			<foaf:name>Niels De Graef</foaf:name>
+			<foaf:mbox rdf:resource="mailto:nielsdegraef@gmail.com" />
+			<gnome:userid>nielsdg</gnome:userid>
 		</foaf:Person>
 	</maintainer>
 

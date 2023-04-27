@@ -13,10 +13,9 @@
 
   <description xml:lang="en">GObject introspection provides tools and libraries to help manage its common metadata format for representing GObject-based C APIs, designed for bindings, documentation tools and API verification.</description>
 
-  <homepage rdf:resource="http://live.gnome.org/GObjectIntrospection" />
+  <homepage rdf:resource="https://gi.readthedocs.io/" />
   <license rdf:resource="http://usefulinc.com/doap/licenses/lgpl" />
   <bug-database rdf:resource="https://gitlab.gnome.org/GNOME/gobject-introspection/issues/" />
-  <mailing-list rdf:resource="mailto:gtk-devel-list@gnome.org" />
 
   <programming-language>C</programming-language>
   <programming-language>Python</programming-language>

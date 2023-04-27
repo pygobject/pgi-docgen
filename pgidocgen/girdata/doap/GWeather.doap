@@ -9,25 +9,40 @@
   <shortdesc xml:lang="en">Location and timezone database and weather-lookup library</shortdesc>
 
   <homepage rdf:resource="https://wiki.gnome.org/Projects/LibGWeather" />
-  <download-page rdf:resource="http://download.gnome.org/sources/libgweather/"/>
+  <download-page rdf:resource="https://download.gnome.org/sources/libgweather/"/>
   <bug-database rdf:resource="https://gitlab.gnome.org/GNOME/libgweather/issues/" />
   <category rdf:resource="http://api.gnome.org/doap-extensions#core" />
   <programming-language>C</programming-language>
 
   <maintainer>
     <foaf:Person>
+      <foaf:name>Manuel Quiñones</foaf:name>
+      <foaf:mbox rdf:resource="mailto:manuq@src.gnome.org" />
+      <gnome:userid>manuq</gnome:userid>
+    </foaf:Person>
+  </maintainer>
+  <maintainer>
+    <foaf:Person>
+      <foaf:name>Emmanuele Bassi</foaf:name>
+      <foaf:mbox rdf:resource="mailto:ebassi@gnome.org" />
+      <gnome:userid>ebassi</gnome:userid>
+    </foaf:Person>
+  </maintainer>
+
+  <author>
+    <foaf:Person>
       <foaf:name>Javier Jardón</foaf:name>
       <foaf:mbox rdf:resource="mailto:jjardon@gnome.org" />
       <gnome:userid>jjardon</gnome:userid>
     </foaf:Person>
-  </maintainer>
-  <maintainer>
+  </author>
+  <author>
     <foaf:Person>
       <foaf:name>Giovanni Campagna</foaf:name>
       <foaf:mbox rdf:resource="mailto:gcampagna@src.gnome.org" />
       <gnome:userid>gcampagna</gnome:userid>
     </foaf:Person>
-  </maintainer>
+  </author>
   <author>
     <foaf:Person>
       <foaf:name>Bastien Nocera</foaf:name>

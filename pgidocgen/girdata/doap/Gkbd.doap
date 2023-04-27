@@ -6,6 +6,8 @@
 
   <name xml:lang="en">libgnomekbd</name>
   <shortdesc xml:lang="en">Keyboard management library</shortdesc>
+  <description>Library to inspect keyboard layout, configuration and
+ state.</description>
   <homepage rdf:resource="http://www.gnome.org/" />
   <category rdf:resource="http://api.gnome.org/doap-extensions#core" />
   <programming-language>C</programming-language>
@@ -15,6 +17,13 @@
       <foaf:name>Sergey Udaltsov</foaf:name>
       <foaf:mbox rdf:resource="mailto:svu@gnome.org" />
       <gnome:userid>svu</gnome:userid>
+    </foaf:Person>
+  </maintainer>
+  <maintainer>
+    <foaf:Person>
+      <foaf:name>Corentin Noël</foaf:name>
+      <foaf:mbox rdf:resource="mailto:corentin.noel@collabora.com" />
+      <gnome:userid>corentinnoel</gnome:userid>
     </foaf:Person>
   </maintainer>
 </Project>

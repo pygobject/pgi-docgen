@@ -10,9 +10,8 @@
 	<programming-language>C</programming-language>
 	<maintainer>
 		<foaf:Person>
-			<foaf:name>Philip Withnall</foaf:name>
-			<foaf:mbox rdf:resource="mailto:philip@tecnocode.co.uk"/>
-			<gnome:userid>pwithnall</gnome:userid>
+			<foaf:name>Nobody</foaf:name>
+			<gnome:userid>root</gnome:userid>
 		</foaf:Person>
 	</maintainer>
 </Project>

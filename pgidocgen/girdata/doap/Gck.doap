@@ -23,7 +23,7 @@ GCK is a library for accessing PKCS#11 modules like smart cards, in a
 	<maintainer>
 		<foaf:Person>
 			<foaf:name>Stef Walter</foaf:name>
-			<foaf:mbox rdf:resource="mailto:stefw@collabora.co.uk" />
+			<foaf:mbox rdf:resource="mailto:stefw@gnome.org" />
 			<gnome:userid>stefw</gnome:userid>
 		</foaf:Person>
 	</maintainer>

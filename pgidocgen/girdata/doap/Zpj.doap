@@ -16,9 +16,8 @@
 
   <maintainer>
     <foaf:Person>
-      <foaf:name>Debarshi Ray</foaf:name>
-      <foaf:mbox rdf:resource="mailto:debarshir@gnome.org" />
-      <gnome:userid>debarshir</gnome:userid>
+      <foaf:name>Nobody</foaf:name>
+      <gnome:userid>root</gnome:userid>
     </foaf:Person>
   </maintainer>
 </Project>

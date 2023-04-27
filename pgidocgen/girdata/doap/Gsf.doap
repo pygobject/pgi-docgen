@@ -15,13 +15,13 @@
   <category rdf:resource="http://api.gnome.org/doap-extensions#core" />
   <programming-language>C</programming-language>
 
-  <maintainer>
+  <!-- <maintainer>
     <foaf:Person>
       <foaf:name>Jody Goldberg</foaf:name>
       <foaf:mbox rdf:resource="mailto:jody gnome.org" />
       <gnome:userid>jody</gnome:userid>
     </foaf:Person>
-  </maintainer>
+  </maintainer> -->
   <maintainer>
     <foaf:Person>
       <foaf:name>Morten Welinder</foaf:name>
@@ -31,8 +31,21 @@
   </maintainer>
   <maintainer>
     <foaf:Person>
+      <foaf:name>Jean Bréfort</foaf:name>
+      <gnome:userid>jbrefort</gnome:userid>
+    </foaf:Person>
+  </maintainer>
+  <maintainer>
+    <foaf:Person>
+      <foaf:name>Andreas J. Guelzow</foaf:name>
+      <foaf:mbox rdf:resource="mailto:aguelzow@pyrshep.ca" />
+      <gnome:userid>guelzow</gnome:userid>
+    </foaf:Person>
+  </maintainer>
+  <!-- <maintainer>
+    <foaf:Person>
       <foaf:name>Dom Lachowicz</foaf:name>
       <gnome:userid>doml</gnome:userid>
     </foaf:Person>
-  </maintainer>
+  </maintainer> -->
 </Project>

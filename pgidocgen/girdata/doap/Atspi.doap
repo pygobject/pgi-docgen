@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <Project xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
          xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
          xmlns:foaf="http://xmlns.com/foaf/0.1/"
@@ -5,19 +6,35 @@
          xmlns="http://usefulinc.com/ns/doap#">
 
   <name xml:lang="en">at-spi2-core</name>
-  <shortdesc xml:lang="en">D-Bus accessibility specifications and registration daemon</shortdesc>
+  <shortdesc xml:lang="en">D-Bus accessibility specifications, library, and registration daemon</shortdesc>
+  <description xml:lang="en">The Access Technology Service Provider Interface
+(AT-SPI) is a set of interfaces that allow access technologies such as screen
+readers to programmatically determine what is being displayed on the screen and
+simulate keyboard and mouse events. It can also be used for automated testing.
+
+The at-spi2-core module contains the D-Bus specification, the registry daemon,
+and a C library for use by access technologies that provides a convenient
+wrapper around the DBus interfaces.
+
+ATK is a library providing interface definitions that are consumed by
+toolkits that wish to integrate with the GNOME accessibility
+infrastructure.
+
+at-spi2-atk is the library used to bridge ATK to AT-SPI, allowing
+applications exposing information via ATK to interface with clients
+that use AT-SPI. This module provides the necessary inter-process
+communication to allow accessibility-oriented software to operate.
+  </description>
   <homepage rdf:resource="http://www.linuxfoundation.org/en/Accessibility/ATK/AT-SPI/AT-SPI_on_D-Bus"/>
+  <license rdf:resource="http://usefulinc.com/doap/licenses/lgpl" />
+  <bug-database rdf:resource="https://gitlab.gnome.org/GNOME/at-spi2-core/issues/" />
+  <download-page rdf:resource="http://download.gnome.org/sources/at-spi2-core/" />
   <mailing-list rdf:resource="https://lists.linux-foundation.org/mailman/listinfo/accessibility-atspi"/>
   <category rdf:resource="http://api.gnome.org/doap-extensions#core" />
   <programming-language>C</programming-language>
 
-  <maintainer>
-    <foaf:Person>
-      <foaf:name>Mark Doffman</foaf:name>
-      <foaf:mbox rdf:resource="mailto:mark.doffman@codethink.co.uk" />
-      <gnome:userid>markdoffman</gnome:userid>
-    </foaf:Person>
-  </maintainer>
+  <!-- at-spi2-core maintainers -->
+
   <maintainer>
     <foaf:Person>
       <foaf:name>Mike Gorse</foaf:name>
@@ -27,9 +44,36 @@
   </maintainer>
   <maintainer>
     <foaf:Person>
-      <foaf:name>Li Yuan</foaf:name>
-      <foaf:mbox rdf:resource="mailto:lee.yuan@oracle.com" />
-      <gnome:userid>liyuan</gnome:userid>
+      <foaf:name>Federico Mena Quintero</foaf:name>
+      <foaf:mbox rdf:resource="mailto:federico@gnome.org" />
+      <gnome:userid>federico</gnome:userid>
     </foaf:Person>
   </maintainer>
+
+  <!-- ATK maintainers -->
+
+  <maintainer>
+    <foaf:Person>
+      <foaf:name>Alejandro Piñeiro Iglesias</foaf:name>
+      <foaf:mbox rdf:resource="mailto:apinheiro@igalia.com" />
+      <gnome:userid>apinheiro</gnome:userid>
+    </foaf:Person>
+  </maintainer>
+  <maintainer>
+    <foaf:Person>
+      <foaf:name>Emmanuele Bassi</foaf:name>
+      <foaf:mbox rdf:resource="mailto:ebassi@gnome.org" />
+      <gnome:userid>ebassi</gnome:userid>
+    </foaf:Person>
+  </maintainer>
+
+  <!-- Marge-bot to automatically handle merge requests with successful pipelines  -->
+
+  <maintainer>
+    <foaf:Person>
+      <foaf:name>Marge Bot</foaf:name>
+      <gnome:userid>marge-bot</gnome:userid>
+    </foaf:Person>
+  </maintainer>
+
 </Project>

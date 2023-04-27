@@ -6,35 +6,19 @@
 
   <name xml:lang="en">gnome-dictionary</name>
   <shortdesc xml:lang="en">Look up words in dictionary sources</shortdesc>
-  <description xml:lang="en">GNOME Dictionary can look for the definition
-or translation of a word in existing databases over the internet.</description>
+  <description xml:lang="en">Dictionary can look for the definition or translation of a word in existing databases over the internet.</description>
   <homepage rdf:resource="https://wiki.gnome.org/Apps/Dictionary" />
-  <mailing-list rdf:resource="http://mail.gnome.org/mailman/listinfo/gnome-utils-list" />
-  <download-page rdf:resource="http://download.gnome.org/sources/gnome-dictionary/"/>
+  <support-forum rdf:resource="https://discourse.gnome.org/tag/dictionary" />
+  <download-page rdf:resource="https://download.gnome.org/sources/gnome-dictionary/"/>
   <bug-database rdf:resource="https://gitlab.gnome.org/GNOME/gnome-dictionary/issues/" />
   <license rdf:resource="http://usefulinc.com/doap/licenses/gpl"/>
-  <category rdf:resource="http://api.gnome.org/doap-extensions#apps" />
   <programming-language>C</programming-language>
 
   <maintainer>
     <foaf:Person>
       <foaf:name>Emmanuele Bassi</foaf:name>
-      <foaf:mbox rdf:resource="mailto:ebassi@gmail.com" />
+      <foaf:mbox rdf:resource="mailto:ebassi@gnome.org" />
       <gnome:userid>ebassi</gnome:userid>
-    </foaf:Person>
-  </maintainer>
-  <maintainer>
-    <foaf:Person>
-      <foaf:name>Sindhu S</foaf:name>
-      <foaf:mbox rdf:resource="mailto:sindhus@live.in" />
-      <gnome:userid>sindhus</gnome:userid>
-    </foaf:Person>
-  </maintainer>
-  <maintainer>
-    <foaf:Person>
-      <foaf:name>Juan R. García Blanco</foaf:name>
-      <foaf:mbox rdf:resource="mailto:juanrgar@gmail.com" />
-      <gnome:userid>juanrgar</gnome:userid>
     </foaf:Person>
   </maintainer>
 

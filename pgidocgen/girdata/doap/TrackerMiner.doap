@@ -15,20 +15,12 @@ big benefits for the user; shared data between applications and
 information which is relational to other information (for example:
 mixing contacts with files, locations, activities and etc.).</description>
   <homepage rdf:resource="https://wiki.gnome.org/Projects/Tracker" />
-  <mailing-list rdf:resource="http://mail.gnome.org/mailman/listinfo/tracker-list" />
+  <developer-forum rdf:resource="https://discourse.gnome.org/tag/tracker" />
   <download-page rdf:resource="http://download.gnome.org/sources/tracker/" />
   <bug-database rdf:resource="https://gitlab.gnome.org/GNOME/tracker/issues/" />
   <category rdf:resource="http://api.gnome.org/doap-extensions#core" />
   <programming-language>C</programming-language>
   <programming-language>Vala</programming-language>
-
-  <maintainer>
-    <foaf:Person>
-      <foaf:name>Aleksander Morgado</foaf:name>
-      <foaf:mbox rdf:resource="mailto:aleksander@aleksander.es" />
-      <gnome:userid>aleksm</gnome:userid>
-    </foaf:Person>
-  </maintainer>
 
   <maintainer>
     <foaf:Person>
@@ -40,50 +32,66 @@ mixing contacts with files, locations, activities and etc.).</description>
 
   <maintainer>
     <foaf:Person>
+      <foaf:name>Sam Thursfield</foaf:name>
+      <foaf:mbox rdf:resource="mailto:sam@afuera.me.uk" />
+      <gnome:userid>sthursfield</gnome:userid>
+    </foaf:Person>
+  </maintainer>
+
+  <author>
+    <foaf:Person>
+      <foaf:name>Aleksander Morgado</foaf:name>
+      <foaf:mbox rdf:resource="mailto:aleksander@aleksander.es" />
+      <gnome:userid>aleksm</gnome:userid>
+    </foaf:Person>
+  </author>
+
+  <author>
+    <foaf:Person>
       <foaf:name>Ivan Frade</foaf:name>
       <foaf:mbox rdf:resource="mailto:ifrade@gnome.org" />
       <gnome:userid>ifrade</gnome:userid>
     </foaf:Person>
-  </maintainer>
+  </author>
 
-  <maintainer>
+  <author>
     <foaf:Person>
       <foaf:name>Jamie McCracken</foaf:name>
       <foaf:mbox rdf:resource="mailto:jamie.mccrack@gmail.com" />
       <gnome:userid>jamiemcc</gnome:userid>
     </foaf:Person>
-  </maintainer>
+  </author>
 
-  <maintainer>
+  <author>
     <foaf:Person>
       <foaf:name>Jürg Billeter</foaf:name>
       <foaf:mbox rdf:resource="mailto:j@bitron.ch" />
       <gnome:userid>juergbi</gnome:userid>
     </foaf:Person>
-  </maintainer>
+  </author>
 
-  <maintainer>
+  <author>
     <foaf:Person>
       <foaf:name>Martyn Russell</foaf:name>
       <foaf:mbox rdf:resource="mailto:martyn@lanedo.com" />
       <gnome:userid>mr</gnome:userid>
     </foaf:Person>
-  </maintainer>
+  </author>
 
-  <maintainer>
+  <author>
     <foaf:Person>
       <foaf:name>Mikael Ottela</foaf:name>
       <foaf:mbox rdf:resource="mailto:mikael.ottela@ixonos.com" />
       <gnome:userid>mottela</gnome:userid>
     </foaf:Person>
-  </maintainer>
+  </author>
 
-  <maintainer>
+  <author>
     <foaf:Person>
       <foaf:name>Philip Van Hoof</foaf:name>
       <foaf:mbox rdf:resource="mailto:pvanhoof@gnome.org" />
       <gnome:userid>pvanhoof</gnome:userid>
     </foaf:Person>
-  </maintainer>
+  </author>
 
 </Project>

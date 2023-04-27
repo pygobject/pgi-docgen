@@ -20,7 +20,7 @@ libraries and base classes useful for writing elements.
 A wide range of video and audio decoders, encoders, and filters are included.
 </description>
  <category></category>
- <bug-database rdf:resource="http://bugzilla.gnome.org/enter_bug.cgi?product=GStreamer&amp;component=gst-plugins-base" />
+ <bug-database rdf:resource="https://gitlab.freedesktop.org/gstreamer/gst-plugins-base/issues/" />
  <screenshots></screenshots>
  <mailing-list rdf:resource="http://lists.freedesktop.org/mailman/listinfo/gstreamer-devel" />
  <programming-language>C</programming-language>
@@ -33,6 +33,66 @@ A wide range of video and audio decoders, encoders, and filters are included.
      <browse rdf:resource="http://gitlab.freedesktop.org/gstreamer/gst-plugins-base"/>
    </GitRepository>
  </repository>
+
+ <release>
+  <Version>
+   <revision>1.19.2</revision>
+   <branch>master</branch>
+   <name></name>
+   <created>2021-09-23</created>
+   <file-release rdf:resource="https://gstreamer.freedesktop.org/src/gst-plugins-base/gst-plugins-base-1.19.2.tar.xz" />
+  </Version>
+ </release>
+
+ <release>
+  <Version>
+   <revision>1.19.1</revision>
+   <branch>master</branch>
+   <name></name>
+   <created>2021-06-01</created>
+   <file-release rdf:resource="https://gstreamer.freedesktop.org/src/gst-plugins-base/gst-plugins-base-1.19.1.tar.xz" />
+  </Version>
+ </release>
+
+ <release>
+  <Version>
+   <revision>1.18.0</revision>
+   <branch>master</branch>
+   <name></name>
+   <created>2020-09-08</created>
+   <file-release rdf:resource="https://gstreamer.freedesktop.org/src/gst-plugins-base/gst-plugins-base-1.18.0.tar.xz" />
+  </Version>
+ </release>
+
+ <release>
+  <Version>
+   <revision>1.17.90</revision>
+   <branch>master</branch>
+   <name></name>
+   <created>2020-08-20</created>
+   <file-release rdf:resource="https://gstreamer.freedesktop.org/src/gst-plugins-base/gst-plugins-base-1.17.90.tar.xz" />
+  </Version>
+ </release>
+
+ <release>
+  <Version>
+   <revision>1.17.2</revision>
+   <branch>master</branch>
+   <name></name>
+   <created>2020-07-03</created>
+   <file-release rdf:resource="https://gstreamer.freedesktop.org/src/gst-plugins-base/gst-plugins-base-1.17.2.tar.xz" />
+  </Version>
+ </release>
+
+ <release>
+  <Version>
+   <revision>1.17.1</revision>
+   <branch>master</branch>
+   <name></name>
+   <created>2020-06-19</created>
+   <file-release rdf:resource="https://gstreamer.freedesktop.org/src/gst-plugins-base/gst-plugins-base-1.17.1.tar.xz" />
+  </Version>
+ </release>
 
  <release>
   <Version>
@@ -568,7 +628,7 @@ A wide range of video and audio decoders, encoders, and filters are included.
   <Version>
    <revision>0.11.90</revision>
    <branch>0.11</branch>
-   <name>Golden bells&excl; What a world of happiness their harmony foretells&excl;</name>
+   <name>Golden bells! What a world of happiness their harmony foretells!</name>
    <created>2012-04-12</created>
    <file-release rdf:resource="http://gstreamer.freedesktop.org/src/gst-plugins-base/gst-plugins-base-0.11.90.tar.bz2" />
    <file-release rdf:resource="http://gstreamer.freedesktop.org/src/gst-plugins-base/gst-plugins-base-0.11.90.tar.gz" />

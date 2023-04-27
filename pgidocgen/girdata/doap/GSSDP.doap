@@ -15,10 +15,10 @@ discovery and announcement over SSDP for GUPnP.</description>
 
   <homepage
   rdf:resource="http://gupnp.org" />
-  <mailing-list
-  rdf:resource="http://mail.gnome.org/mailman/listinfo/gupnp-list" />
+  <support-forum
+  rdf:resource="https://discourse.gnome.org/tag/gupnp" />
   <download-page
-  rdf:resource="http://gupnp.org/download"/>
+  rdf:resource="https://download.gnome.org/sources/gssdp/"/>
   <bug-database
   rdf:resource="https://gitlab.gnome.org/GNOME/gssdp/issues/" />
 
@@ -27,13 +27,6 @@ discovery and announcement over SSDP for GUPnP.</description>
       <foaf:name>Jens Georg</foaf:name>
       <foaf:mbox rdf:resource="mailto:mail@jensge.org" />
       <gnome:userid>jensgeorg</gnome:userid>
-    </foaf:Person>
-  </maintainer>
-  <maintainer>
-    <foaf:Person>
-      <foaf:name>Ross Burton</foaf:name>
-      <foaf:mbox rdf:resource="mailto:ross.burton@intel.com" />
-      <gnome:userid>rburton</gnome:userid>
     </foaf:Person>
   </maintainer>
 </Project>

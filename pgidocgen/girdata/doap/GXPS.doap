@@ -5,12 +5,13 @@
          xmlns="http://usefulinc.com/ns/doap#">
   <name xml:lang="en">libgxps</name>
   <shortdesc xml:lang="en">XPS Documents library</shortdesc>
+  <description xml:lang="en">XPS Documents library</description>
   <category rdf:resource="http://api.gnome.org/doap-extensions#core" />
   <programming-language>C</programming-language>
   <programming-language>Python</programming-language>
   <homepage rdf:resource="http://live.gnome.org/libgxps" />
   <download-page rdf:resource="http://download.gnome.org/sources/libgxps/" />
-  <bug-database rdf:resource="https://bugzilla.gnome.org/browse.cgi?product=libgxps" />
+  <bug-database rdf:resource="https://gitlab.gnome.org/GNOME/libgxps/issues" />
   <maintainer>
     <foaf:Person>
       <foaf:name>Carlos Garcia Campos</foaf:name>

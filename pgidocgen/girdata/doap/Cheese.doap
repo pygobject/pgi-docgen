@@ -34,13 +34,12 @@
       <foaf:mbox rdf:resource="mailto:amigadave@amigadave.com" />
       <foaf:seeAlso rdf:resource="http://amigadave.com/foaf.rdf#david" />
       <gnome:userid>davidk</gnome:userid>
-    </foaf:Person>
-  </maintainer>
-  <maintainer>
-    <foaf:Person>
-      <foaf:name>Luciana Fujii Pontello</foaf:name>
-      <foaf:mbox rdf:resource="mailto:luciana@fujii.eti.br" />
-      <gnome:userid>lufujii</gnome:userid>
+      <foaf:account>
+        <foaf:OnlineAccount>
+            <foaf:accountServiceHomepage rdf:resource="https://gitlab.gnome.org/"/>
+            <foaf:accountName>davidk</foaf:accountName>
+        </foaf:OnlineAccount>
+      </foaf:account>
     </foaf:Person>
   </maintainer>
 </Project>

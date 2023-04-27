@@ -15,25 +15,39 @@
   <category rdf:resource="http://api.gnome.org/doap-extensions#apps" />
   <programming-language>C</programming-language>
 
-  <maintainer>
+  <!-- <maintainer>
     <foaf:Person>
       <foaf:name>Jody Goldberg</foaf:name>
-      <foaf:mbox rdf:resource="mailto:jody gnome.org" />
+      <foaf:mbox rdf:resource="mailto:jody@gnome.org" />
       <gnome:userid>jody</gnome:userid>
     </foaf:Person>
-  </maintainer>
+  </maintainer> -->
   <maintainer>
     <foaf:Person>
       <foaf:name>Morten Welinder</foaf:name>
-      <foaf:mbox rdf:resource="mailto:terra gnome.org" />
+      <foaf:mbox rdf:resource="mailto:terra@gnome.org" />
       <gnome:userid>mortenw</gnome:userid>
     </foaf:Person>
   </maintainer>
   <maintainer>
     <foaf:Person>
       <foaf:name>Andreas J. Guelzow</foaf:name>
-      <foaf:mbox rdf:resource="mailto:aguelzow pyrshep.ca" />
+      <foaf:mbox rdf:resource="mailto:aguelzow@pyrshep.ca" />
       <gnome:userid>guelzow</gnome:userid>
     </foaf:Person>
   </maintainer>
+  <maintainer>
+    <foaf:Person>
+      <foaf:name>Jean Brefort</foaf:name>
+      <foaf:mbox rdf:resource="mailto:jean.brefort@normalesup.org" />
+      <gnome:userid>jbrefort</gnome:userid>
+    </foaf:Person>
+  </maintainer>
+  <developer>
+    <foaf:Person>
+      <foaf:name>B. S.</foaf:name>
+      <foaf:mbox rdf:resource="mailto:newbie-02@gmx.de" />
+      <gnome:userid>newbie-02</gnome:userid>
+    </foaf:Person>
+  </developer>
 </Project>

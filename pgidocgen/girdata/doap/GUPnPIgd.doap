@@ -32,13 +32,6 @@ This is a library to handle UPnP IGD port mapping.</description>
   </maintainer>
   <maintainer>
     <foaf:Person>
-      <foaf:name>Ross Burton</foaf:name>
-      <foaf:mbox rdf:resource="mailto:ross.burton@intel.com" />
-      <gnome:userid>rburton</gnome:userid>
-    </foaf:Person>
-  </maintainer>
-  <maintainer>
-    <foaf:Person>
       <foaf:name>Olivier Crête</foaf:name>
       <foaf:mbox rdf:resource="mailto:olivier.crete@ocrete.ca" />
       <gnome:userid>tester</gnome:userid>

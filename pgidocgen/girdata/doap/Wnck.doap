@@ -6,12 +6,10 @@
 
   <name xml:lang="en">libwnck</name>
   <shortdesc xml:lang="en">Library to manage X windows and workspaces (via pagers, tasklists, etc.)</shortdesc>
-  <!--
-  <homepage rdf:resource="http://www.gnome.org/" />
-  -->
+  <description xml:lang="en">Library to manage X windows and workspaces (via pagers, tasklists, etc.)</description>
   <mailing-list rdf:resource="http://mail.gnome.org/mailman/listinfo/desktop-devel-list" />
   <download-page rdf:resource="http://download.gnome.org/sources/libwnck/" />
-  <bug-database rdf:resource="http://bugzilla.gnome.org/browse.cgi?product=libwnck" />
+  <bug-database rdf:resource="https://gitlab.gnome.org/GNOME/libwnck/issues" />
 
   <category rdf:resource="http://api.gnome.org/doap-extensions#core" />
   <programming-language>C</programming-language>
@@ -20,7 +18,7 @@
     <foaf:Person>
       <foaf:name>Elijah Newren</foaf:name>
       <foaf:mbox rdf:resource="mailto:newren@gmail.com" />
-      <gnome:userid>newren</gnome:userid>
+<!--      <gnome:userid>newren</gnome:userid> -->
     </foaf:Person>
   </maintainer>
   <maintainer>

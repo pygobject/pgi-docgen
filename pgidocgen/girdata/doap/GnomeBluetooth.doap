@@ -5,10 +5,11 @@
 	 xmlns="http://usefulinc.com/ns/doap#">
 	<name xml:lang="en">gnome-bluetooth</name>
 	<shortdesc xml:lang="en">GNOME Bluetooth Subsystem</shortdesc>
+	<description xml:lang="en">GNOME Bluetooth Subsystem</description>
 	<homepage rdf:resource="https://wiki.gnome.org/Projects/GnomeBluetooth" />
 	<mailing-list rdf:resource="http://lists.usefulinc.com/mailman/listinfo/gnome-bluetooth" />
 	<download-page rdf:resource="http://download.gnome.org/sources/gnome-bluetooth/" />
-	<bug-database rdf:resource="https://bugzilla.gnome.org/browse.cgi?product=gnome-bluetooth" />
+	<bug-database rdf:resource="https://gitlab.gnome.org/GNOME/gnome-bluetooth/issues" />
 	<category rdf:resource="http://api.gnome.org/doap-extensions#core" />
 	<programming-language>C</programming-language>
 	<maintainer>

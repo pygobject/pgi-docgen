@@ -6,6 +6,7 @@
 
   <name xml:lang="en">pango</name>
   <shortdesc xml:lang="en">Internationalized text layout and rendering library</shortdesc>
+  <description xml:lang="en">Pango is a library for layout and rendering of text, with an emphasis on internationalization. Pango can be used anywhere that text layout is needed. Pango forms the core of text and font handling for GTK.</description>
   <category rdf:resource="http://api.gnome.org/doap-extensions#core" />
   <programming-language>C</programming-language>
 
@@ -16,7 +17,7 @@
   <download-page
   rdf:resource="http://download.gnome.org/sources/pango/"/>
   <bug-database
-  rdf:resource="http://bugzilla.gnome.org/browse.cgi?product=pango"/>
+  rdf:resource="https://gitlab.gnome.org/GNOME/pango/issues/"/>
 
   <maintainer>
     <foaf:Person>
@@ -30,6 +31,20 @@
       <foaf:name>Behdad Esfahbod</foaf:name>
       <foaf:mbox rdf:resource="mailto:behdad@gnome.org" />
       <gnome:userid>behdad</gnome:userid>
+    </foaf:Person>
+  </maintainer>
+  <maintainer>
+    <foaf:Person>
+      <foaf:name>Matthias Clasen</foaf:name>
+      <foaf:mbox rdf:resource="mailto:mclasen@redhat.com" />
+      <gnome:userid>matthiasc</gnome:userid>
+    </foaf:Person>
+  </maintainer>
+  <maintainer>
+    <foaf:Person>
+      <foaf:name>Emmanuele Bassi</foaf:name>
+      <foaf:mbox rdf:resource="mailto:ebassi@gnome.org" />
+      <gnome:userid>ebassi</gnome:userid>
     </foaf:Person>
   </maintainer>
 </Project>
