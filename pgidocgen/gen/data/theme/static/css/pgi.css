@@ -95,10 +95,13 @@ p {
     font-size: 0.9em;
 }
 
-tt.descname, tt.descclassname, code.descname, code.descclassname, code.py, .rst-content tt, cite {
-    font-family: "Lato";
-    font-size: 0.9em;
-    line-height: 1.5em;
+tt.descname, .descclassname .pre, .descname .pre, .rst-content code, .rst-content tt, code.py, cite {
+    font-family: "Lato" !important;
+    font-size: 0.9rem;
+}
+
+.rst-content code, .rst-content tt {
+    padding: 0px 3px;
 }
 
 .rst-content table.field-list td {
