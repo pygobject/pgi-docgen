@@ -72,7 +72,6 @@ SKIPLIST = [
 
     # more broken things
     "AgsAudio-4.0",  # gir parsing
-    "Anthy-9000",  # debug
     "Click-0.4",  # gir parsing
     "Folks-0.7",  # gir parsing
     "FolksDummy-0.7",
@@ -80,7 +79,6 @@ SKIPLIST = [
     "FolksTelepathy-0.7",
     "GCalc-2",  # gir parsing
     "Granite-7.0",  # gir parsing
-    "UDisks-2.0",  # debug
 ]
 
 
