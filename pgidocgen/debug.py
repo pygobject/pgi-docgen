@@ -335,6 +335,8 @@ def get_line_numbers_for_name(library_name):
     """
 
     for path in get_debug_files_for_name(library_name):
+        if not os.path.exists(path):
+            continue
         symbols = get_line_numbers_for_file(path)
         if symbols:
             return symbols
