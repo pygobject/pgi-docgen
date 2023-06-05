@@ -249,6 +249,9 @@ def get_line_numbers_for_file(library_path):
     lines = get_lines(library_path, cus)
     line_index = sorted(lines.keys())
 
+    if not lines:
+        return {}
+
     def find_nearest_line(addr):
         i = bisect.bisect_right(line_index, addr)
         if i:
