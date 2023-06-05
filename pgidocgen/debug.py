@@ -228,7 +228,7 @@ def parse_lines(data, cus):
 def get_lines(library_path, cus):
     try:
         data = subprocess.check_output(
-            ["objdump", "--dwarf=decodedline", "--wide", library_path],
+            ["readelf", "--debug-dump=decodedline", "--wide", library_path],
             stderr=subprocess.STDOUT, universal_newlines=True)
     except subprocess.CalledProcessError:
         return {}
