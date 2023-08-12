@@ -72,6 +72,7 @@ SKIPLIST = [
 
     # more broken things
     "AgsAudio-4.0",  # gir parsing
+    "AgsAudio-5.0",  # gir parsing
     "Click-0.4",  # gir parsing
     "Folks-0.7",  # gir parsing
     "FolksDummy-0.7",
