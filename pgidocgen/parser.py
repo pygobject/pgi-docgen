@@ -19,16 +19,16 @@ from .docbook_escape import docbook_escape
 
 
 _scanner = re.Scanner([
-    (r"\*?@[A-Za-z0-9_]+", lambda scanner, token:("PARAM", token)),
-    (r"[#%]?[A-Za-z0-9_:\-]+\.[A-Za-z0-9_:\-]+\(\)", lambda scanner, token:("VFUNC", token)),
-    (r"[#%]?[A-Za-z0-9_:\-]+\.[A-Za-z0-9_:\-]+", lambda scanner, token:("FIELD", token)),
-    (r"[#%]?[A-Za-z_]+[A-Za-z0-9_]*::[A-Za-z\-]+[A-Za-z0-9\-_]*", lambda scanner, token:("FULLSIG", token)),
-    (r"::[A-Za-z\-]+[A-Za-z0-9\-_]*", lambda scanner, token:("SIG", token)),
-    (r"[#%]?[A-Za-z_]+[A-Za-z0-9_]*:[A-Za-z\-]+[A-Za-z0-9\-_]*", lambda scanner, token:("FULLPROP", token)),
-    (r":[A-Za-z\-]+[A-Za-z0-9\-_]*", lambda scanner, token:("PROP", token)),
-    (r"[#%]?[A-Za-z0-9_]+\**", lambda scanner, token:("ID", token)),
-    (r"\s+", lambda scanner, token:("SPACE", token)),
-    (r".", lambda scanner, token:("OTHER", token)),
+    (r"\*?@[A-Za-z0-9_]+", lambda scanner, token: ("PARAM", token)),
+    (r"[#%]?[A-Za-z0-9_:\-]+\.[A-Za-z0-9_:\-]+\(\)", lambda scanner, token: ("VFUNC", token)),
+    (r"[#%]?[A-Za-z0-9_:\-]+\.[A-Za-z0-9_:\-]+", lambda scanner, token: ("FIELD", token)),
+    (r"[#%]?[A-Za-z_]+[A-Za-z0-9_]*::[A-Za-z\-]+[A-Za-z0-9\-_]*", lambda scanner, token: ("FULLSIG", token)),
+    (r"::[A-Za-z\-]+[A-Za-z0-9\-_]*", lambda scanner, token: ("SIG", token)),
+    (r"[#%]?[A-Za-z_]+[A-Za-z0-9_]*:[A-Za-z\-]+[A-Za-z0-9\-_]*", lambda scanner, token: ("FULLPROP", token)),
+    (r":[A-Za-z\-]+[A-Za-z0-9\-_]*", lambda scanner, token: ("PROP", token)),
+    (r"[#%]?[A-Za-z0-9_]+\**", lambda scanner, token: ("ID", token)),
+    (r"\s+", lambda scanner, token: ("SPACE", token)),
+    (r".", lambda scanner, token: ("OTHER", token)),
 ])
 
 
