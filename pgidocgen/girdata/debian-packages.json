@@ -2445,7 +2445,7 @@
         "homepage": "https://www.freedesktop.org/wiki/Software/libqmi",
         "lib": "libqmi",
         "summary": "Support library to use the Qualcomm MSM Interface (QMI) protocol",
-        "version": "1.32.2"
+        "version": "1.33.8"
     },
     "Qrtr-1.0": {
         "debian_package": "gir1.2-qrtr-1.0",
