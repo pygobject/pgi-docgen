@@ -35,6 +35,10 @@
     display: none;
 }
 
+.local-toc li li ul {
+    display: none;
+}
+
 p {
     font-size: 1em;
 }

@@ -13,17 +13,11 @@ python = "^3.10"
 pgi = {git = "https://github.com/pygobject/pgi.git"}
 requests = "^2.28.2"
 jinja2 = "^3.1.2"
-sphinx = "^4.5.0"
+sphinx = "^5.0.0"
 cairocffi = "^1.5.1"
 beautifulsoup4 = "^4.12.2"
 lxml = "^5.1.0"
 python-apt = { git="https://salsa.debian.org/apt-team/python-apt.git", tag="2.5.3", optional=true }
-sphinxcontrib-applehelp = "<=1.0.4"
-sphinxcontrib-devhelp = "<=1.0.2"
-sphinxcontrib-htmlhelp = "<=2.0.1"
-sphinxcontrib-jsmath = "<=1.0.1"
-sphinxcontrib-qthelp = "<1.0.3"
-sphinxcontrib-serializinghtml = "<=1.1.5"
 
 [tool.poetry.extras]
 debian = ["python-apt"]
