@@ -7,6 +7,7 @@
 # version 2.1 of the License, or (at your option) any later version.
 
 import os
+import glob
 import sys
 import subprocess
 import shutil
@@ -176,11 +177,12 @@ def fetch_girs(girs, dest):
     os.mkdir(dst)
     for path in entries:
         subprocess.check_call(["dpkg", "-x", path, tmp_root])
-        base_src = os.path.join(tmp_root, "usr", "share", "gir-1.0")
-        if not os.path.isdir(base_src):
-            continue
-        for e in os.listdir(base_src):
-            src = os.path.join(base_src, e)
+        girs = glob.glob(tmp_root + "/**/gir-1.0/*.gir", recursive=True)
+        for src in girs:
+            # in some cases when gir files move from share to lib there
+            # are symlinks for backwards compat, just ignore them
+            if os.path.islink(src):
+                continue
             shutil.copy(src, dst)
         shutil.rmtree(tmp_root)
 
