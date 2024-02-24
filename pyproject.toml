@@ -18,6 +18,7 @@ cairocffi = "^1.5.1"
 beautifulsoup4 = "^4.12.2"
 lxml = "^4.9.2"
 python-apt = { git="https://salsa.debian.org/apt-team/python-apt.git", tag="2.5.3", optional=true }
+sphinxcontrib-applehelp = "1.0.4"
 
 [tool.poetry.extras]
 debian = ["python-apt"]
