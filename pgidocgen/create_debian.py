@@ -81,6 +81,7 @@ SKIPLIST = [
     "FolksTelepathy-0.7",
     "GCalc-2",  # gir parsing
     "Granite-7.0",  # gir parsing
+    "Aperture-0",  # gir parsing
 
     "PQMarble-2",  # missing shared lib dep
 ]
