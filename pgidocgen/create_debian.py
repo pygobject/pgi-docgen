@@ -23,7 +23,6 @@ from .util import parse_gir_shared_libs
 
 DEB_SKIPLIST = [
     "gir1.2-hkl-5.0",
-    "gir1.2-gconf-2.0",
 ]
 
 SKIPLIST = [
@@ -36,7 +35,6 @@ SKIPLIST = [
     'AtrilDocument-1.5.0',
     'Eom-1.0',
     'Matekbd-1.0',
-    'GConf-2.0',
 
     # broken
     "Pluma-1.0",
@@ -57,33 +55,26 @@ SKIPLIST = [
     'UnityExtras-7.0',  # invalid xml
 
     # crashes
-    'GUPnPIgd-1.0',
     'Granite-1.0',
 
     # depends on one of the above
-    "Ganv-1.0",
-    "DbusmenuGtk-0.4",
     "GcrUi-3",
     "Caja-2.0",
     "MatePanelApplet-4.0",
     "BraseroBurn-3.1",
     "v_sim-3.7",
-    "Wnck-1.0",
-    "AyatanaAppIndicator-0.1",
 
     # more broken things
-    "AgsAudio-5.0",  # gir parsing
     "AgsAudio-6.0",  # gir parsing
-    "Click-0.4",  # gir parsing
-    "Folks-0.7",  # gir parsing
-    "FolksDummy-0.7",
-    "FolksEds-0.7",
-    "FolksTelepathy-0.7",
-    "GCalc-2",  # gir parsing
-    "Granite-7.0",  # gir parsing
-    "Aperture-0",  # gir parsing
+
+    "GIRepository-3.0",  # unclear
 
     "PQMarble-2",  # missing shared lib dep
+    "Granite-7.0",  # missing shared lib
+    "Folks-0.7", # missing shared lib
+    "FolksDummy-0.7", # missing shared lib
+    "FolksEds-0.7", # missing shared lib
+    "FolksTelepathy-0.7", # missing shared lib
 ]
 
 
