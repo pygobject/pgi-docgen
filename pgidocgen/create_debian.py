@@ -71,10 +71,10 @@ SKIPLIST = [
 
     "PQMarble-2",  # missing shared lib dep
     "Granite-7.0",  # missing shared lib
-    "Folks-0.7", # missing shared lib
-    "FolksDummy-0.7", # missing shared lib
-    "FolksEds-0.7", # missing shared lib
-    "FolksTelepathy-0.7", # missing shared lib
+    "Folks-0.7",  # missing shared lib
+    "FolksDummy-0.7",  # missing shared lib
+    "FolksEds-0.7",  # missing shared lib
+    "FolksTelepathy-0.7",  # missing shared lib
 ]
 
 
