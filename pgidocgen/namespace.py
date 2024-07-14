@@ -604,11 +604,16 @@ def _parse_docs(dom):
         [("parameter", "method"), parameters],
         [("parameter", "callback"), parameters],
         [("parameter", "constructor"), parameters],
+        [("parameter", "function-inline"), parameters],
         [("instance-parameter", "method"), parameters],
+        [("instance-parameter", "method-inline"), parameters],
+        [("instance-parameter", "function"), parameters],
         [("return-value", "callback"), returns],
         [("return-value", "method"), returns],
         [("return-value", "function"), returns],
         [("return-value", "constructor"), returns],
+        [("return-value", "function-inline"), returns],
+        [("return-value", "method-inline"), returns],
         [("return-value", "glib:signal"), sreturns],
         [("interface",), all_],
         [("method",), all_],
@@ -745,6 +750,6 @@ def _parse_docs(dom):
                 assert key not in result or new == result[key], key
             result[key] = new
 
-    assert not (path_seen - path_done)
+    assert not (path_seen - path_done), path_seen - path_done
 
     return all_docs
