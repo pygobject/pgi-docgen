@@ -697,12 +697,18 @@ def _parse_docs(dom):
 
                 return n
 
+            # these can be nested, so if there is not name, don't go up the tree
+            # or we might up ending up with the same name as the parent record
+            requires_name = ["record"]
+
             l = []
             tags = []
             current = e
             name = get_name(current)
             if name is not None:
                 l.append(name)
+            elif current.tagName in requires_name:
+                continue
             shadowed = False
             while current.tagName != "namespace":
                 # this gets shadowed by another entry, bail out
