@@ -25,7 +25,7 @@ debian = ["python-apt"]
 [tool.poetry.group.dev.dependencies]
 flake8 = "^7.0.0"
 coverage = "^7.2.3"
-pytest-cov = "^4.0.0"
+pytest-cov = "^6.0.0"
 pytest = "^8.0.1"
 
 [tool.poetry.scripts]
