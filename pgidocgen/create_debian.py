@@ -65,7 +65,7 @@ SKIPLIST = [
     "v_sim-3.7",
 
     # more broken things
-    "AgsAudio-6.0",  # gir parsing
+    "AgsAudio-7.0",  # gir parsing
 
     "GIRepository-3.0",  # unclear
 
