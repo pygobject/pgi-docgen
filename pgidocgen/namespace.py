@@ -605,6 +605,7 @@ def _parse_docs(dom):
         [("parameter", "callback"), parameters],
         [("parameter", "constructor"), parameters],
         [("parameter", "function-inline"), parameters],
+        [("parameter", "method-inline"), parameters],
         [("instance-parameter", "method"), parameters],
         [("instance-parameter", "method-inline"), parameters],
         [("instance-parameter", "function"), parameters],
