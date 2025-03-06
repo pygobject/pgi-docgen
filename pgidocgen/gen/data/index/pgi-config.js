@@ -1,63 +1,71 @@
+/**
+ * @param {string} value
+ * @returns {boolean}
+ */
 function parseBoolean(value) {
-    return (/^true$/i).test(value);
+  return value === "true";
 }
 
-
-function getCookie(key, def) {
-    var value = Cookies.get(key);
-    if (value === undefined)
-        return def
-    return value;
+/**
+ * @param {string} key
+ * @param {string} defaultValue
+ * @returns {string}
+ */
+function getStorageItem(key, defaultValue) {
+  const value = localStorage.getItem(key);
+  return value !== null ? value : defaultValue;
 }
 
+class Config {
+  reset() {
+    localStorage.removeItem("case_insensitive");
+    localStorage.removeItem("include_all");
+    localStorage.removeItem("search_modules");
+  }
 
-Config = function() {
-}
+  /**
+   * @param {boolean} value
+   */
+  setCaseInsensitive(value) {
+    localStorage.setItem("case_insensitive", String(value));
+  }
 
+  /**
+   * @returns {boolean}
+   */
+  getCaseInsensitive() {
+    return parseBoolean(getStorageItem("case_insensitive", "true"));
+  }
 
-Config.prototype.reset = function() {
-    Cookies.remove('case_insensitive');
-    Cookies.remove('include_all');
-    Cookies.remove('search_modules');
-}
+  /**
+   * @param {boolean} value
+   */
+  setIncludeAll(value) {
+    localStorage.setItem("include_all", String(value));
+  }
 
+  /**
+   * @returns {boolean}
+   */
+  getIncludeAll() {
+    return parseBoolean(getStorageItem("include_all", "true"));
+  }
 
-Config.prototype.setCaseInsensitive = function(value) {
-    Cookies.set('case_insensitive', String(value));
-}
+  /**
+   * @param {string[]} modules
+   */
+  setModules(modules) {
+    localStorage.setItem("search_modules", modules.join(","));
+  }
 
-
-Config.prototype.getCaseInsensitive = function() {
-    return parseBoolean(getCookie('case_insensitive', 'true'));
-}
-
-
-Config.prototype.setIncludeAll = function(value) {
-    Cookies.set('include_all', String(value));
-}
-
-
-Config.prototype.getIncludeAll = function() {
-    return parseBoolean(getCookie('include_all', 'true'));
-}
-
-
-Config.prototype.setModules = function(modules) {
-    Cookies.set('search_modules', modules.join(","));
-}
-
-
-Config.prototype.getModules = function() {
-    var result = getCookie('search_modules', '');
-    if (result == '')
-        return [];
+  /**
+   * @returns {string[]}
+   */
+  getModules() {
+    const result = getStorageItem("search_modules", "");
+    if (result === "") return [];
     return result.split(",");
+  }
 }
 
-
-Config.prototype.getIncludeAll = function() {
-    return parseBoolean(getCookie('include_all', 'true'));
-}
-
-
-var PGIConfig = new Config();
+const PGIConfig = new Config();

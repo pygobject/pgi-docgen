@@ -97,12 +97,6 @@ Fonts in ``pgidocgen/gen/data/theme/static/fonts``
 
     MIT License
 
-``pgidocgen/gen/data/index/js.cookie-2.1.0.min.js``
-
-    https://github.com/js-cookie/js-cookie
-
-    MIT License
-
 Everything else:
 
     GNU Lesser General Public License 2.1 or later
