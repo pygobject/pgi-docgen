@@ -12,18 +12,19 @@ var main_page = "main.html";
 function applyHash() {
     // takes the current hash loads the path into the content frame
 
-    var hash = window.location.hash;
+    var hash = window.location.hash.substring(1);
     var elm = document.getElementById('Content');
-    var new_src;
+    var new_src = main_page;
 
-    if(hash) {
-        // needed for webkit
-        if(!endsWith(hash, ".html") && !endsWith(hash, "/") && hash.indexOf("#", 1) < 0)
-            hash += "/";
-
-        new_src = hash.substring(1);
-    } else {
-        new_src= main_page;
+    if (hash) {
+        if (hash.indexOf("#") < 0) {
+            if (hash.indexOf("%23") > 0)
+                // unescape only first percent-escaped hash
+                hash = hash.replace("%23", "#");
+            else if (!endsWith(hash, ".html") && !endsWith(hash, "/"))
+                hash += "/"; // needed for webkit
+        }
+        new_src = hash;
     }
 
     // create a dummy element so we can compare the URLs; prevents
