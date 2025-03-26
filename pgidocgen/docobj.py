@@ -338,6 +338,7 @@ class Signal(BaseDocObject):
             print("FIXME: signal: %s " % inst.fullname)
             signature_desc = "(FIXME pgi-docgen: arguments are missing here)"
 
+        inst.full_signature = fsig
         inst.signature_desc = signature_desc
         inst.info = DocInfo.from_object(repo, "signals", inst,
                                         current_type=parent_fullname)
@@ -653,6 +654,7 @@ class Field(BaseDocObject):
         name = field_info.name
         field = cls(parent_fullname, name)
 
+        field.py_type = field_info.py_type
         field.type_desc = py_type_to_class_ref(field_info.py_type)
         field.readable = field_info.readable
         field.writable = field_info.writeable
@@ -793,6 +795,7 @@ class Function(BaseDocObject):
                     signature = get_signature_string(obj)
 
         assert signature
+        instance.full_signature = func_sig
         instance.signature_desc = signature_desc
         instance.signature = signature
         instance.info.desc = desc
@@ -887,12 +890,13 @@ class Flags(BaseDocObject, MethodsMixin):
 
 class Constant(BaseDocObject):
 
-    def __init__(self, parent_fullname, name, value):
+    def __init__(self, parent_fullname, name, value, py_type):
         self.fullname = parent_fullname + "." + name
         self.name = name
         self.info = None
 
         self.value = value
+        self.py_type = py_type
 
     @classmethod
     def from_object(cls, repo, parent_fullname, name, obj):
@@ -904,7 +908,7 @@ class Constant(BaseDocObject):
         else:
             value = repr(obj)
 
-        instance = Constant(parent_fullname, name, value)
+        instance = Constant(parent_fullname, name, value, type(obj))
         instance.info = DocInfo.from_object(repo, "all", instance)
         return instance
 

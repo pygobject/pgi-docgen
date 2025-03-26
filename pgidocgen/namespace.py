@@ -545,6 +545,20 @@ def _parse_types(dom, module, namespace):
     return types, type_structs, shadow_map, instance_params
 
 
+def _is_empty_text_node(child) -> bool:
+    return (
+        child.nodeType == child.TEXT_NODE and
+        not child.data.strip()
+    )
+
+
+def _is_source_position_node(child) -> bool:
+    return (
+        child.nodeType == child.ELEMENT_NODE and
+        child.tagName == 'source-position'
+    )
+
+
 def _parse_private(dom, namespace):
     private = set()
 
@@ -563,8 +577,15 @@ def _parse_private(dom, namespace):
         is_gtype_struct = bool(record.getAttribute("glib:is-gtype-struct-for"))
         is_private = record.getAttribute("name").endswith("Private")
         if is_private and not is_gtype_struct and is_empty(record):
-            name = namespace + "." + record.getAttribute("name")
-            private.add(name)
+
+            meaningful_children = [
+                c for c in record.childNodes
+                if not _is_empty_text_node(c) and not _is_source_position_node(c)
+            ]
+
+            if not meaningful_children:
+                name = namespace + "." + record.getAttribute("name")
+                private.add(name)
 
     return private
 
