@@ -35,5 +35,6 @@ COPY --chown=user:user . ./app
 WORKDIR /home/user/app
 
 RUN pipx install uv
+ENV UV_PROJECT_ENVIRONMENT=/home/user/venv
 RUN uv venv --system-site-packages
 RUN uv run pgi-docgen create-debian --cachedir /home/user/_debian_build_cache --install --no-build _docs
