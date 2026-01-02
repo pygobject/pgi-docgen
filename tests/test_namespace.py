@@ -19,8 +19,8 @@ class TNamespace(unittest.TestCase):
         types = ns.types
         ns.docs
 
-        self.assertEqual(types["SOUP_STATUS_CANCELLED"],
-                         ["Soup.Status.CANCELLED"])
+        self.assertEqual(types["SOUP_STATUS_FOUND"],
+                         ["Soup.Status.FOUND"])
 
         self.assertEqual(types["SoupContentDecoder"],
                          ["Soup.ContentDecoder"])
