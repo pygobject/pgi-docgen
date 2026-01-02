@@ -35,6 +35,7 @@ SKIPLIST = [
     'AtrilDocument-1.5.0',
     'Eom-1.0',
     'Matekbd-1.0',
+    'Peas-1.0',
 
     # broken
     "Pluma-1.0",
