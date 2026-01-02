@@ -1,6 +1,6 @@
 FROM debian:testing
 
-ENV LANG C.UTF-8
+ENV LANG=C.UTF-8
 
 RUN echo "deb http://debug.mirrors.debian.org/debian-debug/ testing-debug main" >> /etc/apt/sources.list
 RUN rm /etc/apt/apt.conf.d/docker-no-languages
@@ -23,7 +23,7 @@ RUN apt-get install -y \
 RUN apt-file update
 
 ARG HOST_USER_ID=5555
-ENV HOST_USER_ID ${HOST_USER_ID}
+ENV HOST_USER_ID=${HOST_USER_ID}
 RUN useradd -u $HOST_USER_ID -ms /bin/bash user
 RUN echo 'user ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 USER user
@@ -35,6 +35,5 @@ COPY --chown=user:user . ./app
 WORKDIR /home/user/app
 
 RUN pipx install uv
-RUN pipx install --editable --system-site-packages .
-
-RUN pgi-docgen create-debian --cachedir /home/user/_debian_build_cache --install --no-build _docs
+RUN uv venv --system-site-packages
+RUN uv run pgi-docgen create-debian --cachedir /home/user/_debian_build_cache --install --no-build _docs
