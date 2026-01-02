@@ -33,8 +33,6 @@ _scanner = re.Scanner([
 
 
 def _handle_data(repo, current_type, current_func, d):
-    global _scanner
-
     results, remainder = _scanner.scan(d)
     assert not remainder, repr(remainder)
 
