@@ -15,7 +15,7 @@ from pgidocgen.namespace import get_cairo_types, \
 class TNamespace(unittest.TestCase):
 
     def test_soup(self):
-        ns = get_namespace("Soup", "2.4")
+        ns = get_namespace("Soup", "3.0")
         types = ns.types
         ns.docs
 
