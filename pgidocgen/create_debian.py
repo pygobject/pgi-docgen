@@ -69,7 +69,7 @@ SKIPLIST = [
 
     "GIRepository-3.0",  # unclear
 
-    "FPrint-2.0", # https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=1122338
+    "FPrint-2.0",  # https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=1122338
 
     "PQMarble-2",  # missing shared lib dep
     "Granite-7.0",  # missing shared lib
