@@ -17,10 +17,8 @@ How do I get started?
 
 ::
 
-    poetry install
-    poetry shell
     # API docs for Gtk/Gst:
-    ./tools/build.sh Gtk-3.0 Gst-1.0
+    uv run ./tools/build.sh Gtk-3.0 Gst-1.0
 
 The resulting docs can be found in ``_docs/_build``
 

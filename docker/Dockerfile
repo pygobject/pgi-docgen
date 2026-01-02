@@ -34,7 +34,7 @@ WORKDIR /home/user
 COPY --chown=user:user . ./app
 WORKDIR /home/user/app
 
-RUN pipx install poetry
+RUN pipx install uv
 RUN pipx install --editable --system-site-packages .
 
 RUN pgi-docgen create-debian --cachedir /home/user/_debian_build_cache --install --no-build _docs

@@ -1,36 +1,48 @@
-[tool.poetry]
+[project]
 name = "pgi-docgen"
 version = "0.1.0"
 description = "Docs Generator for PGI/PyGObject"
-authors = ["Christoph Reiter <reiter.christoph@gmail.com>"]
+authors = [{ name = "Christoph Reiter", email = "reiter.christoph@gmail.com" }]
+requires-python = ">=3.10,<4"
 readme = "README.rst"
 license = "LGPL-2.1-or-later"
-homepage = "https://github.com/pygobject/pgi-docgen"
-packages = [{include = "pgidocgen"}]
+dependencies = [
+    "pgi",
+    "requests>=2.28.2,<3",
+    "jinja2>=3.1.2,<4",
+    "sphinx>=6.0.0,<7",
+    "cairocffi>=1.5.1,<2",
+    "beautifulsoup4>=4.12.2,<5",
+    "lxml>=6.0.2,<7",
+]
 
-[tool.poetry.dependencies]
-python = "^3.10"
-pgi = {git = "https://github.com/pygobject/pgi.git"}
-requests = "^2.28.2"
-jinja2 = "^3.1.2"
-sphinx = "^6.0.0"
-cairocffi = "^1.5.1"
-beautifulsoup4 = "^4.12.2"
-lxml = "^6.0.2"
-python-apt = { git="https://salsa.debian.org/apt-team/python-apt.git", tag="2.5.3", optional=true }
-
-[tool.poetry.extras]
+[project.optional-dependencies]
 debian = ["python-apt"]
 
-[tool.poetry.group.dev.dependencies]
-flake8 = "^7.0.0"
-coverage = "^7.2.3"
-pytest-cov = "^6.0.0"
-pytest = "^8.0.1"
+[project.urls]
+Homepage = "https://github.com/pygobject/pgi-docgen"
 
-[tool.poetry.scripts]
-pgi-docgen = 'pgidocgen.main:run'
+[project.scripts]
+pgi-docgen = "pgidocgen.main:run"
+
+[dependency-groups]
+dev = [
+    "flake8>=7.0.0,<8",
+    "coverage>=7.2.3,<8",
+    "pytest-cov>=6.0.0,<7",
+    "pytest>=8.0.1,<9",
+]
+
+[tool.uv.sources]
+pgi = { git = "https://github.com/pygobject/pgi.git" }
+python-apt = { git = "https://salsa.debian.org/apt-team/python-apt.git", tag = "2.5.3" }
+
+[tool.hatch.build.targets.sdist]
+include = ["pgidocgen"]
+
+[tool.hatch.build.targets.wheel]
+include = ["pgidocgen"]
 
 [build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires = ["hatchling"]
+build-backend = "hatchling.build"

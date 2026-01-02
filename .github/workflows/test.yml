@@ -10,18 +10,17 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Install poetry
-      run: pipx install poetry
+    - name: Install uv
+      run: pipx install uv
 
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
         python-version: '3.10'
-        cache: 'poetry'
 
     - name: Install Python dependencies
       run: |
-        poetry install
+        uv sync
 
     - name: Install runtime dependencies
       run: |
@@ -40,8 +39,8 @@ jobs:
 
     - name: Run tests
       run: |
-        poetry run pytest
+        uv run pytest
 
     - name: Run flake8
       run: |
-        poetry run flake8
+        uv run flake8
