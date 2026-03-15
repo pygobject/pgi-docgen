@@ -79,6 +79,7 @@ SKIPLIST = [
     "FolksDummy-0.7",  # missing shared lib
     "FolksEds-0.7",  # missing shared lib
     "FolksTelepathy-0.7",  # missing shared lib
+    "GXml-0.20",  # missing shared lib
 ]
 
 
