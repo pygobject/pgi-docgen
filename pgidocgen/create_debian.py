@@ -68,6 +68,7 @@ SKIPLIST = [
 
     # more broken things
     "AgsAudio-7.0",  # gir parsing
+    "AgsAudio-8.0",  # gir parsing
 
     "GIRepository-3.0",  # unclear
 
