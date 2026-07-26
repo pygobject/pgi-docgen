@@ -456,11 +456,14 @@ def xdg_get_system_data_dirs():
     if data_dirs:
         return list(map(os.path.abspath, data_dirs.split(":")))
     else:
-        return ("/usr/local/share/", "/usr/share/")
+        return ["/usr/local/share/", "/usr/share/"]
 
 
 def get_gir_dirs():
     dirs = xdg_get_system_data_dirs()
+    # XXX: hardcoded for now, but this is the default on Ubuntu/Debian for glib gir
+    if os.path.exists("/usr/lib/x86_64-linux-gnu"):
+        dirs.append("/usr/lib/x86_64-linux-gnu")
     return [os.path.join(d, "gir-1.0") for d in dirs]
 
 

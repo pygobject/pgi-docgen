@@ -2,11 +2,18 @@
 
 import io
 import os
+from xml.etree.ElementTree import register_namespace
 
 from docutils import nodes
 
 from sphinx.ext.graphviz import render_dot, GraphvizError
 from docutils.parsers.rst import Directive
+
+
+# Keep ElementTree from serializing inline SVG as <ns0:svg> after Sphinx
+# rewrites Graphviz output, which would break our plain "<svg" extraction.
+register_namespace('', 'http://www.w3.org/2000/svg')
+register_namespace('xlink', 'http://www.w3.org/1999/xlink')
 
 
 def generate_dot(graph, colors, urls={}):
